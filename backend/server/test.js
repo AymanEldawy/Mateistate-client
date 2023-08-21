@@ -7,7 +7,7 @@ const cors = require("cors");
 
 const sqlConfig = {
   user: "ayman",
-  password: "12345",
+  password: "123456",
   database: "Matiestate",
   server: "DESKTOP-VPIP642",
   options: {

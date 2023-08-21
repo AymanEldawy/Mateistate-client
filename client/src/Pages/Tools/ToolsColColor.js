@@ -30,6 +30,7 @@ const ToolsColColor = ({
   let ItemColor = itemData?.Color;
   let itemValue = flatsDetails?.[`${itemHash}&${tabName}`]?.NO;
   useEffect(() => {
+    console.log('run.....', itemValue)
     if (CACHE_APARTMENTS[apartmentNumber]) {
       console.log('run...')
       defaultInsertColor(

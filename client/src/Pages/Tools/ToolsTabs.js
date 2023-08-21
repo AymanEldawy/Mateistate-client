@@ -8,6 +8,7 @@ import TableCol from "../../Components/CustomTable/TableCol";
 import TableHead from "../../Components/CustomTable/TableHead";
 import TableHeadCol from "../../Components/CustomTable/TableHeadCol";
 import TableRow from "../../Components/CustomTable/TableRow";
+import { getPrefix } from "../../Helpers/functions";
 import ToolsColColor from "./ToolsColColor";
 
 const ToolsTabs = ({
@@ -52,8 +53,11 @@ const ToolsTabs = ({
     });
     console.log(flatsDetails);
   };
-  useEffect(() => {}, [refresh]);
+  useEffect(() => { 
+    console.log('refresh')
+  }, [refresh]);
   const selectAll = (e, index, count, direction) => {
+    console.log(index, count, direction)
     const { tabName } = selectedTab;
     if (e.target.checked) {
       if (direction === "vertical") {
@@ -72,13 +76,13 @@ const ToolsTabs = ({
     } else {
       removeFromColor(index, count, direction, tabName);
     }
-    setRefresh((p) => direction);
+    setRefresh((p) => !p);
   };
   const displayTable = (tab) => {
     const { tabName } = tab;
+    let prefix = getPrefix(tabName)
     let xCount = row[tab?.x];
-    let yCount = row[tab?.y];
-    console.log(xCount, yCount);
+    let yCount = tab?.y? row[tab?.y] : row[tab?.x];
     return (
       <>
         <TableHead classes="!bg-[#0099a5] text-white">
@@ -93,11 +97,13 @@ const ToolsTabs = ({
                 classes="border border-gray-400 min-w-[90px] !py-2 text-sm !px-2"
               >
                 <div className="flex gap-1 justify-between items-center">
-                  {canInsertColor ? (
+                  {canInsertColor && tab?.y !== '' ? (
                     <Checkbox
                       name={tabName}
                       className="mr-2 !ml-0"
-                      onChange={(e) => selectAll(e, indexY, yCount, "vertical")}
+                      onChange={(e) => {
+                        selectAll(e, indexY, yCount, "vertical")
+                      }}
                     />
                   ) : null}
                   0{indexY + 1}
@@ -105,9 +111,8 @@ const ToolsTabs = ({
               </TableHeadCol>
             ))}
         </TableHead>
-
         <TableBody>
-          {Array(yCount)
+          {tab?.y !== '' ? Array(xCount)
             .fill(0)
             .map((r, indexX) => (
               <TableRow key={`${r}-${indexX}`}>
@@ -122,31 +127,61 @@ const ToolsTabs = ({
                 {Array(yCount)
                   .fill(0)
                   .map((r, indexY) => (
-                    <>
-                      <ToolsColColor
-                        item={{}}
-                        // item={col}
-                        key={`${indexY}-${row}`}
-                        itemHash={`${tabName}-${indexX + 1}0${indexY + 1}`}
-                        tabName={tabName}
-                        apartmentNumber={`${tabName[0]} ${indexX + 1}0${
-                          indexY + 1
+                    <ToolsColColor
+                      key={`${indexY}-${row}`}
+                      itemHash={`${tabName}-${indexX + 1}0${indexY + 1}`}
+                      tabName={tabName}
+                      apartmentNumber={`${prefix} ${indexX + 1}0${indexY + 1
                         }`}
-                        defaultInsertColor={defaultInsertColor}
-                        CACHE_APARTMENTS={CACHE_APARTMENTS}
-                        isUpdatable={isUpdatable}
-                        changeApartmentName={changeApartmentName}
-                        insertColor={insertColor}
-                        canInsertColor={canInsertColor}
-                        setIsUpdatable={setIsUpdatable}
-                        CACHE_LIST_COLORS={CACHE_LIST_COLORS}
-                        flatsDetails={flatsDetails}
-                        removeOneItemColor={removeOneItemColor}
-                      />
-                    </>
+                      defaultInsertColor={defaultInsertColor}
+                      CACHE_APARTMENTS={CACHE_APARTMENTS}
+                      isUpdatable={isUpdatable}
+                      changeApartmentName={changeApartmentName}
+                      insertColor={insertColor}
+                      canInsertColor={canInsertColor}
+                      setIsUpdatable={setIsUpdatable}
+                      CACHE_LIST_COLORS={CACHE_LIST_COLORS}
+                      flatsDetails={flatsDetails}
+                      removeOneItemColor={removeOneItemColor}
+                    />
                   ))}
               </TableRow>
-            ))}
+            )) : (
+            <TableRow>
+              {canInsertColor ? (
+                <TableCol classes="!p-0 !px-2  border border-gray-400">
+                  <Checkbox
+                    name={tabName}
+                    onChange={(e) => selectAll(e, 0 , xCount)}
+                  />
+                </TableCol>
+              ) : null}
+              {
+                Array(xCount)
+                  .fill(0)
+                  .map((r, indexX) => (
+                    <ToolsColColor
+                      key={`${0}-${row}`}
+                      itemHash={`${tabName}-${0 + 1}0${indexX + 1}`}
+                      tabName={tabName}
+                      apartmentNumber={`${prefix} ${0 + 1}0${indexX + 1}`}
+                      defaultInsertColor={defaultInsertColor}
+                      CACHE_APARTMENTS={CACHE_APARTMENTS}
+                      isUpdatable={isUpdatable}
+                      changeApartmentName={changeApartmentName}
+                      insertColor={insertColor}
+                      canInsertColor={canInsertColor}
+                      setIsUpdatable={setIsUpdatable}
+                      CACHE_LIST_COLORS={CACHE_LIST_COLORS}
+                      flatsDetails={flatsDetails}
+                      removeOneItemColor={removeOneItemColor}
+                    />
+
+                  ))
+
+              }
+            </TableRow>
+          )}
         </TableBody>
       </>
     );
@@ -158,11 +193,10 @@ const ToolsTabs = ({
           <button
             onClick={() => setSelectedTab(tab)}
             key={`${index}-${tab?.tabName}`}
-            className={`${
-              selectedTab?.tabName === tab?.tabName
-                ? "!text-black !font-medium dark:bg-borderdark dark:text-white bg-white"
-                : ""
-            } border p-2 px-4 text-sm text-gray-500 font-normal flex-1 capitalize whitespace-nowrap`}
+            className={`${selectedTab?.tabName === tab?.tabName
+              ? "!text-black !font-medium dark:bg-borderdark dark:text-white bg-white"
+              : ""
+              } border p-2 px-4 text-sm text-gray-500 font-normal flex-1 capitalize whitespace-nowrap`}
           >
             {tab?.tabName}
           </button>

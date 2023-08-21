@@ -180,6 +180,15 @@ export const generateApartments = async (data, guid) => {
   }
 };
 
+export const getPrefix = (tab) => {
+  let tabSplit = tab?.split(' ');
+  console.log(tab, tabSplit)
+  if (tabSplit?.length > 1)
+    return `${tabSplit?.[0]?.[0]}${tabSplit?.[1]?.[0]?.toUpperCase()}`;
+  else
+    return tab[0];
+}
+
 // export const apartmentsOperations = async (yCount, xCount, Guid) => {
 //   for (let index = 0; index < xCount; index++) {
 //     for (let j = 0; j < yCount; j++) {

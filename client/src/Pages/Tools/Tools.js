@@ -9,7 +9,7 @@ import TableForm from "../../Components/Forms/TableForm/TableForm";
 import { Button } from "../../Components/Global/Button";
 import ContentBar from "../../Components/Global/ContentBar/ContentBar";
 import formsApi from "../../Helpers/Forms/formsApi";
-import { generateApartments, getValueOfInputColor, hexToDecimal } from "../../Helpers/functions";
+import { generateApartments, getPrefix, getValueOfInputColor, hexToDecimal } from "../../Helpers/functions";
 import { CloseIcon, LockIcon, NotAllowIcon, PlusIcon } from "../../Helpers/Icons";
 import MinusIcon from "../../Helpers/Icons/MinusIcon";
 import Loading from "./../../Components/Loading/Loading";
@@ -188,8 +188,10 @@ const Tools = () => {
   };
   console.log(CACHE_UPDATES_Apartments)
   const insertColor = (tabName, itemHash) => {
+    let prefix = getPrefix(tabName);
+    console.log(prefix, tabName)
     let hash = itemHash?.split("-");
-    let NoValue = `${tabName[0]} ${hash[1]}`;
+    let NoValue = `${prefix} ${hash[1]}`;
     let uniqueHash = `${itemHash}&${tabName}`;
     let additionalValues = {}
     CACHE_UPDATES_Apartments[uniqueHash] = uniqueHash
@@ -232,16 +234,20 @@ const Tools = () => {
   };
   const removeOneItemColor = useCallback(
     (tabName, itemHash) => {
+      console.log(`${itemHash}&${tabName}`)
       let newList = flatsDetails;
       if (!!newList[`${itemHash}&${tabName}`])
         newList[`${itemHash}&${tabName}`].FlatBuildingDetailsIndex = null;
       setFlatsDetails(newList);
+
+      console.log(newList)
       setRefresh((p) => !p);
     },
     [flatsDetails]
   );
   const removeFromColor = useCallback(
     (index, count, direction, tabName) => {
+      console.log(index, count, direction, tabName)
       if (direction === "vertical") {
         for (let i = 0; i < count; i++) {
           let itemHash = `${tabName}-${i + 1}0${index + 1}`;
@@ -250,6 +256,7 @@ const Tools = () => {
       } else {
         for (let i = 0; i < count; i++) {
           let itemHash = `${tabName}-${index + 1}0${i + 1}`;
+          console.log(itemHash, tabName)
           removeOneItemColor(tabName, itemHash);
         }
       }
@@ -259,7 +266,7 @@ const Tools = () => {
     [removeOneItemColor]
   );
   const onSubmit = async () => {
-    // setLoading(true)
+    setLoading(true)
     let newColoringList = {}
     console.log('----', CACHE_LIST_COLORS)
 
@@ -298,7 +305,7 @@ const Tools = () => {
       if (data?.SalePrice3) delete data.SalePrice3;
       if (data?.Count) delete data.Count;
       console.log(tabName)
-      if (tabName?.toLowerCase()?.includes('parking')  || tabName?.toLowerCase()?.includes('shop')) {
+      if (tabName?.toLowerCase()?.includes('parking') || tabName?.toLowerCase()?.includes('shop')) {
         if (data?.BathroomCount) delete data?.BathroomCount
         if (data?.FlatKind) delete data?.FlatKind
         if (data?.Class) delete data?.Class
@@ -318,10 +325,15 @@ const Tools = () => {
         colors: !!newColoringList ? Object.values(newColoringList) : [],
       })
       .then((res) => {
-        setLoading(false)
+        CACHE_LIST_COLORS = {};
+        CACHE_APARTMENTS = {};
         getColoring()
+        findList('apartment');
+        findList('shop');
+        findList('parking');
         console.log("res", res);
       });
+      setLoading(false);
   };
 
   return (
@@ -364,30 +376,6 @@ const Tools = () => {
         </ContentBar>
       }
     >
-      {/* <div className="flex flex-wrap gap-1">
-        {!!CACHE_LIST_COLORS
-          ? Object.entries(CACHE_LIST_COLORS)?.map(([key, value]) => (
-              <>
-                {value?.Color ? (
-                  <button
-                    onClick={() => onSelectColor(key)}
-                    className={`h-7 min-w-[50px] ${
-                      selectedColor === key
-                        ? "rounded-3xl border-2 border-gray-50"
-                        : ""
-                    } `}
-                    style={{
-                      background:
-                        typeof value?.Color === "number"
-                          ? getValueOfInputColor(value?.Color)
-                          : value?.Color,
-                    }}
-                  ></button>
-                ) : null}
-              </>
-            ))
-          : null}
-      </div> */}
       {
         loading ? (
           <Loading withBackdrop />
