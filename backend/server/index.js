@@ -22,6 +22,10 @@ const sqlConfig = {
   database: "master",
   user: "admin",
   password: "Aa123456",
+  options: {
+    instanceName: "MSSQLSERVER",
+    trustServerCertificate: true,
+  },
 };
 
 app.use(cors());
