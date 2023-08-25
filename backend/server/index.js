@@ -5,15 +5,23 @@ const bcrypt = require("bcrypt");
 
 const cors = require("cors");
 
+// const sqlConfig = {
+//   user: "ayman",
+//   password: "123456",
+//   database: "Matiestate",
+//   server: "DESKTOP-VPIP642",
+//   options: {
+//     instanceName: "MSSQLSERVER",
+//     trustServerCertificate: true,
+//   },
+// };
+
 const sqlConfig = {
-  user: "ayman",
-  password: "123456",
-  database: "Matiestate",
-  server: "DESKTOP-VPIP642",
-  options: {
-    instanceName: "MSSQLSERVER",
-    trustServerCertificate: true,
-  },
+  host: "mssql-141730-0.cloudclusters.net",
+  port: 19762,
+  database: "master",
+  user: "admin",
+  password: "Aa123456",
 };
 
 app.use(cors());
