@@ -17,13 +17,13 @@ const cors = require("cors");
 // };
 
 const sqlConfig = {
-  host: "mssql-141730-0.cloudclusters.net",
+  server: "mssql-141730-0.cloudclusters.net",
   port: 19762,
   database: "master",
   user: "admin",
   password: "Aa123456",
   options: {
-    instanceName: "MSSQLSERVER",
+    // instanceName: 'MSSQLSERVER',
     trustServerCertificate: true,
   },
 };
