@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const SERVER_URL = `https://matiestate-server.vercel.app/`;
+// export const SERVER_URL = `https://matiestate-server.vercel.app/`;
+export const SERVER_URL = `https://matiestate-server.vercel.app`;
 
 export function exitFullscreen() {
   if (document.exitFullscreen) {
