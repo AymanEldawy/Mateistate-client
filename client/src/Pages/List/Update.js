@@ -10,7 +10,7 @@ import SuperForm from "../../Components/CustomForm/SuperForm";
 import FormHeadingTitleSteps from "../../Components/Global/FormHeadingTitleSteps";
 import { AlertContext } from "../../Context/AlertContext";
 import formsApi from "../../Helpers/Forms/formsApi";
-import { generateApartments } from "../../Helpers/functions";
+import { SERVER_URL, generateApartments } from "../../Helpers/functions";
 import Layout from "../../Layout";
 
 function getForm(form) {
@@ -64,7 +64,7 @@ const Update = () => {
       num: id,
     };
 
-    let res = await axios.post(`/update`, {
+    let res = await axios.post(`${SERVER_URL}/update`, {
       ...body,
     });
     if (res?.statusText === "OK") {

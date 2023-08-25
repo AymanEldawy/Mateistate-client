@@ -11,6 +11,7 @@ import FormHeadingTitleSteps from "../../Components/Global/FormHeadingTitleSteps
 import { AlertContext } from "../../Context/AlertContext";
 import formsApi from "../../Helpers/Forms/formsApi";
 // import { checkApartments, generateApartments } from "../../Helpers/functions";
+import { SERVER_URL } from "./../../Helpers/functions";
 
 // Cache apartments
 const REQUIRED_COLUMNS_TO_CACHE = {
@@ -97,7 +98,7 @@ const UpdateBuilding = () => {
       num: id,
     };
 
-    // let res = await axios.post(`/update`, {
+    // let res = await axios.post(`${SERVER_URL}/update`, {
     //   ...body,
     // });
 

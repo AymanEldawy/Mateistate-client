@@ -1,4 +1,5 @@
 import axios from "axios";
+import { SERVER_URL } from "./functions";
 
 export function exitFullscreen() {
   if (document.exitFullscreen) {
@@ -75,7 +76,7 @@ export const decimalToHex = (dec) =>
   (dec + Math.pow(16, 6)).toString(16).substr(-6);
 
 const insertIntoApartments = async (Guid, No, FloorNo) => {
-  let res = await axios.post(`/createApartments`, {
+  let res = await axios.post(`${SERVER_URL}/createApartments`, {
     BuildingGuid: Guid,
     No,
     FloorNo,

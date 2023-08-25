@@ -6,6 +6,7 @@ import { ListsGuidsContext } from "../../Context/ListsGuidsContext";
 import { PopupFormContext } from "../../Context/PopupFormContext";
 import { PlusIcon } from "../../Helpers/Icons";
 import { AlertContext } from "../../Context/AlertContext";
+import { SERVER_URL } from "../../Helpers/functions";
 const Field = ({
   table,
   tableForHashed,
@@ -36,7 +37,7 @@ const Field = ({
       async function fetch() {
         // console.log("tesseting");
         return await axios
-          .post(`/list`, {
+          .post(`${SERVER_URL}/list`, {
             table: table,
           })
           .then((res) => {

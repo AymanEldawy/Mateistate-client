@@ -9,6 +9,7 @@ import formsApi from "../../Helpers/Forms/formsApi";
 import SuperForm from "../CustomForm/SuperForm";
 import FormHeadingTitle from "../Global/FormHeadingTitle";
 import Modal from "../Modal/Modal";
+import { SERVER_URL } from "../../Helpers/functions";
 
 const PopupForm = () => {
   const { openForm, dispatchForm } = useContext(PopupFormContext);
@@ -22,7 +23,7 @@ const PopupForm = () => {
       columns: Object.keys(values),
       table,
     };
-    let res = await axios.post(`/create`, {
+    let res = await axios.post(`${SERVER_URL}/create`, {
       ...body,
     });
     if (res?.statusText === "OK") {

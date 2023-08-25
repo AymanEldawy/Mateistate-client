@@ -16,7 +16,7 @@ import { TableBar } from "../../Components/TableBar/TableBar";
 import { AlertContext } from "../../Context/AlertContext";
 import { ListsGuidsContext } from "../../Context/ListsGuidsContext";
 import formsApi from "../../Helpers/Forms/formsApi";
-import { generateApartments } from "../../Helpers/functions";
+import { SERVER_URL, generateApartments } from "../../Helpers/functions";
 
 function getForm(form) {
   return formsApi[form];
@@ -137,7 +137,7 @@ const List = () => {
       columns: Object.keys(values),
       table: name,
     };
-    let res = await axios.post(`/create`, {
+    let res = await axios.post(`${SERVER_URL}/create`, {
       ...body,
     });
     console.log(res);

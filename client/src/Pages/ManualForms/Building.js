@@ -14,6 +14,7 @@ import { useCallback } from "react";
 import axios from "axios";
 import { AlertContext } from "../../Context/AlertContext";
 import FormHeadingTitleSteps from "../../Components/Global/FormHeadingTitleSteps";
+import { SERVER_URL } from "../../Helpers/functions";
 
 const Building = () => {
   const params = useParams();
@@ -38,9 +39,9 @@ const Building = () => {
     let body = {
       dat: values,
       columns: Object.keys(values),
-      table: name || 'Building',
+      table: name || "Building",
     };
-    let res = await axios.post(`/create`, {
+    let res = await axios.post(`${SERVER_URL}/create`, {
       ...body,
     });
     if (res?.statusText === "OK") {

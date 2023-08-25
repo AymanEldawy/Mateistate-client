@@ -8,6 +8,7 @@ import Field from "../../CustomForm/Field";
 import InputField from "../../CustomForm/InputField";
 import TestEntryFormTable from "./TestEntryFormTable";
 import Loading from "../../Loading/Loading";
+import { SERVER_URL } from "../../../Helpers/functions";
 
 const columns = {
   Credit: "",
@@ -306,7 +307,7 @@ const TestEntry = () => {
         delete data["Number"];
         body["dat"] = data;
         body["columns"] = Object.keys(data);
-        let res = await axios.post(`/updateEntryParent`, {
+        let res = await axios.post(`${SERVER_URL}/updateEntryParent`, {
           ...body,
         });
         if (res?.statusText === "OK") {
@@ -327,7 +328,7 @@ const TestEntry = () => {
         delete data["Number"];
         body["dat"] = data;
         body["columns"] = Object.keys(data);
-        let res = await axios.post(`/createEntryParent`, {
+        let res = await axios.post(`${SERVER_URL}/createEntryParent`, {
           ...body,
         });
         if (res?.statusText === "OK") {

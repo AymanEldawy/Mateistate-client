@@ -13,6 +13,7 @@ import Modal from "../../Components/Modal/Modal";
 import { AlertContext } from "../../Context/AlertContext";
 import { ListsGuidsContext } from "../../Context/ListsGuidsContext";
 import formsApi from "../../Helpers/Forms/formsApi";
+import { SERVER_URL } from "../../Helpers/functions";
 
 const CACHE_LIST = {};
 const getCachedList = (tableName) => {
@@ -47,7 +48,7 @@ const ContractType = () => {
       columns: Object.keys(allValues),
       table: "LeaseApartment",
     };
-    let res = await axios.post(`/create`, {
+    let res = await axios.post(`${SERVER_URL}/create`, {
       ...body,
     });
     // if (res?.statusText === "OK") {

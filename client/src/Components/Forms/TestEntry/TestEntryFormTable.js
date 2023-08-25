@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { ListsGuidsContext } from "../../../Context/ListsGuidsContext";
 import axios from "axios";
+import { SERVER_URL } from "../../../Helpers/functions";
 const CACHE_LIST = {};
 const TestEntryFormTable = ({
   handelChangeEntriesField,
@@ -26,7 +27,7 @@ const TestEntryFormTable = ({
     async function fetch(table) {
       if (lists[table]) return;
       return await axios
-        .post(`/list`, {
+        .post(`${SERVER_URL}/list`, {
           table: table,
         })
         .then((res) => {

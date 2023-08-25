@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import BlockPaper from "../../Components/BlockPaper/BlockPaper";
 import RenderTree from "../../Components/RenderTree/RenderTree";
 import { AlertContext } from "../../Context/AlertContext";
+import { SERVER_URL } from "../../Helpers/functions";
 
 function toTree(data, pid = null) {
   return data?.reduce((r, e) => {
@@ -25,7 +26,7 @@ const Chart = () => {
   const [chartTree, setChartTree] = useState();
   const params = useParams();
   const { name } = params;
-  const {dispatchAlert} = useContext(AlertContext)
+  const { dispatchAlert } = useContext(AlertContext);
   const getData = async () => {
     setLoading(true);
     await axios
@@ -60,7 +61,7 @@ const Chart = () => {
       columns: Object.keys(values),
       table: name,
     };
-    let res = await axios.post(`/create`, {
+    let res = await axios.post(`${SERVER_URL}/create`, {
       ...body,
     });
     if (res?.statusText === "OK") {

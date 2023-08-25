@@ -1,5 +1,7 @@
 import axios from "axios";
 
+export const SERVER_URL = `https://matiestate-server.vercel.app/`;
+
 export function exitFullscreen() {
   if (document.exitFullscreen) {
     document.exitFullscreen();
@@ -113,10 +115,10 @@ const insertIntoApartments = async (tabName, data, guid) => {
       values.push(data[key]);
     }
   }
-  columns.push('BuildingGuid')
-  values.push(guid)
+  columns.push("BuildingGuid");
+  values.push(guid);
   console.log(columns, values);
-  let res = await axios.post(`/createNewApartments`, {
+  let res = await axios.post(`${SERVER_URL}/createNewApartments`, {
     table,
     columns: columns,
     values: values,
@@ -167,10 +169,10 @@ export const generateApartments = async (data, guid) => {
           values.push(row[key]);
         }
       }
-      columns.push('BuildingGuid')
-      values.push(guid)
+      columns.push("BuildingGuid");
+      values.push(guid);
       console.log(columns, values);
-      await axios.post(`/createNewApartments`, {
+      await axios.post(`${SERVER_URL}/createNewApartments`, {
         table,
         columns: columns,
         values: values,
@@ -181,13 +183,12 @@ export const generateApartments = async (data, guid) => {
 };
 
 export const getPrefix = (tab) => {
-  let tabSplit = tab?.split(' ');
-  console.log(tab, tabSplit)
+  let tabSplit = tab?.split(" ");
+  console.log(tab, tabSplit);
   if (tabSplit?.length > 1)
     return `${tabSplit?.[0]?.[0]}${tabSplit?.[1]?.[0]?.toUpperCase()}`;
-  else
-    return tab[0];
-}
+  else return tab[0];
+};
 
 // export const apartmentsOperations = async (yCount, xCount, Guid) => {
 //   for (let index = 0; index < xCount; index++) {

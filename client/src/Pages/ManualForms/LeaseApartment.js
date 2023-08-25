@@ -17,6 +17,7 @@ import { TableBar } from "../../Components/TableBar/TableBar";
 import { AlertContext } from "../../Context/AlertContext";
 import formsApi from "../../Helpers/Forms/formsApi";
 import Layout from "../../Layout";
+import { SERVER_URL } from "../../Helpers/functions";
 
 const LeaseApartment = () => {
   const params = useParams();
@@ -98,7 +99,7 @@ const LeaseApartment = () => {
         columns: Object.keys(allValues),
         table: "LeaseApartment",
       };
-      let res = await axios.post(`/create`, {
+      let res = await axios.post(`${SERVER_URL}/create`, {
         ...body,
       });
     }
