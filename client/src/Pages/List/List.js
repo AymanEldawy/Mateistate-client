@@ -82,39 +82,49 @@ const List = () => {
       });
   };
   const getRefData = async () => {
-    await axios
-      .post(`/checkref`, {
-        table: name,
-      })
-      .then((res) => {
-        let data = res?.data?.recordset;
-        if (data) {
-          let collect = {};
-          for (const item of data) {
-            if (item?.reffedTables !== name) {
-              getLists(item?.Referenced_Table);
-            } else {
-              CACHE_LIST[name] = data;
+    try {
+      await axios
+        .post(`/checkref`, {
+          table: name,
+        })
+        .then((res) => {
+          let data = res?.data?.recordset;
+          if (data) {
+            let collect = {};
+            for (const item of data) {
+              if (item?.reffedTables !== name) {
+                getLists(item?.Referenced_Table);
+              } else {
+                CACHE_LIST[name] = data;
+              }
+              collect[item?.Column] = item?.Referenced_Table;
             }
-            collect[item?.Column] = item?.Referenced_Table;
+            setReffedTables(collect);
           }
-          setReffedTables(collect);
-        }
-      });
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getData = async () => {
+    console.log("called");
     setLoading(true);
-    await axios
-      .post(`/list`, {
+    try {
+      const response = await axios.post(`/list`, {
         table: name,
-      })
-      .then((res) => {
-        setLoading(false);
-        console.log(res);
-        setData(res?.data?.recordset);
       });
-    setLoading(false);
+
+      console.log("======");
+      console.log(response.data, "======");
+
+      if (response.status === 200) {
+        setLoading(false);
+        setData(response.data.recordset);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -141,7 +151,7 @@ const List = () => {
       ...body,
     });
     console.log(res);
-    if (res?.statusText === "OK") {
+    if (res?.status === 200) {
       dispatchAlert({
         open: true,
         type: "success",
@@ -175,7 +185,7 @@ const List = () => {
   );
 
   const goNext = useCallback(() => {
-    let index = steps.indexOf(activeStage);
+    let index = steps?.indexOf(activeStage);
     if (index !== steps?.length) {
       setActiveStage(steps?.[index + 1]);
       setFields(forms[steps?.[index + 1]]);
@@ -183,13 +193,12 @@ const List = () => {
   }, [fields, activeStage]);
 
   const goBack = useCallback(() => {
-    let index = steps.indexOf(activeStage);
+    let index = steps?.indexOf(activeStage);
     if (index > 0) {
       setActiveStage(steps?.[index - 1]);
       setFields(forms[steps?.[index - 1]]);
     } else return;
   }, [fields, activeStage]);
-
   return (
     <>
       <ConfirmModal

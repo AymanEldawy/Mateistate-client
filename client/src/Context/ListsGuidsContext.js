@@ -31,13 +31,19 @@ export const ListsGuidsProvider = ({ children }) => {
   };
 
   const getGuidName = (table, guid) => {
+    if (!guid) return;
+    console.log(
+      "🚀 ~ file: ListsGuidsContext.js:34 ~ getGuidName ~ table:",
+      table,
+      guid
+    );
     if (!guidListCached[guid]) {
       if (lists[table]) {
         lists?.[table]?.forEach((item) => {
           guidListCached[item?.Guid] = item?.Name;
         });
       } else {
-        getTableData(table, addTableList)
+        getTableData(table, addTableList);
       }
     }
     return guidListCached[guid] || "";

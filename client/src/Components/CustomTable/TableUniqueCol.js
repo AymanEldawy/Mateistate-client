@@ -7,7 +7,7 @@ import { ListsGuidsContext } from "../../Context/ListsGuidsContext";
 const TableUniqueCol = ({ col, val, row, scope, reffedTables, classes }) => {
   const { guidListCached, getGuidName } = useContext(ListsGuidsContext);
   // useEffect(() => {
-
+  console.log(col, val, row);
   // }, [val])
   // let v = useMemo(() => {
   //   return ;
@@ -19,10 +19,12 @@ const TableUniqueCol = ({ col, val, row, scope, reffedTables, classes }) => {
         to={`/update/${reffedTables?.[col]}/${val}`}
         state={{ row, table: reffedTables?.[col] }}
       >
-        {guidListCached[col] || getGuidName(reffedTables?.[col], val)}
+        {val
+          ? guidListCached[col] || getGuidName(reffedTables?.[col], val)
+          : null}
       </Link>
     </td>
   );
 };
 
-export default TableUniqueCol //memo();
+export default TableUniqueCol; //memo();
