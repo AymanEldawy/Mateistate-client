@@ -110,10 +110,9 @@ const List = () => {
       table: name,
     });
     if (res?.status === 200) {
-      setLoading(false);
       setData(res?.data?.recordset);
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
