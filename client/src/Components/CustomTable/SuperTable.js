@@ -40,19 +40,19 @@ const SuperTable = ({
 
   useEffect(() => {
     // Needed more work
-    console.log('un...')
+    console.log("un...");
     console.log(itemOffset, itemsPerPage);
     const endOffset = itemOffset + parseInt(itemsPerPage);
     setCurrentItems(filterList?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(filterList?.length / parseInt(itemsPerPage)));
   }, [filterList, itemsPerPage, itemOffset]);
 
-  useEffect(() => { }, [refresh]);
+  useEffect(() => {}, [refresh]);
 
   useEffect(() => {
-    console.log('run..')
+    console.log("run..");
     if (searchValue) {
-      console.log('run..233')
+      console.log("run..233");
       let newList = [];
       for (const col of columns) {
         for (const item of data) {
@@ -79,7 +79,7 @@ const SuperTable = ({
       setFilterList(data);
       setCurrentItems(data?.slice(0, itemsPerPage));
     }
-  }, [searchValue, data, ]);
+  }, [searchValue, data]);
 
   useEffect(() => {
     console.log("rendering");
@@ -168,8 +168,9 @@ const SuperTable = ({
             return (
               <TableRow
                 key={`${row?.Name}-${index}`}
-                classes={`border-b dark:border-borderdark whitespace-nowrap ${!!selectedList[row?.Guid] ? "bg-gray-100 dark:bg-[#1115]" : ""
-                  }`}
+                classes={`border-b dark:border-borderdark whitespace-nowrap ${
+                  !!selectedList[row?.Guid] ? "bg-gray-100 dark:bg-[#1115]" : ""
+                }`}
               >
                 {allowSelect ? (
                   <TableCol>
@@ -241,7 +242,7 @@ const SuperTable = ({
           })}
         </TableBody>
       </Table>
-      {currentItems.length ? (
+      {currentItems?.length ? (
         <>
           <ReactPaginate
             breakLabel="..."

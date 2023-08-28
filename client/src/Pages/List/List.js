@@ -82,48 +82,37 @@ const List = () => {
       });
   };
   const getRefData = async () => {
-    try {
-      await axios
-        .post(`/checkref`, {
-          table: name,
-        })
-        .then((res) => {
-          let data = res?.data?.recordset;
-          if (data) {
-            let collect = {};
-            for (const item of data) {
-              if (item?.reffedTables !== name) {
-                getLists(item?.Referenced_Table);
-              } else {
-                CACHE_LIST[name] = data;
-              }
-              collect[item?.Column] = item?.Referenced_Table;
+    await axios
+      .post(`/checkref`, {
+        table: name,
+      })
+      .then((res) => {
+        let data = res?.data?.recordset;
+        if (data) {
+          let collect = {};
+          for (const item of data) {
+            if (item?.reffedTables !== name) {
+              getLists(item?.Referenced_Table);
+            } else {
+              CACHE_LIST[name] = data;
             }
-            setReffedTables(collect);
+            collect[item?.Column] = item?.Referenced_Table;
           }
-        });
-    } catch (error) {
-      console.log(error);
-    }
+          setReffedTables(collect);
+        }
+      });
   };
 
   const getData = async () => {
     console.log("called");
     setLoading(true);
-    try {
-      const response = await axios.post(`/list`, {
-        table: name,
-      });
-
-      console.log("======");
-      console.log(response.data, "======");
-
-      if (response.status === 200) {
-        setLoading(false);
-        setData(response.data.recordset);
-      }
-    } catch (error) {
-      console.log(error);
+    const res = await axios.post(`/list`, {
+      table: name,
+    });
+    if (res?.status === 200) {
+      setLoading(false);
+      setData(res?.data?.recordset);
+      setLoading(false);
     }
   };
 
@@ -151,7 +140,7 @@ const List = () => {
       ...body,
     });
     console.log(res);
-    if (res?.status === 200) {
+    if (res?.statusText === "OK") {
       dispatchAlert({
         open: true,
         type: "success",
@@ -199,6 +188,8 @@ const List = () => {
       setFields(forms[steps?.[index - 1]]);
     } else return;
   }, [fields, activeStage]);
+
+  console.log(data);
   return (
     <>
       <ConfirmModal
