@@ -1,5 +1,17 @@
 {
   "dashboard": "ادارة التحكم",
+  "add_new": "أضافة جديد",
+  "Number_rows": "عدد الصفوف",
+  "search": "بحث",
+  "search_in": "بحث في ",
+  "Add": "أضافة",
+  "Edit": "تعديل",
+  "Delete": "حذف",
+  "chart": "",
+  "confirm_delete": " هل انت متاكد انك تريد حذف؟",
+  "warning": "تحذير:",
+  "cancel": "ألغاء",
+  "yes": "موافق",
 
   "Number": "",
   "SecLvl": "",

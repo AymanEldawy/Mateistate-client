@@ -7,6 +7,7 @@ import BlockPaper from "../../Components/BlockPaper/BlockPaper";
 import RenderTree from "../../Components/RenderTree/RenderTree";
 import { AlertContext } from "../../Context/AlertContext";
 import { SERVER_URL } from "../../Helpers/functions";
+import { useTranslation } from "react-i18next";
 
 function toTree(data, pid = null) {
   return data?.reduce((r, e) => {
@@ -21,6 +22,7 @@ function toTree(data, pid = null) {
 }
 
 const Chart = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [chartTree, setChartTree] = useState();
@@ -76,7 +78,7 @@ const Chart = () => {
   };
 
   return (
-    <BlockPaper title="Chart">
+    <BlockPaper title={t("chart")}>
       {!loading ? (
         <RenderTree
           chartTree={chartTree}

@@ -18,6 +18,7 @@ import { AlertContext } from "../../Context/AlertContext";
 import { ListsGuidsContext } from "../../Context/ListsGuidsContext";
 import formsApi from "../../Helpers/Forms/formsApi";
 import { SERVER_URL, generateApartments } from "../../Helpers/functions";
+import Loading from "./../../Components/Loading/Loading";
 
 function getForm(form) {
   return formsApi[form];
@@ -264,6 +265,7 @@ const List = () => {
             searchValue={searchValue}
             selectedList={selectedList}
             setSelectedList={setSelectedList}
+            loading={loading}
           />
         ) : null}
       </BlockPaper>

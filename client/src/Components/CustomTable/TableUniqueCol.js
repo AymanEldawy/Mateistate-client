@@ -7,7 +7,6 @@ import { ListsGuidsContext } from "../../Context/ListsGuidsContext";
 const TableUniqueCol = ({ col, val, row, scope, reffedTables, classes }) => {
   const { guidListCached, getGuidName } = useContext(ListsGuidsContext);
   // useEffect(() => {
-  console.log(col, val, row);
   // }, [val])
   // let v = useMemo(() => {
   //   return ;

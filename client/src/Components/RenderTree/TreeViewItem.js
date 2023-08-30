@@ -4,6 +4,7 @@ import { EditIcon, PlusIcon, TrashIcon } from "../../Helpers/Icons";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import { Button } from "../Global/Button";
 import Modal from "../Modal/Modal";
+import { useTranslation } from "react-i18next";
 
 const TreeViewItem = ({
   table,
@@ -13,6 +14,7 @@ const TreeViewItem = ({
   onSelectedItem,
   deleteItem,
 }) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const onDeleteItem = () => {
     deleteItem([row?.Guid]);
@@ -23,17 +25,17 @@ const TreeViewItem = ({
     <>
       <ConfirmModal onConfirm={onDeleteItem} open={open} setOpen={setOpen} />
       <div onClick={toggleOpen} className="flex capitalize cursor-pointer">
-        <div className="group options flex pl-8 min-w-[190px] hover:text-black dark:hover:text-white dark:hover:bg-bgmaindark dark:hover:border-borderdark hover:bg-gray-100 border-transparent rounded border hover:border-gray-300">
+        <div className="group options flex ltr:pl-8 rtl:pr-8 min-w-[190px] hover:text-black dark:hover:text-white dark:hover:bg-bgmaindark dark:hover:border-borderdark hover:bg-gray-100 border-transparent rounded border hover:border-gray-300">
           <button className="scale-75">{icon}</button>
-          {row?.Name}
-          <span className="ml-8" />
+          <span className="mx-2">{row?.Name}</span>
+          <span className="ltr:ml-8 rtl:mr-8" />
           <button
             onClick={(e) => {
               e.stopPropagation();
               onSelectedItem();
             }}
-            className="tooltip text-transparent group-hover:text-blue-600 rounded-ful  ml-auto rtl:mr-auto"
-            data-title="Add"
+            className="tooltip text-transparent group-hover:text-blue-600 rounded-full"
+            data-title={t("Add")}
           >
             <span className="scale-75 block">
               <PlusIcon circle />
@@ -41,7 +43,7 @@ const TreeViewItem = ({
           </button>
           <Link
             className="tooltip text-transparent group-hover:text-green-500"
-            data-title="Edit"
+            data-title={t("Edit")}
             to={`/update/${table}/${row?.Guid}`}
             state={{ row, table }}
           >
@@ -51,7 +53,7 @@ const TreeViewItem = ({
           </Link>
           <button
             className="tooltip text-transparent group-hover:text-red-500"
-            data-title="Delete"
+            data-title={t("Delete")}
             onClick={() => setOpen(true)}
           >
             <span className="scale-90 block">

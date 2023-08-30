@@ -80,7 +80,6 @@ const TestEntry = () => {
   const getRows = async (Guid) => {
     setLoading(true);
     if (cashedEntries[Guid]) {
-      console.log("Cached entries");
       setEntries(cashedEntries[Guid]);
     } else {
       let newEntry = {};
@@ -112,7 +111,6 @@ const TestEntry = () => {
       })
       .then((res) => {
         let numbers = [];
-        console.log(res?.data?.recordset);
         let sortedSheet = res?.data?.recordset?.sort(
           (a, b) => a?.Number - b?.Number
         );
@@ -176,18 +174,14 @@ const TestEntry = () => {
 
   // steps
   const goNext = () => {
-    console.log(selectedRowNumber, numberOfRows?.length);
     if (selectedRowNumber < numberOfRows?.length - 1) {
-      console.log("goN");
       setReadOnlyValues(data[selectedRowNumber + 1]);
-      console.log(data[selectedRowNumber + 1]);
       getRows(numberOfRows[selectedRowNumber + 1]?.Guid);
       setSelectedRowNumber((prev) => prev + 1);
     }
   };
   const goBack = () => {
     if (selectedRowNumber > 0) {
-      console.log("goBack");
       setReadOnlyValues(data[selectedRowNumber - 1]);
       getRows(numberOfRows[selectedRowNumber - 1]?.Guid);
       setSelectedRowNumber((prev) => prev - 1);
@@ -195,7 +189,6 @@ const TestEntry = () => {
   };
 
   const handelChangeField = (name, value) => {
-    console.log(name, value);
     setReadOnlyValues((prev) => {
       return {
         ...prev,
@@ -243,7 +236,6 @@ const TestEntry = () => {
   };
 
   const handelChangeEntriesField = (index, name, value) => {
-    console.log(name, value);
     let checkToContinue = true;
     if (name === "AcGuid") {
       if (
@@ -257,7 +249,6 @@ const TestEntry = () => {
         cashedEntriesAcGuidValues[value] = index;
       }
     }
-    console.log(cashedEntriesAcGuidValues);
     // Insert grid
     setEntries((prev) => {
       return {

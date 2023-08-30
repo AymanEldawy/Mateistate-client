@@ -1,5 +1,20 @@
 {
   "dashboard": "dashboard",
+  "add_new": "Add new",
+
+  "Number_rows": "Number of rows: ",
+  "search": "search",
+  "search_in": "search in  ",
+
+  "Add": "Add",
+  "Edit": "Edit",
+  "Delete": "Delete",
+  "chart": "chart",
+  "confirm_delete": " Are you sure you want to delete?",
+  "warning": "warning",
+  "cancel": "cancel",
+  "yes": "yes",
+
   "Number": "Number",
   "SecLvl": "SecLvl",
   "Barcode": "Barcode",

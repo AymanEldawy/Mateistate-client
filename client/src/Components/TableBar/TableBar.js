@@ -5,15 +5,8 @@ import { ChevronIcon, TrashIcon } from "../../Helpers/Icons";
 import Backdrop from "../Backdrop/Backdrop";
 import SelectField from "../CustomForm/SelectField";
 import SearchBar from "../SearchBar/SearchBar";
+import { useTranslation } from "react-i18next";
 
-const itemsListPerPages = [
-  { id: "10", name: "Number of rows 10" },
-  { id: "20", name: "Number of rows 20" },
-  { id: "50", name: "Number of rows 50" },
-  { id: "100", name: "Number of rows 100" },
-  { id: "200", name: "Number of rows 200" },
-  { id: "500", name: "Number of rows 500" },
-];
 export const TableBar = ({
   onAddClick,
   onDeleteClick,
@@ -25,8 +18,17 @@ export const TableBar = ({
   columns,
   searchKey,
   setSearchKey,
-  selectedList
+  selectedList,
 }) => {
+  const { t } = useTranslation();
+  const itemsListPerPages = [
+    { id: "10", name: t("Number_rows") + " 10" },
+    { id: "20", name: t("Number_rows") + " 20" },
+    { id: "50", name: t("Number_rows") + " 50" },
+    { id: "100", name: t("Number_rows") + " 100" },
+    { id: "200", name: t("Number_rows") + " 200" },
+    { id: "500", name: t("Number_rows") + " 500" },
+  ];
   return (
     <div className="flex justify-between gap-2">
       <div className="flex gap-2 items-center">
@@ -52,7 +54,7 @@ export const TableBar = ({
           className="bg-blue-500 text-sm text-white rounded px-2 py-1 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
           onClick={onAddClick}
         >
-          add new
+          {t("add_new")}
         </button>
         <button
           className="bg-red-500 text-sm text-white rounded px-2 py-1 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300 disabled:bg-red-200"

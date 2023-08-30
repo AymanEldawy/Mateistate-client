@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { ChevronIcon, SearchIcon, FilterIcon } from "../../Helpers/Icons";
 import Backdrop from "../Backdrop/Backdrop";
+import { useTranslation } from "react-i18next";
 
 const SearchBar = ({
   value,
@@ -10,6 +11,7 @@ const SearchBar = ({
   searchKey,
   setSearchKey,
 }) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <div className="relative hidden md:block ">
@@ -33,7 +35,9 @@ const SearchBar = ({
         className={`block w-full p-2  text-sm rounded-md dark:text-white text-gray-900 border border-gray-300  bg-gray-100 active:ring-blue-200 focus-visible:ring-blue-200 focus:ring-blue-500 focus:border-blue-500 ${
           !!columns ? "pl-16" : "pl-10"
         }`}
-        placeholder={!!searchKey ? `Search in ${searchKey}` : "Search..."}
+        placeholder={
+          !!searchKey ? `${t("search_in")} ${searchKey}` : t("search")
+        }
         onChange={(e) => onSearchChange(e.target.value)}
       />
 

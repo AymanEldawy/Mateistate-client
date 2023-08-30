@@ -14,6 +14,7 @@ import TableHead from "./TableHead";
 import TableHeadCol from "./TableHeadCol";
 import TableRow from "./TableRow";
 import TableUniqueCol from "./TableUniqueCol";
+import { TableSkeleton } from "./TableSkeleton";
 
 let sorting = {};
 const SuperTable = ({
@@ -25,6 +26,7 @@ const SuperTable = ({
   selectedList,
   setSelectedList,
   table,
+  loading,
   // searchKey,
   reffedTables,
 }) => {
@@ -158,82 +160,96 @@ const SuperTable = ({
           ))}
         </TableHead>
         <TableBody>
-          {currentItems?.map((row, index) => {
-            return (
-              <TableRow
-                key={`${row?.Name}-${index}`}
-                classes={`border-b dark:border-borderdark whitespace-nowrap ${
-                  !!selectedList[row?.Guid] ? "bg-gray-100 dark:bg-[#1115]" : ""
-                }`}
-              >
-                {allowSelect ? (
-                  <TableCol>
-                    <input
-                      className="w-4 h-4"
-                      type="checkbox"
-                      checked={!!selectedList[row?.Guid]}
-                      onChange={() => handelSelect(row?.Guid)}
-                    />
-                  </TableCol>
-                ) : null}
-                <TableCol>
-                  <div className="flex gap-1">
-                    {table && table === "building" ? (
-                      <>
-                        <Link
-                          className="hover:underline text-blue-500 order-1"
-                          to={`/buildings/${row?.Name}/tools/${row?.Guid}`}
-                          state={{ row, table }}
-                        >
-                          <PaletteIcon />
-                        </Link>
-                      </>
+          {loading ? (
+            <TableSkeleton columns={columns} />
+          ) : (
+            <>
+              {currentItems?.map((row, index) => {
+                return (
+                  <TableRow
+                    key={`${row?.Name}-${index}`}
+                    classes={`border-b dark:border-borderdark whitespace-nowrap ${
+                      !!selectedList[row?.Guid]
+                        ? "bg-gray-100 dark:bg-[#1115]"
+                        : ""
+                    }`}
+                  >
+                    {allowSelect ? (
+                      <TableCol>
+                        <input
+                          className="w-4 h-4"
+                          type="checkbox"
+                          checked={!!selectedList[row?.Guid]}
+                          onChange={() => handelSelect(row?.Guid)}
+                        />
+                      </TableCol>
                     ) : null}
-                  </div>
-                </TableCol>
-                {columns?.map((col, index) => {
-                  if (col === "CDate") {
-                    let date = new Date(row[col]).toLocaleDateString("en-UK", {
-                      year: "numeric",
-                      month: "numeric",
-                      day: "numeric",
-                      weekday: "short",
-                    });
-                    let time = new Date(row[col]).toLocaleTimeString("en-UK", {
-                      timeStyle: "short",
-                    });
-                    return (
-                      <TableCol classes="whitespace-nowrap" key={index}>
-                        {date} | {time}
-                      </TableCol>
-                    );
-                  } else if (col?.toLowerCase()?.includes("guid")) {
-                    return (
-                      <TableUniqueCol
-                        row={row}
-                        col={col}
-                        reffedTables={reffedTables}
-                        key={index}
-                        val={row[col]}
-                      />
-                    );
-                  } else if (col === "Name") {
-                    return (
-                      <TableCol key={index}>
-                        <Link
-                          className="hover:underline text-blue-500 order-2"
-                          to={`/update/${table}/${row?.Guid}`}
-                          state={{ row, table }}
-                        >
-                          {row[col]}
-                        </Link>
-                      </TableCol>
-                    );
-                  } else return <TableCol key={index}>{row[col]}</TableCol>;
-                })}
-              </TableRow>
-            );
-          })}
+                    <TableCol>
+                      <div className="flex gap-1">
+                        {table && table === "building" ? (
+                          <>
+                            <Link
+                              className="hover:underline text-blue-500 order-1"
+                              to={`/buildings/${row?.Name}/tools/${row?.Guid}`}
+                              state={{ row, table }}
+                            >
+                              <PaletteIcon />
+                            </Link>
+                          </>
+                        ) : null}
+                      </div>
+                    </TableCol>
+                    {columns?.map((col, index) => {
+                      if (col === "CDate") {
+                        let date = new Date(row[col]).toLocaleDateString(
+                          "en-UK",
+                          {
+                            year: "numeric",
+                            month: "numeric",
+                            day: "numeric",
+                            weekday: "short",
+                          }
+                        );
+                        let time = new Date(row[col]).toLocaleTimeString(
+                          "en-UK",
+                          {
+                            timeStyle: "short",
+                          }
+                        );
+                        return (
+                          <TableCol classes="whitespace-nowrap" key={index}>
+                            {date} | {time}
+                          </TableCol>
+                        );
+                      } else if (col?.toLowerCase()?.includes("guid")) {
+                        return (
+                          <TableUniqueCol
+                            row={row}
+                            col={col}
+                            reffedTables={reffedTables}
+                            key={index}
+                            val={row[col]}
+                          />
+                        );
+                      } else if (col === "Name") {
+                        return (
+                          <TableCol key={index}>
+                            <Link
+                              className="hover:underline text-blue-500 order-2"
+                              to={`/update/${table}/${row?.Guid}`}
+                              state={{ row, table }}
+                            >
+                              {row[col]}
+                            </Link>
+                          </TableCol>
+                        );
+                      } else return <TableCol key={index}>{row[col]}</TableCol>;
+                    })}
+                  </TableRow>
+                );
+              })}
+            </>
+          )}
         </TableBody>
       </Table>
       {currentItems?.length ? (
@@ -241,7 +257,7 @@ const SuperTable = ({
           <ReactPaginate
             breakLabel="..."
             nextLabel={
-              <span className="flex  scale-75 -rotate-90">
+              <span className="flex  scale-75 ltr:-rotate-90">
                 <ChevronIcon />
               </span>
             }
@@ -249,7 +265,7 @@ const SuperTable = ({
             pageRangeDisplayed={5}
             pageCount={pageCount}
             previousLabel={
-              <span className="flex scale-75  rotate-90">
+              <span className="flex scale-75  rtl:rotate-90">
                 <ChevronIcon />
               </span>
             }

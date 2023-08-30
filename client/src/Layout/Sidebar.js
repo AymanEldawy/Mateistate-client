@@ -8,7 +8,7 @@ const Sidebar = ({ open }) => {
   const [dropdown, setDropdown] = React.useState(false);
 
   const handleClick = (key, level) => {
-    if (dropdown[level] == key) {
+    if (dropdown[level] === key) {
       setDropdown((prev) => {
         return { ...prev, [level]: "" };
       });
@@ -27,16 +27,17 @@ const Sidebar = ({ open }) => {
     return links?.map((item) => {
       if (item?.children) {
         return (
-          <li key={item?.name}
+          <li
+            key={item?.name}
             className={`relative group w-full border-b border-gray-200 py-2 ${
-              dropdown[level] == item?.name
+              dropdown[level] === item?.name
                 ? "bg-gray-100 bg_dark border-b border-t border-gray-200"
                 : ""
             }`}
           >
             <button
               className={`whitespace-nowrap gap-3 flex justify-between items-center hover:text-blue-600  dark:hover:bg-transparent dark:hover:text-white py-2 w-full ${
-                dropdown[level] == item?.name
+                dropdown[level] === item?.name
                   ? " text-blue-600 dark:text-white"
                   : ""
               } `}
@@ -45,14 +46,16 @@ const Sidebar = ({ open }) => {
               <span className="scale-[80%]">{item?.icon}</span>
               {item.name}
               <span
-                className={`scale-[60%] ml-auto rtl:mr-auto pl-2 rtl:pr-2 -rotate-90 transition-transform duration-200 ${
-                  dropdown[level] == item?.name ? "rotate-0" : ""
+                className={`scale-[60%] rtl:rotate-90 ltr:ml-auto rtl:mr-auto rtl:mr-auto pl-2 rtl:pr-2 ltr:-rotate-90 transition-transform duration-200 ${
+                  dropdown[level] === item?.name
+                    ? "ltr:!rotate-0 rtl:!rotate-180"
+                    : ""
                 }`}
               >
                 <ChevronIcon />
               </span>
             </button>
-            {dropdown[level] == item?.name ? (
+            {dropdown[level] === item?.name ? (
               <ul className="flex flex-col rounded-md">
                 {list(item.children, level + 1)}
               </ul>
@@ -63,16 +66,16 @@ const Sidebar = ({ open }) => {
       if (item?.subChild) {
         return (
           <li
-          key={item?.name}
+            key={item?.name}
             className={`relative group w-full ${
-              dropdown[level] == item?.name
+              dropdown[level] === item?.name
                 ? "bg-gray-100 bg_dark border-b border-t border-gray-200"
                 : ""
             }`}
           >
             <button
               className={`whitespace-nowrap gap-3 justify-between hover:text-blue-600 py-2 hover:bg-gray-100 dark:hover:bg-transparent dark:hover:text-white px-4 w-full flex ${
-                dropdown[level] == item?.name
+                dropdown[level] === item?.name
                   ? " text-blue-600 dark:text-white"
                   : ""
               } `}
@@ -80,14 +83,16 @@ const Sidebar = ({ open }) => {
             >
               {item.name}
               <span
-                className={`scale-[60%] ml-auto rtl:mr-auto pl-2 rtl:pr-2 -rotate-90 transition-transform duration-200 ${
-                  dropdown[level] == item?.name ? "rotate-0" : ""
+                className={`scale-[60%] rtl:rotate-90 ltr:ml-auto rtl:mr-auto rtl:mr-auto pl-2 rtl:pr-2 -rotate-90 transition-transform duration-200 ${
+                  dropdown[level] === item?.name
+                    ? "ltr:!rotate-0 rtl:!rotate-180"
+                    : ""
                 }`}
               >
                 <ChevronIcon />
               </span>
             </button>
-            {dropdown[level] == item?.name ? (
+            {dropdown[level] === item?.name ? (
               <ul className="rounded-md gap-2">
                 {list(item.subChild, level + 1)}
               </ul>

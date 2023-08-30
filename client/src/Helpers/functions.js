@@ -119,7 +119,6 @@ const insertIntoApartments = async (tabName, data, guid) => {
   }
   columns.push("BuildingGuid");
   values.push(guid);
-  console.log(columns, values);
   let res = await axios.post(`${SERVER_URL}/createNewApartments`, {
     table,
     columns: columns,

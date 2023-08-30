@@ -3,7 +3,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 
 import formsApi from "../../Helpers/Forms/formsApi";
-import { FolderEmptyIcon, FolderMinusIcon, FolderPlusIcon } from "../../Helpers/Icons";
+import {
+  FolderEmptyIcon,
+  FolderMinusIcon,
+  FolderPlusIcon,
+} from "../../Helpers/Icons";
 import SuperForm from "../CustomForm/SuperForm";
 import FormHeadingTitle from "../Global/FormHeadingTitle";
 import Modal from "../Modal/Modal";
@@ -105,7 +109,7 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
         />
       </Modal>
       <ul
-        className={`relative pr-4 !ml-4 rounded-md dark:before:border-borderdark before:border-l-2 before:absolute before:left-0 before:-z-1 before:h-full color-level-0 after:opacity-50 after:w-4 after:h-full after:absolute after:top-0`}
+        className={`relative pr-4 ltr:!ml-4 rtl:!mr-4 rounded-md dark:before:border-borderdark ltr:before:border-l-2 rtl:before:border-r-2  before:absolute ltr:before:left-0 rtl:before:right-0 before:-z-1 before:h-full color-level-0 after:opacity-50 after:w-4 after:h-full after:absolute after:top-0`}
       >
         {renderTree(chartTree)}
       </ul>
