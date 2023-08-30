@@ -38,7 +38,6 @@ app.use(
       "https://matiestate-client.vercel.app/",
     ],
     methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
-    credentials: true,
     optionsSuccessStatus: 200,
     headers: "*",
   })
