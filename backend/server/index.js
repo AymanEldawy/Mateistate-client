@@ -28,16 +28,7 @@ const sqlConfig = {
   },
 };
 
-// app.use(cors());
-app.use(
-  cors({
-    origin: [CLIENT_URL, `${CLIENT_URL}/`, "*"],
-    methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
-    credentials: true,
-    optionsSuccessStatus: 200,
-    headers: "*",
-  })
-);
+app.use(cors());
 app.use(express.json());
 // const db = sql.connect(sqlConfig);
 
