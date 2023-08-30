@@ -50,6 +50,11 @@ body {
   min-height: 100vh;
 }
 
+body::backdrop {
+  background-color: inherit;
+}
+
+
 body.dark {
   background-color: #282828;
   color: #bebebe;

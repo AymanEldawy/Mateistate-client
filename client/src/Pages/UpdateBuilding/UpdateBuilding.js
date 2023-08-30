@@ -1,8 +1,5 @@
 import axios from "axios";
-import React, { useContext } from "react";
-import { useMemo } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 
 import BlockPaper from "../../Components/BlockPaper/BlockPaper";

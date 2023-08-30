@@ -40,8 +40,6 @@ const SuperTable = ({
 
   useEffect(() => {
     // Needed more work
-    console.log("un...");
-    console.log(itemOffset, itemsPerPage);
     const endOffset = itemOffset + parseInt(itemsPerPage);
     setCurrentItems(filterList?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(filterList?.length / parseInt(itemsPerPage)));
@@ -50,9 +48,7 @@ const SuperTable = ({
   useEffect(() => {}, [refresh]);
 
   useEffect(() => {
-    console.log("run..");
     if (searchValue) {
-      console.log("run..233");
       let newList = [];
       for (const col of columns) {
         for (const item of data) {
@@ -81,9 +77,7 @@ const SuperTable = ({
     }
   }, [searchValue, data]);
 
-  useEffect(() => {
-    console.log("rendering");
-  }, []);
+  useEffect(() => {}, []);
 
   const handelSelect = useCallback(
     (itemId) => {

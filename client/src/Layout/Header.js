@@ -55,7 +55,7 @@ function Header({ setOpen, mode, setMode }) {
             <SearchBar />
           </div>
         </div>
-        <div className="ml-auto :rtl:mr-auto rtl:ml-0 flex items-center gap-4">
+        <div className="ml-auto rtl:mr-auto rtl:ml-0 ltr:ml-auto ltr:mr-0 flex items-center gap-4">
           <div className="flex items-center gap-2">
             <button
               onClick={toggleFullScreen}

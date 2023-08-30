@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useCallback } from "react";
 import { useParams } from "react-router-dom";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 import BlockPaper from "../../Components/BlockPaper/BlockPaper";
 import ConfirmModal from "../../Components/ConfirmModal/ConfirmModal";
@@ -54,6 +55,22 @@ const List = () => {
   const [searchKey, setSearchKey] = useState("Name");
   const [selectedList, setSelectedList] = useState({});
 
+  // const {
+  //   isLoading,
+  //   error,
+  //   data: tableData,
+  // } = useQuery(
+  //   "repoData",
+  //   () =>
+  //     axios.post(`/${SERVER_URL}/${name}`, {
+  //       table: name,
+  //       // method: "POST",
+  //       // body: {
+  //       // },
+  //     }) //.then((res) => res.json())
+  // );
+  // console.log(tableData, "queryClient", error, isLoading);
+
   // Get data
   let singleList = useMemo(() => getForm(name?.toLowerCase()), [name]);
   const forms = singleList?.forms;
@@ -74,7 +91,7 @@ const List = () => {
   //
   const getLists = async (tableName) => {
     await axios
-      .post(`/list`, {
+      .post(`${SERVER_URL}/list`, {
         table: tableName,
       })
       .then((res) => {
@@ -83,7 +100,7 @@ const List = () => {
   };
   const getRefData = async () => {
     await axios
-      .post(`/checkref`, {
+      .post(`${SERVER_URL}/checkref`, {
         table: name,
       })
       .then((res) => {
@@ -104,18 +121,22 @@ const List = () => {
   };
 
   const getData = async () => {
-    console.log("called");
     setLoading(true);
-    const res = await axios.post(`/list`, {
-      table: name,
-    });
-    if (res?.status === 200) {
-      setData(res?.data?.recordset);
-    }
-    setLoading(false);
+
+    axios
+      .post(`${SERVER_URL}/list`, {
+        table: name,
+      })
+      .then((res) => {
+        if (res?.status === 200) {
+          setData(res?.data?.recordset);
+        }
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
+    if (!name) return;
     check();
     getData();
     getRefData();
@@ -230,7 +251,7 @@ const List = () => {
           // searchKey={searchKey}
           // setSearchKey={setSearchKey}
         />
-        {!!columns && !loading ? (
+        {!!columns ? (
           <SuperTable
             reffedTables={reffedTables}
             table={name}

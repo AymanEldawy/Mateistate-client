@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
@@ -7,19 +7,30 @@ import { ThemeProvider } from "./Context/ThemeContext";
 import { AlertProvider } from "./Context/AlertContext";
 import { PopupFormProvider } from "./Context/PopupFormContext";
 import { ListsGuidsProvider } from "./Context/ListsGuidsContext";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+
+import "./i18n.js";
+import Loading from "./Components/Loading/Loading";
+const queryClient = new QueryClient();
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider>
-        <PopupFormProvider>
-          <AlertProvider>
-            <ListsGuidsProvider>
-              <App />
-            </ListsGuidsProvider>
-          </AlertProvider>
-        </PopupFormProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    <Suspense fallback={<Loading />}>
+      <BrowserRouter>
+        <ThemeProvider>
+          <PopupFormProvider>
+            <AlertProvider>
+              <ListsGuidsProvider>
+                <QueryClientProvider client={queryClient}>
+                  <App />
+                </QueryClientProvider>
+              </ListsGuidsProvider>
+            </AlertProvider>
+          </PopupFormProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+    </Suspense>
   </React.StrictMode>
 );

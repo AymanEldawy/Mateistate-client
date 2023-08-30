@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { LanguageIcon } from "../../Helpers/Icons";
 import spain from "../../Assets/Images/Flags/spain.svg";
 import china from "../../Assets/Images/Flags/china.svg";
@@ -9,22 +9,37 @@ import us from "../../Assets/Images/Flags/us.svg";
 import russia from "../../Assets/Images/Flags/russia.svg";
 import arabic from "../../Assets/Images/Flags/arabic.webp";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-const languages = [
-  { lang: us, name: "English" },
-  { lang: spain, name: "Española" },
-  { lang: french, name: "français" },
-  { lang: germany, name: "Deutsche" },
-  { lang: russia, name: "русский" },
-  { lang: china, name: "中国人" },
-  { lang: italy, name: "Italian" },
-  { lang: arabic, name: "Arabic" },
-];
+const languages = {
+  en: { lang: "en", flag: us, name: "English" },
+  ar: { lang: "ar", flag: arabic, name: "Arabic" },
+  sp: { lang: "sp", flag: spain, name: "Española" },
+  fr: { lang: "fr", flag: french, name: "français" },
+  de: { lang: "de", flag: germany, name: "Deutsche" },
+  ru: { lang: "ru", flag: russia, name: "русский" },
+  ch: { lang: "ch", flag: china, name: "中国人" },
+  it: { lang: "it", flag: italy, name: "Italian" },
+};
 const LanguageBar = () => {
+  const { i18n } = useTranslation();
   const [selectedLang, setSelectedLang] = useState(languages[0]);
   const [open, setOpen] = useState(false);
 
-  const changeLanguage = (lang) => setSelectedLang(lang);
+  useEffect(() => {
+    if (i18n?.language) setSelectedLang(languages?.[i18n?.language]);
+  }, [i18n?.language]);
+
+  useEffect(() => {
+    if (selectedLang?.lang === "ar") document.body.dir = "rtl";
+    else document.body.dir = "ltr";
+  }, [selectedLang]);
+
+  const changeLanguage = (lang) => {
+    // setSelectedLang(languages?.[lang]);
+    i18n.changeLanguage(lang);
+  };
+
   return (
     <div className="relative">
       {open ? (
@@ -38,7 +53,7 @@ const LanguageBar = () => {
         onClick={() => setOpen(true)}
       >
         <img
-          src={selectedLang?.lang}
+          src={selectedLang?.flag}
           alt={selectedLang?.name}
           className="w-5 h-5"
         />
@@ -46,23 +61,25 @@ const LanguageBar = () => {
 
       {open ? (
         <ul className="absolute bg-white left-0 p-3 px-6 min-w-[200px] dark:bg-bgmaindark shadow rounded-md top-12 z-50 text-gray-500 text-sm flex flex-col gap-3">
-          {languages?.map((language) => (
-            <li
-              key={language?.name}
-              onClick={() => {
-                changeLanguage(language);
-                setOpen(false);
-              }}
-              className="flex items-center gap-4 cursor-pointer font-medium hover:text-gray-900 dark:hover:text-gray-200"
-            >
-              <img
-                className="w-4 h-4"
-                src={language?.lang}
-                alt={language?.name}
-              />
-              {language?.name}
-            </li>
-          ))}
+          {Object.values(languages)
+            ?.sort((a, b) => a?.lang.localeCompare(b?.lang))
+            ?.map((language) => (
+              <li
+                key={language?.name}
+                onClick={() => {
+                  changeLanguage(language?.lang);
+                  setOpen(false);
+                }}
+                className="flex items-center gap-4 cursor-pointer font-medium hover:text-gray-900 dark:hover:text-gray-200"
+              >
+                <img
+                  className="w-4 h-4"
+                  src={language?.flag}
+                  alt={language?.name}
+                />
+                {language?.name}
+              </li>
+            ))}
         </ul>
       ) : null}
     </div>
