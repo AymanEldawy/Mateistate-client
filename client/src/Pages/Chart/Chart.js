@@ -30,7 +30,7 @@ const Chart = () => {
   const getData = async () => {
     setLoading(true);
     await axios
-      .post(`/list`, {
+      .post(`${SERVER_URL}/list`, {
         table: name,
       })
       .then((res) => {
@@ -42,7 +42,7 @@ const Chart = () => {
   };
   const deleteItem = async (itemGuid) => {
     await axios
-      .post(`/delete`, {
+      .post(`${SERVER_URL}/delete`, {
         table: name,
         guids: itemGuid,
       })

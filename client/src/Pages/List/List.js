@@ -173,7 +173,7 @@ const List = () => {
 
   const deleteItem = async () => {
     await axios
-      .post(`/delete`, {
+      .post(`${SERVER_URL}/delete`, {
         table: name,
         guids: Object.keys(selectedList),
       })

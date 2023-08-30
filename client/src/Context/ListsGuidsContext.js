@@ -1,13 +1,14 @@
 import axios from "axios";
 import React, { createContext, useReducer } from "react";
 import { useState } from "react";
+import { SERVER_URL } from "../Helpers/functions";
 
 export const ListsGuidsContext = createContext();
 const guidListCached = {};
 
 const getTableData = async (table, addTableList) => {
   return await axios
-    .post(`/list`, {
+    .post(`${SERVER_URL}/list`, {
       table,
     })
     .then((res) => {

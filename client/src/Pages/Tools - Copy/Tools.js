@@ -10,8 +10,13 @@ import { Button } from "../../Components/Global/Button";
 import ContentBar from "../../Components/Global/ContentBar/ContentBar";
 import FormHeadingTitle from "../../Components/Global/FormHeadingTitle";
 import formsApi from "../../Helpers/Forms/formsApi";
-import { hexToDecimal } from "../../Helpers/functions";
-import { CloseIcon, LockIcon, NotAllowIcon, PlusIcon } from "../../Helpers/Icons";
+import { hexToDecimal, SERVER_URL } from "../../Helpers/functions";
+import {
+  CloseIcon,
+  LockIcon,
+  NotAllowIcon,
+  PlusIcon,
+} from "../../Helpers/Icons";
 import MinusIcon from "../../Helpers/Icons/MinusIcon";
 import ToolsTabs from "./ToolsTabs";
 
@@ -57,7 +62,7 @@ const Tools = () => {
 
   const getLists = async (tableName) => {
     await axios
-      .post(`/list`, {
+      .post(`${SERVER_URL}${SERVER_URL}/list`, {
         table: tableName,
       })
       .then((res) => {
@@ -72,7 +77,7 @@ const Tools = () => {
       const getTabData = async (tabName) => {
         setLoading(true);
         await axios
-          .post(`/findPropertyOfBuilding`, {
+          .post(`${SERVER_URL}/findPropertyOfBuilding`, {
             table: tabName,
             building: Guid,
             // building: "31C8F1EE-6E04-441F-A76C-D15CE60D2327",
@@ -82,10 +87,10 @@ const Tools = () => {
             setData(data);
             CACHE_TABS[tabName] = data;
             for (const key of data) {
-              console.log('----run')
+              console.log("----run");
               CACHE_COL[key?.Guid] = key;
             }
-            console.log(CACHE_COL)
+            console.log(CACHE_COL);
           });
         setLoading(false);
       };
@@ -95,7 +100,7 @@ const Tools = () => {
   // const getApartments = async () => {
   //   setLoading(true);
   //   await axios
-  //     .post(`/iteminfo`, {
+  //     .post(`${SERVER_URL}/iteminfo`, {
   //       table: "Building",
   //       num: "31C8F1EE-6E04-441F-A76C-D15CE60D2327",
   //     })
@@ -230,7 +235,7 @@ const Tools = () => {
     console.log(flatsDetails, "submit");
     console.log(newFlatDetails, "submit");
     await axios
-      .post("/handleColoring", {
+      .post(`${SERVER_URL}/handleColoring`, {
         colors: !!CACHE_LIST_COLORS ? Object.values(CACHE_LIST_COLORS) : [],
         data: newFlatDetails,
       })

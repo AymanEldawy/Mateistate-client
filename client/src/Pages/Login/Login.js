@@ -7,6 +7,7 @@ import wallpaper from "../../Assets/Images/wallpaper.jpg";
 import InputField from "../../Components/CustomForm/InputField";
 import { Button } from "../../Components/Global/Button";
 import Layout from "../../Layout";
+import { SERVER_URL } from "../../Helpers/functions";
 
 const Login = () => {
   const [values, setValues] = useState({});
@@ -52,7 +53,7 @@ const Login = () => {
         Password: values?.password,
       };
       await axios
-        .post(`/login`, {
+        .post(`${SERVER_URL}/login`, {
           ...body,
         })
         .then((res) => {

@@ -85,7 +85,7 @@ const TestEntry = () => {
     } else {
       let newEntry = {};
       await axios
-        .post(`/rowinfo`, {
+        .post(`${SERVER_URL}/rowinfo`, {
           table: "DEntry",
           num: Guid,
         })
@@ -107,7 +107,7 @@ const TestEntry = () => {
   const getData = async () => {
     setLoading(true);
     await axios
-      .post(`/list`, {
+      .post(`${SERVER_URL}/list`, {
         table: "HEntry",
       })
       .then((res) => {

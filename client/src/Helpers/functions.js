@@ -131,13 +131,13 @@ const insertIntoApartments = async (tabName, data, guid) => {
 
 // const deleteFromApartments = async (count, Guid, tabName) => {
 //   // let apartments = await axios
-//   //   .post(`/findPropertyOfBuilding`, {
+//   //   .post(`${SERVER_URL}/findPropertyOfBuilding`, {
 //   //     table: tabName,
 //   //     building: Guid,
 //   //   })
 //   //   .then((res) => res?.data?.recordset);
 //   let deleted = await axios
-//     .post(`/delete-all`)
+//     .post(`${SERVER_URL}/delete-all`)
 //     .then((res) => {
 //       console.log(res);
 //     })
