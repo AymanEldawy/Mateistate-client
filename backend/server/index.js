@@ -28,20 +28,7 @@ const sqlConfig = {
   },
 };
 
-// app.use(cors());
-app.use(
-  cors({
-    origin: [
-      CLIENT_URL,
-      `${CLIENT_URL}/`,
-      "http://localhost:3000/",
-      "https://matiestate-client.vercel.app/",
-    ],
-    methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
-    optionsSuccessStatus: 200,
-    headers: "*",
-  })
-);
+app.use(cors());
 app.use(express.json());
 // const db = sql.connect(sqlConfig);
 
