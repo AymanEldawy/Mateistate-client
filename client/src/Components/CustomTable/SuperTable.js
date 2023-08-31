@@ -15,6 +15,7 @@ import TableHeadCol from "./TableHeadCol";
 import TableRow from "./TableRow";
 import TableUniqueCol from "./TableUniqueCol";
 import { TableSkeleton } from "./TableSkeleton";
+import { useTranslation } from "react-i18next";
 
 let sorting = {};
 const SuperTable = ({
@@ -30,6 +31,7 @@ const SuperTable = ({
   // searchKey,
   reffedTables,
 }) => {
+  const { t } = useTranslation();
   const [filterList, setFilterList] = useState(data);
   const [itemOffset, setItemOffset] = useState(0);
   const [currentItems, setCurrentItems] = useState([]);
@@ -46,8 +48,6 @@ const SuperTable = ({
     setCurrentItems(filterList?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(filterList?.length / parseInt(itemsPerPage)));
   }, [filterList, itemsPerPage, itemOffset]);
-
-  useEffect(() => {}, [refresh]);
 
   useEffect(() => {
     if (searchValue) {
@@ -79,8 +79,6 @@ const SuperTable = ({
     }
   }, [searchValue, data]);
 
-  useEffect(() => {}, []);
-
   const handelSelect = useCallback(
     (itemId) => {
       if (selectedList[itemId]) {
@@ -103,6 +101,7 @@ const SuperTable = ({
     },
     [selectedList]
   );
+
   const handleSelectedAll = useCallback(
     (e) => {
       if (!e?.target?.checked) {
@@ -122,6 +121,7 @@ const SuperTable = ({
     const newOffset = (event.selected * itemsPerPage) % filterList?.length;
     setItemOffset(newOffset);
   };
+
   const sortBy = async (col) => {
     const list = [...currentItems];
     const newSortOrder = sorting[col] === "asc" ? "desc" : "asc";
@@ -139,6 +139,7 @@ const SuperTable = ({
     setRefresh((prev) => !prev);
     sorting[col] = newSortOrder;
   };
+
   return (
     <>
       <Table>
@@ -252,6 +253,14 @@ const SuperTable = ({
           )}
         </TableBody>
       </Table>
+      {!loading && !currentItems?.length ? (
+        <div
+          colSpan={columns?.length}
+          className="text-red-500 bg-red-100 p-1 rounded-sm text-center mt-2"
+        >
+          {t("empty_result")}
+        </div>
+      ) : null}
       {currentItems?.length ? (
         <>
           <ReactPaginate
@@ -277,11 +286,7 @@ const SuperTable = ({
             disabledClassName="text-gray-200 dark:text-gray-600"
           />
         </>
-      ) : (
-        <div className="text-red-500 text-center mt-2">
-          <strong className="capitalize">{table}</strong> results are empty
-        </div>
-      )}
+      ) : null}
     </>
   );
 };

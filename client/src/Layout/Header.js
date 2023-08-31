@@ -6,19 +6,10 @@ import SearchBar from "../Components/SearchBar/SearchBar";
 import ToggleThemeBar from "../Components/ToggleThemeBar/ToggleThemeBar";
 import UserBar from "../Components/UserBar/UserBar";
 import { ThemeContext } from "../Context/ThemeContext";
-import {
-  FitScreenIcon,
-  FullScreenIcon,
-  LanguageIcon,
-  MoonIcon,
-  SunIcon,
-} from "../Helpers/Icons";
-import logo from "../abrepair-logo.svg";
+import { FitScreenIcon, FullScreenIcon } from "../Helpers/Icons";
+import logo from "../Assets/Images/abrepair-logo.svg";
 import { exitFullscreen, openFullscreen } from "../Helpers/functions";
-import { useRef } from "react";
-import { useEffect } from "react";
 import { useState } from "react";
-import BallIcon from "../Helpers/Icons/BallIcon";
 import NotificationBar from "../Components/NotificationBar/NotificationBar";
 import BarsIcon from "../Helpers/Icons/BarsIcon";
 
@@ -27,15 +18,16 @@ function Header({ setOpen, mode, setMode }) {
   const [isFullScreen, setIsFullScreen] = useState(
     !!document.fullscreenElement
   );
-
+  const [refreshScreen, setRefreshScreen] = useState(false);
   const toggleFullScreen = () => {
     if (!!document.fullscreenElement) {
       exitFullscreen();
       setIsFullScreen(true);
     } else {
-      openFullscreen();
       setIsFullScreen(false);
+      openFullscreen();
     }
+    setRefreshScreen((p) => !p);
   };
   return (
     // <div className="bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 ">
@@ -61,8 +53,7 @@ function Header({ setOpen, mode, setMode }) {
               onClick={toggleFullScreen}
               className="p-2 rounded-full hover:bg-[#0002]"
             >
-              {/* {isFullScreen ? <FitScreenIcon /> : <FullScreenIcon />} */}
-              <FullScreenIcon />
+              {isFullScreen ? <FitScreenIcon /> : <FullScreenIcon />}
             </button>
             <LanguageBar />
             <ToggleThemeBar theme={theme} changeTheme={changeTheme} />

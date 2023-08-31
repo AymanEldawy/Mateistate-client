@@ -8,6 +8,7 @@ import RenderTree from "../../Components/RenderTree/RenderTree";
 import { AlertContext } from "../../Context/AlertContext";
 import { SERVER_URL } from "../../Helpers/functions";
 import { useTranslation } from "react-i18next";
+import Loading from "./../../Components/Loading/Loading";
 
 function toTree(data, pid = null) {
   return data?.reduce((r, e) => {
@@ -66,27 +67,45 @@ const Chart = () => {
     let res = await axios.post(`${SERVER_URL}/create`, {
       ...body,
     });
-    if (res?.statusText === "OK") {
+    if (res?.status === 200) {
       dispatchAlert({
         open: true,
         type: "success",
-        msg: "Added Successfully...",
+        msg: "Added Successfully",
       });
       getData();
+      return true;
     } else {
+      dispatchAlert({
+        open: true,
+        type: "error",
+        msg: "Failed to add new",
+      });
+      return false;
     }
   };
 
+  console.log(chartTree);
   return (
     <BlockPaper title={t("chart")}>
       {!loading ? (
-        <RenderTree
-          chartTree={chartTree}
-          name={name}
-          deleteItem={deleteItem}
-          onSubmit={onSubmit}
-        />
-      ) : null}
+        <>
+          {chartTree?.length ? (
+            <RenderTree
+              chartTree={chartTree}
+              name={name}
+              deleteItem={deleteItem}
+              onSubmit={onSubmit}
+            />
+          ) : (
+            <p className="bg-red-100 text-red-600 p-1 rounded-md text-center mt-2">
+              {t("empty_result")}
+            </p>
+          )}
+        </>
+      ) : (
+        <Loading withBackdrop />
+      )}
     </BlockPaper>
   );
 };

@@ -42,7 +42,7 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
     (tree, level = 1) => {
       return tree?.map((item) => {
         return (
-          <li className="space-x-3 w-fit mt-2 mb-2 last:mb-0">
+          <li className="space-x-3 w-fit mt-2 mb-2 last:mb-0" key={item?.Guid}>
             <TreeViewItem
               deleteItem={deleteItem}
               table={name}
@@ -85,18 +85,25 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
     },
     [open, toggleOpen]
   );
+
+  console.log(selectedItem);
   let oldValues = selectedItem?.FinalGUID
     ? {
         ParentGUID: selectedItem?.Guid,
         FinalGUID: selectedItem?.FinalGUID,
+      }
+    : selectedItem?.ParentGUID
+    ? {
+        ParentGUID: selectedItem?.Guid,
+        FinalGUID: selectedItem?.ParentGUID,
       }
     : {
         ParentGUID: selectedItem?.Guid,
       };
 
   const submit = (values) => {
-    onSubmit(values);
-    setOpen(false);
+    const result = onSubmit(values);
+    if (result) setSelectedItem(null);
   };
   return (
     <>

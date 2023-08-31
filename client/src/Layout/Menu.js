@@ -3,22 +3,24 @@ import * as React from "react";
 import { menuData } from "../Helpers/menu";
 import { Link } from "react-router-dom";
 import { ChevronIcon } from "../Helpers/Icons";
+import { useTranslation } from "react-i18next";
 
 const Menu = () => {
-  const [dropdown, setDropdown] = React.useState(false);
-  const [subDropdown, setSubDropdown] = React.useState(false);
-  const [dropdownGroup, setDropdownGroup] = React.useState();
-  const handleClick = (key) => {
-    setDropdown(key);
-  };
-  const handleSubDropdown = (key) => {
-    setSubDropdown(key);
-  };
-  const closeDropDown = (e) => {
-    e.stopPropagation();
-    setDropdown(" ");
-    setSubDropdown(" ");
-  };
+  const { t } = useTranslation();
+  // const [dropdown, setDropdown] = React.useState(false);
+  // const [subDropdown, setSubDropdown] = React.useState(false);
+  // const [dropdownGroup, setDropdownGroup] = React.useState();
+  // const handleClick = (key) => {
+  //   setDropdown(key);
+  // };
+  // const handleSubDropdown = (key) => {
+  //   setSubDropdown(key);
+  // };
+  // const closeDropDown = (e) => {
+  //   e.stopPropagation();
+  //   setDropdown(" ");
+  //   setSubDropdown(" ");
+  // };
   const list = (links) => {
     return links?.map((item) => {
       if (item?.children) {
@@ -26,9 +28,9 @@ const Menu = () => {
           <li key={item?.name} className="relative group">
             <button className="whitespace-nowrap flex justify-between items-center  hover:text-blue-600  dark:hover:bg-transparent dark:hover:text-white py-2 w-full ">
               <span className="scale-[65%]">{item?.icon}</span>
-              {item.name}
-              <span className="scale-[60%] ml-auto rtl:mr-auto pl-2 rtl:pr-2">
-                <ChevronIcon />
+              {t(item.name)}
+              <span className="ml-auto rtl:mr-auto pl-2 rtl:pr-2">
+                <ChevronIcon className="h-3 w-3" />
               </span>
             </button>
             <ul
@@ -46,10 +48,10 @@ const Menu = () => {
       if (item?.subChild) {
         return (
           <li key={item?.name} className="relative">
-            <button className="whitespace-nowrap gap-2 justify-between hover:text-blue-600 py-2 hover:bg-gray-100 dark:hover:bg-transparent dark:hover:text-white px-4 w-full flex ">
-              {item.name}
-              <span className="scale-[60%] -rotate-90">
-                <ChevronIcon />
+            <button className="whitespace-nowrap gap-2 justify-between hover:text-blue-600 py-2 hover:bg-gray-100 dark:hover:bg-transparent dark:hover:text-white px-4 w-full flex items-center ">
+              {t(item.name)}
+              <span className="-rotate-90">
+                <ChevronIcon className="!w-3 !h-3 " />
               </span>
             </button>
             <ul className="opacity-0 pointer-events-none absolute bg-white bg_dark shadow top-[0] py-4 rounded-md z-[99] left-full">
@@ -62,14 +64,14 @@ const Menu = () => {
         <li key={item?.name} className="relative">
           {item?.link === "" ? (
             <button className="whitespace-nowrap hover:text-blue-600 dark:hover:bg-transparent dark:hover:text-white py-2 px-4 w-full flex">
-              {item.name}
+              {t(item.name)}
             </button>
           ) : (
             <Link
               className="whitespace-nowrap  hover:text-blue-600 dark:hover:bg-transparent dark:hover:text-white py-2 px-4 w-full flex"
               to={item?.link}
             >
-              {item.name}
+              {t(item.name)}
             </Link>
           )}
         </li>

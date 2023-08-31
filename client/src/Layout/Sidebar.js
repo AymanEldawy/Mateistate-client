@@ -124,11 +124,9 @@ const Sidebar = ({ open }) => {
         open ? "left-0" : "-left-72"
       }`}
     >
-      <div className="container">
-        <ul className="flex-col text-gray-500 dark:text-gray-400 text-sm font-medium min-h-[40px] flex items-start justify-between capitalize">
-          {list(menuData)}
-        </ul>
-      </div>
+      <ul className="flex-col overflow-auto max-h-screen text-gray-500 dark:text-gray-400 text-sm font-medium min-h-[40px] flex items-start justify-between capitalize">
+        {list(menuData)}
+      </ul>
     </aside>
   );
 };

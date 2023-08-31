@@ -34,7 +34,7 @@ const NotificationBar = () => {
             <NotificationCard />
           </li> */}
           <li className="p-4 px-2 text-center text-base">
-            <p>Hey! You have no any notifications</p>
+            <p>Hey! You have no notifications</p>
           </li>
         </ul>
       ) : null}

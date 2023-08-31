@@ -29,7 +29,7 @@ const Layout = ({ children }) => {
   }, []);
   return (
     <React.Fragment>
-      <div id="layout-wrapper" className="flex flex-col h-full">
+      <div id="layout-wrapper" className="flex flex-col h-screen">
         <Header setOpen={setOpen} mode={mode} setMode={setMode} />
         <Menu />
         <Backdrop open={open} onClose={() => setOpen(false)} />
