@@ -9,6 +9,7 @@ const InputField = ({ label, error, className, ...field }) => {
       min: 0
     }
   }
+  
   return (
     <div className="flex flex-col ">
       {label ? <label htmlFor={label} className="overflow-hidden text-ellipsis text-sm font-normal mb-1 capitalize">{label}</label> : null}

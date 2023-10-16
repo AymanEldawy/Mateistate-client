@@ -1,12 +1,13 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
 
-import { PaletteIcon } from "../../Helpers/Icons";
-import ChevronIcon from "../../Helpers/Icons/ChevronIcon";
+import ChevronIcon from "Helpers/Icons/ChevronIcon";
+import { PaletteIcon } from "Helpers/Icons";
+
 import Table from "./Table";
 import TableBody from "./TableBody";
 import TableCol from "./TableCol";
@@ -18,6 +19,7 @@ import { TableSkeleton } from "./TableSkeleton";
 import { useTranslation } from "react-i18next";
 
 let sorting = {};
+
 const SuperTable = ({
   columns,
   data,
@@ -31,6 +33,7 @@ const SuperTable = ({
   // searchKey,
   reffedTables,
 }) => {
+
   const { t } = useTranslation();
   const [filterList, setFilterList] = useState(data);
   const [itemOffset, setItemOffset] = useState(0);
@@ -266,7 +269,7 @@ const SuperTable = ({
           <ReactPaginate
             breakLabel="..."
             nextLabel={
-              <span className="flex  scale-75 ltr:-rotate-90">
+              <span className="flex  scale-75 ltr:-rotate-90 rtl:rotate-90">
                 <ChevronIcon />
               </span>
             }
@@ -274,7 +277,7 @@ const SuperTable = ({
             pageRangeDisplayed={5}
             pageCount={pageCount}
             previousLabel={
-              <span className="flex scale-75  rtl:rotate-90">
+              <span className="flex scale-75  ltr:rotate-90 rtl:-rotate-90">
                 <ChevronIcon />
               </span>
             }

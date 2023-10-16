@@ -1,20 +1,14 @@
-import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
-import BlockPaper from "../../Components/BlockPaper/BlockPaper";
-import Layout from "../../Layout";
-import formsApi from "../../Helpers/Forms/formsApi";
-import SuperForm from "../../Components/CustomForm/SuperForm";
+import BlockPaper from "Components/BlockPaper/BlockPaper";
+import formsApi from "Helpers/Forms/formsApi";
+import SuperForm from "Components/CustomForm/SuperForm";
 import { useMemo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import Modal from "../../Components/Modal/Modal";
-import { TableBar } from "../../Components/TableBar/TableBar";
-import SuperTable from "../../Components/CustomTable/SuperTable";
-import { useCallback } from "react";
 import axios from "axios";
-import { AlertContext } from "../../Context/AlertContext";
-import FormHeadingTitleSteps from "../../Components/Global/FormHeadingTitleSteps";
-import { SERVER_URL } from "../../Helpers/functions";
+import { useAlert } from "Context/AlertContext";
+import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
+import { SERVER_URL } from "Helpers/functions";
 
 const Building = () => {
   const params = useParams();
@@ -24,7 +18,7 @@ const Building = () => {
   const [activeStage, setActiveStage] = useState("");
   const [fields, setFields] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { alertMessage, dispatchAlert } = useContext(AlertContext);
+  const { alertMessage, dispatchAlert } = useAlert();
 
   // Get data
   let singleList = useMemo(() => formsApi["building"], [name]);

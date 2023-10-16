@@ -1,4 +1,4 @@
-import { DropDowns } from "../functions";
+import { DropDowns } from "Helpers/functions";
 
 export const customer = [
   // { name: "Number", type: "number", label: "Number", required: false },
@@ -6,7 +6,7 @@ export const customer = [
     name: "SecLvl",
     key: "select",
     label: "SecLvl",
-    required: false,
+    required: true,
     list: DropDowns("SecLvl"),
   },
   { name: "Barcode", type: "text", label: "Barcode", required: false },
@@ -153,7 +153,7 @@ export const customer = [
 export const apartment = [
   // {
   //   required: false,
-    // label: "Number",
+  // label: "Number",
   //   name: "Number",
   //   type: "number",
   // },
@@ -638,7 +638,9 @@ const Shop_Selling_price = [
     list: [],
   },
 ];
-const Shop_Pictures = [];
+const Shop_Pictures = [
+  { name: "image", key: "image", label: "Testing image", required: false },
+];
 const Shop_Details = [
   { name: "Note", type: "text", label: "Note", required: false },
 ];
@@ -875,7 +877,9 @@ const Villa_Selling_price = [
     list: [],
   },
 ];
-const Villa_Pictures = [];
+const Villa_Pictures = [
+  { name: "image", key: "image", label: "Testing image", required: false },
+];
 const Villa_Notes = [
   { name: "Note", type: "text", label: "Note", required: false },
 ];
@@ -1011,7 +1015,9 @@ const Parking_Price = [
   { name: "Sale", type: "number", label: "Sale", required: false },
 ];
 const Parking_Assembly = [];
-const Parking_Pictures = [];
+const Parking_Pictures = [
+  { name: "image", key: "image", label: "Testing image", required: false },
+];
 const Parking_Details = [
   { name: "Note", type: "text", label: "Note", required: false },
 ];
@@ -1799,7 +1805,9 @@ const OfferPrice_Balance = [
   { name: "Qty2", type: "text", label: "Qty2", required: false },
   { name: "Qty3", type: "text", label: "Qty3", required: false },
 ];
-const OfferPrice_Pictures = [];
+const OfferPrice_Pictures = [
+  { name: "image", key: "image", label: "Testing image", required: false },
+];
 // Ending OfferPrice
 
 // Form more than step

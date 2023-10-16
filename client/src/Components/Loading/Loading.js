@@ -1,7 +1,7 @@
 import React from "react";
 
-import { HourglassIcon } from "../../Helpers/Icons";
-import Backdrop from "../Backdrop/Backdrop";
+import { HourglassIcon } from "Helpers/Icons";
+import Backdrop from "Components/Backdrop/Backdrop";
 
 const Loading = ({ withBackdrop }) => {
   let classes = withBackdrop

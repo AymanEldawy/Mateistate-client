@@ -1,17 +1,15 @@
 import axios from "axios";
-import React, { useContext } from "react";
 import { useMemo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 
-import BlockPaper from "../../Components/BlockPaper/BlockPaper";
-import SuperForm from "../../Components/CustomForm/SuperForm";
-import FormHeadingTitleSteps from "../../Components/Global/FormHeadingTitleSteps";
-import { AlertContext } from "../../Context/AlertContext";
-import formsApi from "../../Helpers/Forms/formsApi";
-import { SERVER_URL, generateApartments } from "../../Helpers/functions";
-import Layout from "../../Layout";
+import BlockPaper from "Components/BlockPaper/BlockPaper";
+import SuperForm from "Components/CustomForm/SuperForm";
+import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
+import { useAlert } from "../../Context/AlertContext";
+import formsApi from "Helpers/Forms/formsApi";
+import { SERVER_URL, generateApartments } from "Helpers/functions";
 
 function getForm(form) {
   return formsApi[form];
@@ -26,7 +24,7 @@ const Update = () => {
   const [activeStage, setActiveStage] = useState("");
   const [fields, setFields] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { alertMessage, dispatchAlert } = useContext(AlertContext);
+  const { alertMessage, dispatchAlert } = useAlert();
   // Get data
   let singleList = useMemo(() => getForm(name?.toLowerCase()), [name]);
   const forms = singleList?.forms;

@@ -1,4 +1,4 @@
-import { DropDowns, getData } from "../functions";
+import { DropDowns } from "Helpers/functions";
 
 export const account = [
   // { name: "Number", type: "number", label: "Number", required: false },

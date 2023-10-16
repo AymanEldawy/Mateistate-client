@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
-import { LanguageIcon } from "../../Helpers/Icons";
-import spain from "../../Assets/Images/Flags/spain.svg";
-import china from "../../Assets/Images/Flags/china.svg";
-import french from "../../Assets/Images/Flags/french.svg";
-import italy from "../../Assets/Images/Flags/italy.svg";
-import germany from "../../Assets/Images/Flags/germany.svg";
-import us from "../../Assets/Images/Flags/us.svg";
-import russia from "../../Assets/Images/Flags/russia.svg";
-import arabic from "../../Assets/Images/Flags/arabic.webp";
+import spain from "Assets/Images/Flags/spain.svg";
+import china from "Assets/Images/Flags/china.svg";
+import french from "Assets/Images/Flags/french.svg";
+import italy from "Assets/Images/Flags/italy.svg";
+import germany from "Assets/Images/Flags/germany.svg";
+import us from "Assets/Images/Flags/us.svg";
+import russia from "Assets/Images/Flags/russia.svg";
+import arabic from "Assets/Images/Flags/arabic.webp";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 

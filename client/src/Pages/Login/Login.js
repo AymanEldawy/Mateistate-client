@@ -1,18 +1,16 @@
 import axios from "axios";
-import React from "react";
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
 
-import wallpaper from "../../Assets/Images/wallpaper.jpg";
-import InputField from "../../Components/CustomForm/InputField";
-import { Button } from "../../Components/Global/Button";
-import Layout from "../../Layout";
-import { SERVER_URL } from "../../Helpers/functions";
+import wallpaper from "Assets/Images/wallpaper.jpg";
+import InputField from "Components/CustomForm/InputField";
+import { Button } from "Components/Global/Button";
+import { SERVER_URL } from "Helpers/functions";
 
 const Login = () => {
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+
   const insertIntoErrors = (name, value) => {
     if (value === "") {
       setErrors((prev) => {
@@ -27,6 +25,7 @@ const Login = () => {
       setErrors(newErrors);
     }
   };
+  
   const onTouched = (name) => {
     if (touched[name]) return;
     setTouched((prev) => {
@@ -36,6 +35,7 @@ const Login = () => {
       };
     });
   };
+  
   const handelChangeField = (name, value) => {
     insertIntoErrors(name, value);
     setValues((prev) => {
@@ -45,6 +45,7 @@ const Login = () => {
       };
     });
   };
+  
   const handelSubmit = async () => {
     if (!Object.keys(errors)?.length) {
       console.log(errors?.length);
@@ -61,6 +62,7 @@ const Login = () => {
         });
     }
   };
+  
   return (
     <div
       className=" h-screen w-screen bg-cover bg-no-repeat "

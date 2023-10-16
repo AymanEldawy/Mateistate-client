@@ -2,6 +2,7 @@ import React from "react";
 import Checkbox from "./Checkbox";
 
 const CheckboxField = ({ label, error, list, name, ...field }) => {
+  
   return (
     <div className="flex flex-col">
       {label ? (

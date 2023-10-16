@@ -1,7 +1,6 @@
-import React from "react";
 import { useState } from "react";
-import { ChevronIcon, SearchIcon, FilterIcon } from "../../Helpers/Icons";
-import Backdrop from "../Backdrop/Backdrop";
+import { SearchIcon, FilterIcon } from "Helpers/Icons";
+import Backdrop from "Components/Backdrop/Backdrop";
 import { useTranslation } from "react-i18next";
 
 const SearchBar = ({

@@ -5,13 +5,8 @@ const Index = () => {
   return (
     <Routes>
       {authProtectedRoutes.map((item) => (
-        <Route path={item.path} Component={item.component} />
+        <Route path={item.path} element={item.component} />
       ))}
-      {/* <Route /> */}
-      {/* <Route /> */}
-      {/* <Route /> */}
-      {/* <Route /> */}
-      {/* <Route /> */}
     </Routes>
   );
 };

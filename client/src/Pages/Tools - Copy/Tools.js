@@ -3,21 +3,21 @@ import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
-import BlockPaper from "../../Components/BlockPaper/BlockPaper";
-import SuperForm from "../../Components/CustomForm/SuperForm";
-import TableForm from "../../Components/Forms/TableForm/TableForm";
-import { Button } from "../../Components/Global/Button";
-import ContentBar from "../../Components/Global/ContentBar/ContentBar";
-import FormHeadingTitle from "../../Components/Global/FormHeadingTitle";
-import formsApi from "../../Helpers/Forms/formsApi";
-import { hexToDecimal, SERVER_URL } from "../../Helpers/functions";
+import BlockPaper from "Components/BlockPaper/BlockPaper";
+import SuperForm from "Components/CustomForm/SuperForm";
+import TableForm from "Components/Forms/TableForm/TableForm";
+import { Button } from "Components/Global/Button";
+import ContentBar from "Components/Global/ContentBar/ContentBar";
+import FormHeadingTitle from "Components/Global/FormHeadingTitle";
+import formsApi from "Helpers/Forms/formsApi";
+import { hexToDecimal, SERVER_URL } from "Helpers/functions";
 import {
   CloseIcon,
   LockIcon,
   NotAllowIcon,
   PlusIcon,
-} from "../../Helpers/Icons";
-import MinusIcon from "../../Helpers/Icons/MinusIcon";
+} from "Helpers/Icons";
+import MinusIcon from "Helpers/Icons/MinusIcon";
 import ToolsTabs from "./ToolsTabs";
 
 const CACHE_LIST = {};

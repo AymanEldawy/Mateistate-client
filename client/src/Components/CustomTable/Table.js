@@ -1,6 +1,5 @@
 import React from "react";
 
-
 const Table = ({ children, className }) => {
   return (
     <div className={`relative overflow-x-auto mt-4 ${className}`}>

@@ -1,6 +1,8 @@
+import Layout from "Layout";
 import React from "react";
-import Layout from "../../Layout";
+
 const BlockPaper = ({ title, contentBar, children, fullWidth }) => {
+
   return (
     <Layout>
       <div className="!mb-8">

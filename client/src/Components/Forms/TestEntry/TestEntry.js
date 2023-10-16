@@ -1,14 +1,14 @@
 import axios from "axios";
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { AlertContext } from "../../../Context/AlertContext";
-import { ChevronIcon } from "../../../Helpers/Icons";
-import BlockPaper from "../../BlockPaper/BlockPaper";
-import Field from "../../CustomForm/Field";
-import InputField from "../../CustomForm/InputField";
+import { useAlert } from "Context/AlertContext";
+import { ChevronIcon } from "Helpers/Icons";
+import BlockPaper from "Components/BlockPaper/BlockPaper";
+import Field from "Components/CustomForm/Field";
+import InputField from "Components/CustomForm/InputField";
 import TestEntryFormTable from "./TestEntryFormTable";
-import Loading from "../../Loading/Loading";
-import { SERVER_URL } from "../../../Helpers/functions";
+import Loading from "Components/Loading/Loading";
+import { SERVER_URL } from "Helpers/functions";
 
 const columns = {
   Credit: "",
@@ -70,7 +70,7 @@ const TestEntry = () => {
   const [selectedRowNumber, setSelectedRowNumber] = useState(0);
   const [numberOfRows, setNumberOfRows] = useState();
   const [data, setData] = useState([]);
-  const { dispatchAlert } = useContext(AlertContext);
+  const { dispatchAlert } = useAlert();
   const [readOnlyValues, setReadOnlyValues] = useState(columns);
   const [shouldUpdate, setShouldUpdate] = useState(false);
   const [shouldUpdateUniqueIdentifyCols, setShouldUpdateUniqueIdentifyCols] =

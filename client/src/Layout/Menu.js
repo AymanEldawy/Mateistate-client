@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import { menuData } from "../Helpers/menu";
+import { menuData } from "Helpers/menu";
 import { Link } from "react-router-dom";
-import { ChevronIcon } from "../Helpers/Icons";
+import { ChevronIcon } from "Helpers/Icons";
 import { useTranslation } from "react-i18next";
 
 const Menu = () => {
@@ -78,6 +78,7 @@ const Menu = () => {
       );
     });
   };
+  
   return (
     <div className="shadow bg-white dark:bg-bgmaindark hidden lg:block">
       <div className="container">

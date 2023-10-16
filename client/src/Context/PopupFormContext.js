@@ -1,11 +1,12 @@
-import React, { createContext } from "react";
+import React, { createContext, useContext } from "react";
 import { useState } from "react";
 
 export const PopupFormContext = createContext();
+
 export const PopupFormProvider = ({ children }) => {
   // const [] = useState();
   const [openForm, setOpenForm] = useState({});
-  
+
   const dispatchForm = (form) => {
     if (form) {
       setOpenForm(form);
@@ -19,4 +20,8 @@ export const PopupFormProvider = ({ children }) => {
       {children}
     </PopupFormContext.Provider>
   );
+};
+
+export const usePopupForm = () => {
+  return useContext(PopupFormContext);
 };

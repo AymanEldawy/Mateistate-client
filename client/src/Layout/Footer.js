@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
+
 const Footer = () => {
   const [extraClasses, setExtraClasses] = useState("");
+
   useEffect(() => {
     let bodyHeight = document.body.getClientRects()[0].height;
     let warperHeight = document.getElementById("layout-wrapper").clientHeight;
@@ -9,6 +11,7 @@ const Footer = () => {
       setExtraClasses("fixed bottom-0 left-0 w-full");
     }
   }, []);
+  
   return (
     <React.Fragment>
       <footer className={extraClasses}>

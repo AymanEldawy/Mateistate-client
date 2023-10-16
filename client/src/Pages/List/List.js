@@ -1,31 +1,26 @@
-import axios from "axios";
-import React, { useContext } from "react";
-import { useMemo } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
-import { useCallback } from "react";
-import { useParams } from "react-router-dom";
-import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import axios from 'axios';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import BlockPaper from 'Components/BlockPaper/BlockPaper';
+import ConfirmModal from 'Components/ConfirmModal/ConfirmModal';
+import SuperForm from 'Components/CustomForm/SuperForm';
 
-import BlockPaper from "../../Components/BlockPaper/BlockPaper";
-import ConfirmModal from "../../Components/ConfirmModal/ConfirmModal";
-import SuperForm from "../../Components/CustomForm/SuperForm";
-import SuperTable from "../../Components/CustomTable/SuperTable";
-import FormHeadingTitleSteps from "../../Components/Global/FormHeadingTitleSteps";
-import Modal from "../../Components/Modal/Modal";
-import { TableBar } from "../../Components/TableBar/TableBar";
-import { AlertContext } from "../../Context/AlertContext";
-import { ListsGuidsContext } from "../../Context/ListsGuidsContext";
-import formsApi from "../../Helpers/Forms/formsApi";
-import { SERVER_URL, generateApartments } from "../../Helpers/functions";
-import Loading from "./../../Components/Loading/Loading";
+import FormHeadingTitleSteps from 'Components/Global/FormHeadingTitleSteps';
+import Modal from 'Components/Modal/Modal';
+import { TableBar } from 'Components/TableBar/TableBar';
+import { useAlert } from 'Context/AlertContext';
+import formsApi from 'Helpers/Forms/formsApi';
+import { SERVER_URL } from 'Helpers/functions';
+import SuperTable from 'Components/CustomTable/SuperTable';
 
 function getForm(form) {
   return formsApi[form];
 }
+
 function getColumns(table) {
   return table?.map((col) => col.name);
 }
+
 function getAllColumns(table) {
   let columns = [];
   for (const key in table) {
@@ -33,44 +28,30 @@ function getAllColumns(table) {
   }
   return columns;
 }
+
 const CACHE_LIST = {};
+
 const getCachedList = (tableName) => {
   return CACHE_LIST[tableName];
 };
+
 const List = () => {
   const params = useParams();
   const { name } = params;
   const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState(name || "");
-  const [activeStage, setActiveStage] = useState("");
+  const [tab, setTab] = useState(name || '');
+  const [activeStage, setActiveStage] = useState('');
   const [fields, setFields] = useState([]);
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState('');
   const [loading, setLoading] = useState(false);
-  const { dispatchAlert } = useContext(AlertContext);
+  const { dispatchAlert } = useAlert();
   const [reffedTables, setReffedTables] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
-  // const {} = useContext()
   const [itemsPerPage, setItemsPerPage] = useState(20);
-  const [searchKey, setSearchKey] = useState("Name");
+  const [searchKey, setSearchKey] = useState('Name');
   const [selectedList, setSelectedList] = useState({});
-
-  // const {
-  //   isLoading,
-  //   error,
-  //   data: tableData,
-  // } = useQuery(
-  //   "repoData",
-  //   () =>
-  //     axios.post(`/${SERVER_URL}/${name}`, {
-  //       table: name,
-  //       // method: "POST",
-  //       // body: {
-  //       // },
-  //     }) //.then((res) => res.json())
-  // );
-  // console.log(tableData, "queryClient", error, isLoading);
 
   // Get data
   let singleList = useMemo(() => getForm(name?.toLowerCase()), [name]);
@@ -78,7 +59,7 @@ const List = () => {
   const steps = singleList?.steps;
 
   // check if form is more then step
-  const check = useCallback(() => {
+  useEffect(() => {
     if (steps?.length) {
       setActiveStage(steps?.[0]);
       setFields(forms[steps?.[0]]);
@@ -87,58 +68,51 @@ const List = () => {
       setColumns(getColumns(singleList));
       setFields(singleList);
     }
-    setSearchKey(columns.includes("Name") ? "Name" : columns[0]);
-  }, [name]);
-  //
+    setSearchKey(columns.includes('Name') ? 'Name' : columns[0]);
+  }, [steps, forms, columns, singleList]);
+
   const getLists = async (tableName) => {
-    await axios
-      .post(`${SERVER_URL}/list`, {
-        table: tableName,
-      })
-      .then((res) => {
-        CACHE_LIST[tableName] = res?.data?.recordset;
-      });
+    const response = await axios.post(`${SERVER_URL}/list`, {
+      table: tableName,
+    });
+    CACHE_LIST[tableName] = response?.data?.recordset;
   };
+
   const getRefData = async () => {
-    await axios
-      .post(`${SERVER_URL}/checkref`, {
-        table: name,
-      })
-      .then((res) => {
-        let data = res?.data?.recordset;
-        if (data) {
-          let collect = {};
-          for (const item of data) {
-            if (item?.reffedTables !== name) {
-              getLists(item?.Referenced_Table);
-            } else {
-              CACHE_LIST[name] = data;
-            }
-            collect[item?.Column] = item?.Referenced_Table;
-          }
-          setReffedTables(collect);
+    const response = await axios.post(`${SERVER_URL}/checkref`, {
+      table: name,
+    });
+
+    let data = response?.data?.recordset;
+
+    if (data) {
+      let collect = {};
+      for (const item of data) {
+        if (item?.reffedTables !== name) {
+          getLists(item?.Referenced_Table);
+        } else {
+          CACHE_LIST[name] = data;
         }
-      });
+        collect[item?.Column] = item?.Referenced_Table;
+      }
+      setReffedTables(collect);
+    }
   };
 
   const getData = async () => {
     setLoading(true);
+    const response = await axios.post(`${SERVER_URL}/list`, {
+      table: name,
+    });
 
-    axios
-      .post(`${SERVER_URL}/list`, {
-        table: name,
-      })
-      .then((res) => {
-        if (res?.status === 200) {
-          setData(res?.data?.recordset);
-        }
-        setLoading(false);
-      });
+    if (response?.status === 200) {
+      setData(response?.data?.recordset);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
     if (!name) return;
-    check();
     getData();
     getRefData();
   }, [name]);
@@ -149,26 +123,38 @@ const List = () => {
     setOpen(false);
     dispatchAlert({
       open: true,
-      type: "loading",
-      msg: "Loading ...",
+      type: 'loading',
+      msg: 'Loading ...',
     });
+    let columns = [];
+    for (const key in values) {
+      if (values?.[key]) columns.push(key);
+    }
+
     let body = {
       dat: values,
-      columns: Object.keys(values),
+      columns,
       table: name,
     };
     let res = await axios.post(`${SERVER_URL}/create`, {
       ...body,
     });
-    console.log(res);
-    if (res?.statusText === "OK") {
+
+    if (!res?.data?.originalError) {
       dispatchAlert({
         open: true,
-        type: "success",
-        msg: "Added Successfully...",
+        type: 'success',
+        msg: 'Successfully added item in ' + name,
       });
       getData();
+      return true;
     } else {
+      dispatchAlert({
+        open: true,
+        type: 'error',
+        msg: 'Failed to add new item in ' + name,
+      });
+      return false;
     }
   };
 
@@ -191,7 +177,7 @@ const List = () => {
       setFields(forms[tabName]);
       setActiveStage(tabName);
     },
-    [activeStage, fields, tab]
+    [activeStage, fields, tab],
   );
 
   const goNext = useCallback(() => {
@@ -200,7 +186,7 @@ const List = () => {
       setActiveStage(steps?.[index + 1]);
       setFields(forms[steps?.[index + 1]]);
     } else return;
-  }, [fields, activeStage]);
+  }, [activeStage, forms, steps]);
 
   const goBack = useCallback(() => {
     let index = steps?.indexOf(activeStage);
@@ -208,9 +194,8 @@ const List = () => {
       setActiveStage(steps?.[index - 1]);
       setFields(forms[steps?.[index - 1]]);
     } else return;
-  }, [fields, activeStage]);
+  }, [activeStage, forms, steps]);
 
-  console.log(data);
   return (
     <>
       <ConfirmModal

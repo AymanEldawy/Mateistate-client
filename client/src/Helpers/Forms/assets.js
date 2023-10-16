@@ -1,4 +1,4 @@
-import { DropDowns } from "../functions";
+import { DropDowns } from "Helpers/functions";
 
 export const AssetsGroup = [
   // { name: "Number", type: "number", label: "Number", required: false },

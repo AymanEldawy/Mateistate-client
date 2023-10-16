@@ -1,14 +1,15 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-import { Button } from "../Global/Button";
 import CheckboxField from "./CheckboxField";
 import Field from "./Field";
 import InputField from "./InputField";
 import RadioField from "./RadioField";
 import SelectField from "./SelectField";
+import UploadFile from "./UploadFile";
+import { Button } from "Components/Global/Button";
 
 const SuperForm = ({
   onSubmit,
@@ -19,11 +20,12 @@ const SuperForm = ({
   oldValues,
   getCachedList,
 }) => {
+
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
-  // Clean up component
   const location = useLocation();
+  
   useEffect(() => {
     setErrors({});
     setTouched({});
@@ -33,6 +35,7 @@ const SuperForm = ({
       setValues({});
     }
   }, [location?.pathname, oldValues]);
+  
   // useEffect(() => {
   //   if (oldValues) {
   //     setValues(oldValues);
@@ -53,6 +56,7 @@ const SuperForm = ({
       setErrors(newErrors);
     }
   };
+  
   const onTouched = (name) => {
     if (touched[name]) return;
     setTouched((prev) => {
@@ -62,6 +66,7 @@ const SuperForm = ({
       };
     });
   };
+  
   const handelChangeField = (name, value, required) => {
     if (required) {
       insertIntoErrors(name, value);
@@ -73,15 +78,31 @@ const SuperForm = ({
       };
     });
   };
-  const submit = (e) => {
+
+  const handelFieldUpload = (name, e, required) => {
+    if (required) {
+      // insertIntoErrors(name, value);
+    }
+    setValues((prev) => {
+      return {
+        ...prev,
+        [name]: e.target.files[0],
+      };
+    });
+  };
+
+  const submit = async (e) => {
     e.preventDefault();
     if (!errors.length) {
-      onSubmit(values);
-      if (goNext) {
-        goNext();
+      const res = await onSubmit(values);
+      if (res) {
+        setValues({});
+        setErrors({});
+        setTouched({});
       }
     }
   };
+  
   return (
     <form onSubmit={submit} className="mb-8">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
@@ -174,6 +195,27 @@ const SuperForm = ({
                     }
                   />
                 );
+              } else if (field?.key === "image") {
+                return (
+                  <UploadFile
+                    containerClassName="col-span-2"
+                    src={values?.[field?.name]}
+                    index={i}
+                    name={field?.name}
+                    readonly={field?.readonly}
+                    label={field?.name}
+                    onFocus={() => onTouched(field?.name)}
+                    required={field?.required}
+                    error={
+                      touched[field?.name] && errors[field?.name]
+                        ? errors[field?.name]
+                        : null
+                    }
+                    onChange={(e) =>
+                      handelFieldUpload(field?.name, e, field?.required)
+                    }
+                  />
+                );
               } else if (field?.key === "checkbox") {
                 return (
                   <CheckboxField
@@ -231,7 +273,7 @@ const SuperForm = ({
           <Button title="Back" onClick={goBack} type="button" />
         ) : null}
         {!!goNext && allowSteps ? (
-          <Button type="button" title="Next" onClick={submit} />
+          <Button type="button" title="Next" onClick={goNext} />
         ) : (
           <Button type="submit" title="Submit" />
         )}

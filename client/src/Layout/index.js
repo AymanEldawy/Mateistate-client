@@ -1,32 +1,31 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { useContext } from "react";
-import Alert from "../Components/Alert/Alert";
-import Backdrop from "../Components/Backdrop/Backdrop";
-import PopupForm from "../Components/PopupForm/PopupForm";
-import { AlertContext } from "../Context/AlertContext";
-import { PopupFormContext } from "../Context/PopupFormContext";
-import Footer from "./Footer";
-import Header from "./Header";
-import Menu from "./Menu";
-import Sidebar from "./Sidebar";
-// import Sidebar from "./Sidebar";
+import React, { useState, useEffect } from 'react';
+import Header from './Header';
+import Menu from './Menu';
+import Sidebar from './Sidebar';
+import Footer from './Footer';
+import { useAlert } from 'Context/AlertContext';
+import Alert from 'Components/Alert/Alert';
+import PopupForm from 'Components/PopupForm/PopupForm';
+import Backdrop from 'Components/Backdrop/Backdrop';
 
 const Layout = ({ children }) => {
-  const [mode, setMode] = useState("dark");
+  const [mode, setMode] = useState('dark');
   const [open, setOpen] = React.useState(false);
-  const { alertMessage, dispatchAlert } = useContext(AlertContext);
+  const { alertMessage, dispatchAlert } = useAlert();
+
   let resize = () => {
     if (window.innerWidth > 1024 && open) {
       setOpen(false);
     }
   };
+
   useEffect(() => {
-    window.addEventListener("resize", resize);
+    window.addEventListener('resize', resize);
     return () => {
-      window.removeEventListener("resize", resize);
+      window.removeEventListener('resize', resize);
     };
   }, []);
+
   return (
     <React.Fragment>
       <div id="layout-wrapper" className="flex flex-col h-screen">

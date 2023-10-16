@@ -1,4 +1,4 @@
-import { DropDowns } from "../functions";
+import { DropDowns } from "Helpers/functions";
 
 const Building_General_information = [
   // shared

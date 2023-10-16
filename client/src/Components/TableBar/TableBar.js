@@ -1,10 +1,7 @@
-import React from "react";
-import { useState } from "react";
 
-import { ChevronIcon, TrashIcon } from "../../Helpers/Icons";
-import Backdrop from "../Backdrop/Backdrop";
-import SelectField from "../CustomForm/SelectField";
-import SearchBar from "../SearchBar/SearchBar";
+import { TrashIcon } from "Helpers/Icons";
+import SelectField from "Components/CustomForm/SelectField";
+import SearchBar from "Components/SearchBar/SearchBar";
 import { useTranslation } from "react-i18next";
 
 export const TableBar = ({

@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React, { createContext, useContext } from "react";
 import { useState } from "react";
 
 export const AlertContext = createContext();
@@ -18,4 +18,8 @@ export const AlertProvider = ({ children }) => {
       {children}
     </AlertContext.Provider>
   );
+};
+
+export const useAlert = () => {
+  return useContext(AlertContext);
 };

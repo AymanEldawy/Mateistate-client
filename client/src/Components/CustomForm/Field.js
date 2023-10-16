@@ -1,12 +1,13 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useContext } from "react";
 import { useCallback } from "react";
-import { ListsGuidsContext } from "../../Context/ListsGuidsContext";
-import { PopupFormContext } from "../../Context/PopupFormContext";
-import { PlusIcon } from "../../Helpers/Icons";
-import { AlertContext } from "../../Context/AlertContext";
-import { SERVER_URL } from "../../Helpers/functions";
+import { useGuidList } from "Context/ListsGuidsContext";
+import { usePopupForm } from "Context/PopupFormContext";
+import { PlusIcon } from "Helpers/Icons";
+import { useAlert } from "Context/AlertContext";
+import { SERVER_URL } from "Helpers/functions";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+
 const Field = ({
   table,
   tableForHashed,
@@ -24,14 +25,16 @@ const Field = ({
   allowSelect,
   ...field
 }) => {
+  
   const [value, setValue] = useState("");
   const [listFilter, setListFilter] = useState([]);
   const [list, setList] = useState([]);
   const [selected, setSelected] = useState("");
   const [dropdown, setDropdown] = useState(false);
-  const { dispatchForm } = useContext(PopupFormContext);
-  const { addTableList, lists, getGuidName } = useContext(ListsGuidsContext);
-  const { dispatchAlert } = useContext(AlertContext);
+  const { dispatchForm } = usePopupForm();
+  const { addTableList, lists, getGuidName } = useGuidList();
+  const { dispatchAlert } = useAlert();
+
   useEffect(() => {
     if (table) {
       async function fetch() {

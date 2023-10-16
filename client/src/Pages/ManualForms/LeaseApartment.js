@@ -1,39 +1,31 @@
-import axios from "axios";
-import React, { useContext } from "react";
-import { useMemo } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
-import { useCallback } from "react";
-import { useParams } from "react-router-dom";
+import axios from 'axios';
+import { useMemo, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-import BlockPaper from "../../Components/BlockPaper/BlockPaper";
-import SuperForm from "../../Components/CustomForm/SuperForm";
-import SuperTable from "../../Components/CustomTable/SuperTable";
-import TableForm from "../../Components/Forms/TableForm/TableForm";
-import { Button } from "../../Components/Global/Button";
-import FormHeadingTitleSteps from "../../Components/Global/FormHeadingTitleSteps";
-import Modal from "../../Components/Modal/Modal";
-import { TableBar } from "../../Components/TableBar/TableBar";
-import { AlertContext } from "../../Context/AlertContext";
-import formsApi from "../../Helpers/Forms/formsApi";
-import Layout from "../../Layout";
-import { SERVER_URL } from "../../Helpers/functions";
+import BlockPaper from 'Components/BlockPaper/BlockPaper';
+import SuperForm from 'Components/CustomForm/SuperForm';
+import TableForm from 'Components/Forms/TableForm/TableForm';
+import FormHeadingTitleSteps from 'Components/Global/FormHeadingTitleSteps';
+import Modal from 'Components/Modal/Modal';
+import { useAlert } from 'Context/AlertContext';
+import formsApi from 'Helpers/Forms/formsApi';
+import { SERVER_URL } from 'Helpers/functions';
 
 const LeaseApartment = () => {
   const params = useParams();
   const { name } = params;
-  const [tab, setTab] = useState(name || "");
-  const [activeStage, setActiveStage] = useState("");
+  const [tab, setTab] = useState(name || '');
+  const [activeStage, setActiveStage] = useState('');
   const [index, setIndex] = useState();
   const [fields, setFields] = useState([]);
   const [loading, setLoading] = useState(false);
   const [allValues, setAllValues] = useState({});
   const [childrenValues, setChildrenValues] = useState({});
-  const { alertMessage, dispatchAlert } = useContext(AlertContext);
+  const { alertMessage, dispatchAlert } = useAlert();
   const [openModalForm, setOpenModalForm] = useState(false);
 
   // Get data
-  let singleList = useMemo(() => formsApi["leaseapartment"], [name]);
+  let singleList = useMemo(() => formsApi['leaseapartment'], [name]);
   const steps = singleList?.steps;
   const forms = singleList?.forms;
   useEffect(() => {
@@ -97,7 +89,7 @@ const LeaseApartment = () => {
         dat: allValues,
         children: childrenValues,
         columns: Object.keys(allValues),
-        table: "LeaseApartment",
+        table: 'LeaseApartment',
       };
       let res = await axios.post(`${SERVER_URL}/create`, {
         ...body,
@@ -124,11 +116,11 @@ const LeaseApartment = () => {
         />
       </div>
       <div className="h-5" />
-      {activeStage === "payments" ||
-      activeStage === "Related parking contracts" ||
-      activeStage === "Other fees" ||
-      activeStage === "Termination fines" ||
-      activeStage === "Log file" ? (
+      {activeStage === 'payments' ||
+      activeStage === 'Related parking contracts' ||
+      activeStage === 'Other fees' ||
+      activeStage === 'Termination fines' ||
+      activeStage === 'Log file' ? (
         <>
           <Modal open={openModalForm} onClose={() => setOpenModalForm(false)}>
             <SuperForm initialFields={fields} onSubmit={onPopupFormSubmit} />

@@ -1,19 +1,17 @@
 import axios from "axios";
-import React from "react";
 import { useMemo } from "react";
-import { useContext } from "react";
 
-import { AlertContext } from "../../Context/AlertContext";
-import { PopupFormContext } from "../../Context/PopupFormContext";
-import formsApi from "../../Helpers/Forms/formsApi";
-import SuperForm from "../CustomForm/SuperForm";
-import FormHeadingTitle from "../Global/FormHeadingTitle";
-import Modal from "../Modal/Modal";
-import { SERVER_URL } from "../../Helpers/functions";
+import { useAlert } from "Context/AlertContext";
+import formsApi from "Helpers/Forms/formsApi";
+import SuperForm from "Components/CustomForm/SuperForm";
+import FormHeadingTitle from "Components/Global/FormHeadingTitle";
+import Modal from "Components/Modal/Modal";
+import { usePopupForm } from "Context/PopupFormContext";
+import { SERVER_URL } from "Helpers/functions";
 
 const PopupForm = () => {
-  const { openForm, dispatchForm } = useContext(PopupFormContext);
-  const { dispatchAlert } = useContext(AlertContext);
+  const { openForm, dispatchForm } = usePopupForm();
+  const { dispatchAlert } = useAlert();
   const { table, open } = openForm;
   let initialFields = useMemo(() => formsApi[table?.toLowerCase()], [table]);
   // Handel Submit

@@ -1,6 +1,6 @@
+import { Button } from "Components/Global/Button";
+import Modal from "Components/Modal/Modal";
 import React from "react";
-import { Button } from "../Global/Button";
-import Modal from "../Modal/Modal";
 import { useTranslation } from "react-i18next";
 
 const ConfirmModal = ({ open, setOpen, onConfirm }) => {

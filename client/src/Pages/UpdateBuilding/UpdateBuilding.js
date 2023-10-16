@@ -1,14 +1,10 @@
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 
-import BlockPaper from "../../Components/BlockPaper/BlockPaper";
-import SuperForm from "../../Components/CustomForm/SuperForm";
-import FormHeadingTitleSteps from "../../Components/Global/FormHeadingTitleSteps";
-import { AlertContext } from "../../Context/AlertContext";
-import formsApi from "../../Helpers/Forms/formsApi";
-// import { checkApartments, generateApartments } from "../../Helpers/functions";
-import { SERVER_URL } from "./../../Helpers/functions";
+import BlockPaper from "Components/BlockPaper/BlockPaper";
+import SuperForm from "Components/CustomForm/SuperForm";
+import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
+import formsApi from "Helpers/Forms/formsApi";
 
 // Cache apartments
 const REQUIRED_COLUMNS_TO_CACHE = {
@@ -46,7 +42,6 @@ const UpdateBuilding = () => {
   //   const [tab, setTab] = useState(name || "");
   const [activeStage, setActiveStage] = useState("");
   const [fields, setFields] = useState([]);
-  const { dispatchAlert } = useContext(AlertContext);
   // Get data
   let singleList = formsApi["building"];
   const forms = singleList?.forms;

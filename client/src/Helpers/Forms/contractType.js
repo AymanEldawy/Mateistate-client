@@ -1,4 +1,4 @@
-const { DropDowns } = require("../functions");
+const { DropDowns } = require("Helpers/functions");
 
 export const ContractType = [
   // {

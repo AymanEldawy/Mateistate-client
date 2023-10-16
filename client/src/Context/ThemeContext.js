@@ -1,14 +1,14 @@
-import React, { createContext } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { createContext, useContext } from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 export const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState('light');
 
   const changeTheme = () => {
-    if (theme == "dark") setTheme("light");
-    else setTheme("dark");
+    if (theme === 'dark') setTheme('light');
+    else setTheme('dark');
   };
 
   useEffect(() => {
@@ -25,3 +25,5 @@ export const ThemeProvider = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
+
+export const useTheme = () => useContext(ThemeContext);

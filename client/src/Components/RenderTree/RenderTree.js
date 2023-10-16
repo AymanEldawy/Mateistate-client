@@ -2,21 +2,22 @@ import React, { useCallback } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 
-import formsApi from "../../Helpers/Forms/formsApi";
+import formsApi from "Helpers/Forms/formsApi";
 import {
   FolderEmptyIcon,
   FolderMinusIcon,
   FolderPlusIcon,
-} from "../../Helpers/Icons";
-import SuperForm from "../CustomForm/SuperForm";
-import FormHeadingTitle from "../Global/FormHeadingTitle";
-import Modal from "../Modal/Modal";
+} from "Helpers/Icons";
+import SuperForm from "Components/CustomForm/SuperForm";
+import FormHeadingTitle from "Components/Global/FormHeadingTitle";
+import Modal from "Components/Modal/Modal";
 import TreeViewItem from "./TreeViewItem";
 
 const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [open, setOpen] = useState({});
   const [fields, setFields] = useState([]);
+  
   useEffect(() => {
     setFields(formsApi[name?.toLowerCase()]);
   }, []);

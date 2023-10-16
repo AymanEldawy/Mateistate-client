@@ -1,4 +1,4 @@
-import { DropDowns } from "../functions";
+import { DropDowns } from "Helpers/functions";
 
 const LeaseApartment_Contract_information = [
   { name: "ContractNo", type: "text", label: "ContractNo", required: false },

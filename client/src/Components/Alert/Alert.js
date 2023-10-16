@@ -1,11 +1,9 @@
-import React from "react";
 
-import { CheckIcon, ExclamationTriangle, HandStopIcon, HourglassIcon, InformationIcon, NotAllowIcon } from "../../Helpers/Icons";
-import Modal from "../Modal/Modal";
+import Modal from "Components/Modal/Modal";
+import { CheckIcon, ExclamationTriangle, HourglassIcon, InformationIcon, NotAllowIcon } from "Helpers/Icons";
 
 const Alert = ({ alertMessage, dispatchAlert }) => {
-  // console.log(alertMessage, dispatchAlert);
-  // if(!alertMessage) return;
+  
   const alertType = (alert) => {
     // eslint-disable-next-line default-case
     switch (alert?.type) {

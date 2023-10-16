@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { EditIcon, PlusIcon, TrashIcon } from "../../Helpers/Icons";
-import ConfirmModal from "../ConfirmModal/ConfirmModal";
-import { Button } from "../Global/Button";
-import Modal from "../Modal/Modal";
+import { EditIcon, PlusIcon, TrashIcon } from "Helpers/Icons";
+import ConfirmModal from "Components/ConfirmModal/ConfirmModal";
 import { useTranslation } from "react-i18next";
 
 const TreeViewItem = ({

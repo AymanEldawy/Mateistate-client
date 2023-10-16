@@ -1,30 +1,25 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
-import BlockPaper from "../../Components/BlockPaper/BlockPaper";
-import SuperForm from "../../Components/CustomForm/SuperForm";
-import TableForm from "../../Components/Forms/TableForm/TableForm";
-import { Button } from "../../Components/Global/Button";
-import ContentBar from "../../Components/Global/ContentBar/ContentBar";
-import formsApi from "../../Helpers/Forms/formsApi";
+import BlockPaper from "Components/BlockPaper/BlockPaper";
+import TableForm from "Components/Forms/TableForm/TableForm";
+import { Button } from "Components/Global/Button";
+import ContentBar from "Components/Global/ContentBar/ContentBar";
+import formsApi from "Helpers/Forms/formsApi";
 import {
   generateApartments,
-  getPrefix,
-  getValueOfInputColor,
-  hexToDecimal,
-  SERVER_URL,
-} from "../../Helpers/functions";
+  getPrefix, hexToDecimal,
+  SERVER_URL
+} from "Helpers/functions";
 import {
-  CloseIcon,
-  LockIcon,
-  NotAllowIcon,
-  PlusIcon,
-} from "../../Helpers/Icons";
-import MinusIcon from "../../Helpers/Icons/MinusIcon";
-import Loading from "./../../Components/Loading/Loading";
+  LockIcon, PlusIcon
+} from "Helpers/Icons";
+import MinusIcon from "Helpers/Icons/MinusIcon";
+import Loading from "Components/Loading/Loading";
 import ToolsTabs from "./ToolsTabs";
+
 
 const CACHE_UPDATES_COLORS = {};
 const CACHE_UPDATES_Apartments = {};

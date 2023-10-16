@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { memo } from "react";
+import React, { useCallback, useEffect, useState } from 'react';
+import { memo } from 'react';
 
-import { getValueOfInputColor } from "../../../Helpers/functions";
-import Field from "../../CustomForm/Field";
-import InputField from "../../CustomForm/InputField";
-import Table from "../../CustomTable/Table";
-import TableBody from "../../CustomTable/TableBody";
-import TableCol from "../../CustomTable/TableCol";
-import TableHead from "../../CustomTable/TableHead";
-import TableHeadCol from "../../CustomTable/TableHeadCol";
-import TableRow from "../../CustomTable/TableRow";
-import { Button } from "../../Global/Button";
+import { getValueOfInputColor } from 'Helpers/functions';
+import Field from 'Components/CustomForm/Field';
+import InputField from 'Components/CustomForm/InputField';
+import Table from 'Components/CustomTable/Table';
+import TableBody from 'Components/CustomTable/TableBody';
+import TableCol from 'Components/CustomTable/TableCol';
+import TableHead from 'Components/CustomTable/TableHead';
+import TableHeadCol from 'Components/CustomTable/TableHeadCol';
+import TableRow from 'Components/CustomTable/TableRow';
+import { Button } from 'Components/Global/Button';
 
 const TableForm = ({
   onOpen,
@@ -63,8 +63,9 @@ const TableForm = ({
       }
       // console.log(index)
     },
-    [grid]
+    [grid],
   );
+
   const submit = () => {
     onSubmit(grid);
   };
@@ -73,7 +74,7 @@ const TableForm = ({
     <>
       <Table
         className={`${
-          columns?.length > 5 ? "" : "max-w-[900px]"
+          columns?.length > 5 ? '' : 'max-w-[900px]'
         } mx-auto pb-8 overflow-auto max-h-[420px] dark:border-borderdark`}
       >
         <TableHead classes="dark:bg-[##5490d3] !bg-[#5490d3] text-white dark:text-gray-200">
@@ -98,9 +99,9 @@ const TableForm = ({
                 classes={
                   !!onSelectColor
                     ? selectedColor === index + 1
-                      ? "bg-gray-200"
-                      : ""
-                    : ""
+                      ? 'bg-gray-200'
+                      : ''
+                    : ''
                 }
               >
                 <TableCol classes="max-w-fit !p-0 border dark:border-borderdark text-center">
@@ -131,7 +132,7 @@ const TableForm = ({
                     classes="!p-0 border  dark:border-borderdark text-center"
                     key={field?.name}
                   >
-                    {field?.key === "unique" ? (
+                    {field?.key === 'unique' ? (
                       <Field
                         value={grid?.[index + 1]?.[field?.name]}
                         className="min-w-[140px] !border-0 !rounded-none !h-full !bg-transparent"
@@ -145,14 +146,14 @@ const TableForm = ({
                     ) : (
                       <InputField
                         value={
-                          field?.type === "color"
+                          field?.type === 'color'
                             ? getValueOfInputColor(
-                                grid?.[index + 1]?.[field?.name]
+                                grid?.[index + 1]?.[field?.name],
                               )
                             : grid?.[index + 1]?.[field?.name]
                         }
                         className={`!border-0 !rounded-none !bg-transparent ${
-                          field?.type === "color" ? "" : "!h-full"
+                          field?.type === 'color' ? '' : '!h-full'
                         }`}
                         name={field?.name}
                         type={field?.type}
@@ -161,7 +162,7 @@ const TableForm = ({
                           handelChangeField(
                             index + 1,
                             field?.name,
-                            e.target.value
+                            e.target.value,
                           );
                         }}
                       />

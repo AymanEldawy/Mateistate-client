@@ -1,16 +1,16 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useContext } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-import BlockPaper from "../../Components/BlockPaper/BlockPaper";
-import RenderTree from "../../Components/RenderTree/RenderTree";
-import { AlertContext } from "../../Context/AlertContext";
-import { SERVER_URL } from "../../Helpers/functions";
+import BlockPaper from "Components/BlockPaper/BlockPaper";
+import RenderTree from "Components/RenderTree/RenderTree";
+import { useAlert } from "Context/AlertContext";
+import { SERVER_URL } from "Helpers/functions";
 import { useTranslation } from "react-i18next";
-import Loading from "./../../Components/Loading/Loading";
+import Loading from "Components/Loading/Loading";
 
 function toTree(data, pid = null) {
+  
   return data?.reduce((r, e) => {
     if (e.ParentGUID == pid) {
       const obj = { ...e };
@@ -29,7 +29,7 @@ const Chart = () => {
   const [chartTree, setChartTree] = useState();
   const params = useParams();
   const { name } = params;
-  const { dispatchAlert } = useContext(AlertContext);
+  const { dispatchAlert } = useAlert();
   const getData = async () => {
     setLoading(true);
     await axios
