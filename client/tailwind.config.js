@@ -6,7 +6,7 @@ module.exports = {
     // extend: {},
     colors: ({ colors }) => ({
       ...colors,
-      primary: "",
+      primary: "#144479",
       secondary: "",
       secondarydark: "#aaaaaa",
       bgmaindark: "#212121",
