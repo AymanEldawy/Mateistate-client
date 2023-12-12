@@ -7,13 +7,12 @@ import { useLocation, useParams } from "react-router-dom";
 import BlockPaper from "Components/BlockPaper/BlockPaper";
 import SuperForm from "Components/CustomForm/SuperForm";
 import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
-import { useAlert } from "../../Context/AlertContext";
-import formsApi from "Helpers/Forms/formsApi";
-import { SERVER_URL, generateApartments } from "Helpers/functions";
+import { getForm } from "Helpers/constants";
+import { generateApartments, SERVER_URL } from "Helpers/functions";
+import { ApiActions } from "Helpers/Lib/api";
 
-function getForm(form) {
-  return formsApi[form];
-}
+import { useAlert } from "../../Hooks/useAlert";
+
 const Update = () => {
   const params = useParams();
   const location = useLocation();
@@ -23,8 +22,7 @@ const Update = () => {
   const [tab, setTab] = useState(name || "");
   const [activeStage, setActiveStage] = useState("");
   const [fields, setFields] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const { alertMessage, dispatchAlert } = useAlert();
+  const { dispatchAlert } = useAlert();
   // Get data
   let singleList = useMemo(() => getForm(name?.toLowerCase()), [name]);
   const forms = singleList?.forms;
@@ -51,20 +49,20 @@ const Update = () => {
         newValues[key] = values[key];
       }
     }
-    delete newValues["Number"];
-    delete newValues["Guid"];
-    let columns = Object.keys(newValues);
+    delete newValues["number"];
+    delete newValues["guid"];
 
     let body = {
-      dat: newValues,
-      columns,
-      table: name,
-      num: id,
+      conditions: [
+        { type: "and", conditions: [["guid", "=", id]] },
+      ],
+      updates: newValues,
     };
 
-    let res = await axios.post(`${SERVER_URL}/update`, {
-      ...body,
+    let res = await ApiActions.update(name, {
+      body,
     });
+
     if (res?.statusText === "OK") {
       dispatchAlert({
         open: true,

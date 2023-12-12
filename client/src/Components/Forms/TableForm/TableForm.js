@@ -61,7 +61,6 @@ const TableForm = ({
       if (!!setGetIndexOfRowUpdated) {
         setGetIndexOfRowUpdated(index);
       }
-      // console.log(index)
     },
     [grid],
   );
@@ -109,15 +108,12 @@ const TableForm = ({
                     <button
                       className="hover:bg-gray-200 hover:font-medium block w-full p-2"
                       onClick={() => {
-                        // console.log("run...", index, selectedColor);
-                        // console.log(grid?.[index + 1]);
                         if (onOpen) {
                           onOpen();
                           setIndex(index + 1);
                         }
                         if (!!onSelectColor && grid?.[index]?.Color) {
                           onSelectColor(index + 1);
-                          // console.log(grid?.[index]?.Color)
                         }
                       }}
                     >

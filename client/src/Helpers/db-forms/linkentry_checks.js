@@ -1,0 +1,2 @@
+
+  export const linkentry_checks = [{"name":"checkguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"entryguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"entrynum","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"kind","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"trial715","type":"character","default_value":null,"required":false,"hide_in":""}]

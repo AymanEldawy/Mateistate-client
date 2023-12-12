@@ -1,0 +1,2 @@
+
+  export const oldyearconfig = [{"name":"number","type":"integer","default_value":"nextval('oldyearconfig_number_seq1'::regclass)","required":true,"hide_in":""},{"name":"dbname","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"beginentryno","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"trial143","type":"character","default_value":null,"required":false,"hide_in":""}]

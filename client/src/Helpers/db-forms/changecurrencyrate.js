@@ -1,0 +1,65 @@
+import { DropDowns } from "Helpers/functions";
+
+export const changecurrencyrate = [
+  {
+    name: "number",
+    type: "integer",
+    default_value: "nextval('changecurrencyrate_number_seq1'::regclass)",
+    required: true,
+    hide_in: "",
+  },
+  {
+    name: "guid",
+    type: "uuid",
+    default_value: null,
+    required: true,
+    is_ref: true,
+    ref_table: "changecurrencyrate",
+    ref_col: "guid",
+    ref_name: "",
+    hide_in: "",
+  },
+  {
+    name: "seclvl",
+    key: "select",
+    list: DropDowns("seclvl"),
+    default_value: null,
+    required: false,
+    hide_in: "",
+  },
+  {
+    name: "date",
+    type: "date",
+    default_value: null,
+    required: false,
+    hide_in: "",
+  },
+  {
+    name: "currencyguid",
+    type: "uuid",
+    default_value: null,
+    required: false,
+    hide_in: "",
+  },
+  {
+    name: "rate",
+    type: "double precision",
+    default_value: null,
+    required: false,
+    hide_in: "",
+  },
+  {
+    name: "note",
+    type: "character varying",
+    default_value: null,
+    required: false,
+    hide_in: "",
+  },
+  {
+    name: "trial540",
+    type: "character",
+    default_value: null,
+    required: false,
+    hide_in: "",
+  },
+];

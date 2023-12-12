@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 import BlockPaper from "Components/BlockPaper/BlockPaper";
 import RenderTree from "Components/RenderTree/RenderTree";
-import { useAlert } from "Context/AlertContext";
+import { useAlert } from "Hooks/useAlert";
 import { SERVER_URL } from "Helpers/functions";
 import { useTranslation } from "react-i18next";
 import Loading from "Components/Loading/Loading";
@@ -50,7 +50,6 @@ const Chart = () => {
         guids: itemGuid,
       })
       .then((res) => {
-        console.log(res);
         getData();
       });
   };
@@ -85,7 +84,6 @@ const Chart = () => {
     }
   };
 
-  console.log(chartTree);
   return (
     <BlockPaper title={t("chart")}>
       {!loading ? (

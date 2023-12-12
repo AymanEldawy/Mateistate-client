@@ -1,0 +1,2 @@
+
+  export const queryfeature = [{"name":"no","type":"integer","default_value":"nextval('queryfeature_no_seq1'::regclass)","required":true,"hide_in":""},{"name":"id","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"value","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"trial476","type":"character","default_value":null,"required":false,"hide_in":""}]

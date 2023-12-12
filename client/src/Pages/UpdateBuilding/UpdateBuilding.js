@@ -56,7 +56,6 @@ const UpdateBuilding = () => {
       setFields(singleList);
     }
     insertIntoCache(row);
-    console.log(CACHE_APARTMENTS);
   }, [row, forms, steps, singleList]);
   // Handel Submit
   const onSubmit = async (values) => {
@@ -64,7 +63,6 @@ const UpdateBuilding = () => {
     let newValues = {};
     for (const key in values) {
       if (REQUIRED_COLUMNS_TO_CACHE[key]) {
-        console.log(CACHE_APARTMENTS[key], values[key]);
         // eslint-disable-next-line eqeqeq
         if (CACHE_APARTMENTS[key] != values[key]) {
           REQUIRED_COLUMNS_TO_CACHE[key].updated = true;
@@ -79,7 +77,6 @@ const UpdateBuilding = () => {
       }
     }
     // checkApartments(REQUIRED_COLUMNS_TO_CACHE, row?.Guid);
-    console.log(REQUIRED_COLUMNS_TO_CACHE);
     delete newValues["Number"];
     delete newValues["Guid"];
     let columns = Object.keys(newValues);

@@ -15,10 +15,10 @@ export const ContractType = [
   },
   {
     required: false,
-    label: "SecLvl",
+    label: "seclvl",
     name: "seclvl",
     key: "select",
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   {
     required: false,

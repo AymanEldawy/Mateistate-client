@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
-import { useAlert } from "Context/AlertContext";
+import { useAlert } from "Hooks/useAlert";
 import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import { SERVER_URL } from "Helpers/functions";
 

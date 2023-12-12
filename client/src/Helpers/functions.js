@@ -54,7 +54,7 @@ export function DropDowns(key) {
       { id: 0, name: "New" },
       { id: 1, name: "Renew" },
     ],
-    SecLvl: [
+    seclvl: [
       { id: 0, name: "Admin" },
       { id: 1, name: "User" },
     ],
@@ -124,8 +124,6 @@ const insertIntoApartments = async (tabName, data, guid) => {
     columns: columns,
     values: values,
   });
-  console.log(res);
-  // console.log(tabName, tabNames[tabName], data);
 };
 
 // const deleteFromApartments = async (count, Guid, tabName) => {
@@ -138,12 +136,9 @@ const insertIntoApartments = async (tabName, data, guid) => {
 //   let deleted = await axios
 //     .post(`${SERVER_URL}/delete-all`)
 //     .then((res) => {
-//       console.log(res);
 //     })
 //     .catch((err) => {
-//       console.log(err);
 //     });
-//   console.log("---a", count, tabName, Guid, deleted);
 // };
 
 export const generateApartments = async (data, guid) => {
@@ -172,20 +167,17 @@ export const generateApartments = async (data, guid) => {
       }
       columns.push("BuildingGuid");
       values.push(guid);
-      console.log(columns, values);
       await axios.post(`${SERVER_URL}/createNewApartments`, {
         table,
         columns: columns,
         values: values,
       });
-      // console.log(res);
     }
   }
 };
 
 export const getPrefix = (tab) => {
   let tabSplit = tab?.split(" ");
-  console.log(tab, tabSplit);
   if (tabSplit?.length > 1)
     return `${tabSplit?.[0]?.[0]}${tabSplit?.[1]?.[0]?.toUpperCase()}`;
   else return tab[0];
@@ -273,7 +265,6 @@ export const getPrefix = (tab) => {
 // let collectApartments = {};
 
 // export const checkApartments = async (columns, Guid) => {
-//   console.log(columns);
 //   for (const col in columns) {
 //     collectApartments = {
 //       ...collectApartments,
@@ -284,7 +275,6 @@ export const getPrefix = (tab) => {
 //       },
 //     };
 //   }
-//   console.log("go", collectApartments, columns);
 
 //   for (const key in collectApartments) {
 //     let item = collectApartments[key];
@@ -300,9 +290,7 @@ export const getPrefix = (tab) => {
 //         deleteFromApartments(count, Guid, key);
 //       } else {
 //         let count = old === 1 ? newVal + 1 : newVal;
-//         console.log(count);
 //         count -= old;
-//         console.log(count);
 //         // for (let index = 0; index < count; index++) {
 //         //   await insertIntoApartments(
 //         //     Guid,
@@ -310,20 +298,14 @@ export const getPrefix = (tab) => {
 //         //     "new " + index
 //         //   );
 //         // }
-//         console.log("update");
 //       }
 
-//       console.log("old", old);
-//       console.log("newVal", newVal);
 //     } else {
 //       let oldX = parseInt(item?.oldx) === 0 ? 1 : parseInt(item?.oldx);
 //       let x = parseInt(item?.x) === 0 ? 1 : parseInt(item?.x);
 //       if (oldX > x) {
-//         console.log("delete", item);
 //       } else {
-//         console.log("update", item);
 //       }
 //     }
 //   }
-//   console.log(collectApartments);
 // };

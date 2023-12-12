@@ -265,7 +265,7 @@
   "AddPercent": "AddPercent",
   "AddValue": "AddValue",
   "Number": "Number",
-  "SecLvl": "SecLvl",
+  "seclvl": "seclvl",
   "LtnName": "LtnName",
   "Nationality": "Nationality",
   "LtnNationality": "LtnNationality",

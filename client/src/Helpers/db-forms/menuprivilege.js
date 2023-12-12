@@ -1,0 +1,2 @@
+
+  export const menuprivilege = [{"name":"number","type":"integer","default_value":"nextval('menuprivilege_number_seq1'::regclass)","required":true,"hide_in":""},{"name":"userguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"menuname","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"trial051","type":"character","default_value":null,"required":false,"hide_in":""}]

@@ -1,0 +1,2 @@
+
+  export const reportsort = [{"name":"userguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"reportname","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"sortvalue","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"trial675","type":"character","default_value":null,"required":false,"hide_in":""}]

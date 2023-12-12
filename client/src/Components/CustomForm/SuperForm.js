@@ -3,13 +3,15 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
+import { Button } from "Components/Global/Button";
+import { IGNORED_Fields } from "Helpers/constants";
+
 import CheckboxField from "./CheckboxField";
 import Field from "./Field";
 import InputField from "./InputField";
 import RadioField from "./RadioField";
 import SelectField from "./SelectField";
 import UploadFile from "./UploadFile";
-import { Button } from "Components/Global/Button";
 
 const SuperForm = ({
   onSubmit,
@@ -71,6 +73,8 @@ const SuperForm = ({
     if (required) {
       insertIntoErrors(name, value);
     }
+    if(name === 'seclvl')
+      value = +value
     setValues((prev) => {
       return {
         ...prev,
@@ -108,6 +112,7 @@ const SuperForm = ({
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
         {!!initialFields
           ? initialFields?.map((field, i) => {
+              if(IGNORED_Fields?.includes(field.name)) return;
               if (field?.key === "input") {
                 return (
                   <InputField
@@ -115,7 +120,7 @@ const SuperForm = ({
                     key={`${field?.name}`}
                     type={field?.type}
                     name={field?.name}
-                    label={field?.label}
+                    label={field?.name}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
                     error={
@@ -132,15 +137,15 @@ const SuperForm = ({
                     }
                   />
                 );
-              } else if (field?.key === "unique") {
+              } else if (field?.is_ref) {
                 return (
                   <Field
                     value={values?.[field?.name]}
-                    table={field?.table}
+                    table={field?.ref_table}
                     key={`${field?.name}`}
-                    list={!!getCachedList ? getCachedList(field?.table) : []}
+                    list={!!getCachedList ? getCachedList(field?.ref_table) : []}
                     type={field?.type}
-                    label={field?.label}
+                    label={field?.name}
                     name={field?.name}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
@@ -152,7 +157,7 @@ const SuperForm = ({
                   <RadioField
                     defaultChecked={values?.[field?.name]}
                     key={`${field?.name}`}
-                    label={field?.label}
+                    label={field?.name}
                     name={field?.name}
                     required={field?.required}
                     onFocus={() => onTouched(field?.name)}
@@ -177,7 +182,7 @@ const SuperForm = ({
                     defaultValue={values?.[field?.name]}
                     key={`${field?.name}`}
                     name={field?.name}
-                    label={field?.label}
+                    label={field?.name}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
                     list={field?.list}
@@ -186,6 +191,7 @@ const SuperForm = ({
                         ? errors[field?.name]
                         : null
                     }
+                    value={values?.[field?.name]}
                     onChange={(e) =>
                       handelChangeField(
                         field?.name,
@@ -221,7 +227,7 @@ const SuperForm = ({
                   <CheckboxField
                     defaultChecked={values?.[field?.name]}
                     key={`${field?.name}`}
-                    label={field?.label}
+                    label={field?.name}
                     name={field?.name}
                     required={field?.required}
                     onFocus={() => onTouched(field?.name)}
@@ -247,7 +253,7 @@ const SuperForm = ({
                     key={`${field?.name}`}
                     name={field?.name}
                     type={field?.type}
-                    label={field?.label}
+                    label={field?.name}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
                     error={

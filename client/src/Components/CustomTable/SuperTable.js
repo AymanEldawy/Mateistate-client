@@ -6,7 +6,7 @@ import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
 
 import ChevronIcon from "Helpers/Icons/ChevronIcon";
-import { PaletteIcon } from "Helpers/Icons";
+import { EditIcon, PaletteIcon } from "Helpers/Icons";
 
 import Table from "./Table";
 import TableBody from "./TableBody";
@@ -17,6 +17,7 @@ import TableRow from "./TableRow";
 import TableUniqueCol from "./TableUniqueCol";
 import { TableSkeleton } from "./TableSkeleton";
 import { useTranslation } from "react-i18next";
+import { DropDowns } from "Helpers/functions";
 
 let sorting = {};
 
@@ -31,9 +32,8 @@ const SuperTable = ({
   table,
   loading,
   // searchKey,
-  reffedTables,
+  getCachedList,
 }) => {
-
   const { t } = useTranslation();
   const [filterList, setFilterList] = useState(data);
   const [itemOffset, setItemOffset] = useState(0);
@@ -112,7 +112,7 @@ const SuperTable = ({
       } else {
         let newList = {};
         for (const key in data) {
-          newList[data?.[key]?.Guid] = data?.[key]?.Guid;
+          newList[data?.[key]?.guid] = data?.[key]?.guid;
         }
         setSelectedList(newList);
       }
@@ -157,11 +157,14 @@ const SuperTable = ({
             </TableHeadCol>
           ) : null}
           <TableHeadCol>Actions</TableHeadCol>
-          {columns?.map((col, index) => (
-            <TableHeadCol key={`${col}-${index}`} sort sortBy={sortBy}>
-              {col}
-            </TableHeadCol>
-          ))}
+          {columns?.map((col, index) => {
+            if (col === "guid") return;
+            return (
+              <TableHeadCol key={`${col}-${index}`} sort sortBy={sortBy}>
+                {col}
+              </TableHeadCol>
+            );
+          })}
         </TableHead>
         <TableBody>
           {loading ? (
@@ -173,7 +176,7 @@ const SuperTable = ({
                   <TableRow
                     key={`${row?.Name}-${index}`}
                     classes={`border-b dark:border-borderdark whitespace-nowrap ${
-                      !!selectedList[row?.Guid]
+                      !!selectedList[row?.guid]
                         ? "bg-gray-100 dark:bg-[#1115]"
                         : ""
                     }`}
@@ -183,27 +186,41 @@ const SuperTable = ({
                         <input
                           className="w-4 h-4"
                           type="checkbox"
-                          checked={!!selectedList[row?.Guid]}
-                          onChange={() => handelSelect(row?.Guid)}
+                          checked={!!selectedList[row?.guid]}
+                          onChange={() => handelSelect(row?.guid)}
                         />
                       </TableCol>
                     ) : null}
                     <TableCol>
                       <div className="flex gap-1">
                         {table && table === "building" ? (
-                          <>
-                            <Link
-                              className="hover:underline text-blue-500 order-1"
-                              to={`/buildings/${row?.Name}/tools/${row?.Guid}`}
-                              state={{ row, table }}
-                            >
-                              <PaletteIcon />
-                            </Link>
-                          </>
-                        ) : null}
+                          <Link
+                            className="hover:underline text-blue-500 order-1"
+                            to={`/buildings/${row?.Name}/tools/${row?.guid}`}
+                            state={{ row, table }}
+                          >
+                            <PaletteIcon />
+                          </Link>
+                        ) : (
+                          <Link
+                            className="hover:underline text-blue-500 order-1"
+                            to={`/update/${table}/${row?.guid}`}
+                            state={{ row, table }}
+                          >
+                            <EditIcon className="w-5 h-5" />
+                          </Link>
+                        )}
                       </div>
                     </TableCol>
                     {columns?.map((col, index) => {
+                      if (col === "guid") return;
+                      if (col === "seclvl") {
+                        return (
+                          <TableCol classes="whitespace-nowrap" key={index}>
+                            {DropDowns(col)?.[row?.[col]]?.name}
+                          </TableCol>
+                        );
+                      }
                       if (col === "CDate") {
                         let date = new Date(row[col]).toLocaleDateString(
                           "en-UK",
@@ -230,9 +247,9 @@ const SuperTable = ({
                           <TableUniqueCol
                             row={row}
                             col={col}
-                            reffedTables={reffedTables}
                             key={index}
                             val={row[col]}
+                            getCachedList={getCachedList}
                           />
                         );
                       } else if (col === "Name") {
@@ -240,7 +257,7 @@ const SuperTable = ({
                           <TableCol key={index}>
                             <Link
                               className="hover:underline text-blue-500 order-2"
-                              to={`/update/${table}/${row?.Guid}`}
+                              to={`/update/${table}/${row?.guid}`}
                               state={{ row, table }}
                             >
                               {row[col]}

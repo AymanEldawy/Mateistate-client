@@ -1,0 +1,2 @@
+
+  export const tabledescription = [{"name":"number","type":"integer","default_value":"nextval('tabledescription_number_seq1'::regclass)","required":true,"hide_in":""},{"name":"tblname","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"arname","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"enname","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"trial992","type":"character","default_value":null,"required":false,"hide_in":""}]

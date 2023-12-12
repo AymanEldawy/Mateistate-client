@@ -3,7 +3,7 @@ import Header from './Header';
 import Menu from './Menu';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
-import { useAlert } from 'Context/AlertContext';
+import { useAlert } from 'Hooks/useAlert';
 import Alert from 'Components/Alert/Alert';
 import PopupForm from 'Components/PopupForm/PopupForm';
 import Backdrop from 'Components/Backdrop/Backdrop';

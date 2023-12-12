@@ -3,11 +3,11 @@ import { DropDowns } from "Helpers/functions";
 export const AssetsGroup = [
   // { name: "Number", type: "number", label: "Number", required: false },
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: false,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   { name: "Code", type: "text", label: "Code", required: false },
   { name: "Name", type: "text", label: "Name", required: true },

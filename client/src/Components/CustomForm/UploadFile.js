@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import { FolderPlusIcon } from "Helpers/Icons";
 import { FullImage } from "Components/Global/FullImage/FullImage";
+import { FolderPlusIcon } from "Helpers/Icons";
 
 const UploadFile = ({
   label,
@@ -27,7 +27,7 @@ const UploadFile = ({
   return (
     <div
       className={`flex flex-col relative ${containerClassName}`}
-      key={`${field?.index}-${field?.label}` || Math.round()}
+      key={`${field?.index}-${field?.name}` || Math.round()}
     >
       {!!src ? (
         <>

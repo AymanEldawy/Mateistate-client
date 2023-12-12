@@ -87,10 +87,8 @@ const Tools = () => {
             setData(data);
             CACHE_TABS[tabName] = data;
             for (const key of data) {
-              console.log("----run");
               CACHE_COL[key?.Guid] = key;
             }
-            console.log(CACHE_COL);
           });
         setLoading(false);
       };
@@ -220,7 +218,6 @@ const Tools = () => {
       let tabName = splitRow?.[1];
       if (!newFlatDetails[tabName]) newFlatDetails[tabName] = [];
 
-      console.log(flatsDetails[row]);
       newFlatDetails[tabName] = [
         ...newFlatDetails?.[tabName],
         {
@@ -231,16 +228,12 @@ const Tools = () => {
       delete newFlatDetails?.[row]?.Color;
     }
 
-    console.log(CACHE_LIST_COLORS, "submit");
-    console.log(flatsDetails, "submit");
-    console.log(newFlatDetails, "submit");
     await axios
       .post(`${SERVER_URL}/handleColoring`, {
         colors: !!CACHE_LIST_COLORS ? Object.values(CACHE_LIST_COLORS) : [],
         data: newFlatDetails,
       })
       .then((res) => {
-        console.log("res", res);
       });
   };
 

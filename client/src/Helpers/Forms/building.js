@@ -4,9 +4,9 @@ const Building_General_information = [
   // shared
   {
     key: "select",
-    name: "SecLvl",
-    label: "SecLvl",
-    list: DropDowns("SecLvl"),
+    name: "seclvl",
+    label: "seclvl",
+    list: DropDowns("seclvl"),
   },
   // shared end
   { name: "Name", type: "text", label: "Name", required: true },

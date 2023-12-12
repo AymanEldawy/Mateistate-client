@@ -3,11 +3,11 @@ import { DropDowns } from "Helpers/functions";
 export const customer = [
   // { name: "Number", type: "number", label: "Number", required: false },
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: true,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   { name: "Barcode", type: "text", label: "Barcode", required: false },
   { name: "Name", type: "text", label: "Name", required: true },
@@ -165,8 +165,8 @@ export const apartment = [
   // },
   {
     required: false,
-    label: "SecLvl",
-    name: "SecLvl",
+    label: "seclvl",
+    name: "seclvl",
     type: "number",
   },
   {
@@ -521,11 +521,11 @@ const Shop_General = [
   },
   // New
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: false,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   // ----
   { name: "Number", type: "number", label: "Number", required: false },
@@ -1027,11 +1027,11 @@ const Parking_Details = [
 export const RentInfo = [
   // { name: "Number", type: "number", label: "Number", required: false },
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: false,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   { name: "Name", type: "text", label: "Name", required: true },
   { name: "LtnName", type: "text", label: "LtnName", required: false },
@@ -1083,11 +1083,11 @@ export const Landcontract = [
     required: false,
   },
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: false,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   { name: "Mark", type: "checkbox", label: "Mark", required: false },
   {
@@ -1669,11 +1669,11 @@ export const Landcontract = [
 export const Owner = [
   // { name: "Number", type: "number", label: "Number", required: false },
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: false,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   { name: "Name", type: "text", label: "Name", required: true },
   { name: "LtnName", type: "text", label: "LtnName", required: false },

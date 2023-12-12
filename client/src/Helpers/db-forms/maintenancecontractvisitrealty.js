@@ -1,0 +1,2 @@
+
+  export const maintenancecontractvisitrealty = [{"name":"number","type":"integer","default_value":"nextval('maintenancecontractvisitrealty_number_seq1'::regclass)","required":true,"hide_in":""},{"name":"parentguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"realtyguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"note","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"trial859","type":"character","default_value":null,"required":false,"hide_in":""}]

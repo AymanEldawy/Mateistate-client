@@ -1,12 +1,9 @@
 import { useCallback } from "react";
-import { useGuidList } from "Context/ListsGuidsContext";
-import { usePopupForm } from "Context/PopupFormContext";
+import { useGuidList } from "Hooks/useGuidList";
+import { usePopupForm } from "Hooks/usePopupForm";
 import { PlusIcon } from "Helpers/Icons";
-import { useAlert } from "Context/AlertContext";
-import { SERVER_URL } from "Helpers/functions";
-import axios from "axios";
-import { useEffect, useState } from "react";
-
+import { useAlert } from "Hooks/useAlert";
+import { useState } from "react";
 
 const Field = ({
   table,
@@ -25,54 +22,12 @@ const Field = ({
   allowSelect,
   ...field
 }) => {
-  
   const [value, setValue] = useState("");
   const [listFilter, setListFilter] = useState([]);
-  const [list, setList] = useState([]);
   const [selected, setSelected] = useState("");
   const [dropdown, setDropdown] = useState(false);
   const { dispatchForm } = usePopupForm();
-  const { addTableList, lists, getGuidName } = useGuidList();
   const { dispatchAlert } = useAlert();
-
-  useEffect(() => {
-    if (table) {
-      async function fetch() {
-        // console.log("tesseting");
-        return await axios
-          .post(`${SERVER_URL}/list`, {
-            table: table,
-          })
-          .then((res) => {
-            let data = res.data.recordset;
-            // console.log(data, "---");
-            setList(data);
-            if (data?.length > 0) addTableList(table || "unknown", data || []);
-          });
-      }
-      if (!lists[table]) {
-        fetch();
-      } else {
-        // console.log("rrrr", lists, table);
-        setList(lists[table]);
-      }
-    }
-  }, [table]);
-
-  useEffect(() => {
-    if (defaultList?.length) {
-      setList(defaultList);
-    }
-    if (!lists[tableForHashed]) {
-      addTableList(tableForHashed, defaultList);
-    }
-  }, [defaultList]);
-  // console.log(list);
-  useEffect(() => {
-    let tableName = table || tableForHashed;
-    if (val) setValue(getGuidName(tableName, val));
-    else setValue("");
-  }, [val]);
 
   const handelFilter = useCallback(
     (val) => {
@@ -80,18 +35,17 @@ const Field = ({
       if (val?.length > 0) setDropdown(true);
       else setDropdown(false);
 
-      let newList = list?.filter((item) =>
-        item?.Name?.toLowerCase().startsWith(val?.toLowerCase())
-      );
-      // console.log(newList);
+      let newList = defaultList?.filter((item) => {
+        return item?.name?.toLowerCase().startsWith(val?.toLowerCase());
+      });
       setListFilter(newList);
     },
-    [value, list]
+    [defaultList]
   );
+
   const handelSelected = useCallback(
     (item) => {
-      if (!!allowSelect && allowSelect(item?.Guid)) {
-        console.log("cant select it");
+      if (!!allowSelect && allowSelect(item?.guid)) {
         dispatchAlert({
           type: "error",
           msg: "Oops! Can't Select this Name again",
@@ -99,18 +53,18 @@ const Field = ({
         });
         return;
       }
-      setValue(item?.Name);
+      setValue(item?.name);
       setSelected(item);
       setDropdown(false);
       if (!!getSelectedValue)
-        getSelectedValue(field?.name, item?.Guid, required);
-      if (!!getSelectedValueRef) getSelectedValueRef.current = item?.Guid;
+        getSelectedValue(field?.name, item?.guid, required);
+      if (!!getSelectedValueRef) getSelectedValueRef.current = item?.guid;
       if (!!getSelectedValueWithIndex)
-        getSelectedValueWithIndex(field?.index, field?.name, item?.Guid);
+        getSelectedValueWithIndex(field?.index, field?.name, item?.guid);
     },
-    [selected]
+    [selected, allowSelect, field?.index]
   );
-  // console.log(list);
+
   const onCancelMenu = () => {
     if (!listFilter?.length) {
       setListFilter([]);
@@ -119,6 +73,7 @@ const Field = ({
     setSelected("");
     setDropdown(false);
   };
+
   return (
     <div className={`relative z-20 ${dropdown ? "!z-40" : ""}`}>
       {dropdown ? (
@@ -167,7 +122,7 @@ const Field = ({
             if (onPlusClick) onPlusClick();
             dispatchForm({
               open: true,
-              table: field?.table || tableForHashed || "",
+              table: table || tableForHashed || "",
             });
           }}
         >
@@ -180,18 +135,18 @@ const Field = ({
             <ul id="myUL" className="flex flex-col gap-1">
               {listFilter?.map((item) => (
                 <li
-                  key={item?.Name}
+                  key={item?.name}
                   onClick={(e) => {
                     e.stopPropagation();
                     handelSelected(item);
                   }}
                   className={`capitalize p-1 px-3 rounded-md hover:bg-gray-200 cursor-pointer ${
-                    selected?.Guid === item?.Guid
+                    selected?.guid === item?.guid
                       ? "bg-blue-400 text-white"
                       : ""
                   }`}
                 >
-                  <a href="#">{item?.Name}</a>
+                  <span>{item?.name}</span>
                 </li>
               ))}
             </ul>

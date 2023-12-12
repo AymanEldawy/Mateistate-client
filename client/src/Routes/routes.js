@@ -1,15 +1,16 @@
 import React from 'react';
-import Home from 'Pages/Home/Home';
-import Tools from 'Pages/Tools/Tools';
-import UpdateBuilding from 'Pages/UpdateBuilding/UpdateBuilding';
-import { ContractType } from 'Helpers/Forms/contractType';
+
 import TestEntry from 'Components/Forms/TestEntry/TestEntry';
-import Building from 'Pages/ManualForms/Building';
-import { LeaseApartment } from 'Helpers/Forms/LeaseApartment';
+import Chart from 'Pages/Chart/Chart';
+import ContractType from 'Pages/ContractType/ContractType';
+import Home from 'Pages/Home/Home';
 import List from 'Pages/List/List';
 import Update from 'Pages/List/Update';
-import Chart from 'Pages/Chart/Chart';
 import Login from 'Pages/Login/Login';
+import Building from 'Pages/ManualForms/Building';
+import LeaseApartment from 'Pages/ManualForms/LeaseApartment';
+import Tools from 'Pages/Tools/Tools';
+import UpdateBuilding from 'Pages/UpdateBuilding/UpdateBuilding';
 
 const publicRoutes = [
   { path: '/login', component: <Login /> },

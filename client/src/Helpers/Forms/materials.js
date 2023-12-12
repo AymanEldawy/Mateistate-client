@@ -3,11 +3,11 @@ import { DropDowns } from "Helpers/functions";
 export const mat = [
   // { name: "Number", type: "number", label: "Number", required: false },
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: false,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   { name: "Code", type: "text", label: "Code", required: false },
   { name: "Name", type: "text", label: "Name", required: true },
@@ -85,11 +85,11 @@ export const mat = [
 export const matgroup = [
   // { name: "Number", type: "number", label: "Number", required: false },
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: false,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   { name: "Code", type: "text", label: "Code", required: false },
   { name: "Name", type: "text", label: "Name", required: true },
@@ -108,11 +108,11 @@ export const matgroup = [
 export const Store = [
   // { name: "Number", type: "number", label: "Number", required: false },
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: false,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   { name: "Code", type: "text", label: "Code", required: false },
   { name: "Name", type: "text", label: "Name", required: true },

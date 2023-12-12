@@ -1,0 +1,2 @@
+
+  export const flatbuildingdetails_bhouse = [{"name":"number","type":"integer","default_value":"nextval('flatbuildingdetails_bhouse_number_seq1'::regclass)","required":true,"hide_in":""},{"name":"buildingguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"floor","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"note","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"trial238","type":"character","default_value":null,"required":false,"hide_in":""}]

@@ -1,0 +1,2 @@
+
+  export const infofldvalue = [{"name":"cardguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"cardid","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"id","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"fldvalue","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"trial529","type":"character","default_value":null,"required":false,"hide_in":""}]

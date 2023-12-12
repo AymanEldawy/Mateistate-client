@@ -1,33 +1,18 @@
-import axios from 'axios';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import BlockPaper from 'Components/BlockPaper/BlockPaper';
-import ConfirmModal from 'Components/ConfirmModal/ConfirmModal';
-import SuperForm from 'Components/CustomForm/SuperForm';
+import axios from "axios";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 
-import FormHeadingTitleSteps from 'Components/Global/FormHeadingTitleSteps';
-import Modal from 'Components/Modal/Modal';
-import { TableBar } from 'Components/TableBar/TableBar';
-import { useAlert } from 'Context/AlertContext';
-import formsApi from 'Helpers/Forms/formsApi';
-import { SERVER_URL } from 'Helpers/functions';
-import SuperTable from 'Components/CustomTable/SuperTable';
-
-function getForm(form) {
-  return formsApi[form];
-}
-
-function getColumns(table) {
-  return table?.map((col) => col.name);
-}
-
-function getAllColumns(table) {
-  let columns = [];
-  for (const key in table) {
-    columns.push(...table[key]?.map((col) => col?.name));
-  }
-  return columns;
-}
+import BlockPaper from "Components/BlockPaper/BlockPaper";
+import ConfirmModal from "Components/ConfirmModal/ConfirmModal";
+import SuperForm from "Components/CustomForm/SuperForm";
+import SuperTable from "Components/CustomTable/SuperTable";
+import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
+import Modal from "Components/Modal/Modal";
+import { TableBar } from "Components/TableBar/TableBar";
+import { getAllColumns, getColumns, getForm } from "Helpers/constants";
+import { SERVER_URL } from "Helpers/functions";
+import { ApiActions } from "Helpers/Lib/api";
+import { useAlert } from "Hooks/useAlert";
 
 const CACHE_LIST = {};
 
@@ -36,21 +21,21 @@ const getCachedList = (tableName) => {
 };
 
 const List = () => {
+  const { dispatchAlert } = useAlert();
   const params = useParams();
   const { name } = params;
+
   const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState(name || '');
-  const [activeStage, setActiveStage] = useState('');
+  const [tab, setTab] = useState(name || "");
+  const [activeStage, setActiveStage] = useState("");
   const [fields, setFields] = useState([]);
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
-  const { dispatchAlert } = useAlert();
-  const [reffedTables, setReffedTables] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(20);
-  const [searchKey, setSearchKey] = useState('Name');
+  const [searchKey, setSearchKey] = useState("Name");
   const [selectedList, setSelectedList] = useState({});
 
   // Get data
@@ -64,58 +49,41 @@ const List = () => {
       setActiveStage(steps?.[0]);
       setFields(forms[steps?.[0]]);
       setColumns(getAllColumns(forms));
+      checkRefTable(steps?.[0])
     } else {
       setColumns(getColumns(singleList));
       setFields(singleList);
+      checkRefTable(singleList)
     }
-    setSearchKey(columns.includes('Name') ? 'Name' : columns[0]);
-  }, [steps, forms, columns, singleList]);
-
-  const getLists = async (tableName) => {
-    const response = await axios.post(`${SERVER_URL}/list`, {
-      table: tableName,
-    });
-    CACHE_LIST[tableName] = response?.data?.recordset;
-  };
-
-  const getRefData = async () => {
-    const response = await axios.post(`${SERVER_URL}/checkref`, {
-      table: name,
-    });
-
-    let data = response?.data?.recordset;
-
-    if (data) {
-      let collect = {};
-      for (const item of data) {
-        if (item?.reffedTables !== name) {
-          getLists(item?.Referenced_Table);
-        } else {
-          CACHE_LIST[name] = data;
-        }
-        collect[item?.Column] = item?.Referenced_Table;
-      }
-      setReffedTables(collect);
-    }
-  };
-
-  const getData = async () => {
-    setLoading(true);
-    const response = await axios.post(`${SERVER_URL}/list`, {
-      table: name,
-    });
-
-    if (response?.status === 200) {
-      setData(response?.data?.recordset);
-    }
-    setLoading(false);
-  };
+    setSearchKey(columns.includes("Name") ? "Name" : columns[0]);
+  }, [steps, forms, singleList]);
 
   useEffect(() => {
     if (!name) return;
     getData();
-    getRefData();
   }, [name]);
+
+  async function checkRefTable(fields) {
+    setLoading(true);
+    if (!fields?.length) return;
+    for (const field of fields) {
+      if (field.is_ref) {
+        const response = await ApiActions.read(field?.ref_table);
+        CACHE_LIST[field?.ref_table] = response?.result;
+        for (const item of response?.result) {
+          CACHE_LIST[item.guid] = item.name || item.number || item.guid;
+        }
+
+      }
+    }
+    setLoading(false);
+  }
+  const getData = async () => {
+    setLoading(true);
+    const response = await ApiActions.read(name);
+    setData(response?.result);
+    setLoading(false);
+  };
 
   // Handel Submit
   const onSubmit = async (values) => {
@@ -123,50 +91,45 @@ const List = () => {
     setOpen(false);
     dispatchAlert({
       open: true,
-      type: 'loading',
-      msg: 'Loading ...',
+      type: "loading",
+      msg: "Loading ...",
     });
     let columns = [];
     for (const key in values) {
       if (values?.[key]) columns.push(key);
     }
 
-    let body = {
-      dat: values,
-      columns,
-      table: name,
-    };
-    let res = await axios.post(`${SERVER_URL}/create`, {
-      ...body,
+    let res = await ApiActions.insert(name, {
+      data: values,
     });
 
-    if (!res?.data?.originalError) {
+    if (res?.success) {
       dispatchAlert({
         open: true,
-        type: 'success',
-        msg: 'Successfully added item in ' + name,
+        type: "success",
+        msg: "Successfully added item in " + name,
       });
       getData();
       return true;
     } else {
       dispatchAlert({
         open: true,
-        type: 'error',
-        msg: 'Failed to add new item in ' + name,
+        type: "error",
+        msg: "Failed to add new item in " + name,
       });
       return false;
     }
   };
 
   const deleteItem = async () => {
-    await axios
-      .post(`${SERVER_URL}/delete`, {
-        table: name,
-        guids: Object.keys(selectedList),
-      })
-      .then((res) => {
-        getData();
-      });
+    const res = await ApiActions.remove(name, {
+			// conditions: [{ type: 'and', conditions: [['id', 'in', Object.keys(selectedList)]] }],
+			conditions: [{ type: 'or', conditions:  ['guid', 'in', Object.keys(selectedList)] }],
+
+    });
+    console.log("🚀 ~ file: List.js:130 ~ deleteItem ~ res:", res)
+
+    if (res.status === 200) getData();
     setOpenConfirmation(false);
   };
 
@@ -177,7 +140,7 @@ const List = () => {
       setFields(forms[tabName]);
       setActiveStage(tabName);
     },
-    [activeStage, fields, tab],
+    [forms]
   );
 
   const goNext = useCallback(() => {
@@ -185,7 +148,7 @@ const List = () => {
     if (index !== steps?.length) {
       setActiveStage(steps?.[index + 1]);
       setFields(forms[steps?.[index + 1]]);
-    } else return;
+    }
   }, [activeStage, forms, steps]);
 
   const goBack = useCallback(() => {
@@ -193,7 +156,7 @@ const List = () => {
     if (index > 0) {
       setActiveStage(steps?.[index - 1]);
       setFields(forms[steps?.[index - 1]]);
-    } else return;
+    }
   }, [activeStage, forms, steps]);
 
   return (
@@ -218,7 +181,7 @@ const List = () => {
           onSubmit={onSubmit}
           goBack={goBack}
           goNext={
-            steps?.length - 1 == steps?.indexOf(activeStage)
+            steps?.length - 1 === steps?.indexOf(activeStage)
               ? undefined
               : goNext
           }
@@ -239,7 +202,8 @@ const List = () => {
         />
         {!!columns ? (
           <SuperTable
-            reffedTables={reffedTables}
+            // reffedTables={reffedTables}
+            getCachedList={!!getCachedList ? getCachedList : undefined}
             table={name}
             itemsPerPage={itemsPerPage}
             deleteItem={deleteItem}

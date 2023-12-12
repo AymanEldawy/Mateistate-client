@@ -48,7 +48,6 @@ const Login = () => {
   
   const handelSubmit = async () => {
     if (!Object.keys(errors)?.length) {
-      console.log(errors?.length);
       let body = {
         LoginName: values?.email,
         Password: values?.password,
@@ -58,7 +57,6 @@ const Login = () => {
           ...body,
         })
         .then((res) => {
-          console.log(res);
         });
     }
   };

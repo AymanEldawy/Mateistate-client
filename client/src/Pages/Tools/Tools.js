@@ -85,7 +85,6 @@ const tabs = [
 
 const Tools = () => {
   const { Guid } = useParams();
-  console.log(Guid);
   const location = useLocation();
   const { row } = location?.state;
   const [count, setCount] = useState(25);
@@ -116,17 +115,14 @@ const Tools = () => {
         table: type,
       })
       .then((res) => {
-        console.log("prop", res);
         let data = res?.data?.recordset;
         if (data.length) {
           for (const row of data) {
             CACHE_APARTMENTS[row?.NO] = row;
           }
         }
-        console.log(CACHE_APARTMENTS);
       })
       .catch((err) => {
-        console.log(err);
       });
   };
   const getColoring = async () => {
@@ -134,7 +130,6 @@ const Tools = () => {
     await axios
       .post(`${SERVER_URL}/getColoring`)
       .then((res) => {
-        console.log(res);
         let dataLength = res?.data?.recordset?.length;
         CACHE_LIST_COLORS = {
           ...res?.data?.recordset,
@@ -144,7 +139,6 @@ const Tools = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
       });
     setLoading(false);
   };
@@ -168,10 +162,8 @@ const Tools = () => {
     setRefresh((p) => !p);
   }, [getValuesWithoutSubmit]);
   useEffect(() => {
-    console.log("getIndexOfRowUpdated", getIndexOfRowUpdated);
     CACHE_UPDATES_COLORS[getIndexOfRowUpdated] = getIndexOfRowUpdated;
   }, [getIndexOfRowUpdated]);
-  console.log(CACHE_UPDATES_COLORS);
   const onDecrement = useCallback(() => {
     if (count > 1) {
       setCount((prev) => prev - 1);
@@ -192,10 +184,8 @@ const Tools = () => {
     setSelectedColor("");
     setCanInsertColor(false);
   };
-  console.log(CACHE_UPDATES_Apartments);
   const insertColor = (tabName, itemHash) => {
     let prefix = getPrefix(tabName);
-    console.log(prefix, tabName);
     let hash = itemHash?.split("-");
     let NoValue = `${prefix} ${hash[1]}`;
     let uniqueHash = `${itemHash}&${tabName}`;
@@ -238,20 +228,17 @@ const Tools = () => {
   };
   const removeOneItemColor = useCallback(
     (tabName, itemHash) => {
-      console.log(`${itemHash}&${tabName}`);
       let newList = flatsDetails;
       if (!!newList[`${itemHash}&${tabName}`])
         newList[`${itemHash}&${tabName}`].FlatBuildingDetailsIndex = null;
       setFlatsDetails(newList);
 
-      console.log(newList);
       setRefresh((p) => !p);
     },
     [flatsDetails]
   );
   const removeFromColor = useCallback(
     (index, count, direction, tabName) => {
-      console.log(index, count, direction, tabName);
       if (direction === "vertical") {
         for (let i = 0; i < count; i++) {
           let itemHash = `${tabName}-${i + 1}0${index + 1}`;
@@ -260,7 +247,6 @@ const Tools = () => {
       } else {
         for (let i = 0; i < count; i++) {
           let itemHash = `${tabName}-${index + 1}0${i + 1}`;
-          console.log(itemHash, tabName);
           removeOneItemColor(tabName, itemHash);
         }
       }
@@ -272,7 +258,6 @@ const Tools = () => {
   const onSubmit = async () => {
     setLoading(true);
     let newColoringList = {};
-    console.log("----", CACHE_LIST_COLORS);
 
     for (const key in CACHE_LIST_COLORS) {
       if (!CACHE_UPDATES_COLORS[key]) {
@@ -284,13 +269,10 @@ const Tools = () => {
           newColoringList[key]?.Color?.substr(1)
         );
     }
-    console.log("----", newColoringList);
     let newFlatDetails = {};
-    // console.log('--0-0-0-', flatsDetails)
 
     for (const row in flatsDetails) {
       if (CACHE_UPDATES_Apartments[row]) {
-        console.log("exsit");
       } else {
         continue;
       }
@@ -308,7 +290,6 @@ const Tools = () => {
       if (data?.SalePrice2) delete data.SalePrice2;
       if (data?.SalePrice3) delete data.SalePrice3;
       if (data?.Count) delete data.Count;
-      console.log(tabName);
       if (
         tabName?.toLowerCase()?.includes("parking") ||
         tabName?.toLowerCase()?.includes("shop")
@@ -338,7 +319,6 @@ const Tools = () => {
         findList("apartment");
         findList("shop");
         findList("parking");
-        console.log("res", res);
       });
     setLoading(false);
   };

@@ -3,11 +3,11 @@ import { DropDowns } from "Helpers/functions";
 export const account = [
   // { name: "Number", type: "number", label: "Number", required: false },
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: false,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   { name: "Name", type: "text", label: "Name", required: true },
   { name: "LtnName", type: "text", label: "LtnName", required: false },
@@ -57,11 +57,11 @@ export const account = [
 export const cost = [
   // { name: "Number", type: "number", label: "Number", required: false },
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: false,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
   { name: "Code", type: "text", label: "Code", required: false },
   { name: "Name", type: "text", label: "Name", required: true },
@@ -79,11 +79,11 @@ export const cost = [
 export const Currency = [
   // { name: "Number", type: "number", label: "Number", required: false },
   {
-    name: "SecLvl",
+    name: "seclvl",
     key: "select",
-    label: "SecLvl",
+    label: "seclvl",
     required: false,
-    list: DropDowns("SecLvl"),
+    list: DropDowns("seclvl"),
   },
 
   { name: "Code", type: "text", label: "Code", required: false },

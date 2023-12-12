@@ -41,7 +41,6 @@ const ToolsTabs = ({
     setRefresh((p) => !p);
   };
   const defaultInsertColor = (itemHash, tabName, data, index) => {
-    console.log(itemHash, tabName, index);
     setFlatsDetails((prev) => {
       return {
         ...prev,
@@ -51,26 +50,21 @@ const ToolsTabs = ({
         },
       };
     });
-    console.log(flatsDetails);
   };
-  useEffect(() => { 
-    console.log('refresh')
-  }, [refresh]);
+
+  
   const selectAll = (e, index, count, direction) => {
-    console.log(index, count, direction)
     const { tabName } = selectedTab;
     if (e.target.checked) {
       if (direction === "vertical") {
         for (let i = 0; i < count; i++) {
           let itemHash = `${tabName}-${i + 1}0${index + 1}`;
           insertColor(tabName, itemHash);
-          console.log(itemHash);
         }
       } else {
         for (let i = 0; i < count; i++) {
           let itemHash = `${tabName}-${index + 1}0${i + 1}`;
           insertColor(tabName, itemHash);
-          console.log(itemHash);
         }
       }
     } else {

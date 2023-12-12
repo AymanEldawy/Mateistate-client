@@ -1,0 +1,38 @@
+export const accountaccumulate = [
+  {
+    name: "number",
+    type: "integer",
+    default_value: "nextval('accountaccumulate_number_seq1'::regclass)",
+    required: true,
+    hide_in: "",
+  },
+  {
+    name: "parentguid",
+    type: "uuid",
+    default_value: null,
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "guid",
+    ref_name: "",
+    hide_in: "",
+  },
+  {
+    name: "accountguid",
+    type: "uuid",
+    default_value: null,
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "guid",
+    ref_name: "",
+    hide_in: "",
+  },
+  {
+    name: "trial896",
+    type: "character",
+    default_value: null,
+    required: false,
+    hide_in: "",
+  },
+];

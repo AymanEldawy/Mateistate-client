@@ -87,7 +87,6 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
     [open, toggleOpen]
   );
 
-  console.log(selectedItem);
   let oldValues = selectedItem?.FinalGUID
     ? {
         ParentGUID: selectedItem?.Guid,

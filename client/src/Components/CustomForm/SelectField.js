@@ -11,6 +11,7 @@ const SelectField = ({
   ...field
 }) => {
   
+
   return (
     <div className="flex flex-col">
       {label ? (
@@ -24,7 +25,7 @@ const SelectField = ({
       >
         {!hideText ? <option>Choose...</option> : null}
         {list?.map((item, index) => (
-          <option key={item[keyValue]} className="p-1" value={item[keyValue]}>
+          <option key={item[keyValue]} className="p-1" value={+item[keyValue]}>
             {item[keyLabel]}
           </option>
         ))}

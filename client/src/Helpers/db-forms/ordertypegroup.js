@@ -1,0 +1,2 @@
+
+  export const ordertypegroup = [{"name":"number","type":"integer","default_value":"nextval('ordertypegroup_number_seq1'::regclass)","required":true,"hide_in":""},{"name":"parentguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"groupguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"trial198","type":"character","default_value":null,"required":false,"hide_in":""}]

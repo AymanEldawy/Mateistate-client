@@ -6,7 +6,7 @@ import SuperForm from 'Components/CustomForm/SuperForm';
 import TableForm from 'Components/Forms/TableForm/TableForm';
 import FormHeadingTitleSteps from 'Components/Global/FormHeadingTitleSteps';
 import Modal from 'Components/Modal/Modal';
-import { useAlert } from 'Context/AlertContext';
+import { useAlert } from 'Hooks/useAlert';
 import formsApi from 'Helpers/Forms/formsApi';
 import { SERVER_URL } from 'Helpers/functions';
 

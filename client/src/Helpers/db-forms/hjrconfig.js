@@ -1,0 +1,2 @@
+
+  export const hjrconfig = [{"name":"hjryear","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"hjrmonth","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"date","type":"date","default_value":null,"required":false,"hide_in":""},{"name":"day","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"trial411","type":"character","default_value":null,"required":false,"hide_in":""}]

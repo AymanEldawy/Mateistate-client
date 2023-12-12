@@ -1,0 +1,2 @@
+
+  export const incaccountdetailac = [{"name":"number","type":"integer","default_value":"nextval('incaccountdetailac_number_seq1'::regclass)","required":true,"hide_in":""},{"name":"parentguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"accountguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"trial470","type":"character","default_value":null,"required":false,"hide_in":""}]
