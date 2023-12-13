@@ -23,6 +23,7 @@ const SuperForm = ({
   getCachedList,
 }) => {
 
+  const [submitLoader, setSubmitLoader] = useState(false)
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -98,12 +99,14 @@ const SuperForm = ({
   const submit = async (e) => {
     e.preventDefault();
     if (!errors.length) {
+      setSubmitLoader(true)
       const res = await onSubmit(values);
       if (res) {
         setValues({});
         setErrors({});
         setTouched({});
       }
+      setSubmitLoader(false)
     }
   };
   
@@ -281,7 +284,7 @@ const SuperForm = ({
         {!!goNext && allowSteps ? (
           <Button type="button" title="Next" onClick={goNext} />
         ) : (
-          <Button type="submit" title="Submit" />
+          <Button type="submit" title="Submit" loading={submitLoader} />
         )}
       </div>
     </form>

@@ -317,7 +317,7 @@ const Tools = () => {
         setSelectedTab={setSelectedTab}
       />
       <div className="mt-8 flex justify-end">
-        <Button onClick={onSubmit} title="Submit" />
+        <Button onClick={onSubmit} title="Submit" loading={loading} />
       </div>
     </BlockPaper>
   );

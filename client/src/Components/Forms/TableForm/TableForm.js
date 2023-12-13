@@ -29,7 +29,9 @@ const TableForm = ({
   onSelectColor,
 }) => {
   const [grid, setGrid] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [columns, setColumns] = useState([]);
+
   useEffect(() => {
     let names = initialFields?.map((_) => _.name);
     setColumns(names);
@@ -65,8 +67,10 @@ const TableForm = ({
     [grid],
   );
 
-  const submit = () => {
-    onSubmit(grid);
+  const submit = async () => {
+    setLoading(true)
+    await onSubmit(grid);
+    setLoading(false)
   };
 
   return (
@@ -184,7 +188,7 @@ const TableForm = ({
           </>
         ) : null}
         {!steps?.length && !!onSubmit ? (
-          <Button title="Submit" onClick={submit} type="button" />
+          <Button title="Submit" onClick={submit} type="button" loading={loading} />
         ) : null}
       </div>
     </>

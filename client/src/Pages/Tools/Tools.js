@@ -395,7 +395,7 @@ const Tools = () => {
             CACHE_APARTMENTS={CACHE_APARTMENTS}
           />
           <div className="mt-8 flex justify-end">
-            <Button onClick={onSubmit} title="Submit" />
+            <Button onClick={onSubmit} title="Submit" loading={loading} />
           </div>
         </>
       )}

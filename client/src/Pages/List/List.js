@@ -49,11 +49,11 @@ const List = () => {
       setActiveStage(steps?.[0]);
       setFields(forms[steps?.[0]]);
       setColumns(getAllColumns(forms));
-      checkRefTable(steps?.[0])
+      checkRefTable(steps?.[0]);
     } else {
       setColumns(getColumns(singleList));
       setFields(singleList);
-      checkRefTable(singleList)
+      checkRefTable(singleList);
     }
     setSearchKey(columns.includes("Name") ? "Name" : columns[0]);
   }, [steps, forms, singleList]);
@@ -73,7 +73,6 @@ const List = () => {
         for (const item of response?.result) {
           CACHE_LIST[item.guid] = item.name || item.number || item.guid;
         }
-
       }
     }
     setLoading(false);
@@ -122,14 +121,20 @@ const List = () => {
   };
 
   const deleteItem = async () => {
+    let items = Object.keys(selectedList);
     const res = await ApiActions.remove(name, {
-			// conditions: [{ type: 'and', conditions: [['id', 'in', Object.keys(selectedList)]] }],
-			conditions: [{ type: 'or', conditions:  ['guid', 'in', Object.keys(selectedList)] }],
-
+      conditions: [
+        {
+          type: "and",
+          conditions:
+            items.length > 1
+              ? [["guid", "in", Object.keys(selectedList)[0]]]
+              : [["guid", "=", items[0]]],
+        },
+      ],
     });
-    console.log("🚀 ~ file: List.js:130 ~ deleteItem ~ res:", res)
-
-    if (res.status === 200) getData();
+    console.log("🚀 ~ file: List.js:136 ~ deleteItem ~ res:", res)
+    if (res.success) getData();
     setOpenConfirmation(false);
   };
 
