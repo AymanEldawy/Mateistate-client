@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { memo } from 'react';
 
 import { getValueOfInputColor } from 'Helpers/functions';
-import Field from 'Components/CustomForm/Field';
-import InputField from 'Components/CustomForm/InputField';
+import Field from 'Components/Forms/CustomForm/Field';
+import InputField from 'Components/Forms/CustomForm/InputField';
 import Table from 'Components/CustomTable/Table';
 import TableBody from 'Components/CustomTable/TableBody';
 import TableCol from 'Components/CustomTable/TableCol';

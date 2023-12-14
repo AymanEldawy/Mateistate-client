@@ -23,10 +23,6 @@ const Sidebar = ({ open }) => {
     }
   };
 
-  const closeDropDown = (e) => {
-    e.stopPropagation();
-    setDropdown(' ');
-  };
 
   const list = (links, level = 0) => {
     return links?.map((item) => {
@@ -125,7 +121,7 @@ const Sidebar = ({ open }) => {
   };
   return (
     <aside
-      className={`lg:hidden fixed w-72 h-screen shadow z-50 transition-transform duration-300 bg-white dark:bg-bgmaindark ${
+      className={`lg:hidden fixed w-72 flex flex-col h-screen shadow z-50 transition-transform duration-300 bg-white dark:bg-bgmaindark ${
         open ? 'left-0' : '-left-72'
       }`}
     >
@@ -139,7 +135,7 @@ const Sidebar = ({ open }) => {
       <div className="flex bg-gray-200 dark:bg-[#333] items-center justify-center gap-2 dark:border-black border-b py-2">
         <IconsBar />
       </div>
-      <ul className="flex-col overflow-auto max-h-screen text-gray-500 dark:text-gray-400 text-sm font-medium min-h-[40px] flex items-start justify-between capitalize">
+      <ul className="flex-col flex-1 overflow-auto max-h-screen text-gray-500 dark:text-gray-400 text-sm font-medium min-h-[40px] flex items-start justify-between capitalize">
         {list(menuData)}
         <li className="relative w-full">
           <button

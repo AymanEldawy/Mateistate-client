@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 
 import wallpaper from "Assets/Images/wallpaper.jpg";
-import InputField from "Components/CustomForm/InputField";
+import InputField from "Components/Forms/CustomForm/InputField";
 import { Button } from "Components/Global/Button";
 import { SERVER_URL } from "Helpers/functions";
 

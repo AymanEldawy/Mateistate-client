@@ -13,18 +13,11 @@ const Loading = ({ withBackdrop }) => {
       <div
         className={`relative rounded-full h-16 w-16 text-center  z-50 ${classes}`}
       >
+        {/* <span className="animate-bounce block duration-1000"> */}
         <HourglassIcon />
-        <h3 className="text-white text-2xl mt-1 capitalize">
-          loading
-          <span className="tracking-wider text-3xl delay-100 animate-ping">
-            .
-          </span>
-          <span className="tracking-wider text-3xl delay-500 animate-ping ">
-            .
-          </span>
-          <span className="tracking-wider text-3xl delay-700 animate-ping ">
-            .
-          </span>
+        {/* </span> */}
+        <h3 className="text-white text-2xl -m-2 capitalize animate-pulse">
+          loading <span className="text-5xl h-0">...</span>
         </h3>
       </div>
     </>

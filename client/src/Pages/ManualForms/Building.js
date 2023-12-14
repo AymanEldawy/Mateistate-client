@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import BlockPaper from "Components/BlockPaper/BlockPaper";
 import formsApi from "Helpers/Forms/formsApi";
-import SuperForm from "Components/CustomForm/SuperForm";
+import SuperForm from "Components/Forms/CustomForm/SuperForm";
 import { useMemo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";

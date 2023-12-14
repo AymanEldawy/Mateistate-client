@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
 import BlockPaper from "Components/BlockPaper/BlockPaper";
-import SuperForm from "Components/CustomForm/SuperForm";
+import SuperForm from "Components/Forms/CustomForm/SuperForm";
 import TableForm from "Components/Forms/TableForm/TableForm";
 import { Button } from "Components/Global/Button";
 import ContentBar from "Components/Global/ContentBar/ContentBar";

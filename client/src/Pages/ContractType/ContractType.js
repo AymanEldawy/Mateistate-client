@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 
 import BlockPaper from "Components/BlockPaper/BlockPaper";
-import SuperForm from "Components/CustomForm/SuperForm";
+import SuperForm from "Components/Forms/CustomForm/SuperForm";
 import { useAlert } from "Hooks/useAlert";
 import formsApi from "Helpers/Forms/formsApi";
 import { SERVER_URL } from "Helpers/functions";

@@ -6,7 +6,7 @@ import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
 
 import ChevronIcon from "Helpers/Icons/ChevronIcon";
-import { EditIcon, PaletteIcon } from "Helpers/Icons";
+import { EditIcon, EyeIcon, PaletteIcon } from "Helpers/Icons";
 
 import Table from "./Table";
 import TableBody from "./TableBody";
@@ -18,6 +18,7 @@ import TableUniqueCol from "./TableUniqueCol";
 import { TableSkeleton } from "./TableSkeleton";
 import { useTranslation } from "react-i18next";
 import { DropDowns } from "Helpers/functions";
+import { Drawer } from "Components/Global/Drawer";
 
 let sorting = {};
 
@@ -35,6 +36,7 @@ const SuperTable = ({
   getCachedList,
 }) => {
   const { t } = useTranslation();
+  const [selectedRow, setSelectedRow] = useState({})
   const [filterList, setFilterList] = useState(data);
   const [itemOffset, setItemOffset] = useState(0);
   const [currentItems, setCurrentItems] = useState([]);
@@ -210,6 +212,9 @@ const SuperTable = ({
                             <EditIcon className="w-5 h-5" />
                           </Link>
                         )}
+                        <button className="hover:underline text-blue-500 order-1">
+                          <EyeIcon />
+                        </button>
                       </div>
                     </TableCol>
                     {columns?.map((col, index) => {
@@ -307,6 +312,7 @@ const SuperTable = ({
           />
         </>
       ) : null}
+      {selectedRow ? <Drawer></Drawer> : null}
     </>
   );
 };

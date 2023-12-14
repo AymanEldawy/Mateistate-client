@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 
-import Checkbox from "Components/CustomForm/Checkbox";
+import Checkbox from "Components/Forms/CustomForm/Checkbox";
 import Table from "Components/CustomTable/Table";
 import TableBody from "Components/CustomTable/TableBody";
 import TableCol from "Components/CustomTable/TableCol";

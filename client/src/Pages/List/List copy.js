@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import BlockPaper from "Components/BlockPaper/BlockPaper";
 import ConfirmModal from "Components/ConfirmModal/ConfirmModal";
-import SuperForm from "Components/CustomForm/SuperForm";
+import SuperForm from "Components/Forms/CustomForm/SuperForm";
 
 import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import Modal from "Components/Modal/Modal";

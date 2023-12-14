@@ -1,6 +1,6 @@
 
 import { TrashIcon } from "Helpers/Icons";
-import SelectField from "Components/CustomForm/SelectField";
+import SelectField from "Components/Forms/CustomForm/SelectField";
 import SearchBar from "Components/SearchBar/SearchBar";
 import { useTranslation } from "react-i18next";
 

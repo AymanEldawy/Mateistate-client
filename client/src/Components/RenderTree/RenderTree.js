@@ -8,7 +8,7 @@ import {
   FolderMinusIcon,
   FolderPlusIcon,
 } from "Helpers/Icons";
-import SuperForm from "Components/CustomForm/SuperForm";
+import SuperForm from "Components/Forms/CustomForm/SuperForm";
 import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import Modal from "Components/Modal/Modal";
 import TreeViewItem from "./TreeViewItem";

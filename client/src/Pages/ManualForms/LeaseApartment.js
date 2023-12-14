@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useMemo, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BlockPaper from 'Components/BlockPaper/BlockPaper';
-import SuperForm from 'Components/CustomForm/SuperForm';
+import SuperForm from 'Components/Forms/CustomForm/SuperForm';
 import TableForm from 'Components/Forms/TableForm/TableForm';
 import FormHeadingTitleSteps from 'Components/Global/FormHeadingTitleSteps';
 import Modal from 'Components/Modal/Modal';

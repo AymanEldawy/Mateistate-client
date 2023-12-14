@@ -1,4 +1,4 @@
-import LanguageBar from 'Components/LanguageBar/LanguageBar';
+import LanguageBar from './LanguageBar';
 import NotificationBar from 'Components/NotificationBar/NotificationBar';
 import ToggleThemeBar from 'Components/ToggleThemeBar/ToggleThemeBar';
 import UserBar from 'Components/UserBar/UserBar';

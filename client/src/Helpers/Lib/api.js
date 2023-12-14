@@ -6,7 +6,7 @@ import MatieStateClient from "./MatieStateClient";
 
 function CURD() {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU1ZWFiMDc4LWU1NzctNDI1Ny1iNjhlLThkMmUyODExNzAyNSIsImlhdCI6MTcwMjM5Nzg5OCwiZXhwIjoxODYwMTg1ODk4fQ.3EDsp4uBoNgoYHp8B08-W5NyhqssW5rcZkhdZ0gHE2s";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhODc1NGE2LTdjMGQtNDRlMi05Y2QwLTgwMTdhYzAyZDE0OSIsImlhdCI6MTcwMjU3MDY5MSwiZXhwIjoxODYwMzU4NjkxfQ.i9AAmxBeVlrrCiybD9NQp7rKHJ0il85HobQ-xW40kbc";
   const baseURL = "http://203.161.63.57:4000";
   const matieStateClient = new MatieStateClient(baseURL, token);
 
