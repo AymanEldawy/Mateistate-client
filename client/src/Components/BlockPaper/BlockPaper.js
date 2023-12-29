@@ -5,7 +5,7 @@ const BlockPaper = ({ title, contentBar, children, fullWidth }) => {
 
   return (
     <Layout>
-      <div className="!mb-8">
+      <div className="!mb-16">
         <div
           className={`${
             fullWidth ? "container-full" : "container"

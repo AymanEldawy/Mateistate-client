@@ -5,10 +5,10 @@ import { useTranslation } from "react-i18next";
 
 const SearchBar = ({
   value,
-  onSearchChange,
-  columns,
   searchKey,
+  onSearchChange,
   setSearchKey,
+  columns,
 }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);

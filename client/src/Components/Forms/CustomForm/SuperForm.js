@@ -12,6 +12,8 @@ import InputField from "./InputField";
 import RadioField from "./RadioField";
 import SelectField from "./SelectField";
 import UploadFile from "./UploadFile";
+import { CustomSwitch } from "./CustomSwitch";
+import TextareaField from "./TextareaField";
 
 const SuperForm = ({
   onSubmit,
@@ -22,13 +24,12 @@ const SuperForm = ({
   oldValues,
   getCachedList,
 }) => {
-
-  const [submitLoader, setSubmitLoader] = useState(false)
+  const [submitLoader, setSubmitLoader] = useState(false);
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const location = useLocation();
-  
+
   useEffect(() => {
     setErrors({});
     setTouched({});
@@ -38,7 +39,7 @@ const SuperForm = ({
       setValues({});
     }
   }, [location?.pathname, oldValues]);
-  
+
   // useEffect(() => {
   //   if (oldValues) {
   //     setValues(oldValues);
@@ -59,7 +60,7 @@ const SuperForm = ({
       setErrors(newErrors);
     }
   };
-  
+
   const onTouched = (name) => {
     if (touched[name]) return;
     setTouched((prev) => {
@@ -69,13 +70,12 @@ const SuperForm = ({
       };
     });
   };
-  
+
   const handelChangeField = (name, value, required) => {
     if (required) {
       insertIntoErrors(name, value);
     }
-    if(name === 'seclvl')
-      value = +value
+    if (name === "seclvl") value = +value;
     setValues((prev) => {
       return {
         ...prev,
@@ -99,31 +99,32 @@ const SuperForm = ({
   const submit = async (e) => {
     e.preventDefault();
     if (!errors.length) {
-      setSubmitLoader(true)
+      setSubmitLoader(true);
       const res = await onSubmit(values);
       if (res) {
         setValues({});
         setErrors({});
         setTouched({});
       }
-      setSubmitLoader(false)
+      setSubmitLoader(false);
     }
   };
-  
+
   return (
     <form onSubmit={submit} className="mb-8">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
         {!!initialFields
           ? initialFields?.map((field, i) => {
-              if(IGNORED_Fields?.includes(field.name)) return;
-              if (field?.key === "input") {
+              if (IGNORED_Fields?.includes(field.name) || field?.hide_in_form)
+                return;
+              if (field?.name.indexOf('terms') !== -1) {
                 return (
-                  <InputField
+                  <TextareaField
                     value={values?.[field?.name]}
                     key={`${field?.name}`}
                     type={field?.type}
                     name={field?.name}
-                    label={field?.name}
+                    label={field?.name?.replace(/_/g, ' ')}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
                     error={
@@ -146,9 +147,12 @@ const SuperForm = ({
                     value={values?.[field?.name]}
                     table={field?.ref_table}
                     key={`${field?.name}`}
-                    list={!!getCachedList ? getCachedList(field?.ref_table) : []}
+                    list={
+                      !!getCachedList ? getCachedList(field?.ref_table) : []
+                    }
                     type={field?.type}
-                    label={field?.name}
+                    // label={field?.name}
+                    label={field?.name?.replace(/_/g, ' ')}
                     name={field?.name}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
@@ -160,7 +164,8 @@ const SuperForm = ({
                   <RadioField
                     defaultChecked={values?.[field?.name]}
                     key={`${field?.name}`}
-                    label={field?.name}
+                    // label={field?.name}
+                    label={field?.name?.replace(/_/g, ' ')}
                     name={field?.name}
                     required={field?.required}
                     onFocus={() => onTouched(field?.name)}
@@ -185,7 +190,8 @@ const SuperForm = ({
                     defaultValue={values?.[field?.name]}
                     key={`${field?.name}`}
                     name={field?.name}
-                    label={field?.name}
+                    // label={field?.name}
+                    label={field?.name?.replace(/_/g, ' ')}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
                     list={field?.list}
@@ -212,7 +218,8 @@ const SuperForm = ({
                     index={i}
                     name={field?.name}
                     readonly={field?.readonly}
-                    label={field?.name}
+                    // label={field?.name}
+                    label={field?.name?.replace(/_/g, ' ')}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
                     error={
@@ -230,7 +237,8 @@ const SuperForm = ({
                   <CheckboxField
                     defaultChecked={values?.[field?.name]}
                     key={`${field?.name}`}
-                    label={field?.name}
+                    // label={field?.name}
+                    label={field?.name?.replace(/_/g, ' ')}
                     name={field?.name}
                     required={field?.required}
                     onFocus={() => onTouched(field?.name)}
@@ -243,7 +251,31 @@ const SuperForm = ({
                     onChange={(e) =>
                       handelChangeField(
                         field?.name,
-                        e.target.value,
+                        e.target.checked,
+                        field?.required
+                      )
+                    }
+                  />
+                );
+              } else if (field?.key === "switch") {
+                return (
+                  <CustomSwitch
+                    defaultChecked={values?.[field?.name]}
+                    key={`${field?.name}`}
+                    // label={field?.name}
+                    label={field?.name?.replace(/_/g, ' ')}
+                    name={field?.name}
+                    required={field?.required}
+                    onFocus={() => onTouched(field?.name)}
+                    error={
+                      touched[field?.name] && errors[field?.name]
+                        ? errors[field?.name]
+                        : null
+                    }
+                    onChange={(e) =>
+                      handelChangeField(
+                        field?.name,
+                        e.target.checked,
                         field?.required
                       )
                     }
@@ -256,7 +288,8 @@ const SuperForm = ({
                     key={`${field?.name}`}
                     name={field?.name}
                     type={field?.type}
-                    label={field?.name}
+                    // label={field?.name}
+                    label={field?.name?.replace(/_/g, ' ')}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
                     error={

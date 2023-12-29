@@ -12,7 +12,7 @@ function CURD() {
 
   // Example Usage of createRecord method
   const insert = async (tableName, params) => {
-    params.data['guid'] = uuidv4();
+    params.data["guid"] = uuidv4();
     try {
       const createRecordResponse = await matieStateClient.createRecord(
         tableName,
@@ -55,7 +55,6 @@ function CURD() {
 
   // Example Usage of deleteRecords method
   const remove = async (tableName, params = {}) => {
-    console.log("🚀 ~ file: api.js:58 ~ remove ~ params:", params)
     try {
       const deleteRecordResponse = await matieStateClient.deleteRecords(
         tableName,

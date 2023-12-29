@@ -27,6 +27,7 @@ const authProtectedRoutes = [
   { path: '/LeaseApartment', component: <LeaseApartment /> },
   { path: '/testentry', component: <TestEntry /> },
   { path: '/list/:name', component: <List /> },
+  { path: '/patterns/:name', component: <List /> },
   { path: '/update/:name/:id', component: <Update /> },
   { path: '/chart/:name', component: <Chart /> },
 ];

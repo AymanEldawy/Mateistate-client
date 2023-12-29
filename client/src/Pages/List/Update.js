@@ -59,15 +59,13 @@ const Update = () => {
       updates: newValues,
     };
 
-    let res = await ApiActions.update(name, {
-      body,
-    });
+    let res = await ApiActions.update(name, body);
 
-    if (res?.statusText === "OK") {
+    if (res.status) {
       dispatchAlert({
         open: true,
         type: "success",
-        msg: "Added Successfully...",
+        msg: "Updated Successfully...",
       });
       if (name?.toLowerCase() === "building") {
         generateApartments(values, res?.data);

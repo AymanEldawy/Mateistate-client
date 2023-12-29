@@ -9,6 +9,7 @@ import Modal from 'Components/Modal/Modal';
 import { useAlert } from 'Hooks/useAlert';
 import formsApi from 'Helpers/Forms/formsApi';
 import { SERVER_URL } from 'Helpers/functions';
+import getFormByTableName from 'Helpers/Forms/new-tables-forms';
 
 const LeaseApartment = () => {
   const params = useParams();
@@ -24,7 +25,8 @@ const LeaseApartment = () => {
   const [openModalForm, setOpenModalForm] = useState(false);
 
   // Get data
-  let singleList = useMemo(() => formsApi['leaseapartment'], [name]);
+  // let singleList = useMemo(() => formsApi['leaseapartment'], [name]);
+  let singleList = useMemo(() => getFormByTableName('contract'), [name]);
   const steps = singleList?.steps;
   const forms = singleList?.forms;
   useEffect(() => {

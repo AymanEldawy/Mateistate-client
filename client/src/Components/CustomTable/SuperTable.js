@@ -60,14 +60,16 @@ const SuperTable = ({
       let newList = [];
       for (const col of columns) {
         for (const item of data) {
-          if (typeof item[col] == "string") {
+          if (typeof item[col.name] == "string") {
             if (
-              item[col]?.toLowerCase()?.startsWith(searchValue?.toLowerCase())
+              item[col.name]
+                ?.toLowerCase()
+                ?.startsWith(searchValue?.toLowerCase())
             )
               newList.push(item);
           } else {
             if (
-              item[col]
+              item[col.name]
                 ?.toString()
                 ?.toLowerCase()
                 ?.startsWith(searchValue?.toLowerCase())
@@ -161,10 +163,10 @@ const SuperTable = ({
           ) : null}
           <TableHeadCol>Actions</TableHeadCol>
           {columns?.map((col, index) => {
-            if (col === "guid") return;
+            if (col.name === "guid" || col?.hide_in_table) return;
             return (
-              <TableHeadCol key={`${col}-${index}`} sort sortBy={sortBy}>
-                {col}
+              <TableHeadCol key={`${col.name}-${index}`} sort sortBy={sortBy}>
+                {col.name}
               </TableHeadCol>
             );
           })}
@@ -222,16 +224,16 @@ const SuperTable = ({
                       </div>
                     </TableCol>
                     {columns?.map((col, index) => {
-                      if (col === "guid") return;
-                      if (col === "seclvl") {
+                      if (col.name === "guid" || col?.hide_in_table) return;
+                      if (col.name === "seclvl") {
                         return (
                           <TableCol classes="whitespace-nowrap" key={index}>
-                            {DropDowns(col)?.[row?.[col]]?.name}
+                            {DropDowns(col.name)?.[row?.[col.name]]?.name}
                           </TableCol>
                         );
                       }
-                      if (col === "CDate") {
-                        let date = new Date(row[col]).toLocaleDateString(
+                      if (col.name === "CDate") {
+                        let date = new Date(row[col.name]).toLocaleDateString(
                           "en-UK",
                           {
                             year: "numeric",
@@ -240,7 +242,7 @@ const SuperTable = ({
                             weekday: "short",
                           }
                         );
-                        let time = new Date(row[col]).toLocaleTimeString(
+                        let time = new Date(row[col.name]).toLocaleTimeString(
                           "en-UK",
                           {
                             timeStyle: "short",
@@ -251,17 +253,17 @@ const SuperTable = ({
                             {date} | {time}
                           </TableCol>
                         );
-                      } else if (col?.toLowerCase()?.includes("guid")) {
+                      } else if (col?.name?.toLowerCase()?.includes("guid")) {
                         return (
                           <TableUniqueCol
                             row={row}
-                            col={col}
+                            col={col.name}
                             key={index}
-                            val={row[col]}
+                            val={row[col.name]}
                             getCachedList={getCachedList}
                           />
                         );
-                      } else if (col === "Name") {
+                      } else if (col.name === "Name") {
                         return (
                           <TableCol key={index}>
                             <Link
@@ -269,11 +271,12 @@ const SuperTable = ({
                               to={`/update/${table}/${row?.guid}`}
                               state={{ row, table }}
                             >
-                              {row[col]}
+                              {row[col.name]}
                             </Link>
                           </TableCol>
                         );
-                      } else return <TableCol key={index}>{row[col]}</TableCol>;
+                      } else
+                        return <TableCol key={index}>{row[col.name]}</TableCol>;
                     })}
                   </TableRow>
                 );
@@ -318,7 +321,7 @@ const SuperTable = ({
       ) : null}
       {selectedRow?.guid ? (
         <Drawer onClose={() => setSelectedRow({})}>
-          <DisplayRow getCachedList={getCachedList} row={selectedRow} columns={columns} />
+          <DisplayRow getCachedList={getCachedList} row={selectedRow} />
         </Drawer>
       ) : null}
     </>

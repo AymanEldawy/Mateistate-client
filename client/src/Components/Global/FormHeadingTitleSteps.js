@@ -3,7 +3,7 @@ import React from "react";
 const FormHeadingTitleSteps = ({ steps, name, changeTab, activeStage }) => {
   return (
     <>
-      <div className="flex items-center text-left bg-gray-100 dark:bg-bgmaindark border-t border-gray-100 overflow-auto">
+      <div className="flex items-center text-left bg-gray-100 dark:bg-bgmaindark border-t border-gray-100 dark:border-borderdark overflow-auto">
         {steps?.length ? (
           <>
             {steps?.map((step, index) => (
@@ -12,9 +12,9 @@ const FormHeadingTitleSteps = ({ steps, name, changeTab, activeStage }) => {
                 key={step}
                 className={`${
                   activeStage === step
-                    ? "!text-black !font-medium dark:bg-borderdark dark:text-white bg-white rounded-t"
+                    ? "!text-black !font-medium dark:bg-borderdark dark:!text-white bg-white rounded-t"
                     : ""
-                } p-2 px-4 text-sm text-gray-500 font-normal flex-1 capitalize whitespace-nowrap`}
+                } p-2 px-4 text-sm text-gray-500 dark:text-gray-200 font-normal flex-1 capitalize whitespace-nowrap`}
               >
                 {step}
               </button>

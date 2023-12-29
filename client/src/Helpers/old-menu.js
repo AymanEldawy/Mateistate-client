@@ -6,8 +6,8 @@ import {
   PuzzleIcon,
   ToolsIcon,
   UserIcon,
-  ClipboardIcon,
 } from "./Icons";
+import ClipboardIcon from "./Icons/ClipboardIcon";
 
 export const menuData = [
   {
@@ -16,38 +16,49 @@ export const menuData = [
     link: "account",
     icon: <UserIcon />,
     children: [
-      { key: "user-card", name: "user card", link: "/list/user" },
-      { key: "owner-card", name: "owner card", link: "/list/owner" },
-      { key: "seller-card", name: "seller card", link: "/list/seller" },
-      { key: "lessor-card", name: "lessor card", link: "/list/lessor" },
-      { key: "bank-card", name: "bank card", link: "/list/bank" },
-      { key: "Currency card", name: "Currency card", link: "/list/currency" },
+      { key: "account-card", name: "account card", link: "/list/account" },
       {
-        key: "accounts",
-        name: "Accounts",
-        subChild: [
-          { key: "account-card", name: "account card", link: "/list/account" },
-
-          {
-            key: "Chart of Account",
-            name: "Chart of Account",
-            link: "/chart/account",
-          },
-        ],
+        key: "chart-of-accounts",
+        name: "Chart of accounts",
+        link: "/Chart/account",
       },
       {
         key: "cost-centers",
         name: "Cost centers",
+        link: "cost-centers",
         subChild: [
           {
-            key: "cost-center-card",
-            name: "cost center card",
-            link: "/list/cost-center",
+            key: "Const center card",
+            name: "Const center card",
+            link: "/list/cost",
           },
           {
             key: "Chart of cost center",
             name: "Chart of cost center",
-            link: "/chart/cost-center",
+            link: "/Chart/cost",
+          },
+        ],
+      },
+      {
+        key: "currencies",
+        name: "Currencies",
+        link: "currencies",
+        subChild: [
+          {
+            key: "Currency card",
+            name: "Currency card",
+            link: "/list/Currency",
+          },
+          {
+            key: "Bulletin currency prices",
+            name: "Bulletin currency prices",
+            link: "/list/Currency",
+          },
+
+          {
+            key: "Currency rate differences",
+            name: "Currency rate differences",
+            link: "/list/Currency",
           },
         ],
       },
@@ -62,7 +73,7 @@ export const menuData = [
       {
         key: "Customer",
         name: "Customer/Supplier Card",
-        link: "/list/user",
+        link: "/list/customer",
       },
       {
         key: "Building",
@@ -87,27 +98,27 @@ export const menuData = [
       {
         key: "Land",
         name: "Land Card",
-        link: "/list/Land",
+        link: "/list/Landcontract",
       },
       {
         key: "Villa",
         name: "Villa Card",
-        link: "/list/villa",
+        link: "/list/Villa",
       },
       {
         key: "Leaser",
-        name: "Lessor Card",
-        link: "/list/lessor",
+        name: "Leasor Card",
+        link: "/list/RentInfo",
       },
       {
         key: "Owner",
         name: "Owner Card",
-        link: "/list/owner",
+        link: "/list/Owner",
       },
       {
         key: "Salesman",
         name: "Salesman Card",
-        link: "/list/seller",
+        link: "/list/salesman",
       },
       {
         key: "Watchman",
@@ -130,27 +141,27 @@ export const menuData = [
       {
         key: "Material",
         name: "Material Card",
-        link: "/list/materials",
+        link: "/list/mat",
       },
       {
         key: "Group",
-        name: "materials Group Card",
-        link: "/list/materials-group",
+        name: "Group Card",
+        link: "/list/matgroup",
       },
       {
         key: "chartMaterial",
         name: "Chart of Materials",
-        link: "/chart/materials",
+        link: "/Chart/mat",
       },
       {
         key: "Store",
         name: "Store Card",
-        link: "/list/store",
+        link: "/list/Store",
       },
       {
         key: "Chart of Stores",
         name: "Chart of Stores",
-        link: "/chart/store",
+        link: "/Chart/store",
       },
       {
         key: "Activity reports",
@@ -168,18 +179,18 @@ export const menuData = [
       {
         key: "Asset Category",
         name: "Asset Category",
-        link: "/list/assets-group",
+        link: "/list/AssetsGroup",
       },
       {
         key: "Asset Card",
         name: "Asset Card",
-        link: "/list/assets",
+        link: "/list/Assets",
       },
 
       {
         key: "Chart of Assets",
         name: "Chart of Assets",
-        link: "/chart/assets",
+        link: "/Chart/Assets",
       },
     ],
   },
@@ -258,7 +269,7 @@ export const menuData = [
       {
         key: "lawsuit",
         name: "Lawsuit",
-        link: "/list/lawsuit",
+        link: "/list/",
       },
       {
         key: "Owners Associations Fees",
@@ -353,39 +364,6 @@ export const menuData = [
             link: "/",
           },
         ],
-      },
-    ],
-  },
-  {
-    key: "patterns",
-    name: "patterns",
-    link: "",
-    icon: <ToolsIcon />,
-    children: [
-      {
-        key: "contract patterns",
-        name: "Contract patterns",
-        link: "/patterns/contract_pattern",
-      },
-      {
-        key: "bills patterns",
-        name: "Bill patterns",
-        link: "/patterns/bill_pattern",
-      },
-      {
-        key: "voucher patterns",
-        name: "Voucher patterns",
-        link: "/patterns/voucher_pattern",
-      },
-      {
-        key: "accounting voucher patterns",
-        name: "Accounting voucher patterns",
-        link: "/patterns/accounting_voucher",
-      },
-      {
-        key: "contract type",
-        name: "Contract Type",
-        link: "/ContractType",
       },
     ],
   },
