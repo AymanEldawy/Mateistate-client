@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
 import BlockPaper from "Components/BlockPaper/BlockPaper";
-import TableForm from "Components/Forms/TableForm/TableForm";
+import TableForm from "Components/Forms/CustomForm/TableForm";
 import { Button } from "Components/Global/Button";
 import ContentBar from "Components/Global/ContentBar/ContentBar";
 import formsApi from "Helpers/Forms/formsApi";
@@ -338,7 +338,7 @@ const Tools = () => {
             </Link>
           }
         >
-          <div className="flex bg-white dark:bg-borderdark shadow-sm rounded min-w-[70px] overflow-hidden">
+          <div className="flex bg-white dark:bg-dark-border shadow-sm rounded min-w-[70px] overflow-hidden">
             <button
               onClick={preventInsertColor}
               className={`px-4 py-1 bg-green-500 rounded-sm text-white ${

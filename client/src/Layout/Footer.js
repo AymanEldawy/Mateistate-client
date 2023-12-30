@@ -15,7 +15,7 @@ const Footer = () => {
   return (
     <React.Fragment>
       <footer className={extraClasses}>
-        <div className="bg-white dark:bg-bgmaindark text-xs">
+        <div className="bg-white dark:bg-dark-bg text-xs">
           <div className="container">
             <div className="flex justify-between gap-2 items-center p-2 text-gray-400 font-normal">
               <div>{new Date().getFullYear()} © AB Repair.</div>

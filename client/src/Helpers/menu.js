@@ -42,12 +42,12 @@ export const menuData = [
           {
             key: "cost-center-card",
             name: "cost center card",
-            link: "/list/cost-center",
+            link: "/list/cost_center",
           },
           {
             key: "Chart of cost center",
             name: "Chart of cost center",
-            link: "/chart/cost-center",
+            link: "/chart/cost_center",
           },
         ],
       },
@@ -135,7 +135,7 @@ export const menuData = [
       {
         key: "Group",
         name: "materials Group Card",
-        link: "/list/materials-group",
+        link: "/list/material_group",
       },
       {
         key: "chartMaterial",
@@ -168,7 +168,7 @@ export const menuData = [
       {
         key: "Asset Category",
         name: "Asset Category",
-        link: "/list/assets-group",
+        link: "/list/assets_group",
       },
       {
         key: "Asset Card",
@@ -358,7 +358,7 @@ export const menuData = [
   },
   {
     key: "patterns",
-    name: "patterns",
+    name: "Patterns",
     link: "",
     icon: <ToolsIcon />,
     children: [
@@ -380,13 +380,9 @@ export const menuData = [
       {
         key: "accounting voucher patterns",
         name: "Accounting voucher patterns",
-        link: "/patterns/accounting_voucher",
+        link: "/patterns/accounting_voucher_pattern",
       },
-      {
-        key: "contract type",
-        name: "Contract Type",
-        link: "/ContractType",
-      },
+
     ],
   },
   {
@@ -399,11 +395,6 @@ export const menuData = [
         key: "tool 1",
         name: "tool 1",
         link: "/tools",
-      },
-      {
-        key: "contract type",
-        name: "Contract Type",
-        link: "/ContractType",
       },
     ],
   },

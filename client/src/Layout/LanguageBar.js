@@ -59,7 +59,7 @@ const LanguageBar = () => {
       </button>
 
       {open ? (
-        <ul className="absolute bg-white left-0 p-3 px-6 min-w-[200px] dark:bg-bgmaindark shadow rounded-md top-12 z-50 text-gray-500 text-sm flex flex-col gap-3">
+        <ul className="absolute bg-white left-0 p-3 px-6 min-w-[200px] dark:bg-dark-bg shadow rounded-md top-12 z-50 text-gray-500 text-sm flex flex-col gap-3">
           {Object.values(languages)
             ?.sort((a, b) => a?.lang.localeCompare(b?.lang))
             ?.map((language) => (

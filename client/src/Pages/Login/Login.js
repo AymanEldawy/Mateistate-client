@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 
 import wallpaper from "Assets/Images/wallpaper.jpg";
-import InputField from "Components/Forms/CustomForm/InputField";
+import { Input } from "Components/Forms/Fields";
 import { Button } from "Components/Global/Button";
 import { SERVER_URL } from "Helpers/functions";
 
@@ -25,7 +25,7 @@ const Login = () => {
       setErrors(newErrors);
     }
   };
-  
+
   const onTouched = (name) => {
     if (touched[name]) return;
     setTouched((prev) => {
@@ -35,7 +35,7 @@ const Login = () => {
       };
     });
   };
-  
+
   const handelChangeField = (name, value) => {
     insertIntoErrors(name, value);
     setValues((prev) => {
@@ -45,7 +45,7 @@ const Login = () => {
       };
     });
   };
-  
+
   const handelSubmit = async () => {
     if (!Object.keys(errors)?.length) {
       let body = {
@@ -56,11 +56,10 @@ const Login = () => {
         .post(`${SERVER_URL}/login`, {
           ...body,
         })
-        .then((res) => {
-        });
+        .then((res) => {});
     }
   };
-  
+
   return (
     <div
       className=" h-screen w-screen bg-cover bg-no-repeat "
@@ -72,7 +71,7 @@ const Login = () => {
         <div className="container">
           <div className="max-w-md mx-auto shadow bg-white p-8 rounded-md">
             <h1 className="text-2xl text-center font-medium mb-4">Login</h1>
-            <InputField
+            <Input
               label="email"
               name="email"
               type="email"
@@ -84,7 +83,7 @@ const Login = () => {
               }
             />
             <div className="mt-4" />
-            <InputField
+            <Input
               label="Password"
               type="password"
               name="password"

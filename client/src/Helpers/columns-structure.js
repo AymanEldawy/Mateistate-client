@@ -3405,5 +3405,5 @@ const TABLES = {
 };
 
 export default function getTableColumns(name) {
-  return TABLES[name.replace("-", "_")] || [];
+  return TABLES[name?.replace("-", "_")] || [];
 }

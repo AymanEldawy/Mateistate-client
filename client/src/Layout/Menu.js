@@ -80,7 +80,7 @@ const Menu = () => {
   };
   
   return (
-    <div className="shadow bg-white dark:bg-bgmaindark hidden lg:block">
+    <div className="shadow bg-white dark:bg-dark-bg hidden lg:block">
       <div className="container">
         <ul className="primary-menu text-gray-500 dark:text-gray-400 text-sm font-medium min-h-[40px] flex gap-1 items-center justify-between capitalize">
           {list(menuData)}

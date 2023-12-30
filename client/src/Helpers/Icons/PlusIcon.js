@@ -1,6 +1,6 @@
 import React from "react";
 
-const PlusIcon = ({ circle }) => {
+const PlusIcon = ({ circle, ...props }) => {
   return (
     <>
       {circle ? (
@@ -11,6 +11,7 @@ const PlusIcon = ({ circle }) => {
           strokeWidth={1.5}
           stroke="currentColor"
           className="w-6 h-6"
+          {...props}
         >
           <path
             strokeLinecap="round"
@@ -26,6 +27,7 @@ const PlusIcon = ({ circle }) => {
           strokeWidth={1.5}
           stroke="currentColor"
           className="w-6 h-6"
+          {...props}
         >
           <path
             strokeLinecap="round"

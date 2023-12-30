@@ -2,7 +2,7 @@ import React from "react";
 import { memo } from "react";
 import { useEffect } from "react";
 
-import InputField from "Components/Forms/CustomForm/InputField";
+import { Input } from "Components/Forms/Fields";
 import TableCol from "Components/CustomTable/TableCol";
 import { Button } from "Components/Global/Button";
 import { getValueOfInputColor } from "Helpers/functions";
@@ -29,13 +29,13 @@ const ToolsColColor = ({
     ];
   let ItemColor = itemData?.Color;
   let itemValue = flatsDetails?.[`${itemHash}&${tabName}`]?.NO;
-  
+
   useEffect(() => {
     if (CACHE_APARTMENTS[apartmentNumber]) {
       defaultInsertColor(
         itemHash,
         tabName,
-        CACHE_APARTMENTS[apartmentNumber],
+        CACHE_APARTMENTS[apartmentNumber]
         // CACHE_APARTMENTS[apartmentNumber]?.FlatBuildingDetailsIndex
       );
     }
@@ -47,7 +47,7 @@ const ToolsColColor = ({
     >
       {isUpdatable === itemHash ? (
         <div className="px-1">
-          <InputField
+          <Input
             type="number"
             className="h-full w-[93px] border-0 rounded-none focus-within:border-blue-400 focus:border"
             onKeyDown={(e) => {

@@ -3,11 +3,10 @@ import { useMemo, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BlockPaper from 'Components/BlockPaper/BlockPaper';
 import SuperForm from 'Components/Forms/CustomForm/SuperForm';
-import TableForm from 'Components/Forms/TableForm/TableForm';
+import TableForm from 'Components/Forms/CustomForm/TableForm';
 import FormHeadingTitleSteps from 'Components/Global/FormHeadingTitleSteps';
 import Modal from 'Components/Modal/Modal';
 import { useAlert } from 'Hooks/useAlert';
-import formsApi from 'Helpers/Forms/formsApi';
 import { SERVER_URL } from 'Helpers/functions';
 import getFormByTableName from 'Helpers/Forms/new-tables-forms';
 

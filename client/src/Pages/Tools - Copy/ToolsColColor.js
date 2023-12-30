@@ -1,7 +1,7 @@
 import React from "react";
 import { memo } from "react";
 
-import InputField from "Components/Forms/CustomForm/InputField";
+import { Input } from "Components/Forms/Fields";
 import TableCol from "Components/CustomTable/TableCol";
 import { Button } from "Components/Global/Button";
 import { EditIcon } from "Helpers/Icons";
@@ -30,7 +30,7 @@ const ToolsColColor = ({
     >
       {isUpdatable === item?.Guid ? (
         <div className="px-1">
-          <InputField
+          <Input
             type="number"
             className="h-full w-[93px] border-0 rounded-none focus-within:border-blue-400 focus:border"
             onKeyDown={(e) => {

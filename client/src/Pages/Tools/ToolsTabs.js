@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 
-import Checkbox from "Components/Forms/CustomForm/Checkbox";
+import Checkbox from "Components/Forms/Fields/Checkbox";
 import Table from "Components/CustomTable/Table";
 import TableBody from "Components/CustomTable/TableBody";
 import TableCol from "Components/CustomTable/TableCol";
@@ -182,13 +182,13 @@ const ToolsTabs = ({
   };
   return (
     <div className="">
-      <div className="flex items-center text-left bg-gray-100 dark:bg-bgmaindark ">
+      <div className="flex items-center text-left bg-gray-100 dark:bg-dark-bg ">
         {tabs?.map((tab, index) => (
           <button
             onClick={() => setSelectedTab(tab)}
             key={`${index}-${tab?.tabName}`}
             className={`${selectedTab?.tabName === tab?.tabName
-              ? "!text-black !font-medium dark:bg-borderdark dark:text-white bg-white"
+              ? "!text-black !font-medium dark:bg-dark-border dark:text-white bg-white"
               : ""
               } border p-2 px-4 text-sm text-gray-500 font-normal flex-1 capitalize whitespace-nowrap`}
           >

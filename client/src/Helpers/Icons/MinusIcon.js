@@ -1,6 +1,6 @@
 import React from "react";
 
-const MinusIcon = ({ circle }) => {
+const MinusIcon = ({ circle, ...props }) => {
   return (
     <>
       {circle ? (
@@ -11,6 +11,7 @@ const MinusIcon = ({ circle }) => {
           strokeWidth={1.5}
           stroke="currentColor"
           className="w-6 h-6"
+          {...props}
         >
           <path
             strokeLinecap="round"
@@ -26,6 +27,8 @@ const MinusIcon = ({ circle }) => {
           strokeWidth={1.5}
           stroke="currentColor"
           className="w-6 h-6"
+          {...props}
+
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
         </svg>

@@ -11,6 +11,7 @@ import Building from 'Pages/ManualForms/Building';
 import LeaseApartment from 'Pages/ManualForms/LeaseApartment';
 import Tools from 'Pages/Tools/Tools';
 import UpdateBuilding from 'Pages/UpdateBuilding/UpdateBuilding';
+import Voucher from 'Components/Forms/TestEntry/Voucher';
 
 const publicRoutes = [
   { path: '/login', component: <Login /> },
@@ -26,6 +27,7 @@ const authProtectedRoutes = [
   { path: '/building', component: <Building /> },
   { path: '/LeaseApartment', component: <LeaseApartment /> },
   { path: '/testentry', component: <TestEntry /> },
+  { path: '/voucher', component: <Voucher /> },
   { path: '/list/:name', component: <List /> },
   { path: '/patterns/:name', component: <List /> },
   { path: '/update/:name/:id', component: <Update /> },

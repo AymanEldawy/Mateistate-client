@@ -56,7 +56,7 @@ const List = () => {
         setOpen={setOpenConfirmation}
       />
       <Modal open={open} onClose={() => setOpen(false)}>
-        <DynamicForm setOpen={setOpen} name={name} />
+          <DynamicForm setOpen={setOpen} name={name} />
       </Modal>
       <DynamicTable title={name} setOpen={setOpen} deleteItem={deleteItem} />
     </>

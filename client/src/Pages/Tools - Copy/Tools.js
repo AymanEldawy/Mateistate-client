@@ -278,7 +278,7 @@ const Tools = () => {
               <LockIcon open={!canInsertColor} className="h-5 w-5" />
             </button>
           </div>
-          <div className="flex bg-white dark:bg-borderdark shadow-sm rounded min-w-[70px] overflow-hidden">
+          <div className="flex bg-white dark:bg-dark-border shadow-sm rounded min-w-[70px] overflow-hidden">
             <button
               className="hover:text-blue-500 dark:hover:text-white flex-1 p-1 disabled:bg-gray-50 scale-90"
               onClick={onDecrement}

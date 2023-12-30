@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import Footer from './Footer';
 import { useAlert } from 'Hooks/useAlert';
 import Alert from 'Components/Alert/Alert';
-import PopupForm from 'Components/Forms/PopupForm/PopupForm';
+import PopupForm from 'Components/Forms/CustomForm/PopupForm';
 import Backdrop from 'Components/Backdrop/Backdrop';
 
 const Layout = ({ children }) => {

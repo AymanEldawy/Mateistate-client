@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const PowerIcon = (props) => {
+const DoubleArrowIcon = (props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,10 +14,10 @@ const PowerIcon = (props) => {
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M5.636 5.636a9 9 0 1012.728 0M12 3v9"
+        d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5"
       />
     </svg>
   );
 };
 
-export default PowerIcon;
+export default DoubleArrowIcon;

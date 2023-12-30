@@ -33,3 +33,4 @@ export { default as PaletteIcon } from './PaletteIcon';
 export { default as PowerIcon } from './PowerIcon';
 export { default as EyeIcon } from './EyeIcon';
 export { default as ClipboardIcon } from './ClipboardIcon';
+export { default as DoubleArrowIcon } from './DoubleArrowIcon';

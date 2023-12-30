@@ -27,39 +27,46 @@ export const itemsListPerPages = (t) => [
   { id: "500", name: t("Number_rows") + " 500" },
 ];
 
-export const SELECT_LISTS = {
-  user_type: {
-    Supplier: 1,
-    customer: 2,
-  },
+export const SELECT_LISTS = (listName) => {
+  let list = {
+    contract_connect_with: [
+      { name: "nothing", id: 0 },
+      { name: "contract", id: 1 },
+      { name: "lawsuit", id: 3 },
+      { name: "bill", id: 3 },
+    ],
+    user_type: {
+      Supplier: 1,
+      customer: 2,
+    },
 
-  account_type: {
-    Normal: 1,
-    Final: 2,
-    Collective: 3,
-    Distributive: 4,
-  },
+    account_type: {
+      Normal: 1,
+      Final: 2,
+      Collective: 3,
+      Distributive: 4,
+    },
 
-  contract_type: {},
+    contract_type: {},
 
-  recordDateCreated: {
-    "contract start": 1,
-    "contact Editing": 2,
-  },
+    recordDateCreated: {
+      "contract start": 1,
+      "contact Editing": 2,
+    },
+  };
+  return list[listName];
 };
 
 // ### Securities patterns  General  paperType            |     🔽     | Receive - paid |
- 
 
-// Installments constraintGeneration  توليد القيض  
-// Commission commissionType   `addition` - `delete` 
-// collection deportableDefaultDate  Adoption date `Entitlement` `operation` 
-// Transfer deportableDefaultDate  Adoption date `Entitlement` `operation` 
-// endorsement deportableDefaultDate  Adoption date `Entitlement` `operation` 
-// return deportableDefaultDate  Adoption date `Entitlement` `operation` 
+// Installments constraintGeneration  توليد القيض
+// Commission commissionType   `addition` - `delete`
+// collection deportableDefaultDate  Adoption date `Entitlement` `operation`
+// Transfer deportableDefaultDate  Adoption date `Entitlement` `operation`
+// endorsement deportableDefaultDate  Adoption date `Entitlement` `operation`
+// return deportableDefaultDate  Adoption date `Entitlement` `operation`
 
-
-// Apartment contract contractDuration  3, 6 month - 1 year - custom   
+// Apartment contract contractDuration  3, 6 month - 1 year - custom
 // Apartment contract PaidType  cach - Installment - plan -later                                                          |
 // Apartment contractType  monthly or Custom
 // Apartment contract rentType: annual/monthly

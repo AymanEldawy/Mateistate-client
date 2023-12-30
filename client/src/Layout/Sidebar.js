@@ -121,7 +121,7 @@ const Sidebar = ({ open }) => {
   };
   return (
     <aside
-      className={`lg:hidden fixed w-72 flex flex-col h-screen shadow z-50 transition-transform duration-300 bg-white dark:bg-bgmaindark ${
+      className={`lg:hidden fixed w-72 flex flex-col h-screen shadow z-50 transition-transform duration-300 bg-white dark:bg-dark-bg ${
         open ? 'left-0' : '-left-72'
       }`}
     >
