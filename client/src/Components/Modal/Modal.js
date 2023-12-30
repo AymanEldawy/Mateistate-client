@@ -16,7 +16,7 @@ const Modal = ({ open, onClose, children }) => {
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-[#282828] shadow rounded-md p-4 min-w-[250px] min-h-[100px] max-h-[90vh] overflow-auto"
+        className="bg-white max-w-[85%] dark:bg-[#282828] shadow rounded-md p-4 min-w-[250px] min-h-[100px] max-h-[90vh] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {children}

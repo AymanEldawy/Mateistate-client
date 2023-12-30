@@ -1,11 +1,10 @@
 import { useCallback } from "react";
-import { useGuidList } from "Hooks/useGuidList";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { PlusIcon } from "Helpers/Icons";
 import { useAlert } from "Hooks/useAlert";
 import { useState } from "react";
 
-const Field = ({
+const UniqueField = ({
   table,
   tableForHashed,
   list: defaultList,
@@ -16,6 +15,7 @@ const Field = ({
   onChange,
   onFocus,
   label,
+  containerClassName,
   className,
   required,
   value: val,
@@ -75,7 +75,7 @@ const Field = ({
   };
 
   return (
-    <div className={`relative z-20 ${dropdown ? "!z-40" : ""}`}>
+    <div className={`relative z-20 ${containerClassName} ${dropdown ? "!z-40" : ""}`}>
       {dropdown ? (
         <div
           className="fixed top-0 left-0 right-0 bottom-0 bg-[#0007]"
@@ -90,7 +90,6 @@ const Field = ({
       <div className="relative flex items-center ">
         <input
           className={`border rounded  placeholder:text-gray-800 dark:placeholder:text-gray-500 dark:text-white p-1 w-full invalid:text-gray-800  ${className}`}
-          type="text"
           id="myInput"
           value={value}
           autoComplete="on"
@@ -161,4 +160,4 @@ const Field = ({
   );
 };
 
-export default Field;
+export default UniqueField;

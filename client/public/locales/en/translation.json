@@ -17,6 +17,17 @@
   "empty_result": "There are no Results",
   "logout": "logout",
 
+  "page": "Page",
+  "go_to_page": "Go to page",
+  "show": "show",
+  "rows": "rows",
+  "row": "row",
+  "of": "of",
+
+  "comment2": "**************************************",
+  "section2": "********* Menu ***********",
+  "comment_2": "**************************************",
+
   "Barcode": "Barcode",
   "CardKind2": "CardKind2",
   "CustKind": "CustKind",

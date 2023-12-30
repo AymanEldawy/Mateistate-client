@@ -6,134 +6,17 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ResizeBar } from "./TableResizeBar";
 import BlockPaper from "Components/BlockPaper/BlockPaper";
 import { SortIcon } from "Helpers/Icons";
 import { useTranslation } from "react-i18next";
 import { NewTableBar } from "./NewTableBar";
 import { TablePagination } from "./TablePagination";
-import IndeterminateCheckbox from "./IndeterminateCheckbox";
 import getTableColumns from "Helpers/columns-structure";
+import { useLocalStorage } from "Hooks/useLocalStorage";
 
-const data = [
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-  { id: 2211, name: "Ahmed", date: Date.now() },
-  { id: 133, name: "Ayman", date: Date.now() },
-  { id: 3533, name: "Galal", date: Date.now() },
-  { id: 4211, name: "Sampo", date: Date.now() },
-];
+const data = [];
 
 let columnBeingDragged;
 
@@ -148,6 +31,7 @@ export const DynamicTable = ({
   setOpen,
 }) => {
   const { t } = useTranslation();
+  const { getTable, setTable } = useLocalStorage();
   const [rowSelection, setRowSelection] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -156,9 +40,18 @@ export const DynamicTable = ({
 
   const columns = useMemo(() => getTableColumns(title), [title]);
 
+  useEffect(() => {
+    const storageTable = getTable(title);
+    if (storageTable) setColumnVisibility(storageTable);
+  }, [title]);
+
+  useEffect(() => {
+    if (Object.keys(columnVisibility).length) setTable(title, columnVisibility);
+  }, [columnVisibility]);
+
   const table = useReactTable({
     columns,
-    data: [],
+    data,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -172,7 +65,6 @@ export const DynamicTable = ({
     onRowSelectionChange: setRowSelection,
     columnResizeMode: "onChange",
     state: {
-      columnVisibility: columnVisibility,
       columnFilters,
       globalFilter,
       rowSelection,
@@ -192,7 +84,7 @@ export const DynamicTable = ({
     const colToBeMoved = currentCols.splice(columnBeingDragged, 1);
 
     currentCols.splice(newPosition, 0, colToBeMoved[0]);
-    table.setColumnOrder(currentCols); // <------------------------here you save the column ordering state
+    table.setColumnOrder(currentCols);
   };
 
   return (
@@ -215,7 +107,7 @@ export const DynamicTable = ({
             style={{ width: table.getTotalSize() }}
           >
             <thead
-              className={`${tableHeadClassName} bg-gray-200 dark:bg-[#161616]`}
+              className={`${tableHeadClassName} bg-gray-100 dark:bg-[#161616]`}
             >
               {table.getHeaderGroups().map((headerGroup) => {
                 return (
@@ -235,10 +127,10 @@ export const DynamicTable = ({
                         }}
                         onDrop={onDrop} // <---------------------------------------- ending props for drag&drop
                         style={{ width: header.getSize() }}
-                        className={`w-[${header.getSize()}] relative whitespace-normal group border border-gray-300 dark:border-borderdark px-4 py-2 cursor-move ${thClassName}
+                        className={`w-[${header.getSize()}] relative whitespace-normal group border-b border-gray-200 dark:border-dark-border px-4 py-2 cursor-move ${thClassName}
                     ${
                       header.column.getIsSorted()
-                        ? "sorting-hover [&_span]:visible bg-gray-300 dark:bg-bgmaindark "
+                        ? "sorting-hover [&_span]:visible bg-gray-300 dark:bg-dark-bg "
                         : ""
                     }
                     `}
@@ -274,12 +166,12 @@ export const DynamicTable = ({
                   return (
                     <tr
                       key={row.id}
-                      className={`border-b last:border-none even:bg-gray-100 dark:even:bg-[#333] border-gray-100 dark:border-borderdark`}
+                      className={`border-b last:border-none even:bg-gray-100 dark:even:bg-[#333] border-gray-100 dark:border-dark-border`}
                     >
                       {row.getVisibleCells().map((cell) => {
                         return (
                           <td
-                            className={`w-[${cell.column.getSize()}] px-4 py-2 border dark:border-borderdark ${tdClassName}`}
+                            className={`w-[${cell.column.getSize()}] px-4 py-2 ${tdClassName}`}
                             style={{ width: cell.column.getSize() }}
                           >
                             {flexRender(
@@ -293,8 +185,10 @@ export const DynamicTable = ({
                   );
                 })
               ) : (
-                <tr className="text-red-500 bg-red-100 p-1 rounded-sm text-center mt-2">
-                  <td colSpan={columns?.length}>{t("empty_result")}</td>
+                <tr className="text-red-500 h-28 bg-red-50 p-1 rounded-sm text-center mt-2">
+                  <td colSpan={columns?.length} rowSpan={5}>
+                    {t("empty_result")}
+                  </td>
                 </tr>
               )}
             </tbody>

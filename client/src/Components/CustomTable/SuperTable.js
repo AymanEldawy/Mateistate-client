@@ -180,7 +180,7 @@ const SuperTable = ({
                 return (
                   <TableRow
                     key={`${row?.Name}-${index}`}
-                    classes={`border-b dark:border-borderdark whitespace-nowrap ${
+                    classes={`border-b dark:border-dark-border whitespace-nowrap ${
                       !!selectedList[row?.guid]
                         ? "bg-gray-100 dark:bg-[#1115]"
                         : ""
@@ -313,8 +313,8 @@ const SuperTable = ({
             renderOnZeroPageCount={null}
             className="pagination flex gap-6 items-center shadow p-3"
             activeClassName="bg-blue-500 p-1 px-2 rounded text-sm text-white"
-            previousClassName="rounded-md dark:bg-borderdark dark:text-gray-50 text-gray-500 bg-gray-100 shadow px-1"
-            nextClassName="rounded-md dark:bg-borderdark dark:text-gray-50 text-gray-500 bg-gray-100 shadow px-1"
+            previousClassName="rounded-md dark:bg-dark-border dark:text-gray-50 text-gray-500 bg-gray-100 shadow px-1"
+            nextClassName="rounded-md dark:bg-dark-border dark:text-gray-50 text-gray-500 bg-gray-100 shadow px-1"
             disabledClassName="text-gray-200 dark:text-gray-600"
           />
         </>

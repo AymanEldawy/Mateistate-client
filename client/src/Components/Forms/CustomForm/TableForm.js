@@ -1,16 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { memo } from 'react';
+import React, { useCallback, useEffect, useState } from "react";
+import { memo } from "react";
 
-import { getValueOfInputColor } from 'Helpers/functions';
-import Field from 'Components/Forms/CustomForm/Field';
-import InputField from 'Components/Forms/CustomForm/InputField';
-import Table from 'Components/CustomTable/Table';
-import TableBody from 'Components/CustomTable/TableBody';
-import TableCol from 'Components/CustomTable/TableCol';
-import TableHead from 'Components/CustomTable/TableHead';
-import TableHeadCol from 'Components/CustomTable/TableHeadCol';
-import TableRow from 'Components/CustomTable/TableRow';
-import { Button } from 'Components/Global/Button';
+import { getValueOfInputColor } from "Helpers/functions";
+import { UniqueField, Input } from "Components/Forms/Fields";
+import Table from "Components/CustomTable/Table";
+import TableBody from "Components/CustomTable/TableBody";
+import TableCol from "Components/CustomTable/TableCol";
+import TableHead from "Components/CustomTable/TableHead";
+import TableHeadCol from "Components/CustomTable/TableHeadCol";
+import TableRow from "Components/CustomTable/TableRow";
+import { Button } from "Components/Global/Button";
 
 const TableForm = ({
   onOpen,
@@ -64,29 +63,29 @@ const TableForm = ({
         setGetIndexOfRowUpdated(index);
       }
     },
-    [grid],
+    [grid]
   );
 
   const submit = async () => {
-    setLoading(true)
+    setLoading(true);
     await onSubmit(grid);
-    setLoading(false)
+    setLoading(false);
   };
 
   return (
     <>
       <Table
         className={`${
-          columns?.length > 5 ? '' : 'max-w-[900px]'
-        } mx-auto pb-8 overflow-auto max-h-[420px] dark:border-borderdark`}
+          columns?.length > 5 ? "" : "max-w-[900px]"
+        } mx-auto table-fixed pb-8 overflow-auto max-h-[420px] dark:border-dark-border`}
       >
         <TableHead classes="dark:bg-[##5490d3] !bg-[#5490d3] text-white dark:text-gray-200">
-          <TableHeadCol classes="border border-gray-300 dark:border-borderdark !py-3 !text-center">
+          <TableHeadCol classes="border border-gray-300 dark:border-dark-border !py-3 !text-center">
             <div className="text-center w-full block">#</div>
           </TableHeadCol>
           {columns?.map((col) => (
             <TableHeadCol
-              classes="border border-gray-300 dark:border-borderdark !py-3"
+              classes="border border-gray-300 dark:border-dark-border !py-3"
               key={col}
             >
               {col}
@@ -102,12 +101,12 @@ const TableForm = ({
                 classes={
                   !!onSelectColor
                     ? selectedColor === index + 1
-                      ? 'bg-gray-200'
-                      : ''
-                    : ''
+                      ? "bg-gray-200"
+                      : ""
+                    : ""
                 }
               >
-                <TableCol classes="max-w-fit !p-0 border dark:border-borderdark text-center">
+                <TableCol classes="max-w-fit !p-0 border dark:border-dark-border text-center">
                   {!!setIndex || onSelectColor ? (
                     <button
                       className="hover:bg-gray-200 hover:font-medium block w-full p-2"
@@ -129,11 +128,11 @@ const TableForm = ({
                 </TableCol>
                 {initialFields?.map((field) => (
                   <TableCol
-                    classes="!p-0 border  dark:border-borderdark text-center"
+                    classes="!p-0 border  dark:border-dark-border text-center"
                     key={field?.name}
                   >
-                    {field?.key === 'unique' ? (
-                      <Field
+                    {field?.key === "unique" ? (
+                      <UniqueField
                         value={grid?.[index + 1]?.[field?.name]}
                         className="min-w-[140px] !border-0 !rounded-none !h-full !bg-transparent"
                         name={field?.name}
@@ -144,16 +143,16 @@ const TableForm = ({
                         }
                       />
                     ) : (
-                      <InputField
+                      <Input
                         value={
-                          field?.type === 'color'
+                          field?.type === "color"
                             ? getValueOfInputColor(
-                                grid?.[index + 1]?.[field?.name],
+                                grid?.[index + 1]?.[field?.name]
                               )
                             : grid?.[index + 1]?.[field?.name]
                         }
                         className={`!border-0 !rounded-none !bg-transparent ${
-                          field?.type === 'color' ? '' : '!h-full'
+                          field?.type === "color" ? "" : "!h-full"
                         }`}
                         name={field?.name}
                         type={field?.type}
@@ -162,7 +161,7 @@ const TableForm = ({
                           handelChangeField(
                             index + 1,
                             field?.name,
-                            e.target.value,
+                            e.target.value
                           );
                         }}
                       />
@@ -188,7 +187,12 @@ const TableForm = ({
           </>
         ) : null}
         {!steps?.length && !!onSubmit ? (
-          <Button title="Submit" onClick={submit} type="button" loading={loading} />
+          <Button
+            title="Submit"
+            onClick={submit}
+            type="button"
+            loading={loading}
+          />
         ) : null}
       </div>
     </>

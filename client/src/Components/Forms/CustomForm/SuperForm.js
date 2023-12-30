@@ -6,14 +6,7 @@ import { useLocation } from "react-router-dom";
 import { Button } from "Components/Global/Button";
 import { IGNORED_Fields } from "Helpers/constants";
 
-import CheckboxField from "./CheckboxField";
-import Field from "./Field";
-import InputField from "./InputField";
-import RadioField from "./RadioField";
-import SelectField from "./SelectField";
-import UploadFile from "./UploadFile";
-import { CustomSwitch } from "./CustomSwitch";
-import TextareaField from "./TextareaField";
+import { Select, UniqueField, Input, Radio, UploadFile, Switch, Textarea } from "../Fields";
 
 const SuperForm = ({
   onSubmit,
@@ -115,16 +108,21 @@ const SuperForm = ({
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
         {!!initialFields
           ? initialFields?.map((field, i) => {
-              if (IGNORED_Fields?.includes(field.name) || field?.hide_in_form)
+              if (
+                IGNORED_Fields?.includes(field.name) ||
+                field?.hide_in_form ||
+                field?.hide_in_form_add ||
+                field?.name === "created_at"
+              )
                 return;
-              if (field?.name.indexOf('terms') !== -1) {
+              if (field?.name.indexOf("terms") !== -1) {
                 return (
-                  <TextareaField
+                  <Textarea
                     value={values?.[field?.name]}
                     key={`${field?.name}`}
                     type={field?.type}
                     name={field?.name}
-                    label={field?.name?.replace(/_/g, ' ')}
+                    label={field?.name?.replace(/_/g, " ")}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
                     error={
@@ -143,7 +141,7 @@ const SuperForm = ({
                 );
               } else if (field?.is_ref) {
                 return (
-                  <Field
+                  <UniqueField
                     value={values?.[field?.name]}
                     table={field?.ref_table}
                     key={`${field?.name}`}
@@ -152,7 +150,7 @@ const SuperForm = ({
                     }
                     type={field?.type}
                     // label={field?.name}
-                    label={field?.name?.replace(/_/g, ' ')}
+                    label={field?.name?.replace(/_/g, " ")}
                     name={field?.name}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
@@ -161,11 +159,11 @@ const SuperForm = ({
                 );
               } else if (field?.key === "radio") {
                 return (
-                  <RadioField
+                  <Radio
                     defaultChecked={values?.[field?.name]}
                     key={`${field?.name}`}
                     // label={field?.name}
-                    label={field?.name?.replace(/_/g, ' ')}
+                    label={field?.name?.replace(/_/g, " ")}
                     name={field?.name}
                     required={field?.required}
                     onFocus={() => onTouched(field?.name)}
@@ -186,12 +184,12 @@ const SuperForm = ({
                 );
               } else if (field?.key === "select") {
                 return (
-                  <SelectField
+                  <Select
                     defaultValue={values?.[field?.name]}
                     key={`${field?.name}`}
                     name={field?.name}
                     // label={field?.name}
-                    label={field?.name?.replace(/_/g, ' ')}
+                    label={field?.name?.replace(/_/g, " ")}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
                     list={field?.list}
@@ -219,7 +217,7 @@ const SuperForm = ({
                     name={field?.name}
                     readonly={field?.readonly}
                     // label={field?.name}
-                    label={field?.name?.replace(/_/g, ' ')}
+                    label={field?.name?.replace(/_/g, " ")}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
                     error={
@@ -234,11 +232,10 @@ const SuperForm = ({
                 );
               } else if (field?.key === "checkbox") {
                 return (
-                  <CheckboxField
+                  <Radio
                     defaultChecked={values?.[field?.name]}
                     key={`${field?.name}`}
-                    // label={field?.name}
-                    label={field?.name?.replace(/_/g, ' ')}
+                    label={field?.name?.replace(/_/g, " ")}
                     name={field?.name}
                     required={field?.required}
                     onFocus={() => onTouched(field?.name)}
@@ -259,11 +256,11 @@ const SuperForm = ({
                 );
               } else if (field?.key === "switch") {
                 return (
-                  <CustomSwitch
+                  <Switch
                     defaultChecked={values?.[field?.name]}
                     key={`${field?.name}`}
                     // label={field?.name}
-                    label={field?.name?.replace(/_/g, ' ')}
+                    label={field?.name?.replace(/_/g, " ")}
                     name={field?.name}
                     required={field?.required}
                     onFocus={() => onTouched(field?.name)}
@@ -283,13 +280,13 @@ const SuperForm = ({
                 );
               } else {
                 return (
-                  <InputField
+                  <Input
                     value={values?.[field?.name]}
                     key={`${field?.name}`}
                     name={field?.name}
                     type={field?.type}
                     // label={field?.name}
-                    label={field?.name?.replace(/_/g, ' ')}
+                    label={field?.name?.replace(/_/g, " ")}
                     onFocus={() => onTouched(field?.name)}
                     required={field?.required}
                     error={

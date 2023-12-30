@@ -23,7 +23,7 @@ const TreeViewItem = ({
     <>
       <ConfirmModal onConfirm={onDeleteItem} open={open} setOpen={setOpen} />
       <div onClick={toggleOpen} className="flex capitalize cursor-pointer">
-        <div className="group options flex ltr:pl-8 rtl:pr-8 min-w-[190px] hover:text-black dark:hover:text-white dark:hover:bg-bgmaindark dark:hover:border-borderdark hover:bg-gray-100 border-transparent rounded border hover:border-gray-300">
+        <div className="group options flex ltr:pl-8 rtl:pr-8 min-w-[190px] hover:text-black dark:hover:text-white dark:hover:bg-dark-bg dark:hover:border-dark-border hover:bg-gray-100 border-transparent rounded border hover:border-gray-300">
           <button className="scale-75">{icon}</button>
           <span className="mx-2">{row?.Name}</span>
           <span className="ltr:ml-8 rtl:mr-8" />

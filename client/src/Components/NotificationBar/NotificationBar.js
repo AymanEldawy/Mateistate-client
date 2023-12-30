@@ -20,7 +20,7 @@ const NotificationBar = () => {
       </button>
 
       {open ? (
-        <ul className="absolute bg-white right-0 rtl:left-0 rtl:right-auto dark:bg-bgmaindark p-3 px-6 min-w-[200px] shadow rounded-md top-12 z-50 text-gray-500 dark:text-gray-200 text-sm flex flex-col gap-3">
+        <ul className="absolute bg-white right-0 rtl:left-0 rtl:right-auto dark:bg-dark-bg p-3 px-6 min-w-[200px] shadow rounded-md top-12 z-50 text-gray-500 dark:text-gray-200 text-sm flex flex-col gap-3">
           {/* <li>
             <NotificationCard />
           </li>

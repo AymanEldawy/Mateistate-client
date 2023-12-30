@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import BlockPaper from "Components/BlockPaper/BlockPaper";
-import UniqueField from "Components/Forms/Fields/UniqueField";
-import Input from "Components/Forms/Fields/Input";
+import {Input, UniqueField} from "Components/Forms/Fields/Input";
 import Loading from "Components/Loading/Loading";
 import { SERVER_URL } from "Helpers/functions";
 import { ChevronIcon } from "Helpers/Icons";

@@ -1,12 +1,7 @@
 import { EyeIcon, SearchIcon, TrashIcon } from "Helpers/Icons";
-import SelectField from "Components/Forms/CustomForm/SelectField";
-import SearchBar from "Components/SearchBar/SearchBar";
 import { useTranslation } from "react-i18next";
-import { itemsListPerPages } from "Helpers/constants";
-import { Drawer } from "Components/Global/Drawer";
 import { useState } from "react";
-import { ColumnSetting } from "Components/CustomTable/ColumnSetting";
-import { DebouncedInput } from "../Forms/CustomForm/DebouncedInput";
+import { DebouncedInput } from "../Forms/Fields";
 import { TableVisibility } from "./TableVisibility";
 
 export const NewTableBar = ({
@@ -23,7 +18,7 @@ export const NewTableBar = ({
 
   return (
     <>
-      <div className="flex justify-between gap-2 border-b pb-4 dark:border-borderdark">
+      <div className="flex justify-between gap-2 border-b pb-4 dark:border-dark-border">
         <div className="flex gap-2 items-center">
           <div className="relative">
             <div className="relative md:block ">
@@ -43,7 +38,11 @@ export const NewTableBar = ({
               />
             </div>
           </div>
-          <div>{table.getPrePaginationRowModel().rows.length} Rows</div>
+          {table.getPrePaginationRowModel().rows.length ? (
+            <div>
+              {table.getPrePaginationRowModel().rows.length} {t("rows")}
+            </div>
+          ) : null}
         </div>
         <div className="flex gap-2">
           <button

@@ -73,7 +73,7 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
               <>
                 {open[level] === item?.Guid ? (
                   <ul
-                    className={`relative bg-[#9991] dark:bg-[#1111] pr-4 !ml-4 rounded-md dark:before:border-borderdark before:border-l-2 before:absolute before:left-0 before:-z-1 before:h-full color-level-${level} after:opacity-20 after:w-4 after:h-full after:absolute after:top-0`}
+                    className={`relative bg-[#9991] dark:bg-[#1111] pr-4 !ml-4 rounded-md dark:before:border-dark-border before:border-l-2 before:absolute before:left-0 before:-z-1 before:h-full color-level-${level} after:opacity-20 after:w-4 after:h-full after:absolute after:top-0`}
                   >
                     {renderTree(item?.children, level + 1)}
                   </ul>
@@ -116,7 +116,7 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
         />
       </Modal>
       <ul
-        className={`relative pr-4 ltr:!ml-4 rtl:!mr-4 rounded-md dark:before:border-borderdark ltr:before:border-l-2 rtl:before:border-r-2  before:absolute ltr:before:left-0 rtl:before:right-0 before:-z-1 before:h-full color-level-0 after:opacity-50 after:w-4 after:h-full after:absolute after:top-0`}
+        className={`relative pr-4 ltr:!ml-4 rtl:!mr-4 rounded-md dark:before:border-dark-border ltr:before:border-l-2 rtl:before:border-r-2  before:absolute ltr:before:left-0 rtl:before:right-0 before:-z-1 before:h-full color-level-0 after:opacity-50 after:w-4 after:h-full after:absolute after:top-0`}
       >
         {renderTree(chartTree)}
       </ul>

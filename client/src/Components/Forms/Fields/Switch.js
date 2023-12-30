@@ -1,8 +1,8 @@
 import React from "react";
 
-export const CustomSwitch = ({ label, error, list, name, ...field }) => {
+const Switch = ({ containerClassName, label, error, list, name, ...field }) => {
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${containerClassName}`}>
       {label ? (
         <p className="overflow-hidden text-ellipsis text-sm font-normal mb-1 capitalize">
           {label}
@@ -29,3 +29,4 @@ export const CustomSwitch = ({ label, error, list, name, ...field }) => {
     </div>
   );
 };
+export default Switch;

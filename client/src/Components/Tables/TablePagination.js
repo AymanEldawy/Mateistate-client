@@ -1,44 +1,48 @@
+import { ChevronIcon, DoubleArrowIcon } from "Helpers/Icons";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export const TablePagination = ({ table }) => {
+  const {t} = useTranslation();
+
   return (
-    <div className="flex items-center gap-2 border-t pt-2 dark:border-borderdark">
+    <div className="flex items-center gap-2 border-t pt-2 dark:border-dark-border">
       <button
-        className="border rounded p-1 disabled:bg-gray-200 dark:disabled:bg-bgmaindark"
+        className="border rounded p-1 disabled:bg-gray-200 opacity-50 dark:disabled:bg-dark-bg"
         onClick={() => table.setPageIndex(0)}
         disabled={!table.getCanPreviousPage()}
       >
-        {"<<"}
+        <DoubleArrowIcon className="h-4 w-4 ltr:rotate-180" />
       </button>
       <button
-        className="border rounded p-1 disabled:bg-gray-200 dark:disabled:bg-bgmaindark"
+        className="border rounded p-1 disabled:bg-gray-200 opacity-50 dark:disabled:bg-dark-bg"
         onClick={() => table.previousPage()}
         disabled={!table.getCanPreviousPage()}
       >
-        {"<"}
+        <ChevronIcon className="h-4 w-4 ltr:rotate-90 rtl:-rotate-90" />
       </button>
       <button
-        className="border rounded p-1 disabled:bg-gray-200 dark:disabled:bg-bgmaindark"
+        className="border rounded p-1 disabled:bg-gray-200 opacity-50 dark:disabled:bg-dark-bg"
         onClick={() => table.nextPage()}
         disabled={!table.getCanNextPage()}
       >
-        {">"}
+        <ChevronIcon className="h-4 w-4 ltr:-rotate-90 rtl:rotate-90" />
       </button>
       <button
-        className="border rounded p-1 disabled:bg-gray-200 dark:disabled:bg-bgmaindark"
+        className="border rounded p-1 disabled:bg-gray-200 opacity-50 dark:disabled:bg-dark-bg"
         onClick={() => table.setPageIndex(table.getPageCount() - 1)}
         disabled={!table.getCanNextPage()}
       >
-        {">>"}
+        <DoubleArrowIcon className="h-4 w-4 rtl:rotate-180" />
       </button>
       <span className="flex items-center gap-1">
-        <div>Page</div>
+        <div>{t('page')}</div>
         <strong>
-          {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+          {table.getState().pagination.pageIndex + 1} {t("of")} {table.getPageCount()}
         </strong>
       </span>
       <span className="flex items-center gap-1">
-        | Go to page:
+        | {t("go_to_page")}:
         <input
           type="number"
           defaultValue={table.getState().pagination.pageIndex + 1}
@@ -50,14 +54,15 @@ export const TablePagination = ({ table }) => {
         />
       </span>
       <select
+        className="border p-1 rounded-md"
         value={table.getState().pagination.pageSize}
         onChange={(e) => {
           table.setPageSize(Number(e.target.value));
         }}
       >
-        {[10, 20, 30, 40, 50].map((pageSize) => (
+        {[20, 50, 100, 250, 500, 1000].map((pageSize) => (
           <option key={pageSize} value={pageSize}>
-            Show {pageSize}
+            {t('show')} {pageSize}
           </option>
         ))}
       </select>

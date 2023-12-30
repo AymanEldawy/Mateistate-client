@@ -19,7 +19,7 @@ const SuperDropdown = ({ labelContent, children }) => {
       </button>
 
       {open ? (
-        <ul className="absolute bg-white left-0 p-3 px-6 min-w-[200px] dark:bg-bgmaindark dark:text-gray-200 shadow rounded-md top-12 z-50 text-gray-500 text-sm flex flex-col gap-3">
+        <ul className="absolute bg-white left-0 p-3 px-6 min-w-[200px] dark:bg-dark-bg dark:text-gray-200 shadow rounded-md top-12 z-50 text-gray-500 text-sm flex flex-col gap-3">
           {children}
         </ul>
       ) : null}

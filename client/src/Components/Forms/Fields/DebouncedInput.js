@@ -1,6 +1,6 @@
 import React from "react";
 
-export function DebouncedInput({
+function DebouncedInput({
   value: initialValue,
   onChange,
   debounce = 500,
@@ -28,3 +28,5 @@ export function DebouncedInput({
     />
   );
 }
+
+export default DebouncedInput;
