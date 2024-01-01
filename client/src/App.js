@@ -1,10 +1,10 @@
 import { BrowserRouter } from "react-router-dom";
-
-import { AlertProvider } from "Hooks/useAlert";
+import { ToastContainer } from "react-toastify";
 import { ListsGuidsProvider } from "Hooks/useGuidList";
 import { PopupFormProvider } from "Hooks/usePopupForm";
 import { ThemeProvider } from "Hooks/useTheme";
 import Routes from "Routes/index";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -13,11 +13,21 @@ function App() {
       <BrowserRouter>
         <ThemeProvider>
           <PopupFormProvider>
-            <AlertProvider>
-              <ListsGuidsProvider>
-                <Routes />
-              </ListsGuidsProvider>
-            </AlertProvider>
+            <ListsGuidsProvider>
+              <ToastContainer
+                position="center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
+              <Routes />
+            </ListsGuidsProvider>
           </PopupFormProvider>
         </ThemeProvider>
       </BrowserRouter>

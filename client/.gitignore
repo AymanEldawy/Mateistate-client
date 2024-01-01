@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+/client/src/Helpers/db-forms
+client/src/Helpers/db-forms copy/
 
 # testing
 /coverage

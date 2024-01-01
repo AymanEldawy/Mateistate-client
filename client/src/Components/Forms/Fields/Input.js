@@ -13,9 +13,10 @@ const Input = ({
     <div className={"flex flex-col " + containerClassName}>
       {label ? (
         <label
+          title={label}
           htmlFor={name}
           className={
-            "overflow-hidden text-ellipsis text-sm font-normal mb-1 capitalize " +
+            "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize " +
             labelClassName
           }
         >

@@ -6,9 +6,9 @@ import { useMemo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
-import { useAlert } from "Hooks/useAlert";
 import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import { SERVER_URL } from "Helpers/functions";
+import { toast } from "react-toastify";
 
 const Building = () => {
   const params = useParams();
@@ -18,7 +18,6 @@ const Building = () => {
   const [activeStage, setActiveStage] = useState("");
   const [fields, setFields] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { alertMessage, dispatchAlert } = useAlert();
 
   // Get data
   let singleList = useMemo(() => formsApi["building"], [name]);
@@ -39,11 +38,7 @@ const Building = () => {
       ...body,
     });
     if (res?.statusText === "OK") {
-      dispatchAlert({
-        open: true,
-        type: "success",
-        msg: "Added Successfully...",
-      });
+      toast.success("Added Successfully...");
       setOpen(false);
     } else {
     }

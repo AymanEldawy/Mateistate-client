@@ -4,13 +4,12 @@ import { useParams } from "react-router-dom";
 
 import BlockPaper from "Components/BlockPaper/BlockPaper";
 import RenderTree from "Components/RenderTree/RenderTree";
-import { useAlert } from "Hooks/useAlert";
 import { SERVER_URL } from "Helpers/functions";
 import { useTranslation } from "react-i18next";
 import Loading from "Components/Loading/Loading";
+import { toast } from "react-toastify";
 
 function toTree(data, pid = null) {
-  
   return data?.reduce((r, e) => {
     if (e.ParentGUID == pid) {
       const obj = { ...e };
@@ -29,7 +28,6 @@ const Chart = () => {
   const [chartTree, setChartTree] = useState();
   const params = useParams();
   const { name } = params;
-  const { dispatchAlert } = useAlert();
   const getData = async () => {
     setLoading(true);
     await axios
@@ -67,19 +65,11 @@ const Chart = () => {
       ...body,
     });
     if (res?.status === 200) {
-      dispatchAlert({
-        open: true,
-        type: "success",
-        msg: "Added Successfully",
-      });
+      toast.success("Added Successfully");
       getData();
       return true;
     } else {
-      dispatchAlert({
-        open: true,
-        type: "error",
-        msg: "Failed to add new",
-      });
+      toast.error("Failed to add new");
       return false;
     }
   };

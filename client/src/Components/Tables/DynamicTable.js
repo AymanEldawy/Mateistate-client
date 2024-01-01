@@ -16,12 +16,11 @@ import { TablePagination } from "./TablePagination";
 import getTableColumns from "Helpers/columns-structure";
 import { useLocalStorage } from "Hooks/useLocalStorage";
 
-const data = [];
-
 let columnBeingDragged;
 
 export const DynamicTable = ({
   title,
+  data,
   containerClassName,
   tableClassName,
   tableHeadClassName,
@@ -103,7 +102,7 @@ export const DynamicTable = ({
           className={`relative overflow-x-auto w-full  ${containerClassName}`}
         >
           <table
-            className={`w-[${table.getTotalSize()}] w-full ${tableClassName}`}
+            className={`w-[${table.getTotalSize()}] text-sm w-full ${tableClassName}`}
             style={{ width: table.getTotalSize() }}
           >
             <thead
@@ -116,7 +115,6 @@ export const DynamicTable = ({
                       <th
                         key={header.id}
                         colSpan={header.colSpan}
-                        // the below props for column reordering ---------------------starting props for drag&drop
                         draggable={
                           !table.getState().columnSizingInfo.isResizingColumn
                         }
@@ -125,9 +123,9 @@ export const DynamicTable = ({
                         onDragOver={(e) => {
                           e.preventDefault();
                         }}
-                        onDrop={onDrop} // <---------------------------------------- ending props for drag&drop
+                        onDrop={onDrop} 
                         style={{ width: header.getSize() }}
-                        className={`w-[${header.getSize()}] relative whitespace-normal group border-b border-gray-200 dark:border-dark-border px-4 py-2 cursor-move ${thClassName}
+                        className={`w-[${header.getSize()}] text-gray-700 dark:text-gray-300 font-medium capitalize relative whitespace-normal group border-b border-gray-200 dark:border-dark-border px-4 py-2 cursor-move ${thClassName}
                     ${
                       header.column.getIsSorted()
                         ? "sorting-hover [&_span]:visible bg-gray-300 dark:bg-dark-bg "
@@ -185,9 +183,15 @@ export const DynamicTable = ({
                   );
                 })
               ) : (
-                <tr className="text-red-500 h-28 bg-red-50 p-1 rounded-sm text-center mt-2">
-                  <td colSpan={columns?.length} rowSpan={5}>
-                    {t("empty_result")}
+                <tr className="text-red-500 h-28 bg-[#f1f1f1e8] dark:bg-[#00000021] p-1 rounded-sm text-center mt-2">
+                  <td
+                    colSpan={columns.length}
+                    rowSpan={5}
+                    className="ltr:text-left rtl:text-right relative"
+                  >
+                    <span className="sticky left-1/2 -translate-x-1/2">
+                      {t("empty_result")}
+                    </span>
                   </td>
                 </tr>
               )}

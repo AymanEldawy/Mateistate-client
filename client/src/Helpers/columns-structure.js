@@ -2154,10 +2154,10 @@ export const voucher_pattern = [
   { header: "odd_table_color", accessorKey: "odd_table_color" },
   { header: "even_table_color", accessorKey: "even_table_color" },
   { header: "sms", accessorKey: "sms" },
-  { header: "mulct_price", accessorKey: "mulct_price" },
-  { header: "mulct_debit_id", accessorKey: "mulct_debit_id" },
-  { header: "mulct_credit_id", accessorKey: "mulct_credit_id" },
-  { header: "mulct_note", accessorKey: "mulct_note" },
+  // { header: "mulct_price", accessorKey: "mulct_price" },
+  // { header: "mulct_debit_id", accessorKey: "mulct_debit_id" },
+  // { header: "mulct_credit_id", accessorKey: "mulct_credit_id" },
+  // { header: "mulct_note", accessorKey: "mulct_note" },
 ];
 // ==== End Voucher
 
@@ -3329,6 +3329,459 @@ export const store = [
     accessorKey: "store_final_id",
   },
 ];
+const bill_group = [
+  {
+    id: "select",
+    size: 40,
+    isResizingColumn: false,
+    header: ({ table }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: table.getIsAllRowsSelected(),
+          indeterminate: table.getIsSomeRowsSelected(),
+          onChange: table.getToggleAllRowsSelectedHandler(),
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: row.getIsSelected(),
+          disabled: !row.getCanSelect(),
+          indeterminate: row.getIsSomeSelected(),
+          onChange: row.getToggleSelectedHandler(),
+        }}
+      />
+    ),
+  },
+  { header: "id", accessorKey: "id" },
+  { header: "created_at", accessorKey: "created_at" },
+  { header: "paperType", accessorKey: "paperType" },
+  { header: "code", accessorKey: "code" },
+  { header: "name", accessorKey: "name" },
+  { header: "list_name", accessorKey: "list_name" },
+  {
+    header: "default_account_id",
+    accessorKey: "default_account_id",
+  },
+  {
+    header: "shortcut_key",
+    accessorKey: "shortcut_key",
+  },
+  {
+    header: "gen_entries",
+    accessorKey: "gen_entries",
+  },
+  {
+    header: "auto_gen_entries",
+    accessorKey: "auto_gen_entries",
+  },
+  {
+    header: "auto_transfer_entry",
+    accessorKey: "auto_transfer_entry",
+  },
+  {
+    header: "default_print_folder",
+    accessorKey: "default_print_folder",
+  },
+
+  {
+    header: "deportable",
+    accessorKey: "deportable",
+  },
+  {
+    header: "deportable_gen_enteries",
+    accessorKey: "deportable_gen_enteries",
+  },
+  {
+    header: "deportable_auto_gen_enteries",
+    accessorKey: "deportable_auto_gen_enteries",
+  },
+  {
+    header: "deportable_auto_transfer_entry",
+    accessorKey: "deportable_auto_transfer_entry",
+  },
+  {
+    header: "deportable_default_date",
+    accessorKey: "deportable_default_date",
+    type: "number",
+  },
+  {
+    header: "deportable_default_account_is_onwer",
+    accessorKey: "deportable_default_account_is_onwer",
+  },
+  {
+    header: "deportable_default_observe_account_is_client",
+    accessorKey: "deportable_default_observe_account_is_client",
+  },
+  {
+    header: "deportable_move_cost_center_debit",
+    accessorKey: "deportable_move_cost_center_debit",
+  },
+  {
+    header: "deportable_move_cost_center_credit",
+    accessorKey: "deportable_move_cost_center_credit",
+  },
+  {
+    header: "deportable_debit_account_id",
+    accessorKey: "deportable_debit_account_id",
+  },
+  {
+    header: "deportable_credit_account_id",
+    accessorKey: "deportable_credit_account_id",
+  },
+
+  {
+    header: "collection",
+    accessorKey: "collection",
+  },
+
+  {
+    header: "collection_gen_enteries",
+    accessorKey: "collection_gen_enteries",
+  },
+  {
+    header: "collection_auto_gen_enteries",
+    accessorKey: "collection_auto_gen_enteries",
+  },
+  {
+    header: "collection_auto_transfer_entry",
+    accessorKey: "collection_auto_transfer_entry",
+  },
+  {
+    header: "collection_default_date",
+    accessorKey: "collection_default_date",
+    type: "number",
+  },
+  {
+    header: "collection_default_account_is_building_bank",
+    accessorKey: "collection_default_account_is_building_bank",
+  },
+  {
+    header: "collection_default_observe_account_is_client",
+    accessorKey: "collection_default_observe_account_is_client",
+  },
+  {
+    header: "collection_move_cost_center_debit",
+    accessorKey: "collection_move_cost_center_debit",
+  },
+  {
+    header: "collection_move_cost_center_credit",
+    accessorKey: "collection_move_cost_center_credit",
+  },
+  {
+    header: "collection_credit_account_id",
+    accessorKey: "collection_credit_account_id",
+  },
+  {
+    header: "collection_debit_account_id",
+    accessorKey: "collection_debit_account_id",
+  },
+
+  {
+    header: "commission_type",
+    accessorKey: "commission_type",
+  },
+  {
+    header: "commission_amount_from_building",
+    accessorKey: "commission_amount_from_building",
+  },
+  {
+    header: "commission_default_account_is_building_owner",
+    accessorKey: "commission_default_account_is_building_owner",
+  },
+  {
+    header: "commission_default_observe_is_revenue_account",
+    accessorKey: "commission_default_observe_is_revenue_account",
+  },
+  {
+    header: "commission_move_cost_center_debit",
+    accessorKey: "commission_move_cost_center_debit",
+  },
+  {
+    header: "commission_move_cost_center_credit",
+    accessorKey: "commission_move_cost_center_credit",
+  },
+  {
+    header: "commission_debit_account_id",
+    accessorKey: "commission_debit_account_id",
+  },
+  {
+    header: "commission_credit_account_id",
+    accessorKey: "commission_credit_account_id",
+  },
+
+  {
+    header: "partial_collection",
+    accessorKey: "partial_collection",
+  },
+  {
+    header: "partial_gen_enteries",
+    accessorKey: "partial_gen_enteries",
+  },
+  {
+    header: "partial_auto_gen_enteries",
+    accessorKey: "partial_auto_gen_enteries",
+  },
+  {
+    header: "partial_auto_transfer_entry",
+    accessorKey: "partial_auto_transfer_entry",
+  },
+  {
+    header: "partial_default_account_is_building_bank",
+    accessorKey: "partial_default_account_is_building_bank",
+  },
+  {
+    header: "partial_default_observe_account_is_client",
+    accessorKey: "partial_default_observe_account_is_client",
+  },
+  {
+    header: "partial_move_cost_center_debit",
+    accessorKey: "partial_move_cost_center_debit",
+  },
+  {
+    header: "partial_move_cost_center_credit",
+    accessorKey: "partial_move_cost_center_credit",
+  },
+  {
+    header: "partial_debit_account_id",
+    accessorKey: "partial_debit_account_id",
+  },
+  {
+    header: "partial_credit_account_id",
+    accessorKey: "partial_credit_account_id",
+  },
+
+  {
+    header: "endorsable",
+    accessorKey: "endorsable",
+  },
+  {
+    header: "endorsement_gen_enteries",
+    accessorKey: "endorsement_gen_enteries",
+  },
+  {
+    header: "endorsement_auto_gen_enteries",
+    accessorKey: "endorsement_auto_gen_enteries",
+  },
+  {
+    header: "endorsement_auto_transfer_entry",
+    accessorKey: "endorsement_auto_transfer_entry",
+  },
+  {
+    header: "endorsement_default_date",
+    accessorKey: "endorsement_default_date",
+    type: "number",
+  },
+  {
+    header: "endorsement_move_cost_center_debit",
+    accessorKey: "endorsement_move_cost_center_debit",
+  },
+  {
+    header: "endorsement_move_cost_center_credit",
+    accessorKey: "endorsement_move_cost_center_credit",
+  },
+  {
+    header: "endorsement_debit_account_id",
+    accessorKey: "endorsement_debit_account_id",
+  },
+  {
+    header: "endorsement_credit_account_id",
+    accessorKey: "endorsement_credit_account_id",
+  },
+
+  {
+    header: "returnable",
+    accessorKey: "returnable",
+  },
+  {
+    header: "returnable_gen_enteries",
+    accessorKey: "returnable_gen_enteries",
+  },
+  {
+    header: "returnable_auto_gen_enteries",
+    accessorKey: "returnable_auto_gen_enteries",
+  },
+  {
+    header: "returnable_auto_transfer_entry",
+    accessorKey: "returnable_auto_transfer_entry",
+  },
+  {
+    header: "returnable_default_date",
+    accessorKey: "returnable_default_date",
+    type: "number",
+  },
+  {
+    header: "returnable_default_account_is_client",
+    accessorKey: "returnable_default_account_is_client",
+  },
+  {
+    header: "returnable_default_observe_account_is_building_bank",
+    accessorKey: "returnable_default_observe_account_is_building_bank",
+  },
+  {
+    header: "returnable_active_operations",
+    accessorKey: "returnable_active_operations",
+  },
+  {
+    header: "returnable_move_cost_center_debit",
+    accessorKey: "returnable_move_cost_center_debit",
+  },
+  {
+    header: "returnable_move_cost_center_credit",
+    accessorKey: "returnable_move_cost_center_credit",
+  },
+  {
+    header: "returnable_debit_account_id",
+    accessorKey: "returnable_debit_account_id",
+  },
+  {
+    header: "returnable_credit_account_id",
+    accessorKey: "returnable_credit_account_id",
+  },
+  {
+    header: "return_fee_default_account_is_client",
+    accessorKey: "return_fee_default_account_is_client",
+  },
+  {
+    header: "return_fee_debit_account_id",
+    accessorKey: "return_fee_debit_account_id",
+  },
+  {
+    header: "return_fee_credit_account_id",
+    accessorKey: "return_fee_credit_account_id",
+  },
+
+  {
+    header: "statement_account",
+    accessorKey: "statement_account",
+  },
+  {
+    header: "statement_observe_account",
+    accessorKey: "statement_observe_account",
+  },
+  {
+    header: "statement_leaving",
+    accessorKey: "statement_leaving",
+  },
+  {
+    header: "statement_endorsement",
+    accessorKey: "statement_endorsement",
+  },
+  {
+    header: "statement_collection",
+    accessorKey: "statement_collection",
+  },
+  {
+    header: "statement_return",
+    accessorKey: "statement_return",
+  },
+  {
+    header: "statement_partial",
+    accessorKey: "statement_partial",
+  },
+];
+
+const bill = [
+  { header: "id", accessorKey: "id" },
+  { header: "created_at", accessorKey: "created_at" },
+  { header: "number", accessorKey: "number" },
+  { header: "type", accessorKey: "type" },
+  {
+    header: "internal_number",
+    accessorKey: "internal_number",
+  },
+  { header: "amount", accessorKey: "amount" },
+  {
+    header: "currency_id",
+    accessorKey: "currency_id",
+  },
+  {
+    header: "seller_id",
+    accessorKey: "seller_id",
+  },
+  {
+    header: "received_from",
+    accessorKey: "received_from",
+  },
+  {
+    header: "beneficiary_accessorKey",
+    accessorKey: "beneficiary_accessorKey",
+  },
+  {
+    header: "cost_center_id",
+    accessorKey: "cost_center_id",
+  },
+  { header: "note", accessorKey: "note" },
+  { header: "date", accessorKey: "date" },
+  { header: "due_date", accessorKey: "due_date" },
+  {
+    header: "due_end_date",
+    accessorKey: "due_end_date",
+  },
+  {
+    header: "without_due_date",
+    accessorKey: "without_due_date",
+  },
+  {
+    header: "bank_id",
+    accessorKey: "bank_id",
+  },
+  {
+    header: "obverse_account_id",
+    accessorKey: "obverse_account_id",
+  },
+  {
+    header: "obverse_account_note",
+    accessorKey: "obverse_account_note",
+  },
+  {
+    header: "observe_cost_center_id",
+    accessorKey: "observe_cost_center_id",
+  },
+  { header: "note1", accessorKey: "note1" },
+  { header: "note2", accessorKey: "note2" },
+  {
+    header: "deport_status",
+    accessorKey: "deport_status",
+  },
+  {
+    header: "collection_status",
+    accessorKey: "collection_status",
+  },
+  {
+    header: "partial_collection_status",
+    accessorKey: "partial_collection_status",
+  },
+  {
+    header: "endors_status",
+    accessorKey: "endors_status",
+  },
+  {
+    header: "return_status",
+    accessorKey: "return_status",
+  },
+  {
+    header: "deposit_status",
+    accessorKey: "deposit_status",
+  },
+  {
+    header: "clipboard_number",
+    accessorKey: "clipboard_number",
+  },
+  {
+    header: "clipboard_date",
+    accessorKey: "clipboard_date",
+  },
+  {
+    header: "clipboard_receipt_number",
+    accessorKey: "clipboard_receipt_number",
+  },
+  {
+    header: "clipboard_internal_number",
+    accessorKey: "clipboard_internal_number",
+  },
+];
 
 const TABLES = {
   account,
@@ -3402,6 +3855,8 @@ const TABLES = {
   villa_selling_price,
   user,
   store,
+  bill,
+  bill_pattern: bill_group,
 };
 
 export default function getTableColumns(name) {

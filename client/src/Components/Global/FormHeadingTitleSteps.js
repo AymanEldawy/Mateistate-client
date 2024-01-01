@@ -4,7 +4,7 @@ const FormHeadingTitleSteps = ({ steps, name, changeTab, activeStage }) => {
   return (
     <>
       {steps?.length ? (
-        <>
+        <div className="flex flex-col w-full">
           <h3
             className={` p-2 flex-1 font-medium capitalize border-b-2 text-center dark:bg-dark-border shadow text-lg !text-blue-500 bg-blue-50 border-blue-500 `}
           >
@@ -25,7 +25,7 @@ const FormHeadingTitleSteps = ({ steps, name, changeTab, activeStage }) => {
               </button>
             ))}
           </div>
-        </>
+        </div>
       ) : (
         <button
           className={` p-2 w-full flex-1 shadow font-medium capitalize border-l-4 dark:bg-dark-border text-left text-lg !text-blue-500 bg-blue-50 border-blue-500 `}

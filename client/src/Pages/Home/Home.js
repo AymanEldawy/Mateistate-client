@@ -3,7 +3,7 @@ import Layout from "Layout";
 
 const Home = () => {
   return (
-    <Layout>
+    <Layout containerClassName="!min-h-screen" bodyClassName="pb-4">
       <DashboardGridLayout />
     </Layout>
   );

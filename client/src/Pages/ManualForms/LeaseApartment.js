@@ -6,7 +6,6 @@ import SuperForm from 'Components/Forms/CustomForm/SuperForm';
 import TableForm from 'Components/Forms/CustomForm/TableForm';
 import FormHeadingTitleSteps from 'Components/Global/FormHeadingTitleSteps';
 import Modal from 'Components/Modal/Modal';
-import { useAlert } from 'Hooks/useAlert';
 import { SERVER_URL } from 'Helpers/functions';
 import getFormByTableName from 'Helpers/Forms/new-tables-forms';
 
@@ -20,12 +19,11 @@ const LeaseApartment = () => {
   const [loading, setLoading] = useState(false);
   const [allValues, setAllValues] = useState({});
   const [childrenValues, setChildrenValues] = useState({});
-  const { alertMessage, dispatchAlert } = useAlert();
   const [openModalForm, setOpenModalForm] = useState(false);
 
   // Get data
-  // let singleList = useMemo(() => formsApi['leaseapartment'], [name]);
-  let singleList = useMemo(() => getFormByTableName('contract'), [name]);
+  let singleList = useMemo(() => getFormByTableName('apartment'), [name]);
+  // let singleList = useMemo(() => getFormByTableName('contract'), [name]);
   const steps = singleList?.steps;
   const forms = singleList?.forms;
   useEffect(() => {
@@ -96,7 +94,7 @@ const LeaseApartment = () => {
       });
     }
     // if (res?.statusText === "OK") {
-    //   dispatchAlert({
+    //   toast.success({
     //     open: true,
     //     type: "success",
     //     msg: "Added Successfully...",
@@ -112,7 +110,7 @@ const LeaseApartment = () => {
           steps={steps}
           changeTab={changeTab}
           activeStage={activeStage}
-          name={name}
+          name={'apartment'}
         />
       </div>
       <div className="h-5" />

@@ -1,17 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import ConfirmModal from "Components/ConfirmModal/ConfirmModal";
-import SuperForm from "Components/Forms/CustomForm/SuperForm";
-import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import Modal from "Components/Modal/Modal";
-import { getForm } from "Helpers/constants";
 import { ApiActions } from "Helpers/Lib/api";
-import { useAlert } from "Hooks/useAlert";
-import { useLocalStorage } from "Hooks/useLocalStorage";
 import { DynamicTable } from "Components/Tables/DynamicTable";
-import { fetchData } from "Helpers/Lib/supabase-api";
-import { DynamicForm } from "./DynamicForm";
+import { DynamicForm } from "../../Components/Forms/CustomForm/DynamicForm";
 
 const List = () => {
   const params = useParams();
@@ -23,7 +17,6 @@ const List = () => {
 
   useEffect(() => {
     if (!name) return;
-    fetchData(name);
     getData();
   }, [name]);
 
@@ -48,6 +41,7 @@ const List = () => {
     setOpenConfirmation(false);
   };
 
+
   return (
     <>
       <ConfirmModal
@@ -56,9 +50,16 @@ const List = () => {
         setOpen={setOpenConfirmation}
       />
       <Modal open={open} onClose={() => setOpen(false)}>
+        <div key={name}>
           <DynamicForm setOpen={setOpen} name={name} />
+        </div>
       </Modal>
-      <DynamicTable title={name} setOpen={setOpen} deleteItem={deleteItem} />
+      <DynamicTable
+        title={name}
+        setOpen={setOpen}
+        deleteItem={deleteItem}
+        data={data}
+      />
     </>
   );
 };

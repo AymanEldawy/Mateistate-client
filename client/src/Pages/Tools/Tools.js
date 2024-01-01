@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCallback } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
@@ -10,16 +10,17 @@ import ContentBar from "Components/Global/ContentBar/ContentBar";
 import formsApi from "Helpers/Forms/formsApi";
 import {
   generateApartments,
-  getPrefix, hexToDecimal,
-  SERVER_URL
+  getPrefix,
+  hexToDecimal,
+  SERVER_URL,
 } from "Helpers/functions";
-import {
-  LockIcon, PlusIcon
-} from "Helpers/Icons";
+import { LockIcon, PlusIcon } from "Helpers/Icons";
 import MinusIcon from "Helpers/Icons/MinusIcon";
 import Loading from "Components/Loading/Loading";
 import ToolsTabs from "./ToolsTabs";
-
+import { BUILDING_DATA } from "Helpers/constants";
+import ToolsTableForm from "Components/Forms/CustomForm/ToolsTableForm";
+import getFormByTableName from "Helpers/Forms/new-tables-forms";
 
 const CACHE_UPDATES_COLORS = {};
 const CACHE_UPDATES_Apartments = {};
@@ -31,54 +32,112 @@ const getCachedList = (tableName) => {
 let CACHE_LIST_COLORS = {};
 let CACHE_APARTMENTS = {};
 
+// const tabs = [
+//   {
+//     alias: 0,
+//     tabName: "Apartment",
+//     x: "ApartmentCountOfFloor",
+//     y: "FloorCount",
+//   },
+//   {
+//     alias: 2,
+//     tabName: "Pent Houses",
+//     x: "BHouseFloor",
+//     y: "BHouseFlatCount",
+//   },
+//   {
+//     alias: 1,
+//     tabName: "Mezzanine",
+//     x: "MBalanceFloor",
+//     y: "MBalanceFlatCount",
+//   },
+//   {
+//     alias: 3,
+//     tabName: "Office",
+//     x: "OfficeFloor",
+//     y: "OfficeCount",
+//   },
+//   {
+//     alias: "Parking",
+//     tabName: "Car parking",
+//     x: "ParkingFloor",
+//     y: "ParkingCount",
+//   },
+//   {
+//     alias: "Parking",
+//     tabName: "Underground parking",
+//     x: "ParkingFloorUnder",
+//     y: "ParkingCountUnder",
+//   },
+//   { alias: "Shop", tabName: "Shops", x: "ShopCount", y: "" },
+//   {
+//     alias: 7,
+//     tabName: "Driver flats",
+//     x: "FlatDriverCount",
+//     y: "",
+//   },
+//   {
+//     alias: 8,
+//     tabName: "Servant flats",
+//     x: "FlatServantCount",
+//     y: "",
+//   },
+// ];
 const tabs = [
   {
     alias: 0,
     tabName: "Apartment",
-    x: "ApartmentCountOfFloor",
-    y: "FloorCount",
+    x: "apartment_floor",
+    y: "apartment_count",
   },
   {
     alias: 2,
-    tabName: "Pent Houses",
-    x: "BHouseFloor",
-    y: "BHouseFlatCount",
+    tabName: "mezzanine",
+    x: "mezzanine_floor",
+    y: "mezzanine_count",
   },
   {
     alias: 1,
-    tabName: "Mezzanine",
-    x: "MBalanceFloor",
-    y: "MBalanceFlatCount",
+    tabName: "office",
+    x: "office_floor",
+    y: "office_count",
   },
   {
     alias: 3,
-    tabName: "Office",
-    x: "OfficeFloor",
-    y: "OfficeCount",
+    tabName: "parking",
+    x: "parking_floor",
+    y: "parking_count",
   },
   {
-    alias: "Parking",
-    tabName: "Car parking",
-    x: "ParkingFloor",
-    y: "ParkingCount",
+    alias: "penthouse",
+    tabName: "penthouse",
+    x: "penthouse_floor",
+    y: "penthouse_count",
   },
   {
-    alias: "Parking",
+    alias: "underground_parking",
     tabName: "Underground parking",
-    x: "ParkingFloorUnder",
-    y: "ParkingCountUnder",
+    x: "underground_parking",
+    y: "",
   },
-  { alias: "Shop", tabName: "Shops", x: "ShopCount", y: "" },
+  {
+    alias: "warehouse",
+    tabName: "warehouse",
+    x: "warehouse_count",
+    y: "",
+  },
+  // { alias: "Shop", tabName: "Shops", x: "ShopCount", y: "" },
+  { alias: "stores", tabName: "stores", x: "stores", y: "" },
   {
     alias: 7,
     tabName: "Driver flats",
-    x: "FlatDriverCount",
+    x: "drivers_apartments",
     y: "",
   },
   {
     alias: 8,
     tabName: "Servant flats",
-    x: "FlatServantCount",
+    x: "service_apartments",
     y: "",
   },
 ];
@@ -86,18 +145,26 @@ const tabs = [
 const Tools = () => {
   const { Guid } = useParams();
   const location = useLocation();
-  const { row } = location?.state;
+  // const { row } = location?.state;
+  const row = BUILDING_DATA;
   const [count, setCount] = useState(25);
   const [refresh, setRefresh] = useState(false);
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
   const [selectedColor, setSelectedColor] = useState("");
   const [getValuesWithoutSubmit, setGetValuesWithoutSubmit] = useState();
   const [getIndexOfRowUpdated, setGetIndexOfRowUpdated] = useState("");
-  const fields = formsApi["flatbuildingdetails"];
+  // const fields = formsApi["flatbuildingdetails"];
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [flatsDetails, setFlatsDetails] = useState({});
   const [canInsertColor, setCanInsertColor] = useState(false);
+
+
+  const fields = useMemo(() => {
+    console.log(getFormByTableName('apartment_property_values'));
+    return getFormByTableName('apartment_property_values')
+  }, []);
+
 
   const getLists = async (tableName) => {
     await axios
@@ -108,6 +175,7 @@ const Tools = () => {
         CACHE_LIST[tableName] = res?.data?.recordset;
       });
   };
+
   const findList = async (type) => {
     await axios
       .post(`${SERVER_URL}/findPropertyOfBuilding`, {
@@ -122,9 +190,9 @@ const Tools = () => {
           }
         }
       })
-      .catch((err) => {
-      });
+      .catch((err) => {});
   };
+
   const getColoring = async () => {
     setLoading(true);
     await axios
@@ -138,8 +206,7 @@ const Tools = () => {
           setCount(dataLength);
         }
       })
-      .catch((err) => {
-      });
+      .catch((err) => {});
     setLoading(false);
   };
 
@@ -180,11 +247,14 @@ const Tools = () => {
     },
     [selectedColor]
   );
+  
   const preventInsertColor = () => {
     setSelectedColor("");
     setCanInsertColor(false);
   };
+
   const insertColor = (tabName, itemHash) => {
+    console.log(tabName, itemHash);
     let prefix = getPrefix(tabName);
     let hash = itemHash?.split("-");
     let NoValue = `${prefix} ${hash[1]}`;
@@ -334,7 +404,7 @@ const Tools = () => {
               state={{ row, table: "building" }}
               className="text-blue-500 dark:text-white hover:underline text-sm"
             >
-              {row?.Name ? row?.Name : "Edit Building"}
+              {row?.name ? row?.name : "Edit Building"}
             </Link>
           }
         >
@@ -368,7 +438,7 @@ const Tools = () => {
         <Loading withBackdrop />
       ) : (
         <>
-          <TableForm
+          <ToolsTableForm
             selectedColor={selectedColor}
             onSelectColor={onSelectColor}
             oldValues={CACHE_LIST_COLORS}

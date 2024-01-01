@@ -10,10 +10,12 @@ import TableHead from "Components/CustomTable/TableHead";
 import TableHeadCol from "Components/CustomTable/TableHeadCol";
 import TableRow from "Components/CustomTable/TableRow";
 import { Button } from "Components/Global/Button";
-import { IncreaseTableBar } from "../IncreaseTableBar";
 
 const TableForm = ({
+  onOpen,
+  rowLength,
   initialFields,
+  setIndex,
   oldValues,
   onSubmit,
   goBack,
@@ -21,10 +23,12 @@ const TableForm = ({
   steps,
   getCachedList,
   getValuesWithoutSubmit,
-  activeStage,
+  setGetIndexOfRowUpdated,
+  selectedColor,
+  onSelectColor,
 }) => {
   const [grid, setGrid] = useState([]);
-  const [increaseCount, setIncreaseCount] = useState(10);
+  const [loading, setLoading] = useState(false);
   const [columns, setColumns] = useState([]);
 
   useEffect(() => {
@@ -42,14 +46,10 @@ const TableForm = ({
   }, [oldValues]);
 
   useEffect(() => {
-    console.log("called", activeStage);
     if (getValuesWithoutSubmit) {
       getValuesWithoutSubmit(grid);
     }
-    setGrid({});
-  }, [activeStage]);
-  
-  console.log(grid, "gird");
+  }, [grid]);
 
   const handelChangeField = useCallback(
     (index, name, value) => {
@@ -59,16 +59,25 @@ const TableForm = ({
           [index]: { ...prev?.[index], [name]: value },
         };
       });
+      if (!!setGetIndexOfRowUpdated) {
+        setGetIndexOfRowUpdated(index);
+      }
     },
     [grid]
   );
+
+  const submit = async () => {
+    setLoading(true);
+    await onSubmit(grid);
+    setLoading(false);
+  };
 
   return (
     <>
       <Table
         className={`${
           columns?.length > 5 ? "" : "max-w-[900px]"
-        } mx-auto table-fixed overflow-auto max-h-[420px] dark:border-dark-border`}
+        } mx-auto table-fixed pb-8 overflow-auto max-h-[420px] dark:border-dark-border`}
       >
         <TableHead classes="dark:bg-[##5490d3] !bg-[#5490d3] text-white dark:text-gray-200">
           <TableHeadCol classes="border border-gray-300 dark:border-dark-border !py-3 !text-center">
@@ -84,34 +93,67 @@ const TableForm = ({
           ))}
         </TableHead>
         <TableBody>
-          {Array(increaseCount)
+          {Array(rowLength)
             .fill(0)
             .map((r, index) => (
-              <TableRow key={`${r}-${index}-${activeStage}`}>
+              <TableRow
+                key={`${r}-${index}`}
+                classes={
+                  !!onSelectColor
+                    ? selectedColor === index + 1
+                      ? "bg-gray-200"
+                      : ""
+                    : ""
+                }
+              >
                 <TableCol classes="max-w-fit !p-0 border dark:border-dark-border text-center">
-                  {index + 1}
+                  {!!setIndex || onSelectColor ? (
+                    <button
+                      className="hover:bg-gray-200 hover:font-medium block w-full p-2"
+                      onClick={() => {
+                        if (onOpen) {
+                          onOpen();
+                          setIndex(index + 1);
+                        }
+                        if (!!onSelectColor && grid?.[index]?.Color) {
+                          onSelectColor(index + 1);
+                        }
+                      }}
+                    >
+                      {index + 1}
+                    </button>
+                  ) : (
+                    index + 1
+                  )}
                 </TableCol>
                 {initialFields?.map((field) => (
                   <TableCol
                     classes="!p-0 border  dark:border-dark-border text-center"
                     key={field?.name}
                   >
-                    {field?.is_ref ? (
+                    {field?.key === "unique" ? (
                       <UniqueField
                         value={grid?.[index + 1]?.[field?.name]}
                         className="min-w-[140px] !border-0 !rounded-none !h-full !bg-transparent"
                         name={field?.name}
                         getSelectedValueWithIndex={handelChangeField}
-                        tableForHashed={field?.ref_table}
+                        tableForHashed={field?.table}
                         list={
-                          !!getCachedList ? getCachedList(field?.ref_table) : []
+                          !!getCachedList ? getCachedList(field?.table) : []
                         }
                       />
                     ) : (
                       <Input
-                        key={field?.name}
-                        value={grid?.[index + 1]?.[field?.name]}
-                        className={`!border-0 !rounded-none !bg-transparent !h-full`}
+                        value={
+                          field?.type === "color"
+                            ? getValueOfInputColor(
+                                grid?.[index + 1]?.[field?.name]
+                              )
+                            : grid?.[index + 1]?.[field?.name]
+                        }
+                        className={`!border-0 !rounded-none !bg-transparent ${
+                          field?.type === "color" ? "" : "!h-full"
+                        }`}
                         name={field?.name}
                         type={field?.type}
                         required={field?.required}
@@ -130,10 +172,29 @@ const TableForm = ({
             ))}
         </TableBody>
       </Table>
-      <IncreaseTableBar
-        setIncreaseCount={setIncreaseCount}
-        increaseCount={increaseCount}
-      />
+      <div className="flex justify-between gap-4 items-center mt-4">
+        {steps?.length ? (
+          <>
+            <Button title="Back" onClick={goBack} type="button" />
+            <Button
+              title="Next"
+              onClick={() => {
+                goNext();
+                submit();
+              }}
+              type="button"
+            />
+          </>
+        ) : null}
+        {!steps?.length && !!onSubmit ? (
+          <Button
+            title="Submit"
+            onClick={submit}
+            type="button"
+            loading={loading}
+          />
+        ) : null}
+      </div>
     </>
   );
 };

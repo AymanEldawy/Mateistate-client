@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { PlusIcon } from "Helpers/Icons";
-import { useAlert } from "Hooks/useAlert";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const UniqueField = ({
   table,
@@ -27,7 +27,6 @@ const UniqueField = ({
   const [selected, setSelected] = useState("");
   const [dropdown, setDropdown] = useState(false);
   const { dispatchForm } = usePopupForm();
-  const { dispatchAlert } = useAlert();
 
   const handelFilter = useCallback(
     (val) => {
@@ -46,11 +45,7 @@ const UniqueField = ({
   const handelSelected = useCallback(
     (item) => {
       if (!!allowSelect && allowSelect(item?.guid)) {
-        dispatchAlert({
-          type: "error",
-          msg: "Oops! Can't Select this Name again",
-          open: true,
-        });
+        toast.error("Oops! Can't Select this Name again");
         return;
       }
       setValue(item?.name);
@@ -75,7 +70,11 @@ const UniqueField = ({
   };
 
   return (
-    <div className={`relative z-20 ${containerClassName} ${dropdown ? "!z-40" : ""}`}>
+    <div
+      className={`relative z-20 ${containerClassName} ${
+        dropdown ? "!z-40" : ""
+      }`}
+    >
       {dropdown ? (
         <div
           className="fixed top-0 left-0 right-0 bottom-0 bg-[#0007]"
@@ -83,7 +82,7 @@ const UniqueField = ({
         />
       ) : null}
       {label ? (
-        <label className="overflow-hidden text-ellipsis block text-sm font-normal mb-1 capitalize">
+        <label title={label} className="overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize">
           {label}
         </label>
       ) : null}

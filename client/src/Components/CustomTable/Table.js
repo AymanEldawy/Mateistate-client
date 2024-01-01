@@ -1,8 +1,8 @@
 import React from "react";
 
-const Table = ({ children, className }) => {
+const Table = ({ children, className, ...props }) => {
   return (
-    <div className={`relative overflow-x-auto mt-4 ${className}`}>
+    <div className={`relative overflow-x-auto mt-4 ${className}`} {...props}>
       <table className="border-collapse w-full text-sm text-left text-gray-500 dark:text-gray-400 border rounded-md dark:border-[#333]">
         {children}
       </table>

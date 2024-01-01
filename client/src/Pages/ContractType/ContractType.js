@@ -5,7 +5,6 @@ import { useState } from "react";
 
 import BlockPaper from "Components/BlockPaper/BlockPaper";
 import SuperForm from "Components/Forms/CustomForm/SuperForm";
-import { useAlert } from "Hooks/useAlert";
 import formsApi from "Helpers/Forms/formsApi";
 import { SERVER_URL } from "Helpers/functions";
 
@@ -21,7 +20,6 @@ const ContractType = () => {
   const [loading, setLoading] = useState(false);
   const [allValues, setAllValues] = useState({});
   const [childrenValues, setChildrenValues] = useState({});
-  const { alertMessage, dispatchAlert } = useAlert();
   const [openModalForm, setOpenModalForm] = useState(false);
 
   // Get data
@@ -48,7 +46,7 @@ const ContractType = () => {
       ...body,
     });
     // if (res?.statusText === "OK") {
-    //   dispatchAlert({
+    //   toast.success({
     //     open: true,
     //     type: "success",
     //     msg: "Added Successfully...",

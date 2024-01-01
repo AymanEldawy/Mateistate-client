@@ -5,9 +5,11 @@ import { v4 as uuidv4 } from "uuid";
 import MatieStateClient from "./MatieStateClient";
 
 function CURD() {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhODc1NGE2LTdjMGQtNDRlMi05Y2QwLTgwMTdhYzAyZDE0OSIsImlhdCI6MTcwMjU3MDY5MSwiZXhwIjoxODYwMzU4NjkxfQ.i9AAmxBeVlrrCiybD9NQp7rKHJ0il85HobQ-xW40kbc";
-  const baseURL = "http://203.161.63.57:4000";
+  // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI0NTVjN2VjLTMwOGItNGNiYi05MWQ0LWIwYjQ4MTdmM2Y1MSIsImlhdCI6MTcwNDA5OTI4MiwiZXhwIjoxODYxODg3MjgyfQ.R3AbA2UfJL4j3TNc_E3ecEz5lq-s860S5uVhyiE8B9I"
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI0NTVjN2VjLTMwOGItNGNiYi05MWQ0LWIwYjQ4MTdmM2Y1MSIsImlhdCI6MTcwNDExNDk2MCwiZXhwIjoxODYxOTAyOTYwfQ.4x56JCMyqgdxsER27ojj9GhSAYKghR2W2Q3oVevH88c"
+    // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM4OTEzNzMyLTE5ZDUtNDBmOS1hNGE3LTNmZDY1ODFmNDY0MyIsImlhdCI6MTcwMzk2MTEzMSwiZXhwIjoxODYxNzQ5MTMxfQ.qKIvmH-wNdV3aTLCXyQcYKThfGOtGIZCvBu1UcRLjIk";
+    // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM4OTEzNzMyLTE5ZDUtNDBmOS1hNGE3LTNmZDY1ODFmNDY0MyIsImlhdCI6MTcwNDA4MDAzMiwiZXhwIjoxODYxODY4MDMyfQ.-RooUZW2pEG0h9-ZjqzsfTYzuwkyPay73kpaS6P4izI";
+  const baseURL = "http://203.161.62.124:4000";
   const matieStateClient = new MatieStateClient(baseURL, token);
 
   // Example Usage of createRecord method

@@ -8,9 +8,9 @@ import Input from "Components/Forms/Fields/Input";
 import Loading from "Components/Loading/Loading";
 import { SERVER_URL } from "Helpers/functions";
 import { ChevronIcon } from "Helpers/Icons";
-import { useAlert } from "Hooks/useAlert";
 
 import TestEntryFormTable from "./TestEntryFormTable";
+import { toast } from "react-toastify";
 
 const columns = {
   Credit: "",
@@ -72,7 +72,6 @@ const TestEntry = () => {
   const [selectedRowNumber, setSelectedRowNumber] = useState(0);
   const [numberOfRows, setNumberOfRows] = useState();
   const [data, setData] = useState([]);
-  const { dispatchAlert } = useAlert();
   const [readOnlyValues, setReadOnlyValues] = useState(columns);
   const [shouldUpdate, setShouldUpdate] = useState(false);
   const [shouldUpdateUniqueIdentifyCols, setShouldUpdateUniqueIdentifyCols] =
@@ -304,17 +303,9 @@ const TestEntry = () => {
           ...body,
         });
         if (res?.statusText === "OK") {
-          dispatchAlert({
-            open: true,
-            type: "success",
-            msg: "Update Successfully...",
-          });
+          toast.success("Update Successfully...");
         } else {
-          dispatchAlert({
-            open: true,
-            type: "error",
-            msg: "...",
-          });
+          toast.error("failed to update");
         }
       } else {
         delete data["Difference"];
@@ -325,17 +316,9 @@ const TestEntry = () => {
           ...body,
         });
         if (res?.statusText === "OK") {
-          dispatchAlert({
-            open: true,
-            type: "success",
-            msg: "added Successfully...",
-          });
+          toast.success("added Successfully...");
         } else {
-          dispatchAlert({
-            open: true,
-            type: "error",
-            msg: "...",
-          });
+          toast.error("failed to insert");
         }
       }
     }

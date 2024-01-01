@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useMemo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -8,10 +7,10 @@ import BlockPaper from "Components/BlockPaper/BlockPaper";
 import SuperForm from "Components/Forms/CustomForm/SuperForm";
 import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import { getForm } from "Helpers/constants";
-import { generateApartments, SERVER_URL } from "Helpers/functions";
+import { generateApartments } from "Helpers/functions";
 import { ApiActions } from "Helpers/Lib/api";
 
-import { useAlert } from "../../Hooks/useAlert";
+import { toast } from "react-toastify";
 
 const Update = () => {
   const params = useParams();
@@ -22,7 +21,7 @@ const Update = () => {
   const [tab, setTab] = useState(name || "");
   const [activeStage, setActiveStage] = useState("");
   const [fields, setFields] = useState([]);
-  const { dispatchAlert } = useAlert();
+
   // Get data
   let singleList = useMemo(() => getForm(name?.toLowerCase()), [name]);
   const forms = singleList?.forms;
@@ -53,20 +52,14 @@ const Update = () => {
     delete newValues["guid"];
 
     let body = {
-      conditions: [
-        { type: "and", conditions: [["guid", "=", id]] },
-      ],
+      conditions: [{ type: "and", conditions: [["guid", "=", id]] }],
       updates: newValues,
     };
 
     let res = await ApiActions.update(name, body);
 
     if (res.status) {
-      dispatchAlert({
-        open: true,
-        type: "success",
-        msg: "Updated Successfully...",
-      });
+      toast.success("Updated Successfully...");
       if (name?.toLowerCase() === "building") {
         generateApartments(values, res?.data);
       }

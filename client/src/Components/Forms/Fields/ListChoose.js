@@ -1,6 +1,6 @@
 import React from "react";
 
-const Radio = ({
+const ListChoose = ({
   labelClassName,
   containerClassName,
   subLabelClassName,
@@ -8,36 +8,38 @@ const Radio = ({
   label,
   list,
   error,
-  values,
   ...field
 }) => {
+  console.log(list);
+  const { name } = field;
   return (
     <div className={"flex flex-col " + containerClassName}>
       {label ? (
-        <p
+        <label
           title={label}
+          htmlFor={name}
           className={
             "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize " +
             labelClassName
           }
         >
           {label}
-        </p>
+        </label>
       ) : null}
-      <div className="flex items-center border rounded-md overflow-hidden">
-        {list?.map((item, index) => (
+      <div className="flex gap-4 items-center">
+        {list?.map((item) => (
           <label
             title={item}
-            key={index}
+            key={item}
             className={
-              "overflow-hidden flex-1 text-ellipsis flex gap-1 capitalize items-center p-1 px-2 has-checked " +
+              "overflow-hidden text-ellipsis flex gap-1 capitalize items-center p-1 px-2 rounded-md has-checked " +
               subLabelClassName
             }
           >
             <input
-              type="radio"
-              name={item}
-              checked={values?.[item]}
+              type="checkbox"
+              name={name}
+              // value={true}
               {...field}
               className={inputClassName}
             />
@@ -54,4 +56,4 @@ const Radio = ({
   );
 };
 
-export default Radio;
+export default ListChoose;

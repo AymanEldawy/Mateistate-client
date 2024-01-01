@@ -92,11 +92,7 @@ const UpdateBuilding = () => {
     // });
 
     // if (res?.statusText === "OK") {
-    //   dispatchAlert({
-    //     open: true,
-    //     type: "success",
-    //     msg: "Update Successfully...",
-    //   });
+    //   toast.success("Update Successfully...");
     // } else {
     // }
   };

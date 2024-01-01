@@ -309,3 +309,283 @@ export const getPrefix = (tab) => {
 //     }
 //   }
 // };
+
+/*
+ [
+          {
+            key: 1,
+            name: "Rent Contracts",
+            link: "",
+            subChild: [
+              {
+                key: 1,
+                name: "Flat rent contract",
+                link: "/rent/flat_rent_contract",
+              },
+              {
+                key: 2,
+                name: "Apartment rent contract",
+                link: "/rent/apartment_rent_contract",
+              },
+              {
+                key: 3,
+                name: "Shop rent contract",
+                link: "/rent/shop_rent_contract",
+              },
+              {
+                key: 4,
+                name: "Parking rent contract",
+                link: "/rent/parking_rent_contract/",
+              },
+            ],
+          },
+
+          {
+            key: 2,
+            name: "Sale Contracts",
+            link: "",
+            subChild: [
+              {
+                key: 1,
+                name: "Flat sale contract",
+                link: "/sale/flat_sale_contract",
+              },
+              {
+                key: 2,
+                name: "Shop sale contract",
+                link: "/sale/shop_sale_contract",
+              },
+              {
+                key: 3,
+                name: "Parking sale contract",
+                link: "/sale/parking_sale_contract",
+              },
+              {
+                key: 4,
+                name: "Land sale contract",
+                link: "/sale/land_sale_contract",
+              },
+            ],
+          },
+
+*/
+
+const types = ["rent", "sale"];
+const lists = ["rent menu", "sale menu", "other menu", null];
+
+const cardTypes = [
+  "villa",
+  "shop",
+  "flat",
+  "office",
+  "parking",
+  "penthouse",
+  "underground parking",
+  "store",
+];
+
+const genContPat = () => {
+  return {
+    id: Math.random(),
+    contract_type: types[Math.floor(Math.random() * 2)],
+    code: Math.random() * 20,
+    name: cardTypes[Math.floor(Math.random() * cardTypes.length)],
+    list_name: lists?.[Math.floor(Math.random() * 4)],
+  };
+};
+
+const menu_contracts = [
+  {
+    id: 0.09206106486943755,
+    contract_type: "sale",
+    code: 2.8068825069256675,
+    name: "store",
+    list_name: "Other menu",
+  },
+  {
+    id: 0.16709856373468046,
+    contract_type: "sale",
+    code: 18.215452419824416,
+    name: "parking",
+    list_name: "Other menu",
+  },
+  {
+    id: 0.7974238343043363,
+    contract_type: "rent",
+    code: 14.76771619882542,
+    name: "flat",
+    list_name: "Rent menu",
+  },
+  {
+    id: 0.6801484582997266,
+    contract_type: "rent",
+    code: 4.020861482655564,
+    name: "villa",
+    list_name: null,
+  },
+  {
+    id: 0.03141438140492259,
+    contract_type: "rent",
+    code: 6.104622793796062,
+    name: "shop",
+    list_name: "sale menu",
+  },
+  {
+    id: 0.5105893472743139,
+    contract_type: "rent",
+    code: 10.348838449440304,
+    name: "store",
+    list_name: null,
+  },
+  {
+    id: 0.838716734270476,
+    contract_type: "sale",
+    code: 13.506069017128128,
+    name: "parking",
+    list_name: "Rent menu",
+  },
+  {
+    id: 0.26961348597662105,
+    contract_type: "rent",
+    code: 9.662509514275985,
+    name: "shop",
+    list_name: null,
+  },
+  {
+    id: 0.6241939390624942,
+    contract_type: "rent",
+    code: 13.228572214024208,
+    name: "office",
+    list_name: "Other menu",
+  },
+  {
+    id: 0.8493061134598205,
+    contract_type: "rent",
+    code: 16.563692487324005,
+    name: "penthouse",
+    list_name: "Rent menu",
+  },
+  {
+    id: 0.8616244019422374,
+    contract_type: "rent",
+    code: 7.222377111341811,
+    name: "penthouse",
+    list_name: "Other menu",
+  },
+  {
+    id: 0.9823528312703897,
+    contract_type: "rent",
+    code: 7.038354064183281,
+    name: "villa",
+    list_name: "sale menu",
+  },
+  {
+    id: 0.7822271151408755,
+    contract_type: "sale",
+    code: 9.131318466975294,
+    name: "parking",
+    list_name: "Rent menu",
+  },
+  {
+    id: 0.4909453383798712,
+    contract_type: "rent",
+    code: 19.84637411859587,
+    name: "parking",
+    list_name: "Other menu",
+  },
+  {
+    id: 0.2826772081364122,
+    contract_type: "sale",
+    code: 18.504422045745876,
+    name: "store",
+    list_name: "Other menu",
+  },
+  {
+    id: 0.007664371835778061,
+    contract_type: "sale",
+    code: 15.297580186375113,
+    name: "shop",
+    list_name: "Other menu",
+  },
+  {
+    id: 0.10761625633899419,
+    contract_type: "rent",
+    code: 15.776335006684032,
+    name: "shop",
+    list_name: "Other menu",
+  },
+  {
+    id: 0.8473724539545724,
+    contract_type: "rent",
+    code: 14.3295705317301,
+    name: "villa",
+    list_name: "Other menu",
+  },
+  {
+    id: 0.7570456745819036,
+    contract_type: "rent",
+    code: 12.23593494973947,
+    name: "penthouse",
+    list_name: "Other menu",
+  },
+  {
+    id: 0.32998160076809824,
+    contract_type: "rent",
+    code: 2.0150097932866373,
+    name: "store",
+    list_name: "Other menu",
+  },
+];
+
+export function getContractMenus() {
+  let hash = {};
+
+  for (const item of menu_contracts) {
+    if (item.list_name) {
+      if (hash[item.list_name]) {
+        hash[item.list_name].push(item);
+      } else {
+        hash[item.list_name] = [item];
+      }
+    } else {
+      hash[item.name] = { direct: true, ...item };
+    }
+  }
+
+  let menus = [];
+
+  for (const menu in hash) {
+    let theItem = hash[menu];
+    if (theItem.direct) {
+      let name = `${theItem.name} ${theItem.contract_type} contract`;
+
+      let link = `/contract/contract_${theItem.contract_type}_${theItem.name}`;
+      menus.push({
+        key: 4,
+        name,
+        link,
+      });
+    } else {
+      let subMenu = [];
+      for (const subItem of theItem) {
+        let name = `${subItem.name} ${subItem.contract_type} contract`;
+        let link = `/contract/${subItem.list_name}/contract_${subItem.contract_type}_${subItem.name}`;
+        subMenu.push({
+          key: 4,
+          name,
+          link,
+          // link: `/contract/${theItem.contract_type}/${subItem.name}`,
+        });
+      }
+      menus.push({
+        key: 2,
+        name: menu,
+        subChild: subMenu,
+      });
+    }
+  }
+
+  return menus;
+}
+
+getContractMenus();

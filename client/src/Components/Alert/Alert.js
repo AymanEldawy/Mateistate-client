@@ -1,9 +1,13 @@
-
 import Modal from "Components/Modal/Modal";
-import { CheckIcon, ExclamationTriangle, HourglassIcon, InformationIcon, NotAllowIcon } from "Helpers/Icons";
+import {
+  CheckIcon,
+  ExclamationTriangle,
+  HourglassIcon,
+  InformationIcon,
+  NotAllowIcon,
+} from "Helpers/Icons";
 
-const Alert = ({ alertMessage, dispatchAlert }) => {
-  
+const Alert = ({ alertMessage }) => {
   const alertType = (alert) => {
     // eslint-disable-next-line default-case
     switch (alert?.type) {
@@ -58,7 +62,7 @@ const Alert = ({ alertMessage, dispatchAlert }) => {
   };
   return (
     <>
-      <Modal open={alertMessage?.open} onClose={() => dispatchAlert({})}>
+      <Modal open={alertMessage?.open}>
         <div className="flex flex-col gap-4 justify-center items-center">
           {alertType(alertMessage)}
         </div>

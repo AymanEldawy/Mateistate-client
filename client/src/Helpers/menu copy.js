@@ -8,7 +8,6 @@ import {
   UserIcon,
   ClipboardIcon,
 } from "./Icons";
-import { getContractMenus } from "./functions";
 
 export const menuData = [
   {
@@ -194,71 +193,65 @@ export const menuData = [
         key: "Contracts",
         name: "Contracts",
         link: "",
-        subChild: getContractMenus()
-      },
-      // {
-      //   key: "Contracts",
-      //   name: "Contracts",
-      //   link: "",
-      //   // dynamic menu 
-      //   // subChild: [
-      //   //   {
-      //   //     key: 1,
-      //   //     name: "Rent Contracts",
-      //   //     link: "",
-      //   //     subChild: [
-      //   //       {
-      //   //         key: 1,
-      //   //         name: "Flat rent contract",
-      //   //         link: "/rent/flat_rent_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 2,
-      //   //         name: "Apartment rent contract",
-      //   //         link: "/rent/apartment_rent_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 3,
-      //   //         name: "Shop rent contract",
-      //   //         link: "/rent/shop_rent_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 4,
-      //   //         name: "Parking rent contract",
-      //   //         link: "/rent/parking_rent_contract/",
-      //   //       },
-      //   //     ],
-      //   //   },
+        // dynamic menu 
+        subChild: [
+          {
+            key: 1,
+            name: "Rent Contracts",
+            link: "",
+            subChild: [
+              {
+                key: 1,
+                name: "Flat rent contract",
+                link: "/rent/flat_rent_contract",
+              },
+              {
+                key: 2,
+                name: "Apartment rent contract",
+                link: "/rent/apartment_rent_contract",
+              },
+              {
+                key: 3,
+                name: "Shop rent contract",
+                link: "/rent/shop_rent_contract",
+              },
+              {
+                key: 4,
+                name: "Parking rent contract",
+                link: "/rent/parking_rent_contract/",
+              },
+            ],
+          },
 
-      //   //   {
-      //   //     key: 2,
-      //   //     name: "Sale Contracts",
-      //   //     link: "",
-      //   //     subChild: [
-      //   //       {
-      //   //         key: 1,
-      //   //         name: "Flat sale contract",
-      //   //         link: "/sale/flat_sale_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 2,
-      //   //         name: "Shop sale contract",
-      //   //         link: "/sale/shop_sale_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 3,
-      //   //         name: "Parking sale contract",
-      //   //         link: "/sale/parking_sale_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 4,
-      //   //         name: "Land sale contract",
-      //   //         link: "/sale/land_sale_contract",
-      //   //       },
-      //   //     ],
-      //   //   },
-      //   // ],
-      // },
+          {
+            key: 2,
+            name: "Sale Contracts",
+            link: "",
+            subChild: [
+              {
+                key: 1,
+                name: "Flat sale contract",
+                link: "/sale/flat_sale_contract",
+              },
+              {
+                key: 2,
+                name: "Shop sale contract",
+                link: "/sale/shop_sale_contract",
+              },
+              {
+                key: 3,
+                name: "Parking sale contract",
+                link: "/sale/parking_sale_contract",
+              },
+              {
+                key: 4,
+                name: "Land sale contract",
+                link: "/sale/land_sale_contract",
+              },
+            ],
+          },
+        ],
+      },
       {
         key: "services",
         name: "Services contracts",

@@ -13,9 +13,8 @@ const UploadFile = ({
   boxContainerClassName,
   ...field
 }) => {
-
   const [preview, setPreview] = useState("");
-  
+
   useEffect(() => {
     if (src && typeof src === "object") {
       setPreview(URL.createObjectURL(src));
@@ -23,7 +22,7 @@ const UploadFile = ({
       setPreview(src);
     }
   }, [src]);
-  
+
   return (
     <div
       className={`flex flex-col relative ${containerClassName}`}
@@ -46,6 +45,7 @@ const UploadFile = ({
       ) : null}
       {label ? (
         <label
+          title={label}
           htmlFor={label}
           className="overflow-hidden flex gap-1 items-center text-ellipsis text-sm font-normal mb-1 capitalize"
         >

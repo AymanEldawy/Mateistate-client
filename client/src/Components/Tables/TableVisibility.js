@@ -16,9 +16,9 @@ export const TableVisibility = ({
 
   return (
     <Drawer onClose={onClose}>
-      <div className="mt-4 w-72 overflow-auto max-h-full">
+      <div className="mt-4 w-72 overflow-auto max-h-full dark:bg-dark-bg">
         <div className="flex justify-between items-center gap-4 px-2">
-          <h3 className="font-semibold text-lg text-center capitalize ltr:border-l-4 rtl:border-r-4 px-2 text-primary border-primary">
+          <h3 className="font-semibold text-lg text-center capitalize ltr:border-l-4 rtl:border-r-4 px-2 dark:text-white dark:border-white text-primary border-primary">
             {tableName}
           </h3>
           <div className="flex items-center gap-2">
@@ -34,7 +34,7 @@ export const TableVisibility = ({
           </div>
         </div>
         <ul className="flex flex-col rounded-md mt-4 pb-12">
-          <li className="border-b last:border-b-0 p-2 px-4 text-sm capitalize flex items-center justify-between gap-4 bg-gray-300">
+          <li className="border-b last:border-b-0 p-2 px-4 text-sm capitalize flex items-center justify-between gap-4 dark:border-dark-bg bg-gray-300 dark:bg-dark-border">
             <span className="">column name</span>
             <label className="relative w-1/4 flex gap-4 items-center cursor-pointer">
               <input
@@ -54,12 +54,15 @@ export const TableVisibility = ({
               <div key={column.id}>
                 <li
                   key={column.id}
-                  className="border-b last:border-b-0 p-2 px-4 text-sm capitalize flex items-center justify-between gap-4 odd:bg-gray-100"
+                  className="border-b last:border-b-0 p-2 px-4 text-sm capitalize flex items-center justify-between gap-4 odd:bg-gray-100 dark:bg-transparent"
                 >
                   <span className="w-1/2 ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
                     {column.id}
                   </span>
-                  <label className="relative w-1/4 flex gap-4 items-center cursor-pointer">
+                  <label
+                    title={column.id}
+                    className="relative w-1/4 flex gap-4 items-center cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       className="sr-only peer"

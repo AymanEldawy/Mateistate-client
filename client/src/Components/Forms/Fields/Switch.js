@@ -4,12 +4,12 @@ const Switch = ({ containerClassName, label, error, list, name, ...field }) => {
   return (
     <div className={`flex flex-col ${containerClassName}`}>
       {label ? (
-        <p className="overflow-hidden text-ellipsis text-sm font-normal mb-1 capitalize">
+        <p className="overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize">
           {label}
         </p>
       ) : null}
       <div className="flex gap-4 items-center">
-        <label className="relative flex gap-4 items-center cursor-pointer">
+        <label title={label} className="relative flex gap-4 items-center cursor-pointer">
           <input
             type="checkbox"
             className="sr-only peer"
