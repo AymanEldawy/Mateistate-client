@@ -1,7 +1,7 @@
 import getFormByTableName from "Helpers/Forms/new-tables-forms";
-import { useMemo } from "react";
-import FormSingular from "./FormSingular";
-import { FormSteps } from "./FormSteps";
+import { lazy, useMemo } from "react";
+const FormSingular = lazy(() => import("./FormSingular"));
+const FormSteps = lazy(() => import("./FormSteps"));
 
 export const DynamicForm = ({ name, refetchData, onClose, oldValue }) => {
   // Get data

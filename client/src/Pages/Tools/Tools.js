@@ -158,7 +158,7 @@ const Tools = () => {
 
 
   const fields = useMemo(() => {
-    console.log(getFormByTableName('apartment_property_values'));
+    // console.log(getFormByTableName('apartment_property_values'));
     return getFormByTableName('apartment_property_values')
   }, []);
 
@@ -251,7 +251,7 @@ const Tools = () => {
   };
 
   const insertColor = (tabName, itemHash) => {
-    console.log(tabName, itemHash);
+    // console.log(tabName, itemHash);
     let prefix = getPrefix(tabName);
     let hash = itemHash?.split("-");
     let NoValue = `${prefix} ${hash[1]}`;

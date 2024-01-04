@@ -30,7 +30,6 @@ const PopupForm = () => {
     }
   };
 
-  console.log(table);
   return (
     <Modal open={open} onClose={() => dispatchForm({})}>
       {/* <FormHeadingTitle title={`Create new ${table}`} /> */}

@@ -9,38 +9,38 @@ const insertToBuilding = ({ data, ...additionalParams }) => {
 // building_pictures
 // building_real_estate_development
 // building_real_estate_management
-  console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
+  // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 const insertToVilla = ({ data, ...additionalParams }) => {
-  console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
+  // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 const insertToAssets = ({ data, ...additionalParams }) => {
-  console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
+  // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 const insertToFlatRentContract = ({ data, ...additionalParams }) => {
-  console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
+  // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 const insertToApartmentRentContract = ({ data, ...additionalParams }) => {
-  console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
+  // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 const insertToShopRentContract = ({ data, ...additionalParams }) => {
-  console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
+  // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 const insertToParkingRentContract = ({ data, ...additionalParams }) => {
-  console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
+  // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 
 const insertToFlatSaleContract = ({ data, ...additionalParams }) => {
-  console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
+  // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 const insertToShopSaleContract = ({ data, ...additionalParams }) => {
-  console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
+  // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 const insertToParkingSaleContract = ({ data, ...additionalParams }) => {
-  console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
+  // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 const insertToLandSaleContract = ({ data, ...additionalParams }) => {
-  console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
+  // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 // const insertToBuilding = ({ data, ...additionalParams }) => {
 //   console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);

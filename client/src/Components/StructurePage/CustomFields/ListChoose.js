@@ -10,7 +10,6 @@ const ListChoose = ({
   error,
   ...field
 }) => {
-  console.log(list);
   const { name } = field;
   return (
     <div className={"flex flex-col " + containerClassName}>

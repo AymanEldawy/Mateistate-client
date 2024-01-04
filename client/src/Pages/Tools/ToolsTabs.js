@@ -79,7 +79,7 @@ const ToolsTabs = ({
     let prefix = getPrefix(tabName);
     let xCount = +row[tab?.x];
     let yCount = tab?.y ? +row[tab?.y] : +row[tab?.x];
-    console.log(xCount, yCount, tabName);
+    // console.log(xCount, yCount, tabName);
     return (
       <>
         <TableHead classes="!bg-[#0099a5] text-white">

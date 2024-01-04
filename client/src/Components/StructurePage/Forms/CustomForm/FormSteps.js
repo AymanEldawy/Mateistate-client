@@ -15,32 +15,38 @@ const getCachedList = (tableName) => {
   return CACHE_LIST[tableName];
 };
 
-export const FormSteps = ({
-  name,
-  forms,
-  steps,
-  onClose,
-  refetchData,
-  oldValues,
-}) => {
+const FormSteps = ({ name, forms, steps, onClose, refetchData, oldValues }) => {
   const { next, back, currentIndex, goTo, isLast } = useFormSteps(steps);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState("");
-  const [activeStage, setActiveStage] = useState("");
   const [fields, setFields] = useState([]);
   const [formSettings, setFormSettings] = useState({});
   const [globalValues, setGlobalValues] = useState({});
-  const [submitErrors, setSubmitErrors] = useState(null);
   const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
   const [values, setValues] = useState({});
 
-  console.log(fields);
   useEffect(() => {
     setErrors({});
-    setTouched({});
     setValues({});
   }, [name]);
+
+  useEffect(() => {
+    getRefTables();
+  }, [currentIndex]);
+
+
+  const getRefTables = async () => {
+    if (!fields?.length) return;
+
+    for (const field of fields) {
+      if (CACHE_LIST[field?.ref_table]) continue;
+      
+      if (field.is_ref) {
+        const response = await ApiActions.read(field?.ref_table);
+        CACHE_LIST[field?.ref_table] = response?.result;
+      }
+    }
+  };
 
   const insertIntoErrors = (name, value) => {
     if (value === "") {
@@ -61,10 +67,11 @@ export const FormSteps = ({
     if (required) {
       insertIntoErrors(name, value);
     }
+    let tab = steps[currentIndex];
     setValues((prev) => ({
       ...prev,
-      [activeStage]: {
-        ...prev?.[activeStage],
+      [tab]: {
+        ...prev?.[tab],
         [name]: value,
       },
     }));
@@ -87,7 +94,6 @@ export const FormSteps = ({
     if (!steps) return;
 
     let tab = steps?.[0];
-    console.log(tab, "----", forms);
     setFields(forms[tab]?.fields || []);
     setFormSettings(forms[tab]);
     checkRefTable(tab);
@@ -132,7 +138,6 @@ export const FormSteps = ({
     if (!!onClose) onClose();
     setLoading(false);
   };
-
   return (
     <>
       <FormHeadingTitleSteps
@@ -144,9 +149,9 @@ export const FormSteps = ({
       <div className="h-5" />
       <form onSubmit={onSubmit}>
         {formSettings?.formType === "grid" ? (
-          <div key={activeStage}>
+          <div key={steps[currentIndex]}>
             <TableForm
-              activeStage={activeStage}
+              activeStage={steps[currentIndex]}
               oldValues={globalValues?.[tab] || {}}
               setGlobalValues={setGlobalValues}
               formSettings={formSettings}
@@ -170,9 +175,11 @@ export const FormSteps = ({
         )}
         <div className="flex justify-between gap-4 items-center mt-4">
           {steps ? <Button title="Back" onClick={back} type="button" /> : null}
-          <Button title="Submit" loading={loading} />
+          <Button title={isLast() ? 'Submit' : 'next'} loading={loading} />
         </div>
       </form>
     </>
   );
 };
+
+export default FormSteps;

@@ -113,7 +113,6 @@ export const DynamicTable = ({
     setOpenConfirmation(false);
   };
 
-  console.log(tableName);
   return (
     <>
       <ConfirmModal

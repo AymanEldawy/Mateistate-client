@@ -1,5 +1,5 @@
 import { ApiActions } from "Helpers/Lib/api";
-import { getAccount, getCostCenter } from "Helpers/Lib/operations/global-read";
+import { getAccount } from "Helpers/Lib/operations/global-read";
 import { useEffect, useState } from "react";
 
 const GLOBAL_READ_DATA = {

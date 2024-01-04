@@ -67,12 +67,10 @@ export const DynamicForm = ({ name, onClose, refetchData }) => {
         steps && steps.length
           ? globalValues?.[activeStage]?.[field.name]
           : globalValues?.[field.name];
-      console.log(globalValues?.[activeStage]?.[field.name]);
       if (field.required && !fieldVal) {
         errors[field.name] = field.error || `${field.name} field is required`;
       }
     }
-    console.log(errors);
     let len = Object.keys(errors).length;
     if (len) setSubmitErrors(errors);
     return len;
@@ -110,10 +108,8 @@ export const DynamicForm = ({ name, onClose, refetchData }) => {
 
   // Handel Submit
   const onSubmit = async (e) => {
-    console.log("called submit");
     setLoading(true);
     let res = null;
-    console.log(steps);
     if (!steps) {
       // Insert to one table
       if (fieldsValidate()) return;
@@ -140,7 +136,6 @@ export const DynamicForm = ({ name, onClose, refetchData }) => {
       return false;
     }
   };
-  console.log(globalValues);
 
   return (
     <>

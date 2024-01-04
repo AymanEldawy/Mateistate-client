@@ -23,12 +23,12 @@ const UniqueField = ({
   table,
   ...field
 }) => {
+  let name = defaultList?.[0].hasOwnProperty("name") ? "name" : "full_name";
   const [value, setValue] = useState("");
   const [listFilter, setListFilter] = useState([]);
   const [selected, setSelected] = useState("");
   const [dropdown, setDropdown] = useState(false);
   const { dispatchForm } = usePopupForm();
-  console.log("🚀 ~ file: UniqueField.js:31 ~ field:", field)
 
   const handelFilter = useCallback(
     (val) => {
@@ -37,7 +37,7 @@ const UniqueField = ({
       else setDropdown(false);
 
       let newList = defaultList?.filter((item) => {
-        return item?.name?.toLowerCase().startsWith(val?.toLowerCase());
+        return item?.[name]?.toLowerCase().startsWith(val?.toLowerCase());
       });
       setListFilter(newList);
     },
@@ -50,14 +50,14 @@ const UniqueField = ({
         toast.error("Oops! Can't Select this Name again");
         return;
       }
-      setValue(item?.name);
+      setValue(item?.[name]);
       setSelected(item);
       setDropdown(false);
       if (!!getSelectedValue)
-        getSelectedValue(field?.name, item?.id, required);
+        getSelectedValue(field?.[name], item?.id, required);
       if (!!getSelectedValueRef) getSelectedValueRef.current = item?.id;
       if (!!getSelectedValueWithIndex)
-        getSelectedValueWithIndex(field?.index, field?.name, item?.id);
+        getSelectedValueWithIndex(field?.index, field?.[name], item?.id);
     },
     [selected, allowSelect, field?.index]
   );
@@ -84,13 +84,21 @@ const UniqueField = ({
         />
       ) : null}
       {label ? (
-        <label title={label} className="overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize">
-          {label} {field?.required ? <span className="text-red-500 mx-1">*</span> : null}
+        <label
+          title={label}
+          className="overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize"
+        >
+          {label}{" "}
+          {field?.required ? (
+            <span className="text-red-500 mx-1">*</span>
+          ) : null}
         </label>
       ) : null}
       <div className="relative flex items-center ">
         <input
-          className={`border rounded  placeholder:text-gray-800 dark:placeholder:text-gray-500 dark:text-white p-1 w-full invalid:text-gray-800  ${className}`}
+          className={`border rounded ${
+            value ? "bg-blue-100" : ""
+          } placeholder:text-gray-800 dark:placeholder:text-gray-500 dark:text-white p-1 w-full invalid:text-gray-800  ${className}`}
           id="myInput"
           value={value}
           autoComplete="on"
@@ -135,18 +143,16 @@ const UniqueField = ({
             <ul id="myUL" className="flex flex-col gap-1">
               {listFilter?.map((item) => (
                 <li
-                  key={item?.name}
+                  key={item?.[name]}
                   onClick={(e) => {
                     e.stopPropagation();
                     handelSelected(item);
                   }}
                   className={`capitalize p-1 px-3 rounded-md hover:bg-gray-200 cursor-pointer ${
-                    selected?.id === item?.id
-                      ? "bg-blue-400 text-white"
-                      : ""
+                    selected?.id === item?.id ? "bg-blue-400 text-white" : ""
                   }`}
                 >
-                  <span>{item?.name}</span>
+                  <span>{item?.[name]}</span>
                 </li>
               ))}
             </ul>

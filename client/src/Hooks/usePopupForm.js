@@ -7,7 +7,7 @@ export const PopupFormProvider = ({ children }) => {
   const [openForm, setOpenForm] = useState({});
 
   const dispatchForm = (form) => {
-    console.log("🚀 ~ file: usePopupForm.js:10 ~ dispatchForm ~ form:", form)
+    // console.log("🚀 ~ file: usePopupForm.js:10 ~ dispatchForm ~ form:", form)
     if (form) {
       setOpenForm(form);
     } else {

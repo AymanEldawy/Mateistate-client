@@ -43,14 +43,12 @@ const TableForm = ({
   }, [oldValues]);
 
   useEffect(() => {
-    console.log("called", activeStage);
     if (getValuesWithoutSubmit) {
       getValuesWithoutSubmit(grid);
     }
     setGrid({});
   }, [activeStage]);
 
-  console.log(grid, "gird");
 
   const handelChangeField = useCallback(
     (index, name, value) => {

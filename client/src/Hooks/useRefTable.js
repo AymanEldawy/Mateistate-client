@@ -2,6 +2,7 @@ import { ApiActions } from "Helpers/Lib/api";
 import { useEffect, useMemo } from "react";
 
 const useRefTable = (fields) => {
+  console.log("🚀 ~ file: useRefTable.js:5 ~ useRefTable ~ fields:", fields);
   let CACHE_LIST = {};
 
   const fetchData = async () => {
@@ -19,13 +20,13 @@ const useRefTable = (fields) => {
     }
   };
 
-  const getCachedList = useMemo((tableName) => {
+  const getCachedList = (tableName) => {
     return CACHE_LIST[tableName];
-  }, []);
+  };
 
   useEffect(() => {
     fetchData();
-  }, [fields]);
+  }, [fields?.length]);
 
   return { CACHE_LIST, getCachedList };
 };
