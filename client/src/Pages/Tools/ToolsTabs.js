@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
 import { useState } from "react";
 
-import Checkbox from "Components/Forms/Fields/Checkbox";
-import Table from "Components/CustomTable/Table";
-import TableBody from "Components/CustomTable/TableBody";
-import TableCol from "Components/CustomTable/TableCol";
-import TableHead from "Components/CustomTable/TableHead";
-import TableHeadCol from "Components/CustomTable/TableHeadCol";
-import TableRow from "Components/CustomTable/TableRow";
+import { Checkbox } from "Components/StructurePage/CustomFields";
+
 import { getPrefix } from "Helpers/functions";
+import TableHead from "Components/StructurePage/CustomTable/TableHead";
+import TableHeadCol from "Components/StructurePage/CustomTable/TableHeadCol";
+import TableRow from "Components/StructurePage/CustomTable/TableRow";
+import TableCol from "Components/StructurePage/CustomTable/TableCol";
+import TableBody from "Components/StructurePage/CustomTable/TableBody";
 import ToolsColColor from "./ToolsColColor";
+import Table from "Components/StructurePage/CustomTable/Table";
 
 const ToolsTabs = ({
   data,

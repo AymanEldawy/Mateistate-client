@@ -1,2 +1,0 @@
-
-  export const lastloginuser = [{"name":"username","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"hostname","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"date","type":"date","default_value":null,"required":false,"hide_in":""},{"name":"trial624","type":"character","default_value":null,"required":false,"hide_in":""}]

@@ -16,14 +16,10 @@ function App() {
             <ListsGuidsProvider>
               <ToastContainer
                 position="center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
+                autoClose={2000}
+                // hideProgressBar={false}
+                // newestOnTop={false}
+                // draggable
                 theme="light"
               />
               <Routes />

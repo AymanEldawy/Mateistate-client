@@ -4,10 +4,8 @@ import { useCallback } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
 import BlockPaper from "Components/BlockPaper/BlockPaper";
-import TableForm from "Components/Forms/CustomForm/TableForm";
 import { Button } from "Components/Global/Button";
 import ContentBar from "Components/Global/ContentBar/ContentBar";
-import formsApi from "Helpers/Forms/formsApi";
 import {
   generateApartments,
   getPrefix,
@@ -19,8 +17,8 @@ import MinusIcon from "Helpers/Icons/MinusIcon";
 import Loading from "Components/Loading/Loading";
 import ToolsTabs from "./ToolsTabs";
 import { BUILDING_DATA } from "Helpers/constants";
-import ToolsTableForm from "Components/Forms/CustomForm/ToolsTableForm";
 import getFormByTableName from "Helpers/Forms/new-tables-forms";
+import ToolsTableForm from "Components/StructurePage/Forms/CustomForm/ToolsTableForm";
 
 const CACHE_UPDATES_COLORS = {};
 const CACHE_UPDATES_Apartments = {};
@@ -143,7 +141,7 @@ const tabs = [
 ];
 
 const Tools = () => {
-  const { Guid } = useParams();
+  const { id } = useParams();
   const location = useLocation();
   // const { row } = location?.state;
   const row = BUILDING_DATA;
@@ -153,7 +151,6 @@ const Tools = () => {
   const [selectedColor, setSelectedColor] = useState("");
   const [getValuesWithoutSubmit, setGetValuesWithoutSubmit] = useState();
   const [getIndexOfRowUpdated, setGetIndexOfRowUpdated] = useState("");
-  // const fields = formsApi["flatbuildingdetails"];
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [flatsDetails, setFlatsDetails] = useState({});
@@ -179,7 +176,7 @@ const Tools = () => {
   const findList = async (type) => {
     await axios
       .post(`${SERVER_URL}/findPropertyOfBuilding`, {
-        building: row?.Guid,
+        building: row?.id,
         table: type,
       })
       .then((res) => {
@@ -215,7 +212,7 @@ const Tools = () => {
     findList("apartment");
     findList("shop");
     findList("parking");
-  }, [Guid]);
+  }, [id]);
 
   useEffect(() => {
     getLists("Building");
@@ -277,7 +274,7 @@ const Tools = () => {
             ...additionalValues,
             ...prev?.[uniqueHash],
             FlatBuildingDetailsIndex: selectedColor,
-            BuildingGuid: Guid,
+            building_id: id,
           },
         };
       });
@@ -289,7 +286,7 @@ const Tools = () => {
             NO: NoValue,
             ...additionalValues,
             FlatBuildingDetailsIndex: selectedColor,
-            BuildingGuid: Guid,
+            building_id: id,
           },
         };
       });
@@ -354,7 +351,7 @@ const Tools = () => {
         ...CACHE_LIST_COLORS[flatsDetails[row]?.FlatBuildingDetailsIndex],
       };
       if (data?.Color) delete data.Color;
-      if (data?.Guid) delete data.Guid;
+      if (data?.id) delete data.id;
       if (data?.Type) delete data.Type;
       if (data?.SalePrice) delete data.SalePrice;
       if (data?.SalePrice2) delete data.SalePrice2;
@@ -377,7 +374,7 @@ const Tools = () => {
         },
       ];
     }
-    generateApartments(newFlatDetails, Guid);
+    generateApartments(newFlatDetails, id);
     await axios
       .post(`${SERVER_URL}/handleColoring`, {
         colors: !!newColoringList ? Object.values(newColoringList) : [],
@@ -400,7 +397,7 @@ const Tools = () => {
           title="Flat Building Details"
           description={
             <Link
-              to={`/update/building/${row?.Guid}`}
+              to={`/update/building/${row?.id}`}
               state={{ row, table: "building" }}
               className="text-blue-500 dark:text-white hover:underline text-sm"
             >

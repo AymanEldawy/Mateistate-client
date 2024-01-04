@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import SearchBar from "Components/SearchBar/SearchBar";
 import logo from "Assets/Images/abrepair-logo.svg";
 import BarsIcon from "Helpers/Icons/BarsIcon";
 import { IconsBar } from "./IconsBar";
+import { SearchBar } from "Components/StructurePage/CustomFields";
 
 function Header({ setOpen, mode, setMode }) {
   

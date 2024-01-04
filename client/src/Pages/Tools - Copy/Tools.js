@@ -1,24 +1,17 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCallback } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import BlockPaper from "Components/BlockPaper/BlockPaper";
-import SuperForm from "Components/Forms/CustomForm/SuperForm";
 import TableForm from "Components/Forms/TableForm/TableForm";
 import { Button } from "Components/Global/Button";
 import ContentBar from "Components/Global/ContentBar/ContentBar";
-import FormHeadingTitle from "Components/Global/FormHeadingTitle";
-import formsApi from "Helpers/Forms/formsApi";
 import { hexToDecimal, SERVER_URL } from "Helpers/functions";
-import {
-  CloseIcon,
-  LockIcon,
-  NotAllowIcon,
-  PlusIcon,
-} from "Helpers/Icons";
+import { LockIcon, PlusIcon } from "Helpers/Icons";
 import MinusIcon from "Helpers/Icons/MinusIcon";
 import ToolsTabs from "./ToolsTabs";
+import getFormByTableName from "Helpers/Forms/new-tables-forms";
 
 const CACHE_LIST = {};
 const getCachedList = (tableName) => {
@@ -48,17 +41,21 @@ const tabs = [
 ];
 
 const Tools = () => {
-  const { Guid } = useParams();
+  const { id } = useParams();
   const [count, setCount] = useState(25);
   const [refresh, setRefresh] = useState(false);
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
   const [selectedColor, setSelectedColor] = useState("");
   const [getValuesWithoutSubmit, setGetValuesWithoutSubmit] = useState();
-  const fields = formsApi["flatbuildingdetails"];
+
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [flatsDetails, setFlatsDetails] = useState({});
   const [canInsertColor, setCanInsertColor] = useState(false);
+
+  const fields = useMemo(() => {
+    return getFormByTableName("apartment_property_values");
+  }, []);
 
   const getLists = async (tableName) => {
     await axios
@@ -79,7 +76,7 @@ const Tools = () => {
         await axios
           .post(`${SERVER_URL}/findPropertyOfBuilding`, {
             table: tabName,
-            building: Guid,
+            building: id,
             // building: "31C8F1EE-6E04-441F-A76C-D15CE60D2327",
           })
           .then((res) => {
@@ -87,14 +84,14 @@ const Tools = () => {
             setData(data);
             CACHE_TABS[tabName] = data;
             for (const key of data) {
-              CACHE_COL[key?.Guid] = key;
+              CACHE_COL[key?.id] = key;
             }
           });
         setLoading(false);
       };
       getTabData(selectedTab?.tabName);
     }
-  }, [selectedTab, Guid]);
+  }, [selectedTab, id]);
   // const getApartments = async () => {
   //   setLoading(true);
   //   await axios
@@ -144,15 +141,15 @@ const Tools = () => {
   };
 
   const insertColor = (tabName, item) => {
-    if (flatsDetails[`${item?.Guid}&${tabName}`]) {
+    if (flatsDetails[`${item?.id}&${tabName}`]) {
       setFlatsDetails((prev) => {
         return {
           ...prev,
           // [tabName]: {
           //   ...prev?.[tabName],
-          [`${item?.Guid}&${tabName}`]: {
-            ...CACHE_COL?.[item?.Guid],
-            ...prev?.[`${item?.Guid}&${tabName}`],
+          [`${item?.id}&${tabName}`]: {
+            ...CACHE_COL?.[item?.id],
+            ...prev?.[`${item?.id}&${tabName}`],
             CardKind: selectedColor,
             // },
           },
@@ -160,13 +157,13 @@ const Tools = () => {
       });
     } else {
       for (const currentItem of data) {
-        if (currentItem?.Guid === item?.Guid) {
+        if (currentItem?.id === item?.id) {
           setFlatsDetails((prev) => {
             return {
               ...prev,
 
-              [`${item?.Guid}&${tabName}`]: {
-                ...CACHE_COL?.[item?.Guid],
+              [`${item?.id}&${tabName}`]: {
+                ...CACHE_COL?.[item?.id],
                 CardKind: selectedColor,
               },
             };
@@ -177,10 +174,10 @@ const Tools = () => {
     setRefresh((p) => !p);
   };
   const removeOneItemColor = useCallback(
-    (tabName, itemGuid) => {
+    (tabName, itemid) => {
       let newList = flatsDetails;
-      if (!!newList[`${itemGuid}&${tabName}`])
-        newList[`${itemGuid}&${tabName}`].CardKind = null;
+      if (!!newList[`${itemid}&${tabName}`])
+        newList[`${itemid}&${tabName}`].CardKind = null;
       setFlatsDetails(newList);
       setRefresh((p) => !p);
     },
@@ -192,12 +189,12 @@ const Tools = () => {
         for (const rows in data) {
           for (let index = 0; index < data[rows].length; index++) {
             if (index === indexY)
-              removeOneItemColor(tabName, data[rows][index]?.Guid);
+              removeOneItemColor(tabName, data[rows][index]?.id);
           }
         }
       } else {
         for (const item of data) {
-          removeOneItemColor(tabName, item?.Guid);
+          removeOneItemColor(tabName, item?.id);
         }
       }
       setRefresh((p) => !p);
@@ -233,8 +230,7 @@ const Tools = () => {
         colors: !!CACHE_LIST_COLORS ? Object.values(CACHE_LIST_COLORS) : [],
         data: newFlatDetails,
       })
-      .then((res) => {
-      });
+      .then((res) => {});
   };
 
   return (

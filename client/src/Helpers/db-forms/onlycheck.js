@@ -1,2 +1,0 @@
-
-  export const onlycheck = [{"name":"spid","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"guid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"only","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"ltnonly","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"trial156","type":"character","default_value":null,"required":false,"hide_in":""}]

@@ -15,7 +15,7 @@ const TreeViewItem = ({
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const onDeleteItem = () => {
-    deleteItem([row?.Guid]);
+    deleteItem([row?.id]);
     setOpen(false);
   };
 
@@ -42,7 +42,7 @@ const TreeViewItem = ({
           <Link
             className="tooltip text-transparent group-hover:text-green-500"
             data-title={t("Edit")}
-            to={`/update/${table}/${row?.Guid}`}
+            to={`/update/${table}/${row?.id}`}
             state={{ row, table }}
           >
             <span className="scale-75 block">

@@ -36,7 +36,7 @@ export const ListsGuidsProvider = ({ children }) => {
     if (!guidListCached[guid]) {
       if (lists[table]) {
         lists?.[table]?.forEach((item) => {
-          guidListCached[item?.Guid] = item?.Name;
+          guidListCached[item?.id] = item?.Name;
         });
       } else {
         getTableData(table, addTableList);

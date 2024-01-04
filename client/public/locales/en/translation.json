@@ -1,7 +1,8 @@
 {
   "dashboard": "dashboard",
   "add_new": "Add new",
-
+  "not_found": "page not found",
+  "back_to_home": "back to home page",
   "Number_rows": "Number of rows: ",
   "search": "search",
   "search_in": "search in  ",
@@ -23,6 +24,7 @@
   "rows": "rows",
   "row": "row",
   "of": "of",
+  "selected_rows":"selected rows",
 
   "comment2": "**************************************",
   "section2": "********* Menu ***********",

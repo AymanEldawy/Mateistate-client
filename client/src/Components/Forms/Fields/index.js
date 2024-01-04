@@ -1,9 +1,0 @@
-export { default as Switch } from "./Switch";
-export { default as Select } from "./Select";
-export { default as Input } from "./Input";
-export { default as Radio } from "./Radio";
-export { default as Textarea } from "./Textarea";
-export { default as UploadFile } from "./UploadFile";
-export { default as DebouncedInput } from "./DebouncedInput";
-export { default as UniqueField } from "./UniqueField";
-export { default as Checkbox } from "./Checkbox";

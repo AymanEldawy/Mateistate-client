@@ -2,11 +2,11 @@ import React from "react";
 import { memo } from "react";
 import { useEffect } from "react";
 
-import { Input } from "Components/Forms/Fields";
-import TableCol from "Components/CustomTable/TableCol";
 import { Button } from "Components/Global/Button";
 import { getValueOfInputColor } from "Helpers/functions";
 import { EditIcon } from "Helpers/Icons";
+import TableCol from "Components/StructurePage/CustomTable/TableCol";
+import { Input } from "Components/StructurePage/CustomFields";
 
 const ToolsColColor = ({
   isUpdatable,

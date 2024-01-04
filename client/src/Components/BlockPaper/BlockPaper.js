@@ -1,7 +1,7 @@
 import Layout from "Layout";
 import React from "react";
 
-const BlockPaper = ({ title, contentBar, children, fullWidth }) => {
+const BlockPaper = ({ title, subTitle, contentBar, children, fullWidth }) => {
 
   return (
     <Layout>
@@ -11,13 +11,16 @@ const BlockPaper = ({ title, contentBar, children, fullWidth }) => {
             fullWidth ? "container-full" : "container"
           } mx-auto `}
         >
-          <div className="p-4 shadow bg-white  dark:bg-dark-bg rounded-md">
-            {title ? (
-              <h3 className="capitalize border-b mb-4 pb-2 text-lg font-medium text-gray-600 dark:border-[#333] dark:text-white">
-                {" "}
-                {title?.replace(/_|-/g, ' ')}{" "}
-              </h3>
-            ) : null}
+          <div className="p-4 shadow bg-white dark:bg-dark-bg rounded-md">
+            <div className="border-b mb-4 pb-2 flex items-center justify-between">
+              {title ? (
+                <h2 className="capitalize text-lg font-medium text-gray-600 dark:border-[#333] dark:text-white">
+                  {" "}
+                  {title?.replace(/_|-/g, ' ')}{" "}
+                </h2>
+              ) : null}
+              {subTitle ? subTitle : null}
+            </div>
             {contentBar ? contentBar : null}
             <div>{children}</div>
           </div>

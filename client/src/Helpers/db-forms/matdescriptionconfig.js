@@ -1,2 +1,0 @@
-
-  export const matdescriptionconfig = [{"name":"number","type":"integer","default_value":"nextval('matdescriptionconfig_number_seq1'::regclass)","required":true,"hide_in":""},{"name":"name","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"ltnname","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"kind","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"trial996","type":"character","default_value":null,"required":false,"hide_in":""}]

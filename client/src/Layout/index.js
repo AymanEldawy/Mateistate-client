@@ -3,8 +3,8 @@ import Header from './Header';
 import Menu from './Menu';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
-import PopupForm from 'Components/Forms/CustomForm/PopupForm';
 import Backdrop from 'Components/Backdrop/Backdrop';
+import PopupForm from 'Components/StructurePage/Forms/CustomForm/PopupForm';
 
 const Layout = ({ children, containerClassName, bodyClassName }) => {
   const [mode, setMode] = useState('dark');

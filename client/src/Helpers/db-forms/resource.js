@@ -1,2 +1,0 @@
-
-  export const resource = [{"name":"spid","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"guid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"kind","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"tag","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"trial705","type":"character","default_value":null,"required":false,"hide_in":""}]

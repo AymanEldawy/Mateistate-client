@@ -16,7 +16,7 @@ export function getAllColumns(table) {
   return columns;
 }
 
-export const IGNORED_Fields = ["id"];
+export const IGNORED_Fields = ["id", 'created_at'];
 
 export const itemsListPerPages = (t) => [
   { id: "10", name: t("Number_rows") + " 10" },
@@ -29,37 +29,107 @@ export const itemsListPerPages = (t) => [
 
 export const SELECT_LISTS = (listName) => {
   let list = {
-    type: [
-      "Debit",
-      "Credit",
-      // { name: "Debit", id: 0 },
-      // { name: "Credit", id: 1 },
+    type: ["Debit", "Credit"],
+
+    user_type: [
+      { name: "Supplier", id: 1 },
+      { name: "Customer", id: 2 },
     ],
+
+    account_type: [
+      { name: "Normal", id: 1 },
+      { name: "Final", id: 2 },
+      { name: "Collective", id: 3 },
+      { name: "Distributive", id: 4 },
+    ],
+
+    flat_type: [
+      { name: "Apartment", id: 1 },
+      { name: "Office", id: 2 },
+      { name: "Benthoses", id: 3 },
+    ],
+
+    flat_property_type: [
+      { name: "Ownership", id: 1 },
+      { name: "real estate management", id: 2 },
+    ],
+
+    bill_pattern_paper_type: [
+      { name: "Paid", id: 1 },
+      { name: "Received", id: 2 },
+    ],
+
+    bill_pattern_default_date: [
+      { name: "Entitlement", id: 1 },
+      { name: "operation", id: 2 },
+    ],
+
+    bill_pattern_commission_type: [
+      { name: "addition", id: 1 },
+      { name: "delete", id: 2 },
+    ],
+
+    // contact_pattern_contract_type: [
+    //   { name: "Sale", id: 1 },
+    //   { name: "Rent", id: 2 },
+    // ],
+
+    contact_pattern_record_created_date: [
+      { name: "contract start", id: 1 },
+      { name: "contact Editing", id: 2 },
+    ],
+
+    installment_entries_type: [
+      { name: "Ownership", id: 1 },
+      { name: "real estate management", id: 2 },
+    ],
+
+    installment_voucher_type: [
+      { name: "Receipt voucher.", id: 1 },
+      { name: "Journal voucher.", id: 2 },
+      { name: "No down payment.", id: 3 },
+    ],
+
+    // "Receipt voucher."
+    // "Payment voucher."
+    // "Daily voucher."
 
     contract_connect_with: [
-      { name: "nothing", id: 0 },
-      { name: "contract", id: 1 },
+      { name: "nothing", id: 1 },
+      { name: "contract", id: 2 },
       { name: "lawsuit", id: 3 },
-      { name: "bill", id: 3 },
+      { name: "bill", id: 4 },
     ],
-    user_type: {
-      Supplier: 1,
-      customer: 2,
-    },
 
-    account_type: {
-      Normal: 1,
-      Final: 2,
-      Collective: 3,
-      Distributive: 4,
-    },
+    contract_status: [
+      { name: "New", id: 1 },
+      { name: "Renew", id: 2 },
+    ],
 
-    contract_type: {},
+    contract_rent_type: [
+      { name: "Monthly", id: 1 },
+      { name: "Annual", id: 2 },
+      // { name: "custom", id: 3 },
+    ],
 
-    recordDateCreated: {
-      "contract start": 1,
-      "contact Editing": 2,
-    },
+    contract_type: [
+      { name: "Monthly", id: 1 },
+      { name: "Custom", id: 2 },
+    ],
+
+    contract_duration: [
+      { name: "3 Month", id: 1 },
+      { name: "6 Month", id: 2 },
+      { name: "1 year", id: 3 },
+      { name: "Custom", id: 4 },
+    ],
+
+    contract_paid_type: [
+      { name: "Cash", id: 1 },
+      { name: "Plan", id: 2 },
+      { name: "Later", id: 3 },
+      { name: "Installment", id: 4 },
+    ],
   };
   return list[listName];
 };

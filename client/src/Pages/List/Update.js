@@ -3,14 +3,14 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 
-import BlockPaper from "Components/BlockPaper/BlockPaper";
-import SuperForm from "Components/Forms/CustomForm/SuperForm";
-import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import { getForm } from "Helpers/constants";
 import { generateApartments } from "Helpers/functions";
 import { ApiActions } from "Helpers/Lib/api";
 
 import { toast } from "react-toastify";
+import SuperForm from "Components/StructurePage/Forms/CustomForm/FormSingular";
+import BlockPaper from "Components/BlockPaper/BlockPaper";
+import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 
 const Update = () => {
   const params = useParams();

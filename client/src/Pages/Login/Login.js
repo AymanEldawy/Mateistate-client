@@ -2,9 +2,9 @@ import axios from "axios";
 import { useState } from "react";
 
 import wallpaper from "Assets/Images/wallpaper.jpg";
-import { Input } from "Components/Forms/Fields";
 import { Button } from "Components/Global/Button";
 import { SERVER_URL } from "Helpers/functions";
+import { Input } from "Components/StructurePage/CustomFields";
 
 const Login = () => {
   const [values, setValues] = useState({});

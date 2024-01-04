@@ -13,10 +13,10 @@ const FormHeadingTitleSteps = ({ steps, name, changeTab, activeStage }) => {
           <div className="flex items-center shadow text-left bg-gray-100 dark:bg-dark-bg border-t border-gray-100 dark:border-dark-border overflow-auto">
             {steps?.map((step, index) => (
               <button
-                onClick={() => changeTab(step)}
+                onClick={() => changeTab(index)}
                 key={step}
                 className={`${
-                  activeStage === step
+                  activeStage === index
                     ? "!text-black !font-medium dark:bg-dark-border dark:!text-white bg-white rounded-t"
                     : ""
                 } p-2 px-4 text-sm text-gray-500 dark:text-gray-200 font-normal flex-1 capitalize whitespace-nowrap`}

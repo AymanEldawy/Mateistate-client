@@ -20,15 +20,15 @@ const ToolsColColor = ({
   tabName,
 }) => {
   let itemData =
-    CACHE_LIST_COLORS[flatsDetails?.[`${item?.Guid}&${tabName}`]?.CardKind];
+    CACHE_LIST_COLORS[flatsDetails?.[`${item?.id}&${tabName}`]?.CardKind];
   let ItemColor = itemData?.Color;
-  let itemValue = flatsDetails?.[`${item?.Guid}&${tabName}`]?.NO;
+  let itemValue = flatsDetails?.[`${item?.id}&${tabName}`]?.NO;
   return (
     <TableCol
       classes="!p-0  border border-gray-400
   "
     >
-      {isUpdatable === item?.Guid ? (
+      {isUpdatable === item?.id ? (
         <div className="px-1">
           <Input
             type="number"
@@ -39,7 +39,7 @@ const ToolsColColor = ({
             onBlur={(e) => {
               setIsUpdatable("");
             }}
-            onChange={(e) => changeApartmentName(e, item?.Guid)}
+            onChange={(e) => changeApartmentName(e, item?.id)}
             value={itemValue || apartmentNumber}
           />
         </div>
@@ -47,7 +47,7 @@ const ToolsColColor = ({
         <div
           onClick={() => {
             if (canInsertColor && !ItemColor) insertColor(tabName, item);
-            if (ItemColor) removeOneItemColor(tabName, item?.Guid);
+            if (ItemColor) removeOneItemColor(tabName, item?.id);
           }}
           style={{
             background: ItemColor,
@@ -63,7 +63,7 @@ const ToolsColColor = ({
             <Button
               onClick={(e) => {
                 e.stopPropagation();
-                setIsUpdatable(item?.Guid);
+                setIsUpdatable(item?.id);
               }}
               classes="!p-0 scale-75"
               title={

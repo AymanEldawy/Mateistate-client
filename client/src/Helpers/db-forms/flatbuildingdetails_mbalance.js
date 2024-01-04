@@ -1,2 +1,0 @@
-
-  export const flatbuildingdetails_mbalance = [{"name":"number","type":"integer","default_value":"nextval('flatbuildingdetails_mbalance_number_seq1'::regclass)","required":true,"hide_in":""},{"name":"buildingguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"floor","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"note","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"trial278","type":"character","default_value":null,"required":false,"hide_in":""}]

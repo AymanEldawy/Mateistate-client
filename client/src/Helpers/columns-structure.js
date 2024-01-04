@@ -1,6 +1,8 @@
 // ==== Start Cards
 
-import IndeterminateCheckbox from "Components/Tables/IndeterminateCheckbox";
+import { getValue } from "@testing-library/user-event/dist/utils";
+import IndeterminateCheckbox from "Components/StructurePage/Tables/IndeterminateCheckbox";
+import { Link } from "react-router-dom";
 
 export const account = [
   {
@@ -27,13 +29,53 @@ export const account = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
-  { header: "name", accessorKey: "name" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "type", accessorKey: "type" },
-  { header: "currency_id", accessorKey: "currency_id" },
-  { header: "parent_id", accessorKey: "parent_id" },
-  { header: "final_id", accessorKey: "final_id" },
+  {
+    header: "currency",
+    accessorKey: "currency_id",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link to={`/update/currency/${getValue()}`} className="text-blue-500">
+          {row.original.currency_name}
+        </Link>
+      );
+    },
+  },
+  {
+    header: "parent_id",
+    accessorKey: "parent_id",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link to={`/update/account/${getValue()}`} className="text-blue-500">
+          {row.original.parent_name}
+        </Link>
+      );
+    },
+  },
+  {
+    header: "final_id",
+    accessorKey: "final_id",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link to={`/update/account/${getValue()}`} className="text-blue-500">
+          {row.original.final_name}
+        </Link>
+      );
+    },
+  },
   { header: "note", accessorKey: "note" },
   { header: "number", accessorKey: "number" },
 ];
@@ -63,9 +105,13 @@ export const user = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "number", accessorKey: "number" },
-  { header: "created_at", accessorKey: "created_at" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "card_type", accessorKey: "card_type" },
   { header: "date_of_birth", accessorKey: "date_of_birth" },
   { header: "passport_number", accessorKey: "passport_number" },
@@ -132,7 +178,7 @@ export const lessor = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "full_name", accessorKey: "full_name" },
   { header: "passport", accessorKey: "passport" },
   { header: "passport_expiry_date", accessorKey: "passport_expiry_date" },
@@ -174,7 +220,7 @@ export const owner = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "full_name", accessorKey: "full_name" },
   { header: "id_card", accessorKey: "id_card" },
   { header: "phone", accessorKey: "phone" },
@@ -210,8 +256,12 @@ export const seller = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "full_name", accessorKey: "full_name" },
   { header: "nationality", accessorKey: "nationality" },
   { header: "id_card", accessorKey: "id_card" },
@@ -253,9 +303,21 @@ export const bank = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
-  { header: "name", accessorKey: "name" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link to={`/update/${"bank"}/${row.original.id}`}>{getValue()}</Link>
+      );
+    },
+  },
   { header: "address", accessorKey: "address" },
 ];
 
@@ -284,11 +346,38 @@ export const cost_center = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "number", accessorKey: "number" },
-  { header: "name", accessorKey: "name" },
-  { header: "parent_id", accessorKey: "parent_id" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link to={`/update/${"cost_center"}/${row.original.id}`}>
+          {getValue()}
+        </Link>
+      );
+    },
+  },
+  {
+    header: "parent_id",
+    accessorKey: "parent_id",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/update/cost_center/${getValue()}`}
+          className="text-blue-500"
+        >
+          {row.original.parent_name}
+        </Link>
+      );
+    },
+  },
   { header: "note", accessorKey: "note" },
 ];
 
@@ -317,9 +406,19 @@ export const country = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
-  { header: "name", accessorKey: "name" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "code", accessorKey: "code" },
 ];
 export const currency = [
@@ -347,8 +446,14 @@ export const currency = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "name", accessorKey: "name" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "code", accessorKey: "code" },
   { header: "rate", accessorKey: "rate" },
 ];
@@ -380,8 +485,14 @@ export const building = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "name", accessorKey: "name" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "emirate", accessorKey: "emirate" },
   { header: "suburb", accessorKey: "suburb" },
   { header: "area", accessorKey: "area" },
@@ -454,8 +565,12 @@ export const building_buying = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "amount", accessorKey: "amount" },
   { header: "gen_entries", accessorKey: "gen_entries" },
   { header: "currency_id", accessorKey: "currency_id" },
@@ -488,8 +603,12 @@ export const building_editorial_entry = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "building_id", accessorKey: "building_id" },
   { header: "building_cost", accessorKey: "building_cost" },
 ];
@@ -518,7 +637,7 @@ export const building_investment = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "owner_id", accessorKey: "owner_id" },
   { header: "investment_start_date", accessorKey: "investment_start_date" },
   { header: "investment_end_date", accessorKey: "investment_end_date" },
@@ -555,8 +674,12 @@ export const building_pictures = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "picture", accessorKey: "picture" },
   { header: "building_id", accessorKey: "building_id" },
 ];
@@ -585,7 +708,7 @@ export const building_real_estate_development = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "account_id", accessorKey: "account_id" },
   { header: "create_within_id", accessorKey: "create_within_id" },
   { header: "building_receipt", accessorKey: "building_receipt" },
@@ -621,7 +744,7 @@ export const building_real_estate_management = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "owner_id", accessorKey: "owner_id" },
   { header: "commission_rate", accessorKey: "commission_rate" },
   { header: "revenue_id", accessorKey: "revenue_id" },
@@ -656,8 +779,12 @@ export const accounting_voucher_grid_data = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "account_id", accessorKey: "account_id" },
   { header: "debit", accessorKey: "debit" },
   { header: "credit", accessorKey: "credit" },
@@ -693,8 +820,12 @@ export const accounting_voucher_main_data = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "note", accessorKey: "note" },
   { header: "debit", accessorKey: "debit" },
@@ -735,10 +866,20 @@ export const accounting_voucher_pattern = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "list_name", accessorKey: "list_name" },
   { header: "default_account_id", accessorKey: "default_account_id" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
@@ -790,8 +931,12 @@ export const accounting_voucher_pictures = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "picture", accessorKey: "picture" },
   {
     header: "accounting_voucher_main_id",
@@ -827,7 +972,7 @@ export const apartment = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "building_id", accessorKey: "building_id" },
   { header: "apartment_number", accessorKey: "apartment_number" },
   { header: "floor", accessorKey: "floor" },
@@ -882,7 +1027,7 @@ export const apartment_pictures = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "apartment_id", accessorKey: "apartment_id" },
   { header: "picture", accessorKey: "picture" },
 ];
@@ -911,7 +1056,7 @@ export const apartment_property_values = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "area", accessorKey: "area" },
   { header: "area_unit", accessorKey: "area_unit" },
   { header: "view", accessorKey: "view" },
@@ -947,7 +1092,7 @@ export const apartment_rental_price = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "apartment_id", accessorKey: "apartment_id" },
   { header: "date", accessorKey: "date" },
   { header: "price", accessorKey: "price" },
@@ -978,7 +1123,7 @@ export const apartment_selling_price = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "apartment_id", accessorKey: "apartment_id" },
   { header: "date", accessorKey: "date" },
   { header: "price", accessorKey: "price" },
@@ -1012,7 +1157,7 @@ export const contract = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "number", accessorKey: "number" },
   { header: "feedback", accessorKey: "feedback" },
   { header: "lawsuit", accessorKey: "lawsuit" },
@@ -1142,7 +1287,7 @@ export const contract_cycle = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "contract_id", accessorKey: "contract_id" },
   { header: "contract_documented", accessorKey: "contract_documented" },
   { header: "contract_certifying", accessorKey: "contract_certifying" },
@@ -1189,7 +1334,7 @@ export const contract_financial = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "contract_id", accessorKey: "contract_id" },
   { header: "contract_type", accessorKey: "contract_type" },
   { header: "contract_value", accessorKey: "contract_value" },
@@ -1259,8 +1404,12 @@ export const contract_linked_parking = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "contract_id", accessorKey: "contract_id" },
   { header: "building_id", accessorKey: "building_id" },
   { header: "account_id", accessorKey: "account_id" },
@@ -1292,11 +1441,21 @@ export const contract_pattern = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "contract_type", accessorKey: "contract_type" },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "list_name", accessorKey: "list_name" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
   { header: "gen_enteries", accessorKey: "gen_enteries" },
@@ -1428,7 +1587,7 @@ export const contract_pictures = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "contract_id", accessorKey: "contract_id" },
   { header: "picture", accessorKey: "picture" },
 ];
@@ -1458,7 +1617,7 @@ export const contract_receipt_number = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "contract_id", accessorKey: "contract_id" },
   { header: "receipt_number", accessorKey: "receipt_number" },
   { header: "receipt_date", accessorKey: "receipt_date" },
@@ -1491,8 +1650,12 @@ export const financial_data = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "number", accessorKey: "number" },
   { header: "type", accessorKey: "type" },
   { header: "internal_number", accessorKey: "internal_number" },
@@ -1559,11 +1722,21 @@ export const financial_patterns = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "paperType", accessorKey: "paperType" },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "list_name", accessorKey: "list_name" },
   { header: "default_account_id", accessorKey: "default_account_id" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
@@ -1829,7 +2002,7 @@ export const installment = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "contract_id", accessorKey: "contract_id" },
   { header: "total_amount", accessorKey: "total_amount" },
   { header: "first_batch", accessorKey: "first_batch" },
@@ -1880,7 +2053,7 @@ export const installment_data = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "due_date", accessorKey: "due_date" },
   { header: "number", accessorKey: "number" },
   { header: "amount", accessorKey: "amount" },
@@ -1920,8 +2093,12 @@ export const op_collection = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "feedback", accessorKey: "feedback" },
   { header: "amount", accessorKey: "amount" },
   { header: "currency_id", accessorKey: "currency_id" },
@@ -1969,8 +2146,12 @@ export const op_deportation = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "feedback", accessorKey: "feedback" },
   { header: "amount", accessorKey: "amount" },
   { header: "currency_id", accessorKey: "currency_id" },
@@ -2008,8 +2189,12 @@ export const op_return = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "feedback", accessorKey: "feedback" },
   { header: "amount", accessorKey: "amount" },
   { header: "currency_id", accessorKey: "currency_id" },
@@ -2052,8 +2237,12 @@ export const voucher_grid_data = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "account_id", accessorKey: "account_id" },
   { header: "debit", accessorKey: "debit" },
   { header: "credit", accessorKey: "credit" },
@@ -2088,8 +2277,12 @@ export const voucher_main_data = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "note", accessorKey: "note" },
   { header: "debit", accessorKey: "debit" },
@@ -2122,10 +2315,20 @@ export const voucher_pattern = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "list_name", accessorKey: "list_name" },
   { header: "default_account_id", accessorKey: "default_account_id" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
@@ -2187,14 +2390,37 @@ export const assets_group = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "number", accessorKey: "number" },
   { header: "type", accessorKey: "type" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "last_name", accessorKey: "last_name" },
   { header: "note", accessorKey: "note" },
-  { header: "parent_id", accessorKey: "parent_id" },
+  {
+    header: "parent_id",
+    accessorKey: "parent_id",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/update/assets_group/${getValue()}`}
+          className="text-blue-500"
+        >
+          {row.original.parent_name}
+        </Link>
+      );
+    },
+  },
 ];
 
 export const assets = [
@@ -2222,11 +2448,21 @@ export const assets = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "number", accessorKey: "number" },
   { header: "assets_group_id", accessorKey: "assets_group_id" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "code", accessorKey: "code" },
   { header: "barcode", accessorKey: "barcode" },
   { header: "note", accessorKey: "note" },
@@ -2262,8 +2498,12 @@ export const assets_accounts = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "assets_account_id", accessorKey: "assets_account_id" },
   { header: "expense_account_id", accessorKey: "expense_account_id" },
@@ -2301,8 +2541,12 @@ export const assets_depreciation = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "depreciation_mode", accessorKey: "depreciation_mode" },
   { header: "is_depreciation_monthly", accessorKey: "is_depreciation_monthly" },
@@ -2340,8 +2584,12 @@ export const assets_input = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "importer", accessorKey: "importer" },
   { header: "enter_account_id", accessorKey: "enter_account_id" },
@@ -2380,8 +2628,12 @@ export const assets_maintenance = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "maintenance_contract", accessorKey: "maintenance_contract" },
   { header: "maintenance_begin_date", accessorKey: "maintenance_begin_date" },
@@ -2415,8 +2667,12 @@ export const assets_sale = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "is_sale", accessorKey: "is_sale" },
   { header: "sale_date", accessorKey: "sale_date" },
@@ -2452,8 +2708,12 @@ export const assets_shipping = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "shipping", accessorKey: "shipping" },
   { header: "shipping_no", accessorKey: "shipping_no" },
@@ -2494,8 +2754,12 @@ export const lawsuit = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "number", accessorKey: "number" },
   { header: "type", accessorKey: "type" },
   { header: "contract_id", accessorKey: "contract_id" },
@@ -2584,8 +2848,12 @@ export const maintenance_order = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "number", accessorKey: "number" },
   { header: "type", accessorKey: "type" },
   { header: "maintenance_order_no", accessorKey: "maintenance_order_no" },
@@ -2646,15 +2914,38 @@ export const material_group = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "number", accessorKey: "number" },
   { header: "type", accessorKey: "type" },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "last_name", accessorKey: "last_name" },
   { header: "note", accessorKey: "note" },
-  { header: "parent_id", accessorKey: "parent_id" },
+  {
+    header: "parent_id",
+    accessorKey: "parent_id",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/update/material_group/${getValue()}`}
+          className="text-blue-500"
+        >
+          {row.original.parent_name}
+        </Link>
+      );
+    },
+  },
 ];
 export const materials = [
   {
@@ -2681,12 +2972,22 @@ export const materials = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "number", accessorKey: "number" },
   { header: "type", accessorKey: "type" },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "last_name", accessorKey: "last_name" },
   { header: "unity1", accessorKey: "unity1" },
   { header: "unity2", accessorKey: "unity2" },
@@ -2742,8 +3043,12 @@ export const parking = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "building_id", accessorKey: "building_id" },
   { header: "parking_no", accessorKey: "parking_no" },
   { header: "floor_no", accessorKey: "floor_no" },
@@ -2784,8 +3089,12 @@ export const parking_pictures = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "parking_id", accessorKey: "parking_id" },
   { header: "picture", accessorKey: "picture" },
 ];
@@ -2814,8 +3123,12 @@ export const parking_price = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "parking_id", accessorKey: "parking_id" },
   { header: "date1", accessorKey: "date1" },
   { header: "print1", accessorKey: "print1" },
@@ -2855,8 +3168,12 @@ export const shop = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "building_id", accessorKey: "building_id" },
   { header: "number", accessorKey: "number" },
   { header: "shop_no", accessorKey: "shop_no" },
@@ -2911,8 +3228,12 @@ export const shop_fixed_assets = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "shop_id", accessorKey: "shop_id" },
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "value", accessorKey: "value" },
@@ -2943,8 +3264,12 @@ export const shop_pictures = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "shop_id", accessorKey: "shop_id" },
   { header: "picture", accessorKey: "picture" },
 ];
@@ -2973,8 +3298,12 @@ export const shop_rent_price = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "shop_id", accessorKey: "shop_id" },
   { header: "price", accessorKey: "price" },
   { header: "currency_id", accessorKey: "currency_id" },
@@ -3007,8 +3336,12 @@ export const shop_selling_price = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "shop_id", accessorKey: "shop_id" },
   { header: "price", accessorKey: "price" },
   { header: "currency_id", accessorKey: "currency_id" },
@@ -3043,8 +3376,12 @@ export const villa = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "complex_name", accessorKey: "complex_name" },
   { header: "villa_no", accessorKey: "villa_no" },
   { header: "emirate", accessorKey: "emirate" },
@@ -3086,8 +3423,12 @@ export const villa_accounts = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "villa_id", accessorKey: "villa_id" },
   { header: "villa_account_id", accessorKey: "villa_account_id" },
   { header: "cost_center_id", accessorKey: "cost_center_id" },
@@ -3121,8 +3462,12 @@ export const villa_assets = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "villa_id", accessorKey: "villa_id" },
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "value", accessorKey: "value" },
@@ -3153,8 +3498,12 @@ export const villa_exterior_details = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "villa_id", accessorKey: "villa_id" },
   { header: "wall", accessorKey: "wall" },
   { header: "wall_state", accessorKey: "wall_state" },
@@ -3196,8 +3545,12 @@ export const villa_interior_details = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "villa_id", accessorKey: "villa_id" },
   { header: "floor_count", accessorKey: "floor_count" },
   { header: "balcony_count", accessorKey: "balcony_count" },
@@ -3239,8 +3592,12 @@ export const villa_pictures = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "villa_id", accessorKey: "villa_id" },
   { header: "picture", accessorKey: "picture" },
 ];
@@ -3269,8 +3626,12 @@ export const villa_rent_price = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "villa_id", accessorKey: "villa_id" },
   { header: "date", accessorKey: "date" },
   { header: "price", accessorKey: "price" },
@@ -3301,7 +3662,7 @@ export const villa_selling_price = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
+  // { header: "id", accessorKey: "id" },
   { header: "villa_id", accessorKey: "villa_id" },
   { header: "date", accessorKey: "date" },
   { header: "price", accessorKey: "price" },
@@ -3310,12 +3671,22 @@ export const villa_selling_price = [
 // ==== End Villa
 
 export const store = [
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "number", accessorKey: "number" },
   { header: "type", accessorKey: "type" },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "last_name", accessorKey: "last_name" },
   { header: "address", accessorKey: "address" },
   { header: "warehouseman", accessorKey: "warehouseman" },
@@ -3323,10 +3694,24 @@ export const store = [
   {
     header: "parent_id",
     accessorKey: "parent_id",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link to={`/update/store/${getValue()}`} className="text-blue-500">
+          {row.original.parent_name}
+        </Link>
+      );
+    },
   },
   {
     header: "store_final_id",
     accessorKey: "store_final_id",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link to={`/update/store/${getValue()}`} className="text-blue-500">
+          {row.original.final_name}
+        </Link>
+      );
+    },
   },
 ];
 const bill_group = [
@@ -3354,11 +3739,21 @@ const bill_group = [
       />
     ),
   },
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "paperType", accessorKey: "paperType" },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+    },
+  },
   { header: "list_name", accessorKey: "list_name" },
   {
     header: "default_account_id",
@@ -3683,8 +4078,12 @@ const bill_group = [
 ];
 
 const bill = [
-  { header: "id", accessorKey: "id" },
-  { header: "created_at", accessorKey: "created_at" },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "number", accessorKey: "number" },
   { header: "type", accessorKey: "type" },
   {

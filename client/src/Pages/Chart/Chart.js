@@ -13,7 +13,7 @@ function toTree(data, pid = null) {
   return data?.reduce((r, e) => {
     if (e.ParentGUID == pid) {
       const obj = { ...e };
-      const children = toTree(data, e.Guid);
+      const children = toTree(data, e.id);
       if (children.length) obj.children = children;
       r.push(obj);
     }

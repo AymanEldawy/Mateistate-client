@@ -253,8 +253,8 @@ body.dark .has-checked:has(input:checked) input {
   pointer-events: unset;
 }
 
-.Toastify__toast-container {
+/* .Toastify__toast-container {
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
-}
+} */

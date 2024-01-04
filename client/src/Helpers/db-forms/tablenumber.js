@@ -1,2 +1,0 @@
-
-  export const tablenumber = [{"name":"tablename","type":"character varying","default_value":null,"required":false,"hide_in":""},{"name":"typeguid","type":"uuid","default_value":null,"required":false,"hide_in":""},{"name":"lastnumber","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"reccount","type":"integer","default_value":null,"required":false,"hide_in":""},{"name":"trial002","type":"character","default_value":null,"required":false,"hide_in":""}]

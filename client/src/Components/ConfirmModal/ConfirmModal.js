@@ -17,7 +17,7 @@ const ConfirmModal = ({ open, setOpen, onConfirm }) => {
           classes="!bg-transparent !text-gray-500 border"
           onClick={() => setOpen(false)}
         />
-        <Button title={t("yes")} classes="!bg-red-500" onClick={onConfirm} />
+        <Button title={t("Yes")} classes="!bg-red-500" onClick={onConfirm} />
       </div>
     </Modal>
   );

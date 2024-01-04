@@ -1,25 +1,28 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 
-import formsApi from "Helpers/Forms/formsApi";
 import {
   FolderEmptyIcon,
   FolderMinusIcon,
   FolderPlusIcon,
 } from "Helpers/Icons";
-import SuperForm from "Components/Forms/CustomForm/SuperForm";
+
+
 import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import Modal from "Components/Modal/Modal";
 import TreeViewItem from "./TreeViewItem";
+import getFormByTableName from "Helpers/Forms/new-tables-forms";
+import SuperForm from "Components/StructurePage/Forms/CustomForm/FormSingular";
 
 const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [open, setOpen] = useState({});
   const [fields, setFields] = useState([]);
-  
+
   useEffect(() => {
-    setFields(formsApi[name?.toLowerCase()]);
+    setFields(getFormByTableName(name?.toLowerCase()));
+
   }, []);
 
   const toggleOpen = (itemId, level) => {
@@ -43,13 +46,13 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
     (tree, level = 1) => {
       return tree?.map((item) => {
         return (
-          <li className="space-x-3 w-fit mt-2 mb-2 last:mb-0" key={item?.Guid}>
+          <li className="space-x-3 w-fit mt-2 mb-2 last:mb-0" key={item?.id}>
             <TreeViewItem
               deleteItem={deleteItem}
               table={name}
               row={item}
               toggleOpen={() => {
-                if (item?.children?.length) toggleOpen(item?.Guid, level);
+                if (item?.children?.length) toggleOpen(item?.id, level);
               }}
               onSelectedItem={() => setSelectedItem(item)}
               open={open}
@@ -58,7 +61,7 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
                   <span className="text-gray-400 dark:text-gray-700">
                     <FolderEmptyIcon />
                   </span>
-                ) : open[level] === item?.Guid ? (
+                ) : open[level] === item?.id ? (
                   <span className="text-red-600">
                     <FolderMinusIcon />
                   </span>
@@ -71,7 +74,7 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
             />
             {item?.children?.length ? (
               <>
-                {open[level] === item?.Guid ? (
+                {open[level] === item?.id ? (
                   <ul
                     className={`relative bg-[#9991] dark:bg-[#1111] pr-4 !ml-4 rounded-md dark:before:border-dark-border before:border-l-2 before:absolute before:left-0 before:-z-1 before:h-full color-level-${level} after:opacity-20 after:w-4 after:h-full after:absolute after:top-0`}
                   >
@@ -89,16 +92,16 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit }) => {
 
   let oldValues = selectedItem?.FinalGUID
     ? {
-        ParentGUID: selectedItem?.Guid,
+        ParentGUID: selectedItem?.id,
         FinalGUID: selectedItem?.FinalGUID,
       }
     : selectedItem?.ParentGUID
     ? {
-        ParentGUID: selectedItem?.Guid,
+        ParentGUID: selectedItem?.id,
         FinalGUID: selectedItem?.ParentGUID,
       }
     : {
-        ParentGUID: selectedItem?.Guid,
+        ParentGUID: selectedItem?.id,
       };
 
   const submit = (values) => {

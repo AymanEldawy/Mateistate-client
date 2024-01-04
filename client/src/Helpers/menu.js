@@ -17,7 +17,11 @@ export const menuData = [
     link: "account",
     icon: <UserIcon />,
     children: [
-      { key: "user-card", name: "user card", link: "/list/user" },
+      {
+        key: "Customer",
+        name: "Customer/Supplier Card",
+        link: "/list/user",
+      },
       { key: "owner-card", name: "owner card", link: "/list/owner" },
       { key: "seller-card", name: "seller card", link: "/list/seller" },
       { key: "lessor-card", name: "lessor card", link: "/list/lessor" },
@@ -60,11 +64,7 @@ export const menuData = [
     link: "cards",
     icon: <ClipboardIcon />,
     children: [
-      {
-        key: "Customer",
-        name: "Customer/Supplier Card",
-        link: "/list/user",
-      },
+
       {
         key: "Building",
         name: "Building Card",
@@ -95,21 +95,21 @@ export const menuData = [
         name: "Villa Card",
         link: "/list/villa",
       },
-      {
-        key: "Leaser",
-        name: "Lessor Card",
-        link: "/list/lessor",
-      },
-      {
-        key: "Owner",
-        name: "Owner Card",
-        link: "/list/owner",
-      },
-      {
-        key: "Salesman",
-        name: "Salesman Card",
-        link: "/list/seller",
-      },
+      // {
+      //   key: "Leaser",
+      //   name: "Lessor Card",
+      //   link: "/list/lessor",
+      // },
+      // {
+      //   key: "Owner",
+      //   name: "Owner Card",
+      //   link: "/list/owner",
+      // },
+      // {
+      //   key: "Salesman",
+      //   name: "Salesman Card",
+      //   link: "/list/seller",
+      // },
       {
         key: "Watchman",
         name: "Watchman Card",
@@ -194,13 +194,13 @@ export const menuData = [
         key: "Contracts",
         name: "Contracts",
         link: "",
-        subChild: getContractMenus()
+        subChild: getContractMenus(),
       },
       // {
       //   key: "Contracts",
       //   name: "Contracts",
       //   link: "",
-      //   // dynamic menu 
+      //   // dynamic menu
       //   // subChild: [
       //   //   {
       //   //     key: 1,
@@ -370,34 +370,7 @@ export const menuData = [
       },
     ],
   },
-  {
-    key: "patterns",
-    name: "Patterns",
-    link: "",
-    icon: <ToolsIcon />,
-    children: [
-      {
-        key: "contract patterns",
-        name: "Contract patterns",
-        link: "/patterns/contract_pattern",
-      },
-      {
-        key: "bills patterns",
-        name: "Bill patterns",
-        link: "/patterns/bill_pattern",
-      },
-      {
-        key: "voucher patterns",
-        name: "Voucher patterns",
-        link: "/patterns/voucher_pattern",
-      },
-      {
-        key: "accounting voucher patterns",
-        name: "Accounting voucher patterns",
-        link: "/patterns/accounting_voucher_pattern",
-      },
-    ],
-  },
+
   {
     key: "tools",
     name: "Tools",
@@ -409,6 +382,57 @@ export const menuData = [
         name: "tool 1",
         link: "/tools",
       },
+      {
+        key: "patterns",
+        name: "Patterns",
+        link: "",
+        children: [
+          {
+            key: "contract patterns",
+            name: "Contract patterns",
+            link: "/patterns/contract_pattern",
+          },
+          {
+            key: "bills patterns",
+            name: "Bill patterns",
+            link: "/patterns/bill_pattern",
+          },
+          {
+            key: "voucher patterns",
+            name: "Voucher patterns",
+            link: "/patterns/voucher_pattern",
+          },
+          {
+            key: "accounting voucher patterns",
+            name: "Accounting voucher patterns",
+            link: "/patterns/accounting_voucher_pattern",
+          },
+        ],
+      },
     ],
   },
+  {
+    key: "vouchers",
+    name: "Vouchers",
+    link: "",
+    icon: <ToolsIcon />,
+    children: [
+      {
+        key: "Receipt Voucher",
+        name: "Receipt Voucher",
+        link: "/vouchers/1/receipt-voucher",
+      },
+      {
+        key: "Payment Voucher",
+        name: "Payment Voucher",
+        link: "/vouchers/2/payment-voucher",
+      },
+      {
+        key: "voucher patterns",
+        name: "Voucher patterns",
+        link: "/vouchers/entry",
+      },
+    ],
+  },
+
 ];
