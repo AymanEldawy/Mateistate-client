@@ -764,7 +764,7 @@ const building_investment = [
     label: "building_id",
     name: "building_id",
     type: "uuid",
-    required: false,
+    required: true,
     is_ref: true,
     ref_table: "building",
     ref_col: "id",
@@ -1391,7 +1391,13 @@ const apartment_pictures = [
 const apartment_property_values = [
   // { label: "id", name: "id", type: "uuid", required: false, hide_in_form: true },
   { label: "hex", name: "hex", type: "color", required: false },
-  { label: "room_count", name: "room_count", type: "number", required: false },
+  {
+    label: "room_count",
+    name: "room_count",
+    type: "number",
+    required: false,
+    readOnly: true,
+  },
   { label: "note", name: "note", type: "text", required: false },
   { label: "area", name: "area", type: "number", required: false },
   { label: "area_unit", name: "area_unit", type: "text", required: false },
@@ -2792,7 +2798,13 @@ const bill = [
 const bill_general = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "paper_type", name: "paper_type", key: "select", list: SELECT_LISTS('bill_pattern_paper_type'), required: false },
+  {
+    label: "paper_type",
+    name: "paper_type",
+    key: "select",
+    list: SELECT_LISTS("bill_pattern_paper_type"),
+    required: false,
+  },
   { label: "code", name: "code", type: "text", required: false },
   { label: "name", name: "name", type: "text", required: true },
   { label: "list_name", name: "list_name", type: "text", required: false },
@@ -3587,7 +3599,7 @@ const installment = [
     label: "gen_entries_type",
     name: "gen_entries_type",
     key: "select",
-    list: SELECT_LISTS('installment_entries_type'),
+    list: SELECT_LISTS("installment_entries_type"),
     required: false,
   },
   {

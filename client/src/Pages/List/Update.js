@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 
-import { getForm } from "Helpers/constants";
 import { generateApartments } from "Helpers/functions";
 import { ApiActions } from "Helpers/Lib/api";
 
@@ -23,7 +22,8 @@ const Update = () => {
   const [fields, setFields] = useState([]);
 
   // Get data
-  let singleList = useMemo(() => getForm(name?.toLowerCase()), [name]);
+  // let singleList = useMemo(() => getForm(name?.toLowerCase()), [name]);
+  let singleList = useMemo(() => {}, [name]);
   const forms = singleList?.forms;
   const steps = singleList?.steps;
   // check if form is more then step

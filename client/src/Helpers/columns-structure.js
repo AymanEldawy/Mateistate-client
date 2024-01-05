@@ -3,6 +3,7 @@
 import { getValue } from "@testing-library/user-event/dist/utils";
 import IndeterminateCheckbox from "Components/StructurePage/Tables/IndeterminateCheckbox";
 import { Link } from "react-router-dom";
+import { PaletteIcon } from "./Icons";
 
 export const account = [
   {
@@ -485,7 +486,18 @@ export const building = [
       />
     ),
   },
-  // { header: "id", accessorKey: "id" },
+  {
+    id: "color",
+    header: "color",
+    cell: ({ row }) => (
+      <Link
+        to={`/tools/${row.original.id}`}
+        state={{ t: "t", row: row.original }}
+      >
+        <PaletteIcon />
+      </Link>
+    ),
+  },
   {
     header: "name",
     accessorKey: "name",

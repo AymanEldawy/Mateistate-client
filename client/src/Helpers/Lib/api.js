@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 import MatieStateClient from "./MatieStateClient";
 
 function CURD() {
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI0NTVjN2VjLTMwOGItNGNiYi05MWQ0LWIwYjQ4MTdmM2Y1MSIsImlhdCI6MTcwNDIyMzY3MywiZXhwIjoxODYyMDExNjczfQ.ctpe7dG7a-wJo3NBMQ-e_ORSGjCLBxzYAWltBYR65Fs"
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI0NTVjN2VjLTMwOGItNGNiYi05MWQ0LWIwYjQ4MTdmM2Y1MSIsImlhdCI6MTcwNDIyMzY3MywiZXhwIjoxODYyMDExNjczfQ.ctpe7dG7a-wJo3NBMQ-e_ORSGjCLBxzYAWltBYR65Fs";
   const baseURL = "http://203.161.62.124:3000";
   const matieStateClient = new MatieStateClient(baseURL, token);
 
@@ -78,12 +79,20 @@ function CURD() {
       return error;
     }
   };
+
+  const getById = async (tableName, id) => {
+    return await read(tableName, {
+      conditions: [{ type: "and", conditions: [["id", "=", id]] }],
+    });
+  };
+
   return {
     insert,
     read,
     update,
     remove,
     search,
+    getById,
   };
 }
 

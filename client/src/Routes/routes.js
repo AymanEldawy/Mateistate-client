@@ -19,7 +19,7 @@ const publicRoutes = [
 const authProtectedRoutes = [
   { path: "*", component: <NouFound /> },
   { path: "/", component: <Home /> },
-  { path: "/tools", component: <Tools /> },
+  { path: "/tools/:id", component: <Tools /> },
   { path: "/buildings/:name/tools/:Guid", component: <Tools /> },
   { path: "/testentry", component: <TestEntry /> },
 

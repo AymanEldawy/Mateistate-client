@@ -8,6 +8,7 @@ import TableForm from "./TableForm";
 import useFormSteps from "Hooks/useFormSteps";
 
 import { Fields } from "./Fields";
+import INSERT_FUNCTION from "Helpers/Lib/operations/global-insert";
 
 const CACHE_LIST = {};
 
@@ -21,7 +22,6 @@ const FormSteps = ({ name, forms, steps, onClose, refetchData, oldValues }) => {
   const [tab, setTab] = useState("");
   const [fields, setFields] = useState([]);
   const [formSettings, setFormSettings] = useState({});
-  const [globalValues, setGlobalValues] = useState({});
   const [errors, setErrors] = useState({});
   const [values, setValues] = useState({});
 
@@ -34,13 +34,12 @@ const FormSteps = ({ name, forms, steps, onClose, refetchData, oldValues }) => {
     getRefTables();
   }, [currentIndex]);
 
-
   const getRefTables = async () => {
     if (!fields?.length) return;
 
     for (const field of fields) {
       if (CACHE_LIST[field?.ref_table]) continue;
-      
+
       if (field.is_ref) {
         const response = await ApiActions.read(field?.ref_table);
         CACHE_LIST[field?.ref_table] = response?.result;
@@ -125,25 +124,27 @@ const FormSteps = ({ name, forms, steps, onClose, refetchData, oldValues }) => {
     next();
     if (!isLast()) return;
     setLoading(true);
-    const getTheFunInsert = GLOBAL_INSERT_FUNCTION(name);
-    const res = await getTheFunInsert({ data: globalValues });
+    const getTheFunInsert = INSERT_FUNCTION[name];
+    const res = await getTheFunInsert({ data: { test: "tes", ...values } });
 
     if (res?.success) {
       toast.success("Successfully added item in " + name);
       if (!!refetchData) refetchData();
-      setGlobalValues({});
+      setValues({});
     } else {
       toast.error("Failed to add new item in " + name);
     }
     if (!!onClose) onClose();
     setLoading(false);
   };
+
+
   return (
     <>
       <FormHeadingTitleSteps
         name={name}
         steps={steps}
-        changeTab={goTo}
+        // changeTab={goTo}
         activeStage={currentIndex}
       />
       <div className="h-5" />
@@ -152,8 +153,8 @@ const FormSteps = ({ name, forms, steps, onClose, refetchData, oldValues }) => {
           <div key={steps[currentIndex]}>
             <TableForm
               activeStage={steps[currentIndex]}
-              oldValues={globalValues?.[tab] || {}}
-              setGlobalValues={setGlobalValues}
+              oldValues={values?.[tab] || {}}
+              setGlobalValues={setValues}
               formSettings={formSettings}
               getCachedList={!!getCachedList ? getCachedList : undefined}
               allowSteps={steps?.length}
@@ -166,7 +167,7 @@ const FormSteps = ({ name, forms, steps, onClose, refetchData, oldValues }) => {
         ) : (
           <Fields
             fields={fields}
-            values={values}
+            values={values[steps[currentIndex]]}
             errors={errors}
             handelFieldUpload={handelFieldUpload}
             handelChangeField={handelChangeField}
@@ -175,7 +176,7 @@ const FormSteps = ({ name, forms, steps, onClose, refetchData, oldValues }) => {
         )}
         <div className="flex justify-between gap-4 items-center mt-4">
           {steps ? <Button title="Back" onClick={back} type="button" /> : null}
-          <Button title={isLast() ? 'Submit' : 'next'} loading={loading} />
+          <Button title={isLast() ? "Submit" : "next"} loading={loading} />
         </div>
       </form>
     </>

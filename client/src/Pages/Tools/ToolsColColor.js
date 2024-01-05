@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { memo } from "react";
 import { useEffect } from "react";
 
@@ -7,91 +7,111 @@ import { getValueOfInputColor } from "Helpers/functions";
 import { EditIcon } from "Helpers/Icons";
 import TableCol from "Components/StructurePage/CustomTable/TableCol";
 import { Input } from "Components/StructurePage/CustomFields";
+import useFlatColoring from "Hooks/useFlatColoring";
+import { FLAT_PROPERTY_TABS_SETTINGS } from "Helpers/constants";
 
 const ToolsColColor = ({
   isUpdatable,
-  changeApartmentName,
-  insertColor,
-  canInsertColor,
   setIsUpdatable,
-  flatsDetails,
   CACHE_LIST_COLORS,
   apartmentNumber,
-  removeOneItemColor,
-  itemHash,
   tabName,
   CACHE_APARTMENTS,
   defaultInsertColor,
+  setFlatsDetails,
+  selectedTab,
+  setRefresh,
+  yIndex,
+  xIndex,
+  prefix,
+  isMatrix,
 }) => {
-  let itemData =
-    CACHE_LIST_COLORS[
-      flatsDetails?.[`${itemHash}&${tabName}`]?.FlatBuildingDetailsIndex
-    ];
-  let ItemColor = itemData?.Color;
-  let itemValue = flatsDetails?.[`${itemHash}&${tabName}`]?.NO;
+  const {
+    onInsertColor,
+    onChangeApartmentName,
+    removeOneItemColor,
+    canInsertColor,
+    flatsDetails,
+  } = useFlatColoring();
 
-  useEffect(() => {
-    if (CACHE_APARTMENTS[apartmentNumber]) {
-      defaultInsertColor(
-        itemHash,
-        tabName,
-        CACHE_APARTMENTS[apartmentNumber]
-        // CACHE_APARTMENTS[apartmentNumber]?.FlatBuildingDetailsIndex
-      );
-    }
-  }, [apartmentNumber]);
+  let tabSettings = useMemo(
+    () => FLAT_PROPERTY_TABS_SETTINGS[tabName],
+    [tabName]
+  );
+
+  let itemHash = isMatrix
+    ? `${prefix} ${xIndex + 1}0${yIndex}`
+    : `${prefix} ${1}0${xIndex + 1}`;
+
+  let flatName = tabSettings.no;
+  let itemValue = flatsDetails?.[tabName]?.[itemHash]?.[flatName] || itemHash;
+  let itemColor = flatsDetails?.[tabName]?.[itemHash]?.hex;
+
+  // useEffect(() => {
+  //   if (CACHE_APARTMENTS[apartmentNumber]) {
+  //     defaultInsertColor(
+  //       itemHash,
+  //       tabName,
+  //       CACHE_APARTMENTS[apartmentNumber]
+  //       // CACHE_APARTMENTS[apartmentNumber]?.FlatBuildingDetailsIndex
+  //     );
+  //   }
+  // }, [apartmentNumber]);
+
   return (
-    <TableCol
-      classes="!p-0  border border-gray-400
-  "
-    >
+    <TableCol classes="!p-0  border border-gray-400">
       {isUpdatable === itemHash ? (
         <div className="px-1">
-          <Input
+          <input
             type="number"
-            className="h-full w-[93px] border-0 rounded-none focus-within:border-blue-400 focus:border"
+            className="h-full w-fit py-2 border-0 rounded-none focus-within:border-blue-400 focus:border"
             onKeyDown={(e) => {
               if (e.keyCode === 13) setIsUpdatable("");
             }}
             onBlur={(e) => {
               setIsUpdatable("");
             }}
-            onChange={(e) => changeApartmentName(e, itemHash)}
-            value={itemValue || apartmentNumber}
+            onChange={(e) => {
+              onChangeApartmentName(tabName, itemHash, e.target.value);
+            }}
+            value={itemValue}
+            defaultValue={itemValue}
           />
         </div>
       ) : (
         <div
           onClick={() => {
-            if (canInsertColor && !ItemColor) insertColor(tabName, itemHash);
-            if (ItemColor) removeOneItemColor(tabName, itemHash);
+            if (canInsertColor)
+              onInsertColor(tabName, itemHash, {
+                name: itemValue,
+                x_index: xIndex,
+                y_index: yIndex,
+              });
+            if (itemColor) removeOneItemColor(tabName, itemHash);
           }}
           style={{
             background:
-              typeof ItemColor === "number"
-                ? getValueOfInputColor(ItemColor)
-                : ItemColor,
+              typeof itemColor === "number"
+                ? getValueOfInputColor(itemColor)
+                : itemColor,
           }}
           className={`${
-            ItemColor ? "cursor-default" : "cursor-cell"
+            itemColor ? "cursor-default" : "cursor-cell"
           } h-8 p-1 px-1 flex items-center justify-between tools-tab-item`}
         >
           <span className="bg-[#0005] text-white px-1 h-[22px] rounded-sm">
-            {itemValue || apartmentNumber}
+            {itemValue}
           </span>
           <div className="flex ml-3 rtl:mr-3 rtl:ml-auto">
-            <Button
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsUpdatable(itemHash);
               }}
-              classes="!p-0 scale-75"
-              title={
-                <span className="scale-75 block">
-                  <EditIcon />
-                </span>
-              }
-            />
+              className="rounded-md scale-75 w-10 h-8 bg-blue-500 text-white flex items-center justify-center"
+            >
+              <EditIcon className="h-5 w-5" />
+            </button>
           </div>
         </div>
       )}
@@ -99,4 +119,4 @@ const ToolsColColor = ({
   );
 };
 
-export default memo(ToolsColColor);
+export default ToolsColColor;

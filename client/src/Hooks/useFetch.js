@@ -18,11 +18,9 @@ const useFetch = (name) => {
       if(GLOBAL_READ_DATA[name]){
         let get = GLOBAL_READ_DATA[name]
         res = await get()
-        console.log("🚀 ~ file: useFetch.js:19 ~ fetchData ~ res:", res)
       }
       else 
         res = await ApiActions.read(name)
-      console.log(res);
       setData(res.result);
       setLoading(false);
     } catch (error) {

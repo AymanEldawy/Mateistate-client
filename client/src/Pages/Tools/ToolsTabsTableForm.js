@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { memo } from "react";
 
 import { getValueOfInputColor } from "Helpers/functions";
@@ -10,32 +10,34 @@ import TableBody from "Components/StructurePage/CustomTable/TableBody";
 import TableRow from "Components/StructurePage/CustomTable/TableRow";
 import TableCol from "Components/StructurePage/CustomTable/TableCol";
 import { Input, UniqueField } from "Components/StructurePage/CustomFields";
+import getFormByTableName from "Helpers/Forms/new-tables-forms";
+import useFlatColoring from "Hooks/useFlatColoring";
+import { IncreaseTableBar } from "Components/StructurePage/Forms/IncreaseTableBar";
 
-const TableForm = ({
+export const ToolsTabsTableForm = ({
   onOpen,
   rowLength,
-  initialFields,
   setIndex,
   oldValues,
   onSubmit,
-  goBack,
-  goNext,
-  steps,
   getCachedList,
   getValuesWithoutSubmit,
   setGetIndexOfRowUpdated,
-  selectedColor,
-  onSelectColor,
 }) => {
+  const { onSelectColor, selectedColor } = useFlatColoring();
   const [grid, setGrid] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [increaseCount, setIncreaseCount] = useState(10);
   const [columns, setColumns] = useState([]);
 
-  console.log("🚀 ~ file: ToolsTableForm.js:36 ~ useEffect ~ initialFields:", initialFields)
+  const fields = useMemo(() => {
+    return getFormByTableName("apartment_property_values");
+  }, []);
+
   useEffect(() => {
-    let names = initialFields?.map((_) => _.name);
+    let names = fields?.map((_) => _.name);
     setColumns(names);
-  }, [initialFields]);
+  }, [fields]);
 
   useEffect(() => {
     setGrid((prev) => {
@@ -94,18 +96,12 @@ const TableForm = ({
           ))}
         </TableHead>
         <TableBody>
-          {Array(rowLength)
+          {Array(increaseCount)
             .fill(0)
             .map((r, index) => (
               <TableRow
                 key={`${r}-${index}`}
-                classes={
-                  !!onSelectColor
-                    ? selectedColor === index + 1
-                      ? "bg-gray-200"
-                      : ""
-                    : ""
-                }
+                classes={selectedColor === index + 1 ? "bg-gray-200" : ""}
               >
                 <TableCol classes="max-w-fit !p-0 border dark:border-dark-border text-center">
                   {!!setIndex || onSelectColor ? (
@@ -116,9 +112,9 @@ const TableForm = ({
                           onOpen();
                           setIndex(index + 1);
                         }
-                        console.log('called',grid, grid?.[index]?.hex, onSelectColor);
-                        if (!!onSelectColor && grid?.[index + 1]?.hex) {
-                          onSelectColor(index + 1);
+
+                        if (grid?.[index + 1]?.hex) {
+                          onSelectColor(index + 1, grid?.[index + 1]?.hex);
                         }
                       }}
                     >
@@ -128,9 +124,9 @@ const TableForm = ({
                     index + 1
                   )}
                 </TableCol>
-                {initialFields?.map((field) => (
+                {fields?.map((field) => (
                   <TableCol
-                    classes="!p-0 border  dark:border-dark-border text-center"
+                    classes="!p-0 border dark:border-dark-border text-center"
                     key={field?.name}
                   >
                     {field?.key === "unique" ? (
@@ -146,6 +142,8 @@ const TableForm = ({
                       />
                     ) : (
                       <Input
+                        {...field}
+                        label=""
                         value={
                           field?.type === "color"
                             ? getValueOfInputColor(
@@ -153,12 +151,9 @@ const TableForm = ({
                               )
                             : grid?.[index + 1]?.[field?.name]
                         }
-                        className={`!border-0 !rounded-none !bg-transparent ${
+                        inputClassName={`!border-0 !bg-transparent read-only:!bg-gray-100 read-only:px-4 read-only:font-medium !rounded-none   ${
                           field?.type === "color" ? "" : "!h-full"
                         }`}
-                        name={field?.name}
-                        type={field?.type}
-                        required={field?.required}
                         onChange={(e) => {
                           handelChangeField(
                             index + 1,
@@ -174,31 +169,10 @@ const TableForm = ({
             ))}
         </TableBody>
       </Table>
-      <div className="flex justify-between gap-4 items-center mt-4">
-        {steps?.length ? (
-          <>
-            <Button title="Back" onClick={goBack} type="button" />
-            <Button
-              title="Next"
-              onClick={() => {
-                goNext();
-                submit();
-              }}
-              type="button"
-            />
-          </>
-        ) : null}
-        {!steps?.length && !!onSubmit ? (
-          <Button
-            title="Submit"
-            onClick={submit}
-            type="button"
-            loading={loading}
-          />
-        ) : null}
-      </div>
+      <IncreaseTableBar
+        increaseCount={increaseCount}
+        setIncreaseCount={setIncreaseCount}
+      />
     </>
   );
 };
-
-export default memo(TableForm);

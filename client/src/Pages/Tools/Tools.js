@@ -1,472 +1,114 @@
-import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
-import { useCallback } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
-
 import BlockPaper from "Components/BlockPaper/BlockPaper";
-import { Button } from "Components/Global/Button";
 import ContentBar from "Components/Global/ContentBar/ContentBar";
-import {
-  generateApartments,
-  getPrefix,
-  hexToDecimal,
-  SERVER_URL,
-} from "Helpers/functions";
-import { LockIcon, PlusIcon } from "Helpers/Icons";
-import MinusIcon from "Helpers/Icons/MinusIcon";
+import { ApiActions } from "Helpers/Lib/api";
+import { FLAT_PROPERTY_TABS } from "Helpers/constants";
+import { useEffect, useState } from "react";
+import { Link, useParams, useLocation } from "react-router-dom";
+import { ToolsColorsBar } from "./ToolsColorsBar";
 import Loading from "Components/Loading/Loading";
+import { ToolsTabsTableForm } from "Pages/Tools/ToolsTabsTableForm";
 import ToolsTabs from "./ToolsTabs";
-import { BUILDING_DATA } from "Helpers/constants";
-import getFormByTableName from "Helpers/Forms/new-tables-forms";
-import ToolsTableForm from "Components/StructurePage/Forms/CustomForm/ToolsTableForm";
+import { Button } from "Components/Global/Button";
+import { FlatColoringProvider } from "Hooks/useFlatColoring";
 
-const CACHE_UPDATES_COLORS = {};
-const CACHE_UPDATES_Apartments = {};
+const CACHE_APARTMENTS = {};
 
-const CACHE_LIST = {};
-const getCachedList = (tableName) => {
-  return CACHE_LIST[tableName];
+const findList = async (type, id) => {
+  const response = await ApiActions.read(type, {
+    conditions: [{ type: "and", conditions: [["id", "=", id]] }],
+  });
+  let data = response?.result;
+  if (data.length) {
+    for (const row of data) {
+      CACHE_APARTMENTS[row?.number] = row;
+    }
+  }
 };
-let CACHE_LIST_COLORS = {};
-let CACHE_APARTMENTS = {};
 
-// const tabs = [
-//   {
-//     alias: 0,
-//     tabName: "Apartment",
-//     x: "ApartmentCountOfFloor",
-//     y: "FloorCount",
-//   },
-//   {
-//     alias: 2,
-//     tabName: "Pent Houses",
-//     x: "BHouseFloor",
-//     y: "BHouseFlatCount",
-//   },
-//   {
-//     alias: 1,
-//     tabName: "Mezzanine",
-//     x: "MBalanceFloor",
-//     y: "MBalanceFlatCount",
-//   },
-//   {
-//     alias: 3,
-//     tabName: "Office",
-//     x: "OfficeFloor",
-//     y: "OfficeCount",
-//   },
-//   {
-//     alias: "Parking",
-//     tabName: "Car parking",
-//     x: "ParkingFloor",
-//     y: "ParkingCount",
-//   },
-//   {
-//     alias: "Parking",
-//     tabName: "Underground parking",
-//     x: "ParkingFloorUnder",
-//     y: "ParkingCountUnder",
-//   },
-//   { alias: "Shop", tabName: "Shops", x: "ShopCount", y: "" },
-//   {
-//     alias: 7,
-//     tabName: "Driver flats",
-//     x: "FlatDriverCount",
-//     y: "",
-//   },
-//   {
-//     alias: 8,
-//     tabName: "Servant flats",
-//     x: "FlatServantCount",
-//     y: "",
-//   },
-// ];
-const tabs = [
-  {
-    alias: 0,
-    tabName: "Apartment",
-    x: "apartment_floor",
-    y: "apartment_count",
-  },
-  {
-    alias: 2,
-    tabName: "mezzanine",
-    x: "mezzanine_floor",
-    y: "mezzanine_count",
-  },
-  {
-    alias: 1,
-    tabName: "office",
-    x: "office_floor",
-    y: "office_count",
-  },
-  {
-    alias: 3,
-    tabName: "parking",
-    x: "parking_floor",
-    y: "parking_count",
-  },
-  {
-    alias: "penthouse",
-    tabName: "penthouse",
-    x: "penthouse_floor",
-    y: "penthouse_count",
-  },
-  {
-    alias: "underground_parking",
-    tabName: "Underground parking",
-    x: "underground_parking",
-    y: "",
-  },
-  {
-    alias: "warehouse",
-    tabName: "warehouse",
-    x: "warehouse_count",
-    y: "",
-  },
-  // { alias: "Shop", tabName: "Shops", x: "ShopCount", y: "" },
-  { alias: "stores", tabName: "stores", x: "stores", y: "" },
-  {
-    alias: 7,
-    tabName: "Driver flats",
-    x: "drivers_apartments",
-    y: "",
-  },
-  {
-    alias: 8,
-    tabName: "Servant flats",
-    x: "service_apartments",
-    y: "",
-  },
-];
+const refetchBuildingAssets = (id) => {
+  for (const asset of ["apartment", "villa", "shop", "parking"]) {
+    findList(asset, id);
+  }
+};
 
 const Tools = () => {
   const { id } = useParams();
   const location = useLocation();
-  // const { row } = location?.state;
-  const row = BUILDING_DATA;
-  const [count, setCount] = useState(25);
-  const [refresh, setRefresh] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(tabs[0]);
-  const [selectedColor, setSelectedColor] = useState("");
-  const [getValuesWithoutSubmit, setGetValuesWithoutSubmit] = useState();
-  const [getIndexOfRowUpdated, setGetIndexOfRowUpdated] = useState("");
+  const rowState = location?.state?.row;
+  const [selectedTab, setSelectedTab] = useState(FLAT_PROPERTY_TABS[0]);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [flatsDetails, setFlatsDetails] = useState({});
-  const [canInsertColor, setCanInsertColor] = useState(false);
+  const [rowData, setRowData] = useState();
+  console.log("🚀 ~ file: Tools.js:41 ~ Tools ~ rowData:", rowData)
+  const [getValuesWithoutSubmit, setGetValuesWithoutSubmit] = useState({});
+  console.log("🚀 ~ file: Tools.js:42 ~ Tools ~ getValuesWithoutSubmit:", getValuesWithoutSubmit)
+  const [getIndexOfRowUpdated, setGetIndexOfRowUpdated] = useState({});
+  console.log("🚀 ~ file: Tools.js:43 ~ Tools ~ getIndexOfRowUpdated:", getIndexOfRowUpdated)
 
-
-  const fields = useMemo(() => {
-    // console.log(getFormByTableName('apartment_property_values'));
-    return getFormByTableName('apartment_property_values')
-  }, []);
-
-
-  const getLists = async (tableName) => {
-    await axios
-      .post(`${SERVER_URL}/list`, {
-        table: tableName,
-      })
-      .then((res) => {
-        CACHE_LIST[tableName] = res?.data?.recordset;
-      });
-  };
-
-  const findList = async (type) => {
-    await axios
-      .post(`${SERVER_URL}/findPropertyOfBuilding`, {
-        building: row?.id,
-        table: type,
-      })
-      .then((res) => {
-        let data = res?.data?.recordset;
-        if (data.length) {
-          for (const row of data) {
-            CACHE_APARTMENTS[row?.NO] = row;
-          }
-        }
-      })
-      .catch((err) => {});
-  };
-
-  const getColoring = async () => {
-    setLoading(true);
-    await axios
-      .post(`${SERVER_URL}/getColoring`)
-      .then((res) => {
-        let dataLength = res?.data?.recordset?.length;
-        CACHE_LIST_COLORS = {
-          ...res?.data?.recordset,
-        };
-        if (dataLength > count) {
-          setCount(dataLength);
-        }
-      })
-      .catch((err) => {});
-    setLoading(false);
+  const getBuildingData = async () => {
+    const res = await ApiActions.getById("building", id);
+    setRowData(res.result.at(0));
   };
 
   useEffect(() => {
-    getColoring();
-    findList("apartment");
-    findList("shop");
-    findList("parking");
-  }, [id]);
+    if (!id) return;
 
-  useEffect(() => {
-    getLists("Building");
-    getLists("cust");
-  }, []);
-  useEffect(() => {}, [refresh]); // Refresh / force rerender
-  useEffect(() => {
-    for (const key in getValuesWithoutSubmit) {
-      CACHE_LIST_COLORS[key] = getValuesWithoutSubmit[key];
-    }
-    setRefresh((p) => !p);
-  }, [getValuesWithoutSubmit]);
-  useEffect(() => {
-    CACHE_UPDATES_COLORS[getIndexOfRowUpdated] = getIndexOfRowUpdated;
-  }, [getIndexOfRowUpdated]);
-  const onDecrement = useCallback(() => {
-    if (count > 1) {
-      setCount((prev) => prev - 1);
-    }
-  }, [count]);
-  const onIncrement = useCallback(() => {
-    setCount((prev) => prev + 1);
-  }, [count]);
-  // select color
-  const onSelectColor = useCallback(
-    (key) => {
-      setSelectedColor(key);
-      setCanInsertColor(true);
-    },
-    [selectedColor]
-  );
-  
-  const preventInsertColor = () => {
-    setSelectedColor("");
-    setCanInsertColor(false);
-  };
-
-  const insertColor = (tabName, itemHash) => {
-    // console.log(tabName, itemHash);
-    let prefix = getPrefix(tabName);
-    let hash = itemHash?.split("-");
-    let NoValue = `${prefix} ${hash[1]}`;
-    let uniqueHash = `${itemHash}&${tabName}`;
-    let additionalValues = {};
-    CACHE_UPDATES_Apartments[uniqueHash] = uniqueHash;
-    if (typeof selectedTab?.alias === "number") {
-      additionalValues = {
-        CardKind: selectedTab?.alias,
-      };
+    if (!rowState) {
+      getBuildingData();
     } else {
-      additionalValues = {};
+      setRowData(rowState);
     }
-    if (flatsDetails[uniqueHash]) {
-      setFlatsDetails((prev) => {
-        return {
-          ...prev,
-          [uniqueHash]: {
-            NO: NoValue,
-            ...additionalValues,
-            ...prev?.[uniqueHash],
-            FlatBuildingDetailsIndex: selectedColor,
-            building_id: id,
-          },
-        };
-      });
-    } else {
-      setFlatsDetails((prev) => {
-        return {
-          ...prev,
-          [uniqueHash]: {
-            NO: NoValue,
-            ...additionalValues,
-            FlatBuildingDetailsIndex: selectedColor,
-            building_id: id,
-          },
-        };
-      });
-    }
-    setRefresh((p) => !p);
-  };
-  const removeOneItemColor = useCallback(
-    (tabName, itemHash) => {
-      let newList = flatsDetails;
-      if (!!newList[`${itemHash}&${tabName}`])
-        newList[`${itemHash}&${tabName}`].FlatBuildingDetailsIndex = null;
-      setFlatsDetails(newList);
+    refetchBuildingAssets(id);
+  }, [id, rowState]);
 
-      setRefresh((p) => !p);
-    },
-    [flatsDetails]
-  );
-  const removeFromColor = useCallback(
-    (index, count, direction, tabName) => {
-      if (direction === "vertical") {
-        for (let i = 0; i < count; i++) {
-          let itemHash = `${tabName}-${i + 1}0${index + 1}`;
-          removeOneItemColor(tabName, itemHash);
-        }
-      } else {
-        for (let i = 0; i < count; i++) {
-          let itemHash = `${tabName}-${index + 1}0${i + 1}`;
-          removeOneItemColor(tabName, itemHash);
-        }
-      }
-      setRefresh((p) => !p);
-    },
-
-    [removeOneItemColor]
-  );
   const onSubmit = async () => {
     setLoading(true);
-    let newColoringList = {};
-
-    for (const key in CACHE_LIST_COLORS) {
-      if (!CACHE_UPDATES_COLORS[key]) {
-        continue;
-      }
-      newColoringList[key] = CACHE_LIST_COLORS?.[key];
-      if (typeof newColoringList?.[key]?.["Color"] === "string")
-        newColoringList[key]["Color"] = hexToDecimal(
-          newColoringList[key]?.Color?.substr(1)
-        );
-    }
-    let newFlatDetails = {};
-
-    for (const row in flatsDetails) {
-      if (CACHE_UPDATES_Apartments[row]) {
-      } else {
-        continue;
-      }
-      let splitRow = row?.split("&");
-      let tabName = splitRow?.[1];
-      if (!newFlatDetails[tabName]) newFlatDetails[tabName] = [];
-
-      let data = {
-        ...CACHE_LIST_COLORS[flatsDetails[row]?.FlatBuildingDetailsIndex],
-      };
-      if (data?.Color) delete data.Color;
-      if (data?.id) delete data.id;
-      if (data?.Type) delete data.Type;
-      if (data?.SalePrice) delete data.SalePrice;
-      if (data?.SalePrice2) delete data.SalePrice2;
-      if (data?.SalePrice3) delete data.SalePrice3;
-      if (data?.Count) delete data.Count;
-      if (
-        tabName?.toLowerCase()?.includes("parking") ||
-        tabName?.toLowerCase()?.includes("shop")
-      ) {
-        if (data?.BathroomCount) delete data?.BathroomCount;
-        if (data?.FlatKind) delete data?.FlatKind;
-        if (data?.Class) delete data?.Class;
-        if (data?.BalconyCount) delete data?.BalconyCount;
-      }
-      newFlatDetails[tabName] = [
-        ...newFlatDetails?.[tabName],
-        {
-          ...flatsDetails?.[row],
-          ...data,
-        },
-      ];
-    }
-    generateApartments(newFlatDetails, id);
-    await axios
-      .post(`${SERVER_URL}/handleColoring`, {
-        colors: !!newColoringList ? Object.values(newColoringList) : [],
-      })
-      .then((res) => {
-        CACHE_LIST_COLORS = {};
-        CACHE_APARTMENTS = {};
-        getColoring();
-        findList("apartment");
-        findList("shop");
-        findList("parking");
-      });
-    setLoading(false);
+    // insert or generate building assets
   };
 
   return (
-    <BlockPaper
-      contentBar={
-        <ContentBar
-          title="Flat Building Details"
-          description={
-            <Link
-              to={`/update/building/${row?.id}`}
-              state={{ row, table: "building" }}
-              className="text-blue-500 dark:text-white hover:underline text-sm"
-            >
-              {row?.name ? row?.name : "Edit Building"}
-            </Link>
-          }
-        >
-          <div className="flex bg-white dark:bg-dark-border shadow-sm rounded min-w-[70px] overflow-hidden">
-            <button
-              onClick={preventInsertColor}
-              className={`px-4 py-1 bg-green-500 rounded-sm text-white ${
-                !canInsertColor ? " bg-red-500 " : ""
-              }`}
-            >
-              <LockIcon open={!canInsertColor} className="h-5 w-5" />
-            </button>
-            <button
-              className="hover:text-blue-500 dark:hover:text-white flex-1 p-1 disabled:bg-gray-50 scale-90"
-              onClick={onDecrement}
-              disabled={count === 1}
-            >
-              <MinusIcon />
-            </button>
-            <button
-              className="hover:text-blue-500 dark:hover:text-white flex-1 p-1 scale-90"
-              onClick={onIncrement}
-            >
-              <PlusIcon />
-            </button>
-          </div>
-        </ContentBar>
-      }
-    >
-      {loading ? (
-        <Loading withBackdrop />
-      ) : (
-        <>
-          <ToolsTableForm
-            selectedColor={selectedColor}
-            onSelectColor={onSelectColor}
-            oldValues={CACHE_LIST_COLORS}
-            initialFields={fields}
-            rowLength={count}
-            getCachedList={getCachedList}
-            getValuesWithoutSubmit={setGetValuesWithoutSubmit}
-            setGetIndexOfRowUpdated={setGetIndexOfRowUpdated}
-          />
+    <FlatColoringProvider>
+      <BlockPaper
+        contentBar={
+          <ContentBar
+            title="Flat Building Details"
+            description={
+              <Link
+                to={`/update/building/${rowData?.id}`}
+                state={{ rowData, table: "building" }}
+                className="text-blue-500 dark:text-white hover:underline text-sm"
+              >
+                {rowData?.name ? rowData?.name : "Edit Building"}
+              </Link>
+            }
+          >
+            <ToolsColorsBar />
+          </ContentBar>
+        }
+      >
+        {loading ? (
+          <Loading withBackdrop />
+        ) : (
+          <>
+            <ToolsTabsTableForm
+              // oldValues={CACHE_LIST_COLORS}
+              getValuesWithoutSubmit={setGetValuesWithoutSubmit}
+              setGetIndexOfRowUpdated={setGetIndexOfRowUpdated}
+            />
 
-          <ToolsTabs
-            data={data}
-            insertColor={insertColor}
-            canInsertColor={canInsertColor}
-            flatsDetails={flatsDetails}
-            setFlatsDetails={setFlatsDetails}
-            removeFromColor={removeFromColor}
-            CACHE_LIST_COLORS={CACHE_LIST_COLORS}
-            removeOneItemColor={removeOneItemColor}
-            tabs={tabs}
-            selectedTab={selectedTab}
-            setSelectedTab={setSelectedTab}
-            row={row}
-            CACHE_APARTMENTS={CACHE_APARTMENTS}
-          />
-          <div className="mt-8 flex justify-end">
-            <Button onClick={onSubmit} title="Submit" loading={loading} />
-          </div>
-        </>
-      )}
-    </BlockPaper>
+            <ToolsTabs
+              // CACHE_LIST_COLORS={CACHE_LIST_COLORS}
+              tabs={FLAT_PROPERTY_TABS}
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+              row={rowData}
+            />
+            <div className="mt-8 flex justify-end">
+              <Button onClick={onSubmit} title="Submit" loading={loading} />
+            </div>
+          </>
+        )}
+      </BlockPaper>
+    </FlatColoringProvider>
   );
 };
 

@@ -16,7 +16,6 @@ const UniqueField = ({
   label,
   containerClassName,
   className,
-  required,
   value: val,
   allowSelect,
   error,
@@ -54,7 +53,7 @@ const UniqueField = ({
       setSelected(item);
       setDropdown(false);
       if (!!getSelectedValue)
-        getSelectedValue(field?.[name], item?.id, required);
+        getSelectedValue(field?.[name], item?.id, field.required);
       if (!!getSelectedValueRef) getSelectedValueRef.current = item?.id;
       if (!!getSelectedValueWithIndex)
         getSelectedValueWithIndex(field?.index, field?.[name], item?.id);
@@ -106,7 +105,7 @@ const UniqueField = ({
           onBlur={(e) => {
             if (e.target.value === "") {
               if (!!getSelectedValue)
-                getSelectedValue(field?.name, "", required);
+                getSelectedValue(field?.name, "", field.required);
               if (!!getSelectedValueRef) getSelectedValueRef.current = "";
               if (!!getSelectedValueWithIndex)
                 getSelectedValueWithIndex(field?.index, field?.name, "");

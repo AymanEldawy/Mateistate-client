@@ -1,14 +1,59 @@
-const insertToBuilding = ({ data, ...additionalParams }) => {
-  
+import { ApiActions } from "../api";
 
+const insertToBuilding = async ({ data, ...additionalParams }) => {
+  console.log("🚀 ~ file: global-insert.js:4 ~ insertToBuilding ~ data:", data);
+  const building_general = data?.general; // building
+  const building_buying = data?.["buying"];
+  const building_editorial_entry = data?.["editorial entry"];
+  const building_investment = data?.["investment"];
+  const building_pictures = data?.["pictures"];
+  const building_real_estate_development = data?.["real estate development"];
+  const building_real_estate_management = data?.["real estate management"];
 
-// building
-// building_buying
-// building_editorial_entry
-// building_investment
-// building_pictures
-// building_real_estate_development
-// building_real_estate_management
+  // Insert to building
+  const response = await ApiActions.insert("building", {
+    data: { ...building_general },
+  });
+  if (response.success) {
+    const buildingId = response?.result?.at(0)?.id;
+    ApiActions.insert("building_buying", {
+      data: {
+        ...building_buying,
+        building_id: buildingId,
+      },
+    });
+    ApiActions.insert("building_editorial_entry", {
+      data: {
+        ...building_editorial_entry,
+        building_id: buildingId,
+      },
+    });
+    ApiActions.insert("building_investment", {
+      data: {
+        ...building_investment,
+        building_id: buildingId,
+      },
+    });
+    ApiActions.insert("building_pictures", {
+      data: {
+        ...building_pictures,
+        building_id: buildingId,
+      },
+    });
+    ApiActions.insert("building_real_estate_development", {
+      data: {
+        ...building_real_estate_development,
+        building_id: buildingId,
+      },
+    });
+    ApiActions.insert("building_real_estate_management", {
+      data: {
+        ...building_real_estate_management,
+        building_id: buildingId,
+      },
+    });
+  }
+  console.log("called -ac");
   // console.log("🚀 ~ file: global-insert.js:2 ~ data:", data);
 };
 const insertToVilla = ({ data, ...additionalParams }) => {
@@ -80,6 +125,4 @@ const INSERT_FUNCTION = {
    */
 };
 
-const GLOBAL_INSERT_FUNCTION = (tableName) => INSERT_FUNCTION?.[tableName];
-
-export default GLOBAL_INSERT_FUNCTION;
+export default INSERT_FUNCTION;

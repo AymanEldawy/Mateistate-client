@@ -180,7 +180,7 @@ export const getPrefix = (tab) => {
   let tabSplit = tab?.split(" ");
   if (tabSplit?.length > 1)
     return `${tabSplit?.[0]?.[0]}${tabSplit?.[1]?.[0]?.toUpperCase()}`;
-  else return tab[0];
+  else return tab[0]?.toUpperCase();
 };
 
 // export const apartmentsOperations = async (yCount, xCount, Guid) => {

@@ -25,9 +25,10 @@ const Input = ({
       ) : null}
       <input
         id={name}
-        className={`border read-only:bg-blue-100 dark:read-only:bg-[#444] rounded p-1 ${
+        className={`border read-only:!bg-blue-100 dark:read-only:bg-[#444] rounded p-1 ${
           error ? "border-red-200 text-red-500" : ""
-        } ${inputClassName}`}
+        } 
+        ${inputClassName}`}
         {...field}
       />
       {error ? (

@@ -1,8 +1,8 @@
-import FormsFetcher from "./db-forms/forms-fetcher";
+// import FormsFetcher from "./db-forms/forms-fetcher";
 
-export function getForm(form) {
-  return FormsFetcher[form];
-}
+// export function getForm(form) {
+//   return FormsFetcher[form];
+// }
 
 export function getColumns(table) {
   return table?.map((col) => col.name);
@@ -16,7 +16,7 @@ export function getAllColumns(table) {
   return columns;
 }
 
-export const IGNORED_Fields = ["id", 'created_at'];
+export const IGNORED_Fields = ["id", "created_at"];
 
 export const itemsListPerPages = (t) => [
   { id: "10", name: t("Number_rows") + " 10" },
@@ -159,35 +159,78 @@ export const SELECT_LISTS = (listName) => {
 // area
 // street
 
-export const BUILDING_DATA = {
-  amount: "4",
-  apartment_count: "4",
-  apartment_floor: "4",
-  area: "rer",
-  basin_number: "434",
-  bond_date: "2023-12-07",
-  bond_number: "34",
-  bond_type: "434",
-  building_number: "12",
-  drivers_apartments: "4",
-  emirate: "ree",
-  mezzanine_count: "3",
-  mezzanine_floor: "3",
-  name: "Ayman Eldawy",
-  number: "4",
-  office_count: "2",
-  office_floor: "4",
-  owner_id: "",
-  parking_count: "4",
-  parking_floor: "4",
-  part_number: "43",
-  penthouse_count: "4",
-  penthouse_floor: "34",
-  service_apartments: "4",
-  statement: "tama",
-  stores: "3",
-  street: "Saad Zaghloul Street next to Al Jahr Mosque",
-  suburb: "sohag",
-  underground_parking: "4",
-  warehouse_count: "4",
+export const FLAT_PROPERTY_TABS_SETTINGS = {
+  Apartment: {
+    no: "apartment_number",
+  },
+  mezzanine: {
+    no: "apartment_number",
+  },
+  office: { no: "apartment_number" },
+  parking: { no: "parking_no" },
+  penthouse: { no: "apartment_number" },
+  "Underground parking": { no: "apartment_number" },
+  warehouse: { no: "apartment_number" },
+  Shops: { no: "shop_no" },
+  stores: { no: "apartment_number" },
+  "Driver flats": { no: "apartment_number" },
+  "Servant flats": { no: "apartment_number" },
 };
+export const FLAT_PROPERTY_TABS = [
+  {
+    alias: 0,
+    tabName: "Apartment",
+    x: "apartment_floor",
+    y: "apartment_count",
+  },
+  {
+    alias: 2,
+    tabName: "mezzanine",
+    x: "mezzanine_floor",
+    y: "mezzanine_count",
+  },
+  {
+    alias: 1,
+    tabName: "office",
+    x: "office_floor",
+    y: "office_count",
+  },
+  {
+    alias: 3,
+    tabName: "parking",
+    x: "parking_floor",
+    y: "parking_count",
+  },
+  {
+    alias: "penthouse",
+    tabName: "penthouse",
+    x: "penthouse_floor",
+    y: "penthouse_count",
+  },
+  {
+    alias: "underground_parking",
+    tabName: "Underground parking",
+    x: "underground_parking",
+    y: "",
+  },
+  {
+    alias: "warehouse",
+    tabName: "warehouse",
+    x: "warehouse_count",
+    y: "",
+  },
+  // { alias: "Shop", tabName: "Shops", x: "ShopCount", y: "" },
+  { alias: "stores", tabName: "stores", x: "stores", y: "" },
+  {
+    alias: 7,
+    tabName: "Driver flats",
+    x: "drivers_apartments",
+    y: "",
+  },
+  {
+    alias: 8,
+    tabName: "Servant flats",
+    x: "service_apartments",
+    y: "",
+  },
+];

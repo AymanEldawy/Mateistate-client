@@ -17,7 +17,6 @@ export const Fields = ({
   handelChangeField,
   getCachedList,
 }) => {
-  
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
       {fields?.map((field, i) => {
@@ -48,6 +47,7 @@ export const Fields = ({
         } else if (field?.is_ref) {
           return (
             <UniqueField
+              {...field}
               value={values?.[field?.name]}
               table={field?.ref_table}
               key={`${field?.name}`}
@@ -163,9 +163,11 @@ export const Fields = ({
               value={values?.[field?.name]}
               label={field?.name?.replace(/_/g, " ")}
               error={errors[field?.name]}
-              onChange={(e) =>
-                handelChangeField(field?.name, e.target.value, field?.required)
-              }
+              onChange={(e) => {
+                let val =
+                  field.type === "number" ? +e.target.value : e.target.value;
+                handelChangeField(field?.name, val, field?.required);
+              }}
             />
           );
         }
