@@ -51,7 +51,7 @@ const UniqueField = ({
       <div className="relative flex items-center border rounded-md">
         <Select
           options={list}
-          value={list.filter((option) => option.value === values?.[field?.name])}
+          value={list?.filter((option) => option?.value === values?.[field?.name])}
           className="w-full border-none"
           // defaultInputValue={values?.[field?.name]}
           // defaultInputValue={{ value: values?.[field?.name] }}

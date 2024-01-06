@@ -343,9 +343,9 @@ const TestEntry = () => {
             list={[]}
             required={true}
             value={readOnlyValues["CurrencyGuid"]}
-                      onChange={(props) => {
-            handelChangeField(field?.name, props.value, field?.required)
-          }}
+            onChange={(props) => {
+              // handelChangeField(field?.name, props.value, field?.required)
+            }}
           />
           <Input
             name="CurrencyVal"
