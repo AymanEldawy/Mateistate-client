@@ -7,7 +7,7 @@ const contract = [
     hide_in_form: true,
   },
   { name: "contract_type", type: "number", required: false },
-  { name: "number", type: "int8", required: false },
+  { name: "number", type: "number", required: false },
 ];
 const contract_commission = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },

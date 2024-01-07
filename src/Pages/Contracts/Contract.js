@@ -15,6 +15,7 @@ const Contract = () => {
   const name = params?.name;
   const type = params?.type;
   const contractAssetsType = name?.split("_").at(0);
+
   const [loading, setLoading] = useState(false);
   const {
     next,
@@ -35,7 +36,6 @@ const Contract = () => {
     getCachedList,
   } = useFormSteps({ name });
 
-  console.log(values, "v");
   // Handel Submit
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -64,7 +64,7 @@ const Contract = () => {
       <div className="h-5" />
       <form onSubmit={onSubmit}>
         {formSettings?.formType === "grid" ? (
-          <div key={steps[currentIndex]}>
+          <div key={steps?.[currentIndex]}>
             <TableForm
               activeStage={tab}
               oldValues={values?.[tab] || {}}
@@ -72,7 +72,7 @@ const Contract = () => {
               formSettings={formSettings}
               getCachedList={!!getCachedList ? getCachedList : undefined}
               fields={fields}
-              values={values[tab]}
+              values={values?.[tab]}
             />
           </div>
         ) : (
@@ -80,7 +80,7 @@ const Contract = () => {
             {formSettings?.formType === "gallery" ? (
               <GalleryForm
                 fields={fields}
-                values={values[steps[currentIndex]]}
+                values={values?.[steps?.[currentIndex]]}
                 errors={errors}
                 handelFieldUpload={handelFieldUpload}
                 handelChangeField={handelChangeField}
@@ -89,7 +89,7 @@ const Contract = () => {
             ) : (
               <Fields
                 fields={fields}
-                values={values[steps[currentIndex]]}
+                values={values?.[steps?.[currentIndex]]}
                 errors={errors}
                 handelFieldUpload={handelFieldUpload}
                 handelChangeField={handelChangeField}

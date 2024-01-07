@@ -4,6 +4,7 @@ const FormSingular = lazy(() => import("./FormSingular"));
 const FormSteps = lazy(() => import("./FormSteps"));
 
 export const DynamicForm = ({ name, refetchData, onClose, oldValues }) => {
+  console.log("🚀 ~ file: DynamicForm.js:7 ~ DynamicForm ~ oldValues:", oldValues)
   // Get data
   let formSchema = useMemo(() => {
     const forms = getFormByTableName(name);

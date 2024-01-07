@@ -1,7 +1,6 @@
 import { ApiActions } from "../api";
 
 const insertToBuilding = async ({ data, ...additionalParams }) => {
-  console.log("🚀 ~ file: global-insert.js:4 ~ insertToBuilding ~ data:", data);
   const building_general = data?.general; // building
   const building_buying = data?.["buying"];
   const building_editorial_entry = data?.["editorial entry"];

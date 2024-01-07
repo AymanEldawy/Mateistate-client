@@ -190,12 +190,12 @@ export const menuData = [
     link: "realty",
     icon: <BanknoteIcon />,
     children: [
-      {
-        key: "Contracts",
-        name: "Contracts",
-        link: "",
-        subChild: getContractMenus(),
-      },
+      // {
+      //   key: "Contracts",
+      //   name: "Contracts",
+      //   link: "",
+      //   subChild: getContractMenus(),
+      // },
       // {
       //   key: "Contracts",
       //   name: "Contracts",

@@ -6,7 +6,6 @@ const land = [
   { name: "created_at", type: "date", required: false },
   { name: "number", type: "text", required: false },
   { name: "type", type: "number", required: false },
-  { name: "no", type: "text", required: false },
   { name: "ban", type: "boolean", key: "switch", required: false },
   { name: "land_no", type: "text", required: false },
   { name: "name", type: "text", required: false },
@@ -428,7 +427,8 @@ const user = [
     type: "text",
     required: false,
   },
-  { label: "files", name: "files", type: "json", required: false },
+  // { label: "files", name: "files", defaultValue: "{}", type: "json", required: false },
+  { label: "files", name: "files", value: "{name:'test'}", type: "text", required: false },
   {
     label: "nationality",
     name: "nationality",
@@ -519,15 +519,6 @@ const building = [
   {
     label: "construction_account_id",
     name: "construction_account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  {
-    label: "create_within_id",
-    name: "create_within_id",
     type: "uuid",
     required: false,
     is_ref: true,
@@ -722,6 +713,7 @@ const building_buying = [
     is_ref: true,
     ref_table: "currency",
     ref_col: "id",
+    nested: 'buying'
   },
   {
     label: "building_id",
@@ -868,15 +860,6 @@ const building_real_estate_development = [
   {
     label: "account_id",
     name: "account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  {
-    label: "create_within_id",
-    name: "create_within_id",
     type: "uuid",
     required: false,
     is_ref: true,
@@ -1271,9 +1254,9 @@ const apartment = [
     ref_col: "id",
   },
   {
-    label: "apartment_number",
-    name: "apartment_number",
-    type: "number",
+    label: "apartment_no",
+    name: "apartment_no",
+    type: "text",
     required: false,
   },
   { label: "floor", name: "floor", type: "number", required: false },
@@ -1399,6 +1382,7 @@ const apartment_pictures = [
 ];
 const apartment_property_values = [
   // { label: "id", name: "id", type: "uuid", required: false, hide_in_form: true },
+  { label: "row_index", name: "row_index", type: "number", required: false, hide_in_form: true },
   { label: "hex", name: "hex", type: "color", required: false },
   {
     label: "room_count",

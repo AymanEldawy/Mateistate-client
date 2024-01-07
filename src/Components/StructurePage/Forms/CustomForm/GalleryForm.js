@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useFormContext } from "react-hook-form";
 
-export const GalleryForm = () => {
+export const GalleryForm = ({ fields }) => {
   const [files, setFiles] = useState([]);
+  const { register } = useFormContext();
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -43,7 +45,7 @@ export const GalleryForm = () => {
         {...getRootProps()}
         className="flex border p-4 rounded-md shadow justify-center items-center"
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps()} {...register()} />
         <p>Drag 'n' drop some files here, or click to select files</p>
       </div>
       {thumbs}

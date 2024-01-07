@@ -10,6 +10,7 @@ import { ToolsTabsTableForm } from "Pages/Tools/ToolsTabsTableForm";
 import ToolsTabs from "./ToolsTabs";
 import { Button } from "Components/Global/Button";
 import { FlatColoringProvider } from "Hooks/useFlatColoring";
+import { FormProvider, useForm } from "react-hook-form";
 
 const CACHE_APARTMENTS = {};
 
@@ -35,14 +36,22 @@ const Tools = () => {
   const { id } = useParams();
   const location = useLocation();
   const rowState = location?.state?.row;
-  const [selectedTab, setSelectedTab] = useState(FLAT_PROPERTY_TABS[0]);
+  const methods = useForm({ defaultValues: {} });
+  const {
+    handleSubmit,
+    watch,
+    formState: { errors },
+    reset,
+    setValue,
+  } = methods;
   const [loading, setLoading] = useState(false);
+  const [selectedTab, setSelectedTab] = useState(FLAT_PROPERTY_TABS[0]);
   const [rowData, setRowData] = useState();
-  console.log("🚀 ~ file: Tools.js:41 ~ Tools ~ rowData:", rowData)
+  // console.log("🚀 ~ file: Tools.js:41 ~ Tools ~ rowData:", rowData)
   const [getValuesWithoutSubmit, setGetValuesWithoutSubmit] = useState({});
-  console.log("🚀 ~ file: Tools.js:42 ~ Tools ~ getValuesWithoutSubmit:", getValuesWithoutSubmit)
+  // console.log("🚀 ~ file: Tools.js:42 ~ Tools ~ getValuesWithoutSubmit:", getValuesWithoutSubmit)
   const [getIndexOfRowUpdated, setGetIndexOfRowUpdated] = useState({});
-  console.log("🚀 ~ file: Tools.js:43 ~ Tools ~ getIndexOfRowUpdated:", getIndexOfRowUpdated)
+  // console.log("🚀 ~ file: Tools.js:43 ~ Tools ~ getIndexOfRowUpdated:", getIndexOfRowUpdated)
 
   const getBuildingData = async () => {
     const res = await ApiActions.getById("building", id);
@@ -66,49 +75,51 @@ const Tools = () => {
   };
 
   return (
-    <FlatColoringProvider>
-      <BlockPaper
-        contentBar={
-          <ContentBar
-            title="Flat Building Details"
-            description={
-              <Link
-                to={`/update/building/${rowData?.id}`}
-                state={{ rowData, table: "building" }}
-                className="text-blue-500 dark:text-white hover:underline text-sm"
-              >
-                {rowData?.name ? rowData?.name : "Edit Building"}
-              </Link>
-            }
-          >
-            <ToolsColorsBar />
-          </ContentBar>
-        }
-      >
-        {loading ? (
-          <Loading withBackdrop />
-        ) : (
-          <>
-            <ToolsTabsTableForm
-              // oldValues={CACHE_LIST_COLORS}
-              getValuesWithoutSubmit={setGetValuesWithoutSubmit}
-              setGetIndexOfRowUpdated={setGetIndexOfRowUpdated}
-            />
+    <FormProvider {...methods}>
+      <FlatColoringProvider>
+        <BlockPaper
+          contentBar={
+            <ContentBar
+              title="Flat Building Details"
+              description={
+                <Link
+                  to={`/update/building/${rowData?.id}`}
+                  state={{ rowData, table: "building" }}
+                  className="text-blue-500 dark:text-white hover:underline text-sm"
+                >
+                  {rowData?.name ? rowData?.name : "Edit Building"}
+                </Link>
+              }
+            >
+              <ToolsColorsBar />
+            </ContentBar>
+          }
+        >
+          {loading ? (
+            <Loading withBackdrop />
+          ) : (
+            <>
+              <ToolsTabsTableForm
+                // oldValues={CACHE_LIST_COLORS}
+                getValuesWithoutSubmit={setGetValuesWithoutSubmit}
+                setGetIndexOfRowUpdated={setGetIndexOfRowUpdated}
+              />
 
-            <ToolsTabs
-              // CACHE_LIST_COLORS={CACHE_LIST_COLORS}
-              tabs={FLAT_PROPERTY_TABS}
-              selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
-              row={rowData}
-            />
-            <div className="mt-8 flex justify-end">
-              <Button onClick={onSubmit} title="Submit" loading={loading} />
-            </div>
-          </>
-        )}
-      </BlockPaper>
-    </FlatColoringProvider>
+              <ToolsTabs
+                // CACHE_LIST_COLORS={CACHE_LIST_COLORS}
+                tabs={FLAT_PROPERTY_TABS}
+                selectedTab={selectedTab}
+                setSelectedTab={setSelectedTab}
+                row={rowData}
+              />
+              <div className="mt-8 flex justify-end">
+                <Button onClick={onSubmit} title="Submit" loading={loading} />
+              </div>
+            </>
+          )}
+        </BlockPaper>
+      </FlatColoringProvider>
+    </FormProvider>
   );
 };
 

@@ -28,7 +28,6 @@ const Chart = () => {
   const params = useParams();
   const { name } = params;
   const { loading, data, error, refetchData } = useFetch(name);
-  console.log("🚀 ~ file: Chart.js:31 ~ Chart ~ data:", data)
   const [chartTree, setChartTree] = useState();
 
   useEffect(() => {

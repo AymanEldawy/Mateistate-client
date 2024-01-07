@@ -19,6 +19,7 @@ const TableForm = ({
   setValues,
   activeStage,
   values,
+  errors,
 }) => {
   const [increaseCount, setIncreaseCount] = useState(10);
 
@@ -86,37 +87,43 @@ const TableForm = ({
                           {...field}
                           label={""}
                           table={field.ref_table}
-                          value={values?.[index + 1]?.[field?.name]}
-                          values={values?.[index + 1]}
-                          getCachedList={getCachedList}            
+                          // value={values?.[index + 1]?.[field?.name]}
+                          // values={values?.[index + 1]}
                           className="min-w-[140px] !border-0 !rounded-none !h-full !bg-transparent"
-                          name={field?.name}
-                          getSelectedValueWithIndex={handelChangeField}
                           tableForHashed={field?.ref_table}
+                          key={`${field?.name}`}
+                          getCachedList={getCachedList}
                           list={
                             !!getCachedList
                               ? getCachedList(field?.ref_table)
                               : []
                           }
+                          error={errors[field?.name]?.message}
                         />
                       ) : (
                         <Input
                           {...field}
-                          label={""}
-                          key={field?.name}
-                          value={values?.[index + 1]?.[field?.name]}
-                          className={`!border-0 !rounded-none !bg-transparent !h-full`}
-                          name={field?.name}
-                          type={field?.type}
-                          required={field?.required}
-                          onChange={(e) => {
-                            handelChangeField(
-                              index + 1,
-                              field?.name,
-                              e.target.value
-                            );
-                          }}
+                          key={`${field?.name}`}
+                          label={field?.name?.replace(/_/g, " ")}
+                          error={errors[field?.name]?.message}
                         />
+                        // <Input
+                        //   {...field}
+                        //   label={""}
+                        //   key={field?.name}
+                        //   value={values?.[index + 1]?.[field?.name]}
+                        //   className={`!border-0 !rounded-none !bg-transparent !h-full`}
+                        //   name={field?.name}
+                        //   type={field?.type}
+                        //   required={field?.required}
+                        //   onChange={(e) => {
+                        //     handelChangeField(
+                        //       index + 1,
+                        //       field?.name,
+                        //       e.target.value
+                        //     );
+                        //   }}
+                        // />
                       )}
                     </TableCol>
                   );

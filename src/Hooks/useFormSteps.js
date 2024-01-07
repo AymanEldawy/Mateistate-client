@@ -94,7 +94,7 @@ const useFormSteps = ({ oldValues, name }) => {
     if (required) {
       insertIntoErrors(name, value);
     }
-    let tab = steps[currentIndex];
+    let tab = steps?.[currentIndex];
     setValues((prev) => ({
       ...prev,
       [tab]: {
@@ -140,13 +140,12 @@ const useFormSteps = ({ oldValues, name }) => {
   }
 
   useEffect(() => {
-    let tabName = steps[currentIndex];
+    let tabName = steps?.[currentIndex];
     setTab(tabName);
-    setFields(forms[tabName].fields || []);
-    setFormSettings(forms[tabName]);
+    setFields(forms?.[tabName]?.fields || []);
+    setFormSettings(forms?.[tabName]);
   }, [currentIndex]);
 
-  console.log("🚀 ~ file: useFormSteps.js:171 ~ useFormSteps ~ getCachedList:", getCachedList)
   return {
     next,
     back,

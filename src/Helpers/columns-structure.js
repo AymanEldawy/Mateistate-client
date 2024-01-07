@@ -40,7 +40,14 @@ export const account = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/account/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "type", accessorKey: "type" },
@@ -49,7 +56,7 @@ export const account = [
     accessorKey: "currency_id",
     cell: ({ row, getValue }) => {
       return (
-        <Link to={`/update/currency/${getValue()}`} className="text-blue-500">
+        <Link className="text-blue-500 capitalize" to={`/update/currency/${getValue()}`}>
           {row.original.currency_name}
         </Link>
       );
@@ -60,7 +67,7 @@ export const account = [
     accessorKey: "parent_id",
     cell: ({ row, getValue }) => {
       return (
-        <Link to={`/update/account/${getValue()}`} className="text-blue-500">
+        <Link className="text-blue-500 capitalize" to={`/update/account/${getValue()}`}>
           {row.original.parent_name}
         </Link>
       );
@@ -71,7 +78,7 @@ export const account = [
     accessorKey: "final_id",
     cell: ({ row, getValue }) => {
       return (
-        <Link to={`/update/account/${getValue()}`} className="text-blue-500">
+        <Link className="text-blue-500 capitalize" to={`/update/account/${getValue()}`}>
           {row.original.final_name}
         </Link>
       );
@@ -180,7 +187,20 @@ export const lessor = [
     ),
   },
   // { header: "id", accessorKey: "id" },
-  { header: "full_name", accessorKey: "full_name" },
+  {
+    header: "full_name",
+    accessorKey: "full_name",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/lessor/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   { header: "passport", accessorKey: "passport" },
   { header: "passport_expiry_date", accessorKey: "passport_expiry_date" },
   { header: "id_card", accessorKey: "id_card" },
@@ -222,7 +242,20 @@ export const owner = [
     ),
   },
   // { header: "id", accessorKey: "id" },
-  { header: "full_name", accessorKey: "full_name" },
+  {
+    header: "full_name",
+    accessorKey: "full_name",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/owner/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   { header: "id_card", accessorKey: "id_card" },
   { header: "phone", accessorKey: "phone" },
   { header: "cell_phone", accessorKey: "cell_phone" },
@@ -263,7 +296,20 @@ export const seller = [
     accessorKey: "created_at",
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
-  { header: "full_name", accessorKey: "full_name" },
+  {
+    header: "full_name",
+    accessorKey: "full_name",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/seller/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   { header: "nationality", accessorKey: "nationality" },
   { header: "id_card", accessorKey: "id_card" },
   { header: "passport", accessorKey: "passport" },
@@ -315,7 +361,12 @@ export const bank = [
     accessorKey: "name",
     cell: ({ getValue, row }) => {
       return (
-        <Link to={`/update/${"bank"}/${row.original.id}`}>{getValue()}</Link>
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/${"bank"}/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
       );
     },
   },
@@ -359,7 +410,10 @@ export const cost_center = [
     accessorKey: "name",
     cell: ({ getValue, row }) => {
       return (
-        <Link to={`/update/${"cost_center"}/${row.original.id}`}>
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/${"cost_center"}/${row.original.id}`}
+        >
           {getValue()}
         </Link>
       );
@@ -372,7 +426,7 @@ export const cost_center = [
       return (
         <Link
           to={`/update/cost_center/${getValue()}`}
-          className="text-blue-500"
+          className="text-blue-500 capitalize"
         >
           {row.original.parent_name}
         </Link>
@@ -417,7 +471,14 @@ export const country = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/country/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "code", accessorKey: "code" },
@@ -452,7 +513,14 @@ export const currency = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/currency/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "code", accessorKey: "code" },
@@ -502,7 +570,14 @@ export const building = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/building/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "emirate", accessorKey: "emirate" },
@@ -519,7 +594,7 @@ export const building = [
   { header: "display", accessorKey: "display" },
   { header: "statement", accessorKey: "statement" },
   { header: "construction_account_id", accessorKey: "construction_account_id" },
-  { header: "create_within_id", accessorKey: "create_within_id" },
+  // { header: "create_within_id", accessorKey: "create_within_id" },
   { header: "main_cost_center_id", accessorKey: "main_cost_center_id" },
   {
     header: "building_bank_account_id",
@@ -722,7 +797,7 @@ export const building_real_estate_development = [
   },
   // { header: "id", accessorKey: "id" },
   { header: "account_id", accessorKey: "account_id" },
-  { header: "create_within_id", accessorKey: "create_within_id" },
+  // { header: "create_within_id", accessorKey: "create_within_id" },
   { header: "building_receipt", accessorKey: "building_receipt" },
   { header: "received_date", accessorKey: "received_date" },
   { header: "amount", accessorKey: "amount" },
@@ -889,7 +964,14 @@ export const accounting_voucher_pattern = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/accounting_voucher_pattern/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "list_name", accessorKey: "list_name" },
@@ -986,7 +1068,7 @@ export const apartment = [
   },
   // { header: "id", accessorKey: "id" },
   { header: "building_id", accessorKey: "building_id" },
-  { header: "apartment_number", accessorKey: "apartment_number" },
+  { header: "apartment_no", accessorKey: "apartment_no" },
   { header: "floor", accessorKey: "floor" },
   { header: "type", accessorKey: "type" },
   { header: "description", accessorKey: "description" },
@@ -1465,7 +1547,14 @@ export const contract_pattern = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/contract_pattern/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "list_name", accessorKey: "list_name" },
@@ -1709,7 +1798,7 @@ export const financial_data = [
   },
 ];
 
-export const financial_patterns = [
+export const bill_patterns = [
   {
     id: "select",
     size: 40,
@@ -1746,7 +1835,14 @@ export const financial_patterns = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/bill_patterns/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "list_name", accessorKey: "list_name" },
@@ -2338,7 +2434,14 @@ export const voucher_pattern = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/voucher_pattern/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "list_name", accessorKey: "list_name" },
@@ -2414,7 +2517,14 @@ export const assets_group = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/assets_group/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "last_name", accessorKey: "last_name" },
@@ -2426,7 +2536,7 @@ export const assets_group = [
       return (
         <Link
           to={`/update/assets_group/${getValue()}`}
-          className="text-blue-500"
+          className="text-blue-500 capitalize"
         >
           {row.original.parent_name}
         </Link>
@@ -2472,7 +2582,14 @@ export const assets = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/assets/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "code", accessorKey: "code" },
@@ -2939,7 +3056,14 @@ export const material_group = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/material_group/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "last_name", accessorKey: "last_name" },
@@ -2951,7 +3075,7 @@ export const material_group = [
       return (
         <Link
           to={`/update/material_group/${getValue()}`}
-          className="text-blue-500"
+          className="text-blue-500 capitalize"
         >
           {row.original.parent_name}
         </Link>
@@ -2997,7 +3121,14 @@ export const materials = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/materials/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "last_name", accessorKey: "last_name" },
@@ -3696,7 +3827,11 @@ export const store = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link className="text-blue-500 capitalize" to={`/update/store/${row.original.id}`}>
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "last_name", accessorKey: "last_name" },
@@ -3708,7 +3843,7 @@ export const store = [
     accessorKey: "parent_id",
     cell: ({ row, getValue }) => {
       return (
-        <Link to={`/update/store/${getValue()}`} className="text-blue-500">
+        <Link className="text-blue-500 capitalize" to={`/update/store/${getValue()}`}>
           {row.original.parent_name}
         </Link>
       );
@@ -3719,7 +3854,7 @@ export const store = [
     accessorKey: "store_final_id",
     cell: ({ row, getValue }) => {
       return (
-        <Link to={`/update/store/${getValue()}`} className="text-blue-500">
+        <Link className="text-blue-500 capitalize" to={`/update/store/${getValue()}`}>
           {row.original.final_name}
         </Link>
       );
@@ -3763,7 +3898,14 @@ const bill_group = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => {
-      return <Link to={`/update/${""}/${row.original.id}`}>{getValue()}</Link>;
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/bill_group/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
     },
   },
   { header: "list_name", accessorKey: "list_name" },
@@ -4227,7 +4369,7 @@ const TABLES = {
   contract_pictures,
   contract_receipt_number,
   financial_data,
-  financial_patterns,
+  bill_patterns,
   installment,
   installment_data,
   op_collection,

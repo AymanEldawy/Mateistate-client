@@ -86,14 +86,17 @@ export const ToolsTabsTableForm = ({
           <TableHeadCol classes="border border-gray-300 dark:border-dark-border !py-3 !text-center">
             <div className="text-center w-full block">#</div>
           </TableHeadCol>
-          {columns?.map((col) => (
-            <TableHeadCol
-              classes="border border-gray-300 dark:border-dark-border !py-3"
-              key={col}
-            >
-              {col}
-            </TableHeadCol>
-          ))}
+          {columns?.map((col) => {
+            if (col === "row_index") return;
+            return (
+              <TableHeadCol
+                classes="border border-gray-300 dark:border-dark-border !py-3"
+                key={col}
+              >
+                {col}
+              </TableHeadCol>
+            );
+          })}
         </TableHead>
         <TableBody>
           {Array(increaseCount)
@@ -124,47 +127,50 @@ export const ToolsTabsTableForm = ({
                     index + 1
                   )}
                 </TableCol>
-                {fields?.map((field) => (
-                  <TableCol
-                    classes="!p-0 border dark:border-dark-border text-center"
-                    key={field?.name}
-                  >
-                    {field?.key === "unique" ? (
-                      <UniqueField
-                        value={grid?.[index + 1]?.[field?.name]}
-                        className="min-w-[140px] !border-0 !rounded-none !h-full !bg-transparent"
-                        name={field?.name}
-                        getSelectedValueWithIndex={handelChangeField}
-                        tableForHashed={field?.table}
-                        list={
-                          !!getCachedList ? getCachedList(field?.table) : []
-                        }
-                      />
-                    ) : (
-                      <Input
-                        {...field}
-                        label=""
-                        value={
-                          field?.type === "color"
-                            ? getValueOfInputColor(
-                                grid?.[index + 1]?.[field?.name]
-                              )
-                            : grid?.[index + 1]?.[field?.name]
-                        }
-                        inputClassName={`!border-0 !bg-transparent read-only:!bg-gray-100 read-only:px-4 read-only:font-medium !rounded-none   ${
-                          field?.type === "color" ? "" : "!h-full"
-                        }`}
-                        onChange={(e) => {
-                          handelChangeField(
-                            index + 1,
-                            field?.name,
-                            e.target.value
-                          );
-                        }}
-                      />
-                    )}
-                  </TableCol>
-                ))}
+                {fields?.map((field) => {
+                  if (field?.name === "row_index") return;
+                  return (
+                    <TableCol
+                      classes="!p-0 border dark:border-dark-border text-center"
+                      key={field?.name}
+                    >
+                      {field?.key === "unique" ? (
+                        <UniqueField
+                          value={grid?.[index + 1]?.[field?.name]}
+                          className="min-w-[140px] !border-0 !rounded-none !h-full !bg-transparent"
+                          name={field?.name}
+                          getSelectedValueWithIndex={handelChangeField}
+                          tableForHashed={field?.table}
+                          list={
+                            !!getCachedList ? getCachedList(field?.table) : []
+                          }
+                        />
+                      ) : (
+                        <Input
+                          {...field}
+                          label=""
+                          value={
+                            field?.type === "color"
+                              ? getValueOfInputColor(
+                                  grid?.[index + 1]?.[field?.name]
+                                )
+                              : grid?.[index + 1]?.[field?.name]
+                          }
+                          inputClassName={`!border-0 !bg-transparent read-only:!bg-gray-100 read-only:px-4 read-only:font-medium !rounded-none   ${
+                            field?.type === "color" ? "" : "!h-full"
+                          }`}
+                          onChange={(e) => {
+                            handelChangeField(
+                              index + 1,
+                              field?.name,
+                              e.target.value
+                            );
+                          }}
+                        />
+                      )}
+                    </TableCol>
+                  );
+                })}
               </TableRow>
             ))}
         </TableBody>

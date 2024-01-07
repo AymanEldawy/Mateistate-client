@@ -109,7 +109,10 @@ export const DynamicTable = ({
       ],
     });
 
-    if (res.success) await refetchData();
+    if (res.success) {
+      setRowSelection([]);
+      await refetchData();
+    }
     setOpenConfirmation(false);
   };
 
@@ -201,48 +204,51 @@ export const DynamicTable = ({
                 );
               })}
             </thead>
-            {loading ? (
-              <TableSkeleton columns={columns} />
-            ) : (
-              <tbody className={tableBodyClassName}>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => {
-                    return (
-                      <tr
-                        key={row.id}
-                        className={`border-b last:border-none even:bg-gray-100 dark:even:bg-[#333] border-gray-100 dark:border-dark-border`}
+            <tbody className={tableBodyClassName}>
+              {loading ? (
+                <TableSkeleton columns={columns} />
+              ) : (
+                <>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => {
+                      return (
+                        <tr
+                          key={row.id}
+                          className={`border-b last:border-none even:bg-gray-100 dark:even:bg-[#333] border-gray-100 dark:border-dark-border`}
+                        >
+                          {row.getVisibleCells().map((cell) => {
+                            return (
+                              <td
+                                key={cell?.id}
+                                className={`w-[${cell.column.getSize()}] px-4 py-2 ${tdClassName}`}
+                                style={{ width: cell.column.getSize() }}
+                              >
+                                {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext()
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr className="text-red-500 h-28 bg-[#f1f1f1e8] dark:bg-[#00000021] p-1 rounded-sm text-center mt-2">
+                      <td
+                        colSpan={columns.length}
+                        rowSpan={5}
+                        className="ltr:text-left rtl:text-right relative"
                       >
-                        {row.getVisibleCells().map((cell) => {
-                          return (
-                            <td
-                              className={`w-[${cell.column.getSize()}] px-4 py-2 ${tdClassName}`}
-                              style={{ width: cell.column.getSize() }}
-                            >
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr className="text-red-500 h-28 bg-[#f1f1f1e8] dark:bg-[#00000021] p-1 rounded-sm text-center mt-2">
-                    <td
-                      colSpan={columns.length}
-                      rowSpan={5}
-                      className="ltr:text-left rtl:text-right relative"
-                    >
-                      <span className="sticky left-1/2 -translate-x-1/2">
-                        {t("empty_result")}
-                      </span>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            )}
+                        <span className="sticky left-1/2 -translate-x-1/2">
+                          {t("empty_result")}
+                        </span>
+                      </td>
+                    </tr>
+                  )}
+                </>
+              )}
+            </tbody>
           </table>
         </div>
 

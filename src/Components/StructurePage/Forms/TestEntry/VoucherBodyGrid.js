@@ -21,6 +21,8 @@ const VoucherBodyGrid = ({
   entries,
   allowSelect,
   layout,
+  handleInputChange,
+  errors,
 }) => {
   const [increaseCount, setIncreaseCount] = useState(20);
   return (
@@ -68,117 +70,88 @@ const VoucherBodyGrid = ({
                 </TableCol>
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <UniqueField
-                    allowSelect={allowSelect}
-                    tableForHashed="account"
                     className="min-w-[170px] border-0 !rounded-none !h-full"
-                    list={CACHE_LIST["account"]}
-                    value={entries?.[index]?.["AcGuid"] || ""}
-                    // label="AcGuid"
-                    getSelectedValueWithIndex={handelChangeEntriesField}
                     index={index}
-                    values={entries?.[index]}
+                    table={"account"}
+                    name="account_id"
                     getCachedList={getCachedList}
-                    field={{
-                      name: "AcGuid",
-                    }}
+                    error={errors?.account_id ? "Field is required" : ""}
+                    handleInputChange={handleInputChange}
+                    // tableForHashed="account"
+                    list={CACHE_LIST["account"]}
+                    // label="CostGuid"
+                    value={entries?.[index]?.["account_id"] || ""}
                   />
                 </TableCol>
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <Input
                     type="number"
-                    className="border-0 !rounded-none !h-full"
-                    // label="Debit"
-                    value={entries?.[index]?.["Debit"] || ""}
-                    name="Debit"
-                    onChange={(e) =>
-                      handelChangeEntriesField(index, "Debit", +e.target.value)
-                    }
-                    onBlur={(e) =>
-                      handelChangeFieldBlur(index, "Debit", e.target.value)
-                    }
+                    value={entries?.[index]?.["debit"] || ""}
+                    inputClassName="border-0 !rounded-none !h-full"
+                    name="debit"
+                    error={errors?.debit ? "Field is required" : ""}
+                    handleInputChange={handleInputChange}
                   />
                 </TableCol>
                 {layout ? null : (
                   <TableCol classes="!p-0 border dark:border-dark-border">
                     <Input
                       type="number"
-                      // label="credit"
-                      value={entries?.[index]?.["Credit"] || ""}
-                      name="Credit"
-                      className="border-0 !rounded-none !h-full"
-                      onChange={(e) =>
-                        handelChangeEntriesField(
-                          index,
-                          "Credit",
-                          +e.target.value
-                        )
-                      }
-                      onBlur={(e) =>
-                        handelChangeFieldBlur(index, "Credit", e.target.value)
-                      }
+                      value={entries?.[index]?.["credit"] || ""}
+                      inputClassName="border-0 !rounded-none !h-full"
+                      name="credit"
+                      error={errors?.credit ? "Field is required" : ""}
+                      handleInputChange={handleInputChange}
                     />
                   </TableCol>
                 )}
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <UniqueField
-                    tableForHashed="Currency"
                     className="min-w-[170px] border-0 !rounded-none !h-full"
-                    list={CACHE_LIST["Currency"]}
-                    value={entries?.[index]?.["CurrencyGuid"] || ""}
-                    // label="CurrencyGuid"
-                    name="CurrencyGuid"
-                    getSelectedValueWithIndex={handelChangeEntriesField}
                     index={index}
-                    values={entries?.[index]}
+                    table={"currency"}
+                    name="currency_id"
                     getCachedList={getCachedList}
-                    field={{
-                      name: "CurrencyGuid",
-                    }}
+                    error={errors?.currency_id ? "Field is required" : ""}
+                    handleInputChange={handleInputChange}
+                    // tableForHashed="cost"
+                    list={CACHE_LIST["currency"]}
+                    // label="CostGuid"
+                    value={entries?.[index]?.["currency_id"] || ""}
                   />
                 </TableCol>
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <Input
                     type="number"
-                    // label="CurrencyVal"
-                    value={entries?.[index]?.["CurrencyVal"] || ""}
-                    className="border-0 !rounded-none !h-full"
-                    name="CurrencyVal"
-                    onChange={(e) =>
-                      handelChangeEntriesField(
-                        index,
-                        "CurrencyVal",
-                        +e.target.value
-                      )
-                    }
+                    value={entries?.[index]?.["currency_val"] || ""}
+                    inputClassName="border-0 !rounded-none !h-full"
+                    name="currency_val"
+                    error={errors?.currency_val ? "Field is required" : ""}
+                    handleInputChange={handleInputChange}
                   />
                 </TableCol>
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <Input
                     type="text"
-                    // label="Note"
-                    value={entries?.[index]?.["Note"] || ""}
-                    className="border-0 !rounded-none !h-full"
-                    name="Note"
-                    onChange={(e) =>
-                      handelChangeEntriesField(index, "Note", e.target.value)
-                    }
+                    value={entries?.[index]?.["note"] || ""}
+                    inputClassName="border-0 !rounded-none !h-full"
+                    name="note"
+                    error={errors?.note ? "Field is required" : ""}
+                    handleInputChange={handleInputChange}
                   />
                 </TableCol>
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <UniqueField
-                    tableForHashed="cost"
+                    table={"cost_center"}
+                    name="cost_center_id"
+                    getCachedList={getCachedList}
+                    error={errors?.cost_center_id ? "Field is required" : ""}
+                    handleInputChange={handleInputChange}
+                    // tableForHashed="cost"
                     className="min-w-[170px] border-0 !rounded-none !h-full"
                     list={CACHE_LIST["cost"]}
                     // label="CostGuid"
-                    value={entries?.[index]?.["CostGuid"] || ""}
-                    name="CostGuid"
-                    getSelectedValueWithIndex={handelChangeEntriesField}
-                    index={index}
-                    values={entries?.[index]}
-                    getCachedList={getCachedList}
-                    field={{
-                      name: "CostGuid",
-                    }}
+                    value={entries?.[index]?.["cost_center_id"] || ""}
                   />
                 </TableCol>
               </TableRow>
@@ -193,4 +166,4 @@ const VoucherBodyGrid = ({
   );
 };
 
-export default memo(VoucherBodyGrid);
+export default VoucherBodyGrid;

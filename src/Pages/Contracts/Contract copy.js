@@ -65,7 +65,7 @@ const Contract = () => {
     if (required) {
       insertIntoErrors(name, value);
     }
-    let tab = steps[currentIndex];
+    let tab = steps?.[currentIndex];
     setValues((prev) => ({
       ...prev,
       [tab]: {
@@ -112,10 +112,10 @@ const Contract = () => {
   }
 
   useEffect(() => {
-    let tabName = steps[currentIndex];
+    let tabName = steps?.[currentIndex];
     setTab(tabName);
-    setFields(forms[tabName].fields || []);
-    setFormSettings(forms[tabName]);
+    setFields(forms?.[tabName]?.fields || []);
+    setFormSettings(forms?.[tabName]);
   }, [currentIndex]);
 
   // Handel Submit
@@ -154,9 +154,9 @@ const Contract = () => {
     <BlockPaper>
       <form onSubmit={onSubmit}>
         {formSettings?.formType === "grid" ? (
-          <div key={steps[currentIndex]}>
+          <div key={steps?.[currentIndex]}>
             <TableForm
-              activeStage={steps[currentIndex]}
+              activeStage={steps?.[currentIndex]}
               oldValues={values?.[tab] || {}}
               setGlobalValues={setValues}
               formSettings={formSettings}
@@ -173,7 +173,7 @@ const Contract = () => {
             {formSettings?.formType === "gallery" ? (
               <GalleryForm
                 fields={fields}
-                values={values[steps[currentIndex]]}
+                values={values[steps?.[currentIndex]]}
                 errors={errors}
                 handelFieldUpload={handelFieldUpload}
                 handelChangeField={handelChangeField}
@@ -182,7 +182,7 @@ const Contract = () => {
             ) : (
               <Fields
                 fields={fields}
-                values={values[steps[currentIndex]]}
+                values={values[steps?.[currentIndex]]}
                 errors={errors}
                 handelFieldUpload={handelFieldUpload}
                 handelChangeField={handelChangeField}

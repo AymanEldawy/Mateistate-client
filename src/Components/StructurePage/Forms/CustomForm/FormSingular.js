@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
+import { useForm, FormProvider } from "react-hook-form";
 
 import { Button } from "Components/Global/Button";
 
-import useRefTable from "Hooks/useRefTable";
 import { toast } from "react-toastify";
 import { ApiActions } from "Helpers/Lib/api";
 import FormHeadingTitle from "Components/Global/FormHeadingTitle";
@@ -15,27 +15,30 @@ const getCachedList = (tableName) => {
   return CACHE_LIST[tableName];
 };
 
-const FormSingular = ({ name, fields, onClose, oldValues= {}, refetchData }) => {
-
-  const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
+const FormSingular = ({ name, fields, onClose, oldValues, refetchData }) => {
+  const methods = useForm({ defaultValues: oldValues });
   const [loading, setLoading] = useState(false);
-  const [values, setValues] = useState(false);
+  const {
+    handleSubmit,
+    reset,
+    formState: { errors },
+    getValues,
+    setValue,
+    watch,
+  } = methods;
+  console.log(watch());
+
 
   useEffect(() => {
-    setErrors({});
-    setTouched({});
-    getRefTables()
-
+    getRefTables();
+    if(oldValues) {
+      console.log(...oldValues);
+      setValue(...oldValues)
+    }
   }, [name]);
 
-  
-  useEffect(() => {
-    if (Object.keys(oldValues)?.length) {
-      setValues(oldValues);
-    }
-  }, [oldValues]);
 
+  
   const getRefTables = async () => {
     if (!fields?.length) return;
 
@@ -50,92 +53,47 @@ const FormSingular = ({ name, fields, onClose, oldValues= {}, refetchData }) => 
       }
     }
   };
-
-  const insertIntoErrors = (name, value) => {
-    if (value === "") {
-      setErrors((prev) => {
-        return {
-          ...prev,
-          [name]: "Field is required",
-        };
-      });
-    } else {
-      let newErrors = errors;
-      delete newErrors[name];
-      setErrors(newErrors);
-    }
-  };
-
-  const onTouched = (name) => {
-    if (touched[name]) return;
-    setTouched((prev) => {
-      return {
-        ...prev,
-        [name]: true,
-      };
-    });
-  };
-
-  const handelChangeField = (name, value, required) => {
-    if (required) {
-      insertIntoErrors(name, value);
-    }
-
-    setValues((prev) => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
-  };
-
-  const handelFieldUpload = (name, e, required) => {
-    if (required) {
-      // insertIntoErrors(name, value);
-    }
-    setValues((prev) => {
-      return {
-        ...prev,
-        [name]: e.target.files[0],
-      };
-    });
+  const handleInputChange = (name, value) => {
+    setValue(name, value);
   };
 
   // Handel Submit
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (value) => {
+    console.log("🚀 ~ file: FormSingular.js:66 ~ onSubmit ~ value:", value);
     setLoading(true);
+
     const res = await ApiActions.insert(name, {
-      data: values,
+      data: getValues(),
     });
 
     if (res?.success) {
       toast.success("Successfully added item in " + name);
       if (!!onClose) onClose();
       if (!!refetchData) refetchData();
-      setValues({});
+      // reset form
+      reset();
     } else {
       toast.error("Failed to add new item in " + name);
     }
     setLoading(false);
   };
+
   return (
-    <>
+    <FormProvider {...methods}>
       <FormHeadingTitle title={name} />
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Fields
-          fields={fields}
-          values={values}
+          values={getValues()}
           errors={errors}
-          handelFieldUpload={handelFieldUpload}
-          handelChangeField={handelChangeField}
           getCachedList={getCachedList}
+          fields={fields}
+          handleInputChange={handleInputChange}
         />
         <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
           <Button title="Submit" loading={loading} />
         </div>
       </form>
-    </>
+    </FormProvider>
   );
 };
 

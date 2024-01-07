@@ -161,20 +161,20 @@ export const SELECT_LISTS = (listName) => {
 
 export const FLAT_PROPERTY_TABS_SETTINGS = {
   Apartment: {
-    no: "apartment_number",
+    no: "apartment_no",
   },
   mezzanine: {
-    no: "apartment_number",
+    no: "apartment_no",
   },
-  office: { no: "apartment_number" },
+  office: { no: "apartment_no" },
   parking: { no: "parking_no" },
-  penthouse: { no: "apartment_number" },
-  "Underground parking": { no: "apartment_number" },
-  warehouse: { no: "apartment_number" },
+  penthouse: { no: "apartment_no" },
+  "Underground parking": { no: "apartment_no" },
+  warehouse: { no: "apartment_no" },
   Shops: { no: "shop_no" },
-  stores: { no: "apartment_number" },
-  "Driver flats": { no: "apartment_number" },
-  "Servant flats": { no: "apartment_number" },
+  stores: { no: "apartment_no" },
+  "Driver flats": { no: "apartment_no" },
+  "Servant flats": { no: "apartment_no" },
 };
 export const FLAT_PROPERTY_TABS = [
   {
