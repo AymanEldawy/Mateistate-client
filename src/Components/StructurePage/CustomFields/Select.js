@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import Select from "react-select";
 
@@ -13,7 +13,8 @@ const CustomSelect = ({
   isArray,
   value,
   handleInputChange,
-
+  updatedName,
+  values,
   ...field
 }) => {
   const { name } = field;
@@ -28,6 +29,23 @@ const CustomSelect = ({
       }))
     );
   }, [field?.list?.length]);
+
+  // const getVal = useMemo(() => {
+  //   const getName = () => {
+  //     let splitName = field.name;
+  //     let value = values
+  //     while(splitName.split(".").length > 1) {
+  //       console.log('callled lop');
+  //       splitName = splitName.slice(1);
+  //       value = value[splitName?.[0]]
+  //     }
+  //     console.log("🚀 ~ getName ~ splitName:", splitName, value)
+  //     // if (splitName.length > 1) return getName(name, values[splitName.at(0)]);
+  //     // return values[name];
+  //   };
+  //   return getName(updatedName || field.name, values);
+  // }, [Object.keys(values).length]);
+  // console.log("🚀 ~ getVal ~ getVal:", getVal);
 
   return (
     <div className={"flex flex-col " + containerClassName}>
@@ -47,9 +65,14 @@ const CustomSelect = ({
         </label>
       ) : null}
       <Controller
-        name={field.name}
+        name={updatedName || field.name}
         control={control}
         render={({ field: { onChange }, value, ref }) => {
+          console.log(
+            values,
+            values?.[updatedName || field?.name],
+            "values?.[updatedName || field?.name]"
+          );
           return (
             <Select
               className="border rounded-md bg-none bg-transparent"
@@ -61,10 +84,11 @@ const CustomSelect = ({
                 menuList: () => "dark:bg-dark-bg",
               }}
               options={list}
-              value={list.find((c) => c.value === value)}
+              value={list.find(
+                (c) => c.value === values?.[updatedName || field?.name]
+              )}
               onChange={(option) => {
-                console.log("----", option);
-                handleInputChange(field?.name, option?.value);
+                handleInputChange(updatedName || field?.name, option?.value);
               }}
             />
           );

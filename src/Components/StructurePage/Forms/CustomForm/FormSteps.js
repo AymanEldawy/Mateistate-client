@@ -9,6 +9,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "Components/Global/Button";
 import TableForm from "./TableForm";
 import { GalleryForm } from "./GalleryForm";
+import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import { ButtonsStepsGroup } from "Components/Global/ButtonsStepsGroup";
 
 const CACHE_LIST = {};
 
@@ -16,19 +18,16 @@ const getCachedList = (tableName) => {
   return CACHE_LIST[tableName];
 };
 
-const FormSteps = ({ name, onClose, refetchData, oldValues }) => {
+const FormSteps = ({ name, onClose, refetchData, oldValues, allowTabs }) => {
   const {
     next,
     back,
+    goTo,
     isLast,
     currentIndex,
-    // errors,
-    handelChangeField,
-    handelFieldUpload,
     tab,
     formSettings,
     steps,
-    // setValues,
     fields,
     getCachedList,
   } = useFormSteps({ name, oldValues });
@@ -45,18 +44,16 @@ const FormSteps = ({ name, onClose, refetchData, oldValues }) => {
 
   const handleInputChange = (name, value) => {
     let names = `${[tab]}.${[name]}`;
-    setValue(names, value);
-    console.log(
-      "🚀 ~ file: FormSteps.js:52 ~ handleInputChange ~ names:",
-      tab,
-      names
-    );
+    setValue(names, value, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
   };
 
-  console.log(watch());
   // Handel Submit
   const onSubmit = async (value) => {
-    console.log("🚀 ~ file: FormSteps.js:62 ~ onSubmit ~ value:", value);
+    console.log("🚀 ~ onSubmit ~ value:", value);
     next();
     if (!isLast()) return;
     setLoading(true);
@@ -75,13 +72,14 @@ const FormSteps = ({ name, onClose, refetchData, oldValues }) => {
     setLoading(false);
   };
 
-  console.log(formSettings, 'formSettings');
   return (
     <FormProvider {...methods}>
       <FormHeadingTitleSteps
         name={name}
         steps={steps}
-        // changeTab={goTo}
+        // changeTab={(tabIndex) => {
+        //   if (allowTabs) goTo(tabIndex);
+        // }}
         activeStage={currentIndex}
       />
       <div className="h-5" />
@@ -90,46 +88,32 @@ const FormSteps = ({ name, onClose, refetchData, oldValues }) => {
           <>
             {formSettings?.formType === "grid" ? (
               <div key={steps?.[currentIndex]}>
-                <TableForm
+                <TableFields
                   activeStage={tab}
                   values={watch()?.[tab]}
-                  // setValues={setValues}
                   handleInputChange={handleInputChange}
                   fields={fields}
                   getCachedList={!!getCachedList ? getCachedList : undefined}
                 />
               </div>
             ) : (
-              <>
-                {/* {formSettings?.formType === "gallery" ? (
-                  <GalleryForm
-                    fields={fields}
-                    values={watch()?.[tab]}
-                    errors={errors}
-                    handelFieldUpload={handelFieldUpload}
-                    handelChangeField={handelChangeField}
-                    getCachedList={getCachedList}
-                    handleInputChange={handleInputChange}
-                  />
-                ) : (
-                  )} */}
-                  <Fields
-                    fields={fields}
-                    values={watch()?.[tab]}
-                    errors={errors}
-                    handelFieldUpload={handelFieldUpload}
-                    handelChangeField={handelChangeField}
-                    getCachedList={getCachedList}
-                    handleInputChange={handleInputChange}
-                  />
-              </>
+              <Fields
+                tab={tab}
+                fields={fields}
+                values={watch()?.[tab]}
+                errors={errors}
+                getCachedList={getCachedList}
+                handleInputChange={handleInputChange}
+              />
             )}
           </>
         ) : null}
-        <div className="flex justify-between gap-4 items-center mt-4">
-          {steps ? <Button title="Back" onClick={back} type="button" /> : null}
-          <Button title={isLast() ? "Submit" : "next"} loading={loading} />
-        </div>
+        <ButtonsStepsGroup
+          isLast={isLast}
+          loading={loading}
+          steps={steps}
+          back={back}
+        />
       </form>
     </FormProvider>
   );

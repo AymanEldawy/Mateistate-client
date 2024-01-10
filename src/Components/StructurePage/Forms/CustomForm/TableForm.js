@@ -16,27 +16,12 @@ import { Input, UniqueField } from "Components/StructurePage/CustomFields";
 const TableForm = ({
   fields,
   getCachedList,
-  setValues,
   activeStage,
   values,
   errors,
+  handleInputChange,
 }) => {
   const [increaseCount, setIncreaseCount] = useState(10);
-
-  const handelChangeField = useCallback(
-    (index, name, value) => {
-      setValues((prev) => {
-        return {
-          ...prev,
-          [activeStage]: {
-            ...prev?.[activeStage],
-            [index]: { ...prev?.[activeStage]?.[index], [name]: value },
-          },
-        };
-      });
-    },
-    [values]
-  );
 
   return (
     <>
@@ -85,12 +70,14 @@ const TableForm = ({
                       {field?.is_ref ? (
                         <UniqueField
                           {...field}
-                          label={""}
+                          updatedName={`${activeStage}.${field?.name}`}
+                          // values={watch}
                           table={field.ref_table}
-                          // value={values?.[index + 1]?.[field?.name]}
-                          // values={values?.[index + 1]}
-                          className="min-w-[140px] !border-0 !rounded-none !h-full !bg-transparent"
-                          tableForHashed={field?.ref_table}
+                          label={""}
+                          containerClassName="!min-w-[190px] border-0 !rounded-none !h-full"
+                          className="!min-w-[190px] border-0 !rounded-none !h-full"
+                          error={errors?.account_id ? "Field is required" : ""}
+                          handleInputChange={handleInputChange}
                           key={`${field?.name}`}
                           getCachedList={getCachedList}
                           list={
@@ -98,32 +85,17 @@ const TableForm = ({
                               ? getCachedList(field?.ref_table)
                               : []
                           }
-                          error={errors[field?.name]?.message}
                         />
                       ) : (
                         <Input
                           {...field}
+                          updatedName={`${activeStage}.${field?.name}`}
                           key={`${field?.name}`}
-                          label={field?.name?.replace(/_/g, " ")}
-                          error={errors[field?.name]?.message}
+                          label={""}
+                          error={errors?.[field?.name]?.message}
+                          inputClassName="border-0 !rounded-none !h-full"
+                          handleInputChange={handleInputChange}
                         />
-                        // <Input
-                        //   {...field}
-                        //   label={""}
-                        //   key={field?.name}
-                        //   value={values?.[index + 1]?.[field?.name]}
-                        //   className={`!border-0 !rounded-none !bg-transparent !h-full`}
-                        //   name={field?.name}
-                        //   type={field?.type}
-                        //   required={field?.required}
-                        //   onChange={(e) => {
-                        //     handelChangeField(
-                        //       index + 1,
-                        //       field?.name,
-                        //       e.target.value
-                        //     );
-                        //   }}
-                        // />
                       )}
                     </TableCol>
                   );

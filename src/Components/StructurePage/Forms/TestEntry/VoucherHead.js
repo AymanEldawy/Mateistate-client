@@ -25,7 +25,7 @@ export const VoucherHead = ({
         >
           <Input
             {...fields["created_at"]}
-            type="text"
+            type="date"
             value={values?.created_at || ""}
             className="border-0 !rounded-none !h-full"
             name="created_at"
@@ -83,10 +83,11 @@ export const VoucherHead = ({
             label="Note"
             containerClassName="col-span-full"
             value={values?.note || ""}
-            labelClassName={"mb-2"}
+            labelClassName={"mb-2 h-6"}
             className="border rounded-md !h-full"
             name="note"
             error={errors?.note ? "Field is required" : ""}
+            handleInputChange={handleInputChange}
           />
         </div>
         <div></div>

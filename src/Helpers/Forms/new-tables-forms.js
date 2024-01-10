@@ -333,8 +333,8 @@ const user = [
   {
     label: "card_type",
     name: "card_type",
-    key: "select",
     required: false,
+    key: "select",
     intValue: true,
     list: SELECT_LISTS("user_type"),
   },
@@ -427,8 +427,7 @@ const user = [
     type: "text",
     required: false,
   },
-  // { label: "files", name: "files", defaultValue: "{}", type: "json", required: false },
-  { label: "files", name: "files", value: "{name:'test'}", type: "text", required: false },
+  { label: "files", name: "files", key: "image" },
   {
     label: "nationality",
     name: "nationality",
@@ -713,7 +712,7 @@ const building_buying = [
     is_ref: true,
     ref_table: "currency",
     ref_col: "id",
-    nested: 'buying'
+    nested: "buying",
   },
   {
     label: "building_id",
@@ -842,6 +841,7 @@ const building_pictures = [
     type: "file",
     required: false,
     key: "image",
+    multiple: true,
   },
   {
     label: "building_id",
@@ -1224,6 +1224,7 @@ const accounting_voucher_pictures = [
   {
     label: "picture",
     name: "picture",
+    multiple: true,
     type: "file",
     required: false,
     key: "image",
@@ -1375,6 +1376,7 @@ const apartment_pictures = [
   {
     label: "picture",
     name: "picture",
+    multiple: true,
     type: "file",
     required: false,
     key: "image",
@@ -1382,7 +1384,13 @@ const apartment_pictures = [
 ];
 const apartment_property_values = [
   // { label: "id", name: "id", type: "uuid", required: false, hide_in_form: true },
-  { label: "row_index", name: "row_index", type: "number", required: false, hide_in_form: true },
+  {
+    label: "row_index",
+    name: "row_index",
+    type: "number",
+    required: false,
+    hide_in_form: true,
+  },
   { label: "hex", name: "hex", type: "color", required: false },
   {
     label: "room_count",
@@ -1468,8 +1476,18 @@ const contract_pattern_general = [
   {
     label: "contract_type",
     name: "contract_type",
-    type: "number",
-    required: false,
+    key: "select",
+    required: true,
+    intValue: true,
+    list: SELECT_LISTS("contact_pattern_contract_type"),
+  },
+  {
+    label: "assets_type",
+    name: "assets_type",
+    key: "select",
+    required: true,
+    intValue: true,
+    list: SELECT_LISTS("contact_pattern_assets_type"),
   },
   { label: "code", name: "code", type: "number", required: false },
   { label: "name", name: "name", type: "text", required: true },
@@ -1504,8 +1522,10 @@ const contract_pattern_general = [
   {
     label: "record_date_created",
     name: "record_date_created",
-    type: "number",
-    required: false,
+    key: "select",
+    required: true,
+    intValue: true,
+    list: SELECT_LISTS("contact_pattern_record_created_date"),
   },
   {
     label: "new_contract_without_terminating",
@@ -1532,6 +1552,7 @@ const contract_pattern_default_accounts = [
     ref_table: "account",
     ref_col: "id",
   },
+
   {
     label: "default_commission_from_client_account_id",
     name: "default_commission_from_client_account_id",
@@ -1615,7 +1636,7 @@ const contract_pattern_moving_cost_center = [
   {
     label: "move_cost_center_with_revenue",
     name: "move_cost_center_with_revenue",
-    type: "json",
+    isJson: true,
     key: "choose",
     list: SELECT_LISTS("type"),
     required: false,
@@ -1623,7 +1644,7 @@ const contract_pattern_moving_cost_center = [
   {
     label: "move_cost_center_with_tenant",
     name: "move_cost_center_with_tenant",
-    type: "json",
+    isJson: true,
     key: "choose",
     list: SELECT_LISTS("type"),
     required: false,
@@ -1631,7 +1652,7 @@ const contract_pattern_moving_cost_center = [
   {
     label: "move_cost_center_with_insurance_revenue",
     name: "move_cost_center_with_insurance_revenue",
-    type: "json",
+    isJson: true,
     key: "choose",
     list: SELECT_LISTS("type"),
     required: false,
@@ -1639,7 +1660,7 @@ const contract_pattern_moving_cost_center = [
   {
     label: "move_cost_center_with_price_revenue",
     name: "move_cost_center_with_price_revenue",
-    type: "json",
+    isJson: true,
     key: "choose",
     list: SELECT_LISTS("type"),
     required: false,
@@ -1647,7 +1668,7 @@ const contract_pattern_moving_cost_center = [
   {
     label: "move_cost_center_with_intention_ratifying",
     name: "move_cost_center_with_intention_ratifying",
-    type: "json",
+    isJson: true,
     key: "choose",
     list: SELECT_LISTS("type"),
     required: false,
@@ -1655,7 +1676,7 @@ const contract_pattern_moving_cost_center = [
   {
     label: "move_cost_center_with_other_fee",
     name: "move_cost_center_with_other_fee",
-    type: "json",
+    isJson: true,
     key: "choose",
     list: SELECT_LISTS("type"),
     required: false,
@@ -1663,7 +1684,7 @@ const contract_pattern_moving_cost_center = [
   {
     label: "move_cost_center_with_commission_client",
     name: "move_cost_center_with_commission_client",
-    type: "json",
+    isJson: true,
     key: "choose",
     list: SELECT_LISTS("type"),
     required: false,
@@ -1671,7 +1692,7 @@ const contract_pattern_moving_cost_center = [
   {
     label: "move_cost_center_with_commission_owner",
     name: "move_cost_center_with_commission_owner",
-    type: "json",
+    isJson: true,
     key: "choose",
     list: SELECT_LISTS("type"),
     required: false,
@@ -1679,7 +1700,7 @@ const contract_pattern_moving_cost_center = [
   {
     label: "move_cost_center_with_contract_fines_terminating",
     name: "move_cost_center_with_contract_fines_terminating",
-    type: "json",
+    isJson: true,
     key: "choose",
     list: SELECT_LISTS("type"),
     required: false,
@@ -1687,7 +1708,7 @@ const contract_pattern_moving_cost_center = [
   {
     label: "move_cost_center_with_decisiveness_granted",
     name: "move_cost_center_with_decisiveness_granted",
-    type: "json",
+    isJson: true,
     key: "choose",
     list: SELECT_LISTS("type"),
     required: false,
@@ -1695,7 +1716,7 @@ const contract_pattern_moving_cost_center = [
   {
     label: "move_cost_center_with_contract_proceeds_rerminating",
     name: "move_cost_center_with_contract_proceeds_rerminating",
-    type: "json",
+    isJson: true,
     key: "choose",
     list: SELECT_LISTS("type"),
     required: false,
@@ -2685,15 +2706,15 @@ const installment = [
     ref_table: "account",
     ref_col: "id",
   },
-  {
-    label: "voucher_pattern_id",
-    name: "voucher_pattern_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "bill",
-    ref_col: "id",
-  },
+  // {
+  //   label: "voucher_pattern_id",
+  //   name: "voucher_pattern_id",
+  //   type: "uuid",
+  //   required: true,
+  //   is_ref: true,
+  //   ref_table: "bill",
+  //   ref_col: "id",
+  // },
   {
     label: "installments_numbers",
     name: "installments_numbers",
@@ -4225,6 +4246,8 @@ const materials = [
     name: "materials_group_guid",
     type: "uuid",
     required: false,
+    is_ref: true,
+    ref_table: "material_group",
   },
   { label: "mat_type", name: "mat_type", type: "number", required: false },
   {
@@ -4335,7 +4358,14 @@ const parking = [
     type: "date",
     required: false,
   },
-  { label: "flat_owner", name: "flat_owner", type: "number", required: false },
+  {
+    label: "flat_owner_id",
+    name: "flat_owner_id",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
   { label: "note", name: "note", type: "text", required: false },
 ];
 const parking_pictures = [
@@ -4352,6 +4382,7 @@ const parking_pictures = [
   },
   {
     label: "picture",
+    multiple: true,
     name: "picture",
     type: "file",
     required: false,
@@ -4413,7 +4444,7 @@ const shop = [
   },
   { label: "number", name: "number", type: "number", required: false },
   { label: "shop_no", name: "shop_no", type: "text", required: false },
-  { label: "shop_kind", name: "shop_kind", type: "text", required: false },
+  // { label: "shop_kind", name: "shop_kind", type: "text", required: false },
   { label: "description", name: "description", type: "text", required: false },
   { label: "x_index", name: "x_index", type: "number", required: false },
   { label: "y_index", name: "y_index", type: "number", required: false },
@@ -4433,18 +4464,18 @@ const shop = [
   { label: "license1", name: "license1", type: "text", required: false },
   { label: "license2", name: "license2", type: "text", required: false },
   { label: "unified_num", name: "unified_num", type: "text", required: false },
-  {
-    label: "manservant_room",
-    name: "manservant_room",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "driver_room",
-    name: "driver_room",
-    type: "number",
-    required: false,
-  },
+  // {
+  //   label: "manservant_room",
+  //   name: "manservant_room",
+  //   type: "number",
+  //   required: false,
+  // },
+  // {
+  //   label: "driver_room",
+  //   name: "driver_room",
+  //   type: "number",
+  //   required: false,
+  // },
   {
     label: "has_lawsuit",
     name: "has_lawsuit",
@@ -4471,7 +4502,14 @@ const shop = [
     ref_col: "id",
     ref_name: "full_name",
   },
-  { label: "flat_owner", name: "flat_owner", type: "number", required: false },
+  {
+    label: "flat_owner_id",
+    name: "flat_owner_id",
+    required: false,
+    is_ref: true,
+    ref_table: "account", // unknown table
+    ref_col: "id",
+  },
   {
     label: "water_meter",
     name: "water_meter",
@@ -4487,7 +4525,7 @@ const shop = [
   { label: "bond_type", name: "bond_type", type: "text", required: false },
   { label: "bond_no", name: "bond_no", type: "text", required: false },
   { label: "bond_date", name: "bond_date", type: "date", required: false },
-  { label: "type", name: "type", type: "number", required: false },
+  // { label: "type", name: "type", type: "number", required: false },
   { label: "note", name: "note", type: "text", required: false },
 ];
 const shop_fixed_assets = [
@@ -4529,6 +4567,7 @@ const shop_pictures = [
   {
     label: "picture",
     name: "picture",
+    multiple: true,
     type: "file",
     required: false,
     key: "image",
@@ -4900,6 +4939,7 @@ const villa_pictures = [
     label: "picture",
     name: "picture",
     type: "file",
+    multiple: true,
     required: false,
     key: "image",
   },
@@ -5380,7 +5420,7 @@ const FORMS = {
   voucher_pattern: voucher_pattern_group,
   accounting_voucher_pattern: accounting_voucher_pattern_group,
   contract_pattern: contract_pattern_group,
-  bill_pattern: bill_group,
+  bill_patterns: bill_group,
   // installment
   installment,
   installment_data,

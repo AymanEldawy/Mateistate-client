@@ -21,24 +21,19 @@ const FormSingular = ({ name, fields, onClose, oldValues, refetchData }) => {
   const {
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty,dirtyFields },
     getValues,
     setValue,
     watch,
   } = methods;
-  console.log(watch());
-
 
   useEffect(() => {
     getRefTables();
-    if(oldValues) {
-      console.log(...oldValues);
-      setValue(...oldValues)
-    }
+    // if(oldValues) {
+    //   setValue(...oldValues)
+    // }
   }, [name]);
 
-
-  
   const getRefTables = async () => {
     if (!fields?.length) return;
 
@@ -54,16 +49,20 @@ const FormSingular = ({ name, fields, onClose, oldValues, refetchData }) => {
     }
   };
   const handleInputChange = (name, value) => {
-    setValue(name, value);
+    setValue(name, value, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
   };
 
   // Handel Submit
   const onSubmit = async (value) => {
-    console.log("🚀 ~ file: FormSingular.js:66 ~ onSubmit ~ value:", value);
+    if (!isDirty) return;
     setLoading(true);
 
     const res = await ApiActions.insert(name, {
-      data: getValues(),
+      data: value,
     });
 
     if (res?.success) {
@@ -90,7 +89,7 @@ const FormSingular = ({ name, fields, onClose, oldValues, refetchData }) => {
           handleInputChange={handleInputChange}
         />
         <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
-          <Button title="Submit" loading={loading} />
+          <Button title="Submit" loading={loading} disabled={!isDirty} />
         </div>
       </form>
     </FormProvider>

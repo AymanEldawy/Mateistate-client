@@ -189,7 +189,8 @@ export const menuData = [
     name: "Realty Transactions",
     link: "realty",
     icon: <BanknoteIcon />,
-    children: [
+    children:   [...getContractMenus(),
+    // children: [
       // {
       //   key: "Contracts",
       //   name: "Contracts",
@@ -371,43 +372,71 @@ export const menuData = [
     ],
   },
 
+  // {
+  //   key: "tools",
+  //   name: "Tools",
+  //   link: "",
+  //   icon: <ToolsIcon />,
+  //   children: [
+  //     {
+  //       key: "tool 1",
+  //       name: "tool 1",
+  //       link: "/tools",
+  //     },
+  //     {
+  //       key: "patterns",
+  //       name: "Patterns",
+  //       link: "",
+  //       children: [
+  //         {
+  //           key: "contract patterns",
+  //           name: "Contract patterns",
+  //           link: "/patterns/contract_pattern",
+  //         },
+  //         {
+  //           key: "bills patterns",
+  //           name: "Bill patterns",
+  //           link: "/patterns/bill_pattern",
+  //         },
+  //         {
+  //           key: "voucher patterns",
+  //           name: "Voucher patterns",
+  //           link: "/patterns/voucher_pattern",
+  //         },
+  //         {
+  //           key: "accounting voucher patterns",
+  //           name: "Accounting voucher patterns",
+  //           link: "/patterns/accounting_voucher_pattern",
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
   {
-    key: "tools",
-    name: "Tools",
-    link: "",
+    key: "patterns",
+    name: "Patterns",
     icon: <ToolsIcon />,
+    link: "",
     children: [
       {
-        key: "tool 1",
-        name: "tool 1",
-        link: "/tools",
+        key: "contract patterns",
+        name: "Contract patterns",
+        link: "/patterns/contract_pattern",
       },
       {
-        key: "patterns",
-        name: "Patterns",
-        link: "",
-        children: [
-          {
-            key: "contract patterns",
-            name: "Contract patterns",
-            link: "/patterns/contract_pattern",
-          },
-          {
-            key: "bills patterns",
-            name: "Bill patterns",
-            link: "/patterns/bill_pattern",
-          },
-          {
-            key: "voucher patterns",
-            name: "Voucher patterns",
-            link: "/patterns/voucher_pattern",
-          },
-          {
-            key: "accounting voucher patterns",
-            name: "Accounting voucher patterns",
-            link: "/patterns/accounting_voucher_pattern",
-          },
-        ],
+        key: "bills patterns",
+        name: "Bill patterns",
+        link: "/patterns/bill_patterns",
+      },
+      {
+        key: "voucher patterns",
+        name: "Voucher patterns",
+        link: "/patterns/voucher_pattern",
+      },
+      {
+        key: "accounting voucher patterns",
+        name: "Accounting voucher patterns",
+        link: "/patterns/accounting_voucher_pattern",
       },
     ],
   },

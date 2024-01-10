@@ -69,19 +69,24 @@ export const SELECT_LISTS = (listName) => {
       { name: "delete", id: 2 },
     ],
 
-    // contact_pattern_contract_type: [
-    //   { name: "Sale", id: 1 },
-    //   { name: "Rent", id: 2 },
-    // ],
+    contact_pattern_contract_type: [
+      { name: "Sale", id: 1 },
+      { name: "Rent", id: 2 },
+    ],
+    contact_pattern_assets_type: [
+      { name: "Apartment", id: 1 },
+      { name: "Parking", id: 2 },
+      { name: "Shop", id: 3 },
+    ],
 
     contact_pattern_record_created_date: [
-      { name: "contract start", id: 1 },
-      { name: "contact Editing", id: 2 },
+      { name: "Contract Start", id: 1 },
+      { name: "Contact Editing", id: 2 },
     ],
 
     installment_entries_type: [
       { name: "Ownership", id: 1 },
-      { name: "real estate management", id: 2 },
+      { name: "Real Estate Management", id: 2 },
     ],
 
     installment_voucher_type: [
@@ -130,6 +135,15 @@ export const SELECT_LISTS = (listName) => {
       { name: "Later", id: 3 },
       { name: "Installment", id: 4 },
     ],
+    contract_round_to:  [
+      { name: "Without rounding", id: 0 },
+      { name: "1", id: 1 },
+      { name: "-1", id: -1 },
+      { name: "5", id: 5 },
+      { name: "-5", id: -5 },
+      { name: "10", id: 10 },
+      { name: "-10", id: -10 },
+    ]
   };
   return list[listName];
 };
@@ -160,22 +174,26 @@ export const SELECT_LISTS = (listName) => {
 // street
 
 export const FLAT_PROPERTY_TABS_SETTINGS = {
-  Apartment: {
+  apartment: {
     no: "apartment_no",
+    type: 1,
   },
   mezzanine: {
     no: "apartment_no",
+    type: 2,
   },
-  office: { no: "apartment_no" },
-  parking: { no: "parking_no" },
-  penthouse: { no: "apartment_no" },
-  "Underground parking": { no: "apartment_no" },
-  warehouse: { no: "apartment_no" },
-  Shops: { no: "shop_no" },
-  stores: { no: "apartment_no" },
-  "Driver flats": { no: "apartment_no" },
-  "Servant flats": { no: "apartment_no" },
+  office: { no: "apartment_no", type: 3 },
+  penthouse: { no: "apartment_no", type: 4 },
+  warehouse: { no: "apartment_no", type: 5 },
+  "driver flats": { no: "apartment_no", type: 6 },
+  "servant flats": { no: "apartment_no", type: 7 },
+  stores: { no: "apartment_no", type: "" },
+
+  Shops: { no: "shop_no", type: "" },
+  parking: { no: "parking_no", type: "" },
+  "underground parking": { no: "parking_no", type: "" },
 };
+
 export const FLAT_PROPERTY_TABS = [
   {
     alias: 0,

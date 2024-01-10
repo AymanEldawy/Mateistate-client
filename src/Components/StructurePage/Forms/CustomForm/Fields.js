@@ -9,6 +9,7 @@ import {
   UploadFile,
 } from "Components/StructurePage/CustomFields";
 import { IGNORED_Fields } from "Helpers/constants";
+import { ButtonField } from "Components/StructurePage/CustomFields/ButtonField";
 
 export const Fields = ({
   fields,
@@ -16,6 +17,7 @@ export const Fields = ({
   errors,
   getCachedList,
   handleInputChange,
+  tab,
 }) => {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
@@ -27,95 +29,152 @@ export const Fields = ({
           field?.name === "created_at"
         )
           return;
-        if (field?.name.indexOf("terms") !== -1) {
+        if (field?.name.indexOf("terms") !== -1 || field?.type === "long") {
           return (
             <Textarea
+              {...field}
               key={`${field?.name}`}
+              updatedName={tab ? `${tab}.${field?.name}` : ""}
               containerClassName="col-span-full"
               textareaClassName="min-h-[250px]"
               label={field?.name?.replace(/_/g, " ")}
-              error={errors[field?.name] ? 'Field is required' : ''}
-              handleInputChange={handleInputChange}
+              values={values}
+              error={
+                tab
+                  ? errors?.[tab]?.[field?.name]?.type
+                  : errors?.[field?.name]?.type
+              }
             />
           );
+        } else if (field?.name === "btn_action") {
+          return <ButtonField
+            {...field}
+            key={`${field?.label}`}
+            watch={tab ? `${tab}.${field?.watch}` : field.watch}
+          />;
         } else if (field?.is_ref) {
           return (
             <UniqueField
               {...field}
               label={field?.name?.replace(/_/g, " ")}
               key={`${field?.name}`}
+              updatedName={tab ? `${tab}.${field?.name}` : ""}
               table={field?.ref_table}
               getCachedList={getCachedList}
               list={!!getCachedList ? getCachedList(field?.ref_table) : []}
-              error={errors[field?.name] ? 'Field is required' : ''}
+              values={values}
+              error={
+                tab
+                  ? errors?.[tab]?.[field?.name]?.type
+                  : errors?.[field?.name]?.type
+              }
               handleInputChange={handleInputChange}
             />
           );
         } else if (field?.key === "radio") {
+          // console.log('radio', field);
           return (
             <Radio
               {...field}
               key={`${field?.name}`}
+              updatedName={tab ? `${tab}.${field?.name}` : ""}
               label={field?.name?.replace(/_/g, " ")}
-              error={errors[field?.name] ? 'Field is required' : ''}
+              values={values}
+              error={
+                tab
+                  ? errors?.[tab]?.[field?.name]?.type
+                  : errors?.[field?.name]?.type
+              }
               handleInputChange={handleInputChange}
             />
           );
         } else if (field?.key === "select") {
+          // console.log('select', field);
           return (
             <Select
               {...field}
               key={`${field?.name}`}
+              updatedName={tab ? `${tab}.${field?.name}` : ""}
               label={field?.name?.replace(/_/g, " ")}
-              value={values?.[field?.name]}
-              error={errors[field?.name] ? 'Field is required' : ''}
+              values={values}
+              error={
+                tab
+                  ? errors?.[tab]?.[field?.name]?.type
+                  : errors?.[field?.name]?.type
+              }
               handleInputChange={handleInputChange}
             />
           );
         } else if (field?.key === "image") {
+          // console.log('image', field);
           return (
             <UploadFile
+              {...field}
+              key={`${field?.name}`}
+              updatedName={tab ? `${tab}.${field?.name}` : ""}
               containerClassName="col-span-2"
-              src={values?.[field?.name]}
+              // src={values?.[field?.name]}
               index={i}
               readonly={field?.readonly}
               label={field?.name?.replace(/_/g, " ")}
-              error={errors[field?.name] ? 'Field is required' : ''}
-              handleInputChange={handleInputChange}
-            />
-          );
-        } else if (field?.key === "checkbox" || field.key === "choose") {
-          return (
-            <Radio
-              {...field}
-              key={`${field?.name}`}
-              label={field?.name?.replace(/_/g, " ")}
-              type={field.key === "choose" ? "checkbox" : ""}
-              list={field?.list}
-              error={errors[field?.name] ? 'Field is required' : ''}
+              values={values}
+              error={
+                tab
+                  ? errors?.[tab]?.[field?.name]?.type
+                  : errors?.[field?.name]?.type
+              }
               handleInputChange={handleInputChange}
             />
           );
         } else if (field?.key === "switch") {
+          // console.log('switch', field);
           return (
-            // <Switch
-            //   {...field}
-            //   defaultChecked={values?.[field?.name]}
-            //   key={`${field?.name}`}
-            //   label={field?.name?.replace(/_/g, " ")}
-            //   error={errors[field?.name] ? 'Field is required' : ''}
-            // handleInputChange={handleInputChange}
-            // />
-            <></>
+            <Switch
+              {...field}
+              defaultChecked={values?.[field?.name]}
+              key={`${field?.name}`}
+              updatedName={tab ? `${tab}.${field?.name}` : ""}
+              label={field?.name?.replace(/_/g, " ")}
+              values={values}
+              error={errors?.[field?.name] ? "Field is required" : ""}
+              handleInputChange={handleInputChange}
+            />
+            // <></>
+          );
+        } else if (field?.type === "checkbox" || field.key === "choose") {
+          // console.log('checkbox', 'choose', field);
+          return (
+            <Radio
+              {...field}
+              key={`${field?.name}`}
+              updatedName={tab ? `${tab}.${field?.name}` : ""}
+              label={field?.name?.replace(/_/g, " ")}
+              type={field.key === "choose" ? "checkbox" : ""}
+              list={field?.list}
+              values={values}
+              error={
+                tab
+                  ? errors?.[tab]?.[field?.name]?.type
+                  : errors?.[field?.name]?.type
+              }
+              handleInputChange={handleInputChange}
+            />
           );
         } else {
+          // console.log('normal', field?.type , field);
           return (
             <Input
               {...field}
               key={`${field?.name}`}
+              updatedName={tab ? `${tab}.${field?.name}` : ""}
               label={field?.name?.replace(/_/g, " ")}
-              error={errors[field?.name] ? 'Field is required' : ''}
-              handleInputChange={handleInputChange}
+              values={values}
+              error={
+                tab
+                  ? errors?.[tab]?.[field?.name]?.type
+                  : errors?.[field?.name]?.type
+              }
+              // handleInputChange={handleInputChange}
             />
           );
         }

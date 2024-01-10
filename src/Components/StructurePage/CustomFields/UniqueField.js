@@ -13,8 +13,10 @@ const UniqueField = ({
   containerClassName,
   error,
   table,
-  values,
   handleInputChange,
+  index,
+  updatedName,
+  selectContainerClassName,
   ...field
 }) => {
   const { dispatchForm } = usePopupForm();
@@ -31,7 +33,7 @@ const UniqueField = ({
   }, [defaultList?.length]);
 
   return (
-    <div>
+    <div className={containerClassName}>
       {label ? (
         <label
           title={label}
@@ -43,17 +45,12 @@ const UniqueField = ({
           ) : null}
         </label>
       ) : null}
-      <div className="relative flex items-center border  dark:border-dark-border rounded-md">
+      <div className={`relative flex items-center border  dark:border-dark-border rounded-md ${selectContainerClassName}`}>
         <Controller
-          name={field.name}
+          name={updatedName || field.name}
           control={control}
+          defaultValue={null}
           render={({ field: { onChange }, fieldState, formState }) => {
-            console.log(
-              "🚀 ~ file: UniqueField.js:54 ~ formState:",
-              field,
-              fieldState,
-              formState
-            );
             return (
               <Select
                 options={list}
@@ -72,15 +69,13 @@ const UniqueField = ({
                 )}
                 // onChange={onChange}
                 onChange={(option) =>
-                  handleInputChange(field?.name, option?.value)
+                  handleInputChange(updatedName || field?.name, option?.value)
                 }
               />
             );
           }}
           rules={{
-            // required: field?.required,
             validate: (value) => {
-              console.log("🚀 ~ file: UniqueField.js:77 ~ value-----:", value);
               return true;
             },
           }}

@@ -7,39 +7,36 @@ const Textarea = ({
   containerClassName,
   textareaClassName,
   error,
-  handleInputChange,
-
+  updatedName,
   ...field
 }) => {
+  console.log("🚀 ~ field:", field, updatedName)
   const { register } = useFormContext();
 
-  const { name } = field;
   return (
     <div className={"flex flex-col " + containerClassName}>
       {label ? (
         <label
           title={label}
-          htmlFor={name}
           className={
             "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize " +
             labelClassName
           }
         >
-          {label}{" "}
+          {label}
           {field?.required ? (
             <span className="text-red-500 mx-1">*</span>
           ) : null}
         </label>
       ) : null}
       <textarea
-        id={name}
+        // {...field}
         className={`border bg-gray-50 read-only:bg-blue-100 dark:read-only:bg-[#444] rounded p-1 ${
           error ? "border-red-200 text-red-500" : ""
         } ${textareaClassName}`}
-        {...field}
-        {...register(field.name, {
+        {...register(updatedName || field?.name, {
           required: field?.required,
-          onChange: (e) => handleInputChange(e.target.name, e.target.value),
+          // onChange: (e) => handleInputChange(e.target.name, e.target.value),
         })}
       />
       {error ? (

@@ -8,8 +8,6 @@ const useFormSteps = ({ oldValues, name }) => {
   const [tab, setTab] = useState("");
   const [fields, setFields] = useState([]);
   const [formSettings, setFormSettings] = useState({});
-  const [errors, setErrors] = useState({});
-  const [values, setValues] = useState({});
   const [CACHE_LIST, setCACHE_LIST] = useState({});
 
   // Get data
@@ -39,20 +37,12 @@ const useFormSteps = ({ oldValues, name }) => {
   };
 
   useEffect(() => {
-    setErrors({});
-    setValues({});
     getRefTables();
   }, [name]);
 
   useEffect(() => {
     getRefTables();
   }, [currentIndex, fields?.length]);
-
-  useEffect(() => {
-    if (oldValues) {
-      setValues(oldValues);
-    }
-  }, [oldValues]);
 
   const getCachedList = (tableName) => {
     return CACHE_LIST[tableName];
@@ -73,47 +63,6 @@ const useFormSteps = ({ oldValues, name }) => {
       ...prev,
       ...hash,
     }));
-  };
-
-  const insertIntoErrors = (name, value) => {
-    if (value === "") {
-      setErrors((prev) => {
-        return {
-          ...prev,
-          [name]: "Field is required",
-        };
-      });
-    } else {
-      let newErrors = errors;
-      delete newErrors[name];
-      setErrors(newErrors);
-    }
-  };
-
-  const handelChangeField = (name, value, required) => {
-    if (required) {
-      insertIntoErrors(name, value);
-    }
-    let tab = steps?.[currentIndex];
-    setValues((prev) => ({
-      ...prev,
-      [tab]: {
-        ...prev?.[tab],
-        [name]: value,
-      },
-    }));
-  };
-
-  const handelFieldUpload = (name, e, required) => {
-    if (required) {
-      // insertIntoErrors(name, value);
-    }
-    setValues((prev) => {
-      return {
-        ...prev,
-        [name]: e.target.files[0],
-      };
-    });
   };
 
   // check if form is more then step
@@ -153,14 +102,9 @@ const useFormSteps = ({ oldValues, name }) => {
     isLast,
     goTo,
     currentIndex,
-    values,
-    errors,
-    handelChangeField,
-    handelFieldUpload,
     tab,
     formSettings,
     steps,
-    setValues,
     fields,
     formSchema,
     getCachedList,

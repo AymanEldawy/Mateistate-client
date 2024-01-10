@@ -8,7 +8,7 @@ const Input = ({
   inputClassName,
   error,
   handleInputChange,
-
+  updatedName,
   // register,
   ...field
 }) => {
@@ -41,11 +41,9 @@ const Input = ({
             id={name}
             type="checkbox"
             className="sr-only peer"
-            {...register(field.name, {
+            {...register(updatedName || field.name, {
               required: field?.required,
-              validate: (value) => {
-                console.log("🚀 ~ file: Input.js:48 ~ value:", value);
-              },
+              validate: (value) => {},
               onChange: (e) =>
                 handleInputChange(e.target.name, e.target.checked),
             })}

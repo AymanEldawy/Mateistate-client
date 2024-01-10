@@ -21,8 +21,7 @@ export const ToolsTabsTable = ({
   const { tabName } = selectedTab;
   const [isUpdatable, setIsUpdatable] = useState("");
 
-  // let prefix = useMemo(() => getPrefix(selectedTab.tabName), [selectedTab]);
-  let prefix = 1;
+  let prefix = useMemo(() => getPrefix(selectedTab.tabName), [selectedTab]);
 
   if (!row?.id) return;
 

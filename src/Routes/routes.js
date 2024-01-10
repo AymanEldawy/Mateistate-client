@@ -10,6 +10,8 @@ import NouFound from "Pages/NouFound/NouFound";
 import TestEntry from "Components/StructurePage/Forms/TestEntry/TestEntry";
 import Voucher from "Components/StructurePage/Forms/TestEntry/Voucher";
 import Contract from "Pages/Contracts/Contract";
+import Installment from "Components/StructurePage/Installment/Installment";
+import Patterns from "Pages/Patterns/Patterns";
 
 const publicRoutes = [
   { path: "**", component: <NouFound /> },
@@ -34,8 +36,9 @@ const authProtectedRoutes = [
   // handle contracts
   { path: "/vouchers/:type/:name", component: <Voucher /> },
   { path: "/vouchers/entry", component: <TestEntry /> },
+  { path: "/list/installment", component: <Installment /> },
   { path: "/list/:name", component: <List /> },
-  { path: "/patterns/:name", component: <List /> },
+  { path: "/patterns/:name", component: <Patterns /> },
   { path: "/update/:name/:id", component: <Update /> },
   { path: "/chart/:name", component: <Chart /> },
 ];

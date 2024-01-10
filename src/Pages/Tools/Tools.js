@@ -1,16 +1,12 @@
 import BlockPaper from "Components/BlockPaper/BlockPaper";
 import ContentBar from "Components/Global/ContentBar/ContentBar";
 import { ApiActions } from "Helpers/Lib/api";
-import { FLAT_PROPERTY_TABS } from "Helpers/constants";
 import { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { ToolsColorsBar } from "./ToolsColorsBar";
-import Loading from "Components/Loading/Loading";
-import { ToolsTabsTableForm } from "Pages/Tools/ToolsTabsTableForm";
-import ToolsTabs from "./ToolsTabs";
-import { Button } from "Components/Global/Button";
 import { FlatColoringProvider } from "Hooks/useFlatColoring";
 import { FormProvider, useForm } from "react-hook-form";
+import ToolsWarper from "./ToolsWarper";
 
 const CACHE_APARTMENTS = {};
 
@@ -37,21 +33,7 @@ const Tools = () => {
   const location = useLocation();
   const rowState = location?.state?.row;
   const methods = useForm({ defaultValues: {} });
-  const {
-    handleSubmit,
-    watch,
-    formState: { errors },
-    reset,
-    setValue,
-  } = methods;
-  const [loading, setLoading] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(FLAT_PROPERTY_TABS[0]);
   const [rowData, setRowData] = useState();
-  // console.log("🚀 ~ file: Tools.js:41 ~ Tools ~ rowData:", rowData)
-  const [getValuesWithoutSubmit, setGetValuesWithoutSubmit] = useState({});
-  // console.log("🚀 ~ file: Tools.js:42 ~ Tools ~ getValuesWithoutSubmit:", getValuesWithoutSubmit)
-  const [getIndexOfRowUpdated, setGetIndexOfRowUpdated] = useState({});
-  // console.log("🚀 ~ file: Tools.js:43 ~ Tools ~ getIndexOfRowUpdated:", getIndexOfRowUpdated)
 
   const getBuildingData = async () => {
     const res = await ApiActions.getById("building", id);
@@ -68,11 +50,6 @@ const Tools = () => {
     }
     refetchBuildingAssets(id);
   }, [id, rowState]);
-
-  const onSubmit = async () => {
-    setLoading(true);
-    // insert or generate building assets
-  };
 
   return (
     <FormProvider {...methods}>
@@ -95,28 +72,7 @@ const Tools = () => {
             </ContentBar>
           }
         >
-          {loading ? (
-            <Loading withBackdrop />
-          ) : (
-            <>
-              <ToolsTabsTableForm
-                // oldValues={CACHE_LIST_COLORS}
-                getValuesWithoutSubmit={setGetValuesWithoutSubmit}
-                setGetIndexOfRowUpdated={setGetIndexOfRowUpdated}
-              />
-
-              <ToolsTabs
-                // CACHE_LIST_COLORS={CACHE_LIST_COLORS}
-                tabs={FLAT_PROPERTY_TABS}
-                selectedTab={selectedTab}
-                setSelectedTab={setSelectedTab}
-                row={rowData}
-              />
-              <div className="mt-8 flex justify-end">
-                <Button onClick={onSubmit} title="Submit" loading={loading} />
-              </div>
-            </>
-          )}
+          <ToolsWarper row={rowData} />
         </BlockPaper>
       </FlatColoringProvider>
     </FormProvider>

@@ -377,7 +377,7 @@ export const menuData = [
       {
         key: "bills patterns",
         name: "Bill patterns",
-        link: "/patterns/bill_pattern",
+        link: "/patterns/bill_patterns",
       },
       {
         key: "voucher patterns",

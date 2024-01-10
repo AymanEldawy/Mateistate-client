@@ -9,20 +9,12 @@ import TableCol from "Components/StructurePage/CustomTable/TableCol";
 import TableRow from "Components/StructurePage/CustomTable/TableRow";
 import TableBody from "Components/StructurePage/CustomTable/TableBody";
 
-let CACHE_LIST = {};
-
-const getCachedList = (tableName) => {
-  return CACHE_LIST[tableName];
-};
-
 const VoucherBodyGrid = ({
-  handelChangeEntriesField,
-  handelChangeFieldBlur,
-  entries,
-  allowSelect,
+  grid,
   layout,
   handleInputChange,
   errors,
+  CACHE_LIST,
 }) => {
   const [increaseCount, setIncreaseCount] = useState(20);
   return (
@@ -70,25 +62,21 @@ const VoucherBodyGrid = ({
                 </TableCol>
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <UniqueField
-                    className="min-w-[170px] border-0 !rounded-none !h-full"
                     index={index}
+                    updatedName={`grid.${index}.account_id`}
+                    className="min-w-[170px] border-0 !rounded-none !h-full"
                     table={"account"}
-                    name="account_id"
-                    getCachedList={getCachedList}
                     error={errors?.account_id ? "Field is required" : ""}
                     handleInputChange={handleInputChange}
-                    // tableForHashed="account"
                     list={CACHE_LIST["account"]}
-                    // label="CostGuid"
-                    value={entries?.[index]?.["account_id"] || ""}
                   />
                 </TableCol>
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <Input
+                    index={index}
+                    updatedName={`grid.${index}.debit`}
                     type="number"
-                    value={entries?.[index]?.["debit"] || ""}
                     inputClassName="border-0 !rounded-none !h-full"
-                    name="debit"
                     error={errors?.debit ? "Field is required" : ""}
                     handleInputChange={handleInputChange}
                   />
@@ -96,10 +84,12 @@ const VoucherBodyGrid = ({
                 {layout ? null : (
                   <TableCol classes="!p-0 border dark:border-dark-border">
                     <Input
+                      index={index}
+                      updatedName={`grid.${index}.credit`}
                       type="number"
-                      value={entries?.[index]?.["credit"] || ""}
+                      // value={grid?.[index]?.["credit"] || ""}
                       inputClassName="border-0 !rounded-none !h-full"
-                      name="credit"
+                      name="grid.credit"
                       error={errors?.credit ? "Field is required" : ""}
                       handleInputChange={handleInputChange}
                     />
@@ -107,51 +97,58 @@ const VoucherBodyGrid = ({
                 )}
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <UniqueField
-                    className="min-w-[170px] border-0 !rounded-none !h-full"
                     index={index}
+                    updatedName={`grid.${index}.currency_id`}
+                    className="min-w-[170px] border-0 !rounded-none !h-full"
                     table={"currency"}
-                    name="currency_id"
-                    getCachedList={getCachedList}
+                    name="grid.currency_id"
+                    // // getCachedList={getCachedList}
                     error={errors?.currency_id ? "Field is required" : ""}
                     handleInputChange={handleInputChange}
                     // tableForHashed="cost"
                     list={CACHE_LIST["currency"]}
                     // label="CostGuid"
-                    value={entries?.[index]?.["currency_id"] || ""}
+                    // value={grid?.[index]?.["currency_id"] || ""}
                   />
                 </TableCol>
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <Input
+                    index={index}
+                    updatedName={`grid.${index}.currency_val`}
                     type="number"
-                    value={entries?.[index]?.["currency_val"] || ""}
+                    // value={grid?.[index]?.["currency_val"] || ""}
                     inputClassName="border-0 !rounded-none !h-full"
-                    name="currency_val"
+                    name="grid.currency_val"
                     error={errors?.currency_val ? "Field is required" : ""}
                     handleInputChange={handleInputChange}
                   />
                 </TableCol>
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <Input
+                    index={index}
+                    updatedName={`grid.${index}.note`}
                     type="text"
-                    value={entries?.[index]?.["note"] || ""}
+                    // value={grid?.[index]?.["note"] || ""}
                     inputClassName="border-0 !rounded-none !h-full"
-                    name="note"
+                    name="grid.note"
                     error={errors?.note ? "Field is required" : ""}
                     handleInputChange={handleInputChange}
                   />
                 </TableCol>
                 <TableCol classes="!p-0 border dark:border-dark-border">
                   <UniqueField
+                    index={index}
+                    updatedName={`grid.${index}.cost_center_id`}
                     table={"cost_center"}
-                    name="cost_center_id"
-                    getCachedList={getCachedList}
+                    name="grid.cost_center_id"
+                    // // getCachedList={getCachedList}
                     error={errors?.cost_center_id ? "Field is required" : ""}
                     handleInputChange={handleInputChange}
                     // tableForHashed="cost"
                     className="min-w-[170px] border-0 !rounded-none !h-full"
                     list={CACHE_LIST["cost"]}
                     // label="CostGuid"
-                    value={entries?.[index]?.["cost_center_id"] || ""}
+                    // value={grid?.[index]?.["cost_center_id"] || ""}
                   />
                 </TableCol>
               </TableRow>

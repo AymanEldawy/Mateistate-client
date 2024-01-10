@@ -40,8 +40,9 @@ const Input = ({
          `}
         type={field?.type}
         readOnly={readOnly}
-        defaultValue={field.type === "number" ? 0 : null}
+        // defaultValue={field.type === "number" ? 0: null}
         {...register(updatedName || field.name, {
+          shouldUnregister: !field?.required,
           valueAsNumber: field.type === "number",
           valueAsDate: field.type === "data",
           required: field?.required,

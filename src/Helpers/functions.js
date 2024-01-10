@@ -1,4 +1,6 @@
 import axios from "axios";
+import { ApiActions } from "./Lib/api";
+import { FLAT_PROPERTY_TABS_SETTINGS } from "./constants";
 
 // export const SERVER_URL = `https://matiestate-server.vercel.app/`;
 export const SERVER_URL = `https://matiestate-server.vercel.app`;
@@ -84,314 +86,11 @@ export const getValueOfInputColor = (val) => {
   }
 };
 
-const tabNames = {
-  Apartment: "apartment 0",
-  Mezzanine: "apartment 1",
-  "Pent Houses": "apartment 2",
-  Office: "apartment 3",
-  "Servant flats": "apartment 7",
-  "Driver flats": "apartment 8",
-  Shops: "shop",
-  "Car parking": "parking",
-  "Underground parking": "parking",
-};
-
-const insertIntoApartments = async (tabName, data, guid) => {
-  let table = "Apartment";
-  switch (tabNames[tabName]) {
-    case "shop":
-      table = "shop";
-      break;
-    case "parking":
-      table = "parking";
-      break;
-    default:
-      table = "Apartment";
-      break;
-  }
-  let columns = [];
-  let values = [];
-  for (const key in data) {
-    if (data[key] !== null) {
-      columns.push(key);
-      values.push(data[key]);
-    }
-  }
-  columns.push("BuildingGuid");
-  values.push(guid);
-  let res = await axios.post(`${SERVER_URL}/createNewApartments`, {
-    table,
-    columns: columns,
-    values: values,
-  });
-};
-
-// const deleteFromApartments = async (count, Guid, tabName) => {
-//   // let apartments = await axios
-//   //   .post(`${SERVER_URL}/findPropertyOfBuilding`, {
-//   //     table: tabName,
-//   //     building: Guid,
-//   //   })
-//   //   .then((res) => res?.data?.recordset);
-//   let deleted = await axios
-//     .post(`${SERVER_URL}/delete-all`)
-//     .then((res) => {
-//     })
-//     .catch((err) => {
-//     });
-// };
-
-export const generateApartments = async (data, guid) => {
-  for (const tabName in data) {
-    for (const row of data[tabName]) {
-      // await insertIntoApartments(tabName, row, guid);
-      let table = "Apartment";
-      switch (tabNames[tabName]) {
-        case "shop":
-          table = "shop";
-          break;
-        case "parking":
-          table = "parking";
-          break;
-        default:
-          table = "Apartment";
-          break;
-      }
-      let columns = [];
-      let values = [];
-      for (const key in row) {
-        if (row[key] !== null) {
-          columns.push(key);
-          values.push(row[key]);
-        }
-      }
-      columns.push("BuildingGuid");
-      values.push(guid);
-      await axios.post(`${SERVER_URL}/createNewApartments`, {
-        table,
-        columns: columns,
-        values: values,
-      });
-    }
-  }
-};
-
 export const getPrefix = (tab) => {
   let tabSplit = tab?.split(" ");
   if (tabSplit?.length > 1)
     return `${tabSplit?.[0]?.[0]}${tabSplit?.[1]?.[0]?.toUpperCase()}`;
   else return tab[0]?.toUpperCase();
-};
-
-// export const apartmentsOperations = async (yCount, xCount, Guid) => {
-//   for (let index = 0; index < xCount; index++) {
-//     for (let j = 0; j < yCount; j++) {
-//       await insertIntoApartments(
-//         Guid,
-//         (index * 100 + j + 101).toString(),
-//         index + 1
-//       );
-//     }
-//   }
-// };
-
-// const colPlace = {
-//   ApartmentCountOfFloor: {
-//     tabName: "Apartment",
-//     index: "x",
-//   },
-
-//   FloorCount: {
-//     tabName: "Apartment",
-//     index: "y",
-//   },
-//   BHouseFloor: {
-//     tabName: "Pent House",
-//     index: "x",
-//   },
-//   BHouseFlatCount: {
-//     tabName: "Pent House",
-//     index: "y",
-//   },
-
-//   MBalanceFloor: {
-//     tabName: "Mezzanine",
-//     index: "x",
-//   },
-//   MBalanceFlatCount: {
-//     tabName: "Mezzanine",
-//     index: "y",
-//   },
-//   OfficeFloor: {
-//     tabName: "Office",
-//     index: "x",
-//   },
-//   OfficeCount: {
-//     tabName: "Office",
-//     index: "y",
-//   },
-//   ParkingFloor: {
-//     tabName: "Car parking",
-//     index: "x",
-//   },
-//   ParkingCount: {
-//     tabName: "Car parking",
-//     index: "y",
-//   },
-//   ParkingFloorUnder: {
-//     tabName: "Underground parking",
-//     index: "x",
-//   },
-//   ParkingCountUnder: {
-//     tabName: "Underground parking",
-//     index: "y",
-//   },
-
-//   ShopCount: {
-//     tabName: "Shops",
-//     index: "x",
-//   },
-
-//   FlatDriverCount: {
-//     tabName: "Driver flats",
-//     index: "x",
-//   },
-
-//   FlatServantCount: {
-//     tabName: "Servant flats",
-//     index: "x",
-//   },
-// };
-// let collectApartments = {};
-
-// export const checkApartments = async (columns, Guid) => {
-//   for (const col in columns) {
-//     collectApartments = {
-//       ...collectApartments,
-//       [colPlace?.[col]?.tabName]: {
-//         ...collectApartments[colPlace?.[col]?.tabName],
-//         [colPlace?.[col]?.index]: columns?.[col]?.newValue,
-//         [`old${colPlace?.[col]?.index}`]: columns?.[col]?.oldValue,
-//       },
-//     };
-//   }
-
-//   for (const key in collectApartments) {
-//     let item = collectApartments[key];
-//     if (item?.hasOwnProperty("y")) {
-//       let oldX = parseInt(item?.oldx) === 0 ? 1 : parseInt(item?.oldx);
-//       let oldY = parseInt(item?.oldy) === 0 ? 1 : parseInt(item?.oldy);
-//       let x = parseInt(item?.x) === 0 ? 1 : parseInt(item?.x);
-//       let y = parseInt(item?.y) === 0 ? 1 : parseInt(item?.y);
-//       let old = oldX * oldY;
-//       let newVal = x * y;
-//       if (old > newVal) {
-//         let count = old - newVal;
-//         deleteFromApartments(count, Guid, key);
-//       } else {
-//         let count = old === 1 ? newVal + 1 : newVal;
-//         count -= old;
-//         // for (let index = 0; index < count; index++) {
-//         //   await insertIntoApartments(
-//         //     Guid,
-//         //     (index * 100 + index + 101).toString(),
-//         //     "new " + index
-//         //   );
-//         // }
-//       }
-
-//     } else {
-//       let oldX = parseInt(item?.oldx) === 0 ? 1 : parseInt(item?.oldx);
-//       let x = parseInt(item?.x) === 0 ? 1 : parseInt(item?.x);
-//       if (oldX > x) {
-//       } else {
-//       }
-//     }
-//   }
-// };
-
-/*
- [
-          {
-            key: 1,
-            name: "Rent Contracts",
-            link: "",
-            subChild: [
-              {
-                key: 1,
-                name: "Flat rent contract",
-                link: "/rent/flat_rent_contract",
-              },
-              {
-                key: 2,
-                name: "Apartment rent contract",
-                link: "/rent/apartment_rent_contract",
-              },
-              {
-                key: 3,
-                name: "Shop rent contract",
-                link: "/rent/shop_rent_contract",
-              },
-              {
-                key: 4,
-                name: "Parking rent contract",
-                link: "/rent/parking_rent_contract/",
-              },
-            ],
-          },
-
-          {
-            key: 2,
-            name: "Sale Contracts",
-            link: "",
-            subChild: [
-              {
-                key: 1,
-                name: "Flat sale contract",
-                link: "/sale/flat_sale_contract",
-              },
-              {
-                key: 2,
-                name: "Shop sale contract",
-                link: "/sale/shop_sale_contract",
-              },
-              {
-                key: 3,
-                name: "Parking sale contract",
-                link: "/sale/parking_sale_contract",
-              },
-              {
-                key: 4,
-                name: "Land sale contract",
-                link: "/sale/land_sale_contract",
-              },
-            ],
-          },
-
-*/
-
-const types = ["rent", "sale"];
-const lists = ["rent menu", "sale menu", "other menu", null];
-
-const cardTypes = [
-  "villa",
-  "shop",
-  "flat",
-  "office",
-  "parking",
-  "penthouse",
-  "underground parking",
-  "store",
-];
-
-const genContPat = () => {
-  return {
-    id: Math.random(),
-    contract_type: types[Math.floor(Math.random() * 2)],
-    code: Math.random() * 20,
-    name: cardTypes[Math.floor(Math.random() * cardTypes.length)],
-    list_name: lists?.[Math.floor(Math.random() * 4)],
-  };
 };
 
 const menu_contracts = [
@@ -589,3 +288,86 @@ export function getContractMenus() {
 }
 
 getContractMenus();
+
+const INHERIT_PROPERTY_PARKING = [
+  "hex",
+  "note",
+  "area",
+  "area_unit",
+  "view",
+  // "bathroom_count",
+  // "balcony_count",
+  "property_type",
+];
+const INHERIT_PROPERTY_SHOP = [
+  // "hex",
+  "note",
+  "area",
+  "area_unit",
+  "view",
+  // "bathroom_count",
+  // "balcony_count",
+  // "property_type",
+];
+
+export const generateApartments = async (properties, flats) => {
+  let hashProperty = {};
+  console.log(
+    "🚀 ~ file: functions.js:337 ~ generateApartments ~ flats:",
+    flats
+  );
+
+  let grid = properties?.grid;
+  let len = grid?.length;
+
+  // return;
+  for (let i = 0; i < len; i++) {
+    if (grid?.[i]?.room_count) {
+      const res = await ApiActions.insert("apartment_property_values", {
+        data: {
+          ...grid?.[i],
+          row_index: i,
+        },
+      });
+      console.log(
+        "🚀 ~ file: functions.js:345 ~ generateApartments ~ res:",
+        res
+      );
+      if (res?.status) {
+        let data = res?.result?.at(0);
+        hashProperty[data?.hex] = data?.id;
+      }
+    }
+  }
+
+  for (const flat of flats) {
+    switch (flat) {
+      case "underground parking":
+      case "parking":
+        // insert to parking
+        // parking_kind = flat
+
+        return false;
+      case "shop":
+        // insert to shop
+        return false;
+
+      default: {
+        let property_type = FLAT_PROPERTY_TABS_SETTINGS?.[flat]?.type;
+        let hex = flat?.hex;
+        let data = {
+          ...hashProperty?.[hex],
+          ...flat,
+          property_values_id: hashProperty?.[hex]?.id,
+          property_type,
+        };
+        delete data.id;
+        delete data.room_count;
+        const res = await ApiActions.insert("apartment", {
+          data,
+        });
+      }
+    }
+  }
+  console.log(hashProperty);
+};

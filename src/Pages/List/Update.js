@@ -1,16 +1,10 @@
 import { useMemo } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 
-import { generateApartments } from "Helpers/functions";
 import { ApiActions } from "Helpers/Lib/api";
 
 import { toast } from "react-toastify";
-import SuperForm from "Components/StructurePage/Forms/CustomForm/FormSingular";
 import BlockPaper from "Components/BlockPaper/BlockPaper";
-import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
-import { DynamicForm } from "Components/StructurePage/Forms/CustomForm/DynamicForm";
 import useFetch from "Hooks/useFetch";
 import getFormByTableName from "Helpers/Forms/new-tables-forms";
 import FormSingular from "Components/StructurePage/Forms/CustomForm/FormSingular";
@@ -52,9 +46,6 @@ const Update = () => {
 
     if (res.status) {
       toast.success("Updated Successfully...");
-      if (name?.toLowerCase() === "building") {
-        generateApartments(values, res?.data);
-      }
     } else {
     }
   };
@@ -69,7 +60,6 @@ const Update = () => {
   //   }
   // };
 
-  console.log(data);
   return (
     <BlockPaper>
       {!steps ? (
