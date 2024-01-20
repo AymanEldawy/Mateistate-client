@@ -9,18 +9,12 @@ import TableCol from "Components/StructurePage/CustomTable/TableCol";
 import { Input } from "Components/StructurePage/CustomFields";
 import useFlatColoring from "Hooks/useFlatColoring";
 import { FLAT_PROPERTY_TABS_SETTINGS } from "Helpers/constants";
+import { useFormContext } from "react-hook-form";
 
 const ToolsColColor = ({
   isUpdatable,
   setIsUpdatable,
-  CACHE_LIST_COLORS,
-  apartmentNumber,
   tabName,
-  CACHE_APARTMENTS,
-  defaultInsertColor,
-  setFlatsDetails,
-  selectedTab,
-  setRefresh,
   yIndex,
   xIndex,
   prefix,
@@ -33,30 +27,21 @@ const ToolsColColor = ({
     canInsertColor,
     flatsDetails,
   } = useFlatColoring();
+  const { watch } = useFormContext();
 
   let tabSettings = useMemo(
     () => FLAT_PROPERTY_TABS_SETTINGS[tabName],
     [tabName]
   );
 
-  let itemHash = isMatrix
-    ? `${prefix} ${xIndex + 1}0${yIndex}`
+  const itemHash = isMatrix
+    ? `${prefix} ${xIndex + 1}0${yIndex + 1}`
     : `${prefix} ${1}0${xIndex + 1}`;
 
-  let flatName = tabSettings?.no;
-  let itemValue = flatsDetails?.[tabName]?.[itemHash]?.[flatName] || itemHash;
-  let itemColor = flatsDetails?.[tabName]?.[itemHash]?.hex;
-
-  // useEffect(() => {
-  //   if (CACHE_APARTMENTS[apartmentNumber]) {
-  //     defaultInsertColor(
-  //       itemHash,
-  //       tabName,
-  //       CACHE_APARTMENTS[apartmentNumber]
-  //       // CACHE_APARTMENTS[apartmentNumber]?.FlatBuildingDetailsIndex
-  //     );
-  //   }
-  // }, [apartmentNumber]);
+  const itemData = flatsDetails?.[tabName]?.[itemHash];
+  const flatName = tabSettings?.no;
+  const itemValue = flatsDetails?.[tabName]?.[itemHash]?.[flatName] || itemHash;
+  const itemColor = watch("grid")?.[itemData?.row_index]?.hex || itemData?.hex;
 
   return (
     <TableCol classes="!p-0  border border-gray-400">

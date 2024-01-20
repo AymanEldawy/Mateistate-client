@@ -4,7 +4,7 @@ import { memo } from "react";
 import { getValueOfInputColor } from "Helpers/functions";
 
 import { Button } from "Components/Global/Button";
-import { IncreaseTableBar } from "../IncreaseTableBar";
+import { IncreaseTableBar } from "../../CustomTable/IncreaseTableBar";
 import TableHead from "Components/StructurePage/CustomTable/TableHead";
 import TableHeadCol from "Components/StructurePage/CustomTable/TableHeadCol";
 import Table from "Components/StructurePage/CustomTable/Table";
@@ -19,7 +19,6 @@ const TableForm = ({
   activeStage,
   values,
   errors,
-  handleInputChange,
 }) => {
   const [increaseCount, setIncreaseCount] = useState(10);
 
@@ -77,7 +76,6 @@ const TableForm = ({
                           containerClassName="!min-w-[190px] border-0 !rounded-none !h-full"
                           className="!min-w-[190px] border-0 !rounded-none !h-full"
                           error={errors?.account_id ? "Field is required" : ""}
-                          handleInputChange={handleInputChange}
                           key={`${field?.name}`}
                           getCachedList={getCachedList}
                           list={
@@ -94,7 +92,6 @@ const TableForm = ({
                           label={""}
                           error={errors?.[field?.name]?.message}
                           inputClassName="border-0 !rounded-none !h-full"
-                          handleInputChange={handleInputChange}
                         />
                       )}
                     </TableCol>

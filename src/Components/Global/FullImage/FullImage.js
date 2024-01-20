@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
 
-import Modal from "Components/Modal/Modal";
+import Modal from "Components/Global/Modal/Modal";
 
 export const FullImage = ({ src, alt, height, width, ...imgProps }) => {
   const [open, setOpen] = useState(false);

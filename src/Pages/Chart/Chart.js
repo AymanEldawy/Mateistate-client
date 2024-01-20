@@ -2,11 +2,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import BlockPaper from "Components/BlockPaper/BlockPaper";
+import BlockPaper from "Components/Global/BlockPaper";
 import RenderTree from "Components/RenderTree/RenderTree";
 import { SERVER_URL } from "Helpers/functions";
 import { useTranslation } from "react-i18next";
-import Loading from "Components/Loading/Loading";
+import Loading from "Components/Global/Loading";
 import { toast } from "react-toastify";
 import { ApiActions } from "Helpers/Lib/api";
 import useFetch from "Hooks/useFetch";

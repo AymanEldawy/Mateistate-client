@@ -1,4 +1,4 @@
-import Backdrop from "Components/Backdrop/Backdrop";
+import Backdrop from "Components/Global/Backdrop";
 import { CloseIcon } from "Helpers/Icons";
 import React from "react";
 

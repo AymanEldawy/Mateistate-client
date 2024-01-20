@@ -10,7 +10,7 @@ const Textarea = ({
   updatedName,
   ...field
 }) => {
-  console.log("🚀 ~ field:", field, updatedName)
+
   const { register } = useFormContext();
 
   return (
@@ -36,7 +36,6 @@ const Textarea = ({
         } ${textareaClassName}`}
         {...register(updatedName || field?.name, {
           required: field?.required,
-          // onChange: (e) => handleInputChange(e.target.name, e.target.value),
         })}
       />
       {error ? (

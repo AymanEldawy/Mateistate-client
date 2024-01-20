@@ -1,5 +1,5 @@
 import { DashboardGridLayout } from "./DashboardGridLayout";
-import Layout from "Layout";
+import Layout from "Components/Layout";
 
 const Home = () => {
   return (

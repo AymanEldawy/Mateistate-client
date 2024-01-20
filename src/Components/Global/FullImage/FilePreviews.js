@@ -1,4 +1,4 @@
-import Modal from "Components/Modal/Modal";
+import Modal from "Components/Global/Modal/Modal";
 import React, { useState } from "react";
 import { FullImage } from "./FullImage";
 

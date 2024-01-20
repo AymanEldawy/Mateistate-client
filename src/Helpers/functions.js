@@ -1,6 +1,11 @@
 import axios from "axios";
 import { ApiActions } from "./Lib/api";
-import { FLAT_PROPERTY_TABS_SETTINGS } from "./constants";
+import {
+  FLAT_PROPERTY_TABS_SETTINGS,
+  FLAT_PROPERTY_TYPES,
+  SELECT_LISTS,
+} from "./constants";
+import { toast } from "react-toastify";
 
 // export const SERVER_URL = `https://matiestate-server.vercel.app/`;
 export const SERVER_URL = `https://matiestate-server.vercel.app`;
@@ -66,7 +71,7 @@ export function DropDowns(key) {
       { id: 3, name: "Mezzanine" },
       { id: 4, name: "Offices" },
       { id: 5, name: "Car parking" },
-      { id: 6, name: "Underground parking" },
+      { id: 6, name: "Underground Parking" },
       { id: 7, name: "Shops" },
       { id: 8, name: "Driver flats" },
       { id: 9, name: "Servant flats" },
@@ -87,159 +92,19 @@ export const getValueOfInputColor = (val) => {
 };
 
 export const getPrefix = (tab) => {
+  if (tab === "penthouse") return "PH";
   let tabSplit = tab?.split(" ");
   if (tabSplit?.length > 1)
-    return `${tabSplit?.[0]?.[0]}${tabSplit?.[1]?.[0]?.toUpperCase()}`;
+    return `${tabSplit?.[0]?.[0]?.toUpperCase()}${tabSplit?.[1]?.[0]?.toUpperCase()}`;
   else return tab[0]?.toUpperCase();
 };
 
-const menu_contracts = [
-  {
-    id: 0.09206106486943755,
-    contract_type: "sale",
-    code: 2.8068825069256675,
-    name: "store",
-    list_name: "Other menu",
-  },
-  {
-    id: 0.16709856373468046,
-    contract_type: "sale",
-    code: 18.215452419824416,
-    name: "parking",
-    list_name: "Other menu",
-  },
-  {
-    id: 0.7974238343043363,
-    contract_type: "rent",
-    code: 14.76771619882542,
-    name: "flat",
-    list_name: "Rent menu",
-  },
-  {
-    id: 0.6801484582997266,
-    contract_type: "rent",
-    code: 4.020861482655564,
-    name: "villa",
-    list_name: null,
-  },
-  {
-    id: 0.03141438140492259,
-    contract_type: "rent",
-    code: 6.104622793796062,
-    name: "shop",
-    list_name: "sale menu",
-  },
-  {
-    id: 0.5105893472743139,
-    contract_type: "rent",
-    code: 10.348838449440304,
-    name: "store",
-    list_name: null,
-  },
-  {
-    id: 0.838716734270476,
-    contract_type: "sale",
-    code: 13.506069017128128,
-    name: "parking",
-    list_name: "Rent menu",
-  },
-  {
-    id: 0.26961348597662105,
-    contract_type: "rent",
-    code: 9.662509514275985,
-    name: "shop",
-    list_name: null,
-  },
-  {
-    id: 0.6241939390624942,
-    contract_type: "rent",
-    code: 13.228572214024208,
-    name: "office",
-    list_name: "Other menu",
-  },
-  {
-    id: 0.8493061134598205,
-    contract_type: "rent",
-    code: 16.563692487324005,
-    name: "penthouse",
-    list_name: "Rent menu",
-  },
-  {
-    id: 0.8616244019422374,
-    contract_type: "rent",
-    code: 7.222377111341811,
-    name: "penthouse",
-    list_name: "Other menu",
-  },
-  {
-    id: 0.9823528312703897,
-    contract_type: "rent",
-    code: 7.038354064183281,
-    name: "villa",
-    list_name: "sale menu",
-  },
-  {
-    id: 0.7822271151408755,
-    contract_type: "sale",
-    code: 9.131318466975294,
-    name: "parking",
-    list_name: "Rent menu",
-  },
-  {
-    id: 0.4909453383798712,
-    contract_type: "rent",
-    code: 19.84637411859587,
-    name: "parking",
-    list_name: "Other menu",
-  },
-  {
-    id: 0.2826772081364122,
-    contract_type: "sale",
-    code: 18.504422045745876,
-    name: "store",
-    list_name: "Other menu",
-  },
-  {
-    id: 0.007664371835778061,
-    contract_type: "sale",
-    code: 15.297580186375113,
-    name: "shop",
-    list_name: "Other menu",
-  },
-  {
-    id: 0.10761625633899419,
-    contract_type: "rent",
-    code: 15.776335006684032,
-    name: "shop",
-    list_name: "Other menu",
-  },
-  {
-    id: 0.8473724539545724,
-    contract_type: "rent",
-    code: 14.3295705317301,
-    name: "villa",
-    list_name: "Other menu",
-  },
-  {
-    id: 0.7570456745819036,
-    contract_type: "rent",
-    code: 12.23593494973947,
-    name: "penthouse",
-    list_name: "Other menu",
-  },
-  {
-    id: 0.32998160076809824,
-    contract_type: "rent",
-    code: 2.0150097932866373,
-    name: "store",
-    list_name: "Other menu",
-  },
-];
-
-export function getContractMenus() {
+export async function getContractMenus() {
+  const res = await ApiActions.read("contract_pattern");
+  console.log("🚀 ~ getContractMenus ~ res:", res);
   let hash = {};
 
-  for (const item of menu_contracts) {
+  for (const item of res?.result) {
     if (item.list_name) {
       if (hash[item.list_name]) {
         hash[item.list_name].push(item);
@@ -256,24 +121,34 @@ export function getContractMenus() {
   for (const menu in hash) {
     let theItem = hash[menu];
     if (theItem.direct) {
-      let name = `${theItem.name} ${theItem.contract_type} contract`;
+      let name = theItem.name;
+      let contractType = SELECT_LISTS("contact_pattern_contract_type")?.find(
+        (c) => c.id === theItem.contract_type
+      )?.name;
 
-      let link = `/contract/${theItem.contract_type}/${theItem.name}_${theItem.contract_type}_contract`;
+      let link = `/contracts/add/${contractType?.toLowerCase()}/${
+        theItem.name
+      }_${contractType}_contract`;
       menus.push({
-        key: 4,
+        key: theItem.name,
         name,
         link,
       });
     } else {
       let subMenu = [];
       for (const subItem of theItem) {
-        let name = `${subItem.name} ${subItem.contract_type} contract`;
-        let link = `/contract/${subItem.contract_type}/${subItem.name}_${subItem.contract_type}_contract`;
+        let contractType = SELECT_LISTS("contact_pattern_contract_type")?.find(
+          (c) => c.id === subItem.contract_type
+        )?.name;
+
+        let name = `${subItem.name}_${contractType?.toLowerCase()}_contract`;
+        let link = `/contracts/add/${contractType?.toLowerCase()}/${
+          subItem.name
+        }_${contractType?.toLowerCase()}_contract`;
         subMenu.push({
-          key: 4,
+          key: subItem.name,
           name,
           link,
-          // link: `/contract/${theItem.contract_type}/${subItem.name}`,
         });
       }
       menus.push({
@@ -286,8 +161,6 @@ export function getContractMenus() {
 
   return menus;
 }
-
-getContractMenus();
 
 const INHERIT_PROPERTY_PARKING = [
   "hex",
@@ -310,64 +183,105 @@ const INHERIT_PROPERTY_SHOP = [
   // "property_type",
 ];
 
-export const generateApartments = async (properties, flats) => {
-  let hashProperty = {};
-  console.log(
-    "🚀 ~ file: functions.js:337 ~ generateApartments ~ flats:",
-    flats
-  );
+export const generateApartments = async (properties, flats, building_id) => {
+  const isLoading = toast.loading(`waiting...`);
 
-  let grid = properties?.grid;
-  let len = grid?.length;
+  let hashPropertyIds = {};
+  let hashProperty = {};
+
+  let len = properties?.length;
 
   // return;
   for (let i = 0; i < len; i++) {
-    if (grid?.[i]?.room_count) {
-      const res = await ApiActions.insert("apartment_property_values", {
-        data: {
-          ...grid?.[i],
-          row_index: i,
-        },
-      });
-      console.log(
-        "🚀 ~ file: functions.js:345 ~ generateApartments ~ res:",
-        res
-      );
-      if (res?.status) {
-        let data = res?.result?.at(0);
-        hashProperty[data?.hex] = data?.id;
+    if (properties?.[i]?.room_count) {
+      let item = properties[i];
+      hashProperty[item.hex] = item;
+      let res = null;
+      if (item?.id) {
+        res = await ApiActions.update("property_values", {
+          conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
+          updates: properties?.[i],
+        });
+        hashPropertyIds[item?.hex] = item.id;
+      } else {
+        res = await ApiActions.insert("property_values", {
+          data: {
+            ...properties?.[i],
+            row_index: i,
+          },
+        });
+        if (res?.status) {
+          let data = res?.record;
+          hashPropertyIds[data?.hex] = data.id;
+        }
       }
     }
   }
 
-  for (const flat of flats) {
+  for (const flat in flats) {
+    console.log("🚀 ~ generateApartments ~ flat:", flat);
+    let flatTableName = "apartment";
     switch (flat) {
       case "underground parking":
       case "parking":
-        // insert to parking
-        // parking_kind = flat
-
-        return false;
+        flatTableName = "parking";
+        break;
       case "shop":
-        // insert to shop
-        return false;
+        flatTableName = "shop";
+        break;
+      default:
+        flatTableName = "apartment";
+        break;
+    }
+    let flatsGroup = Object.values(flats[flat]);
+    for (const flat of flatsGroup) {
+      let hex = flat?.hex;
+      if (hashProperty?.[hex]?.id) delete hashProperty?.[hex].id;
+      console.log(hashProperty, "hashProperty");
+      let data = {
+        building_id,
+        ...flat,
+        ...hashProperty?.[hex],
+        property_values_id: hashPropertyIds?.[hex],
+      };
 
-      default: {
-        let property_type = FLAT_PROPERTY_TABS_SETTINGS?.[flat]?.type;
-        let hex = flat?.hex;
-        let data = {
-          ...hashProperty?.[hex],
-          ...flat,
-          property_values_id: hashProperty?.[hex]?.id,
-          property_type,
-        };
-        delete data.id;
-        delete data.room_count;
-        const res = await ApiActions.insert("apartment", {
+      delete data.created_at;
+      delete data.name;
+      delete data.room_count;
+
+      let flatType = FLAT_PROPERTY_TYPES[`${flatTableName}_${data?.flat_type}`];
+      let typeSettings = FLAT_PROPERTY_TABS_SETTINGS[flatType];
+      console.log(
+        "🚀 ~ generateApartments ~ typeSettings:",
+        data?.flat_type,
+        "flatType ",
+        flatTableName,
+        typeSettings
+      );
+
+      if (data?.id) {
+        const response = await ApiActions.update(flatTableName, {
+          conditions: [{ type: "and", conditions: [["id", "=", data?.id]] }],
+          updates: data,
+        });
+        if (!response?.success) {
+          toast.error(`Failed to update ${data?.[typeSettings?.no]}`);
+        }
+      } else {
+        const response = await ApiActions.insert(flatTableName, {
           data,
         });
+        if (!response?.success) {
+          toast.error(`Failed to insert ${data?.[typeSettings?.no]}`);
+        }
       }
     }
+    console.log("🚀 ~ generateApartments ~ hashProperty:", hashProperty);
+    console.log("🚀 ~ generateApartments ~ hashProperty:", hashProperty);
   }
-  console.log(hashProperty);
+  toast.update(isLoading, {
+    render: "Finished the process",
+    type: "success",
+    autoClose: 2000,
+  });
 };

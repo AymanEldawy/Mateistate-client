@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import { ResizeBar } from "./TableResizeBar";
-import BlockPaper from "Components/BlockPaper/BlockPaper";
+import BlockPaper from "Components/Global/BlockPaper";
 import { SortIcon } from "Helpers/Icons";
 import { useTranslation } from "react-i18next";
 import { NewTableBar } from "./NewTableBar";
@@ -16,13 +16,14 @@ import { TablePagination } from "./TablePagination";
 import getTableColumns from "Helpers/columns-structure";
 import { useLocalStorage } from "Hooks/useLocalStorage";
 import { ApiActions } from "Helpers/Lib/api";
-import ConfirmModal from "Components/ConfirmModal/ConfirmModal";
+import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import { TableSkeleton } from "../CustomTable/TableSkeleton";
 
 let columnBeingDragged;
 
 export const DynamicTable = ({
   tableName,
+  defaultTitle,
   data,
   containerClassName,
   tableClassName,
@@ -33,6 +34,7 @@ export const DynamicTable = ({
   setOpen,
   refetchData,
   loading,
+  onClickAdd
 }) => {
   const { t } = useTranslation();
   const { getTable, setTable } = useLocalStorage();
@@ -124,7 +126,7 @@ export const DynamicTable = ({
         setOpen={setOpenConfirmation}
       />
       <BlockPaper
-        title={tableName}
+        title={defaultTitle||tableName}
         subTitle={
           table.getGroupedSelectedRowModel()?.rows.length ? (
             <span className="text-blue-500 rounded-md text-sm font-medium capitalize">
@@ -140,7 +142,7 @@ export const DynamicTable = ({
           table={table}
           columnVisibility={columnVisibility}
           tableName={tableName}
-          onAddClick={() => setOpen(true)}
+          onAddClick={onClickAdd ? onClickAdd : () => setOpen(true)}
           onDeleteClick={() => setOpenConfirmation(true)}
         />
 
@@ -148,11 +150,11 @@ export const DynamicTable = ({
           className={`relative overflow-x-auto w-full  ${containerClassName}`}
         >
           <table
-            className={`w-[${table.getTotalSize()}] text-sm w-full ${tableClassName}`}
+            className={`w-[${table.getTotalSize()}] w-full ${tableClassName}`}
             style={{ width: table.getTotalSize() }}
           >
             <thead
-              className={`${tableHeadClassName} bg-gray-100 dark:bg-[#161616]`}
+              className={`${tableHeadClassName} bg-gray-100  text-sm dark:bg-[#161616]`}
             >
               {table.getHeaderGroups().map((headerGroup) => {
                 return (
@@ -204,7 +206,7 @@ export const DynamicTable = ({
                 );
               })}
             </thead>
-            <tbody className={tableBodyClassName}>
+            <tbody className={`${tableBodyClassName}`}>
               {loading ? (
                 <TableSkeleton columns={columns} />
               ) : (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SearchIcon, FilterIcon } from "Helpers/Icons";
-import Backdrop from "Components/Backdrop/Backdrop";
+import Backdrop from "Components/Global/Backdrop";
 import { useTranslation } from "react-i18next";
 
 const SearchBar = ({

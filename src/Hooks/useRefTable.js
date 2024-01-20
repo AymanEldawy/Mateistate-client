@@ -1,12 +1,10 @@
 import { ApiActions } from "Helpers/Lib/api";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 const useRefTable = (fields) => {
   let CACHE_LIST = {};
 
   const fetchData = async () => {
-    if (!fields?.length) return;
-
     for (const field of fields) {
       if (field.is_ref) {
         const response = await ApiActions.read(field?.ref_table);
@@ -24,6 +22,7 @@ const useRefTable = (fields) => {
   };
 
   useEffect(() => {
+    if(!fields?.length) return;
     fetchData();
   }, [fields?.length]);
 

@@ -9,9 +9,9 @@ import {
 } from "Helpers/Icons";
 
 import FormHeadingTitle from "Components/Global/FormHeadingTitle";
-import Modal from "Components/Modal/Modal";
+import Modal from "Components/Global/Modal/Modal";
 import TreeViewItem from "./TreeViewItem";
-import getFormByTableName from "Helpers/Forms/new-tables-forms";
+import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
 import SuperForm from "Components/StructurePage/Forms/CustomForm/FormSingular";
 import { DynamicForm } from "Components/StructurePage/Forms/CustomForm/DynamicForm";
 

@@ -1,16 +1,24 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import Modal from "Components/Modal/Modal";
+import Modal from "Components/Global/Modal/Modal";
 import { DynamicTable } from "Components/StructurePage/Tables/DynamicTable";
 import useFetch from "Hooks/useFetch";
 import { DynamicForm } from "Components/StructurePage/Forms/CustomForm/DynamicForm";
-
-const List = () => {
+import { useNavigate } from "react-router-dom";
+const List = ({ addPageHref }) => {
   const params = useParams();
   const { name } = params;
   const { loading, data, error, refetchData } = useFetch(name);
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
+  const onClickAdd = () => {
+    if (addPageHref?.href) {
+      let href = `${addPageHref?.href}${addPageHref?.allowName ? name : ""}`
+      navigate(href);
+    }
+  };
 
   return (
     <>
@@ -28,6 +36,7 @@ const List = () => {
           refetchData={refetchData}
           data={data || []}
           loading={loading}
+          onClickAdd={addPageHref && onClickAdd}
         />
       </div>
     </>

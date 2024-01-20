@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { FullImage } from "Components/Global/FullImage/FullImage";
 import { FolderPlusIcon } from "Helpers/Icons";
-import { useFormContext } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { FilePreviews } from "Components/Global/FullImage/FilePreviews";
 
 const UploadFile = ({
@@ -13,21 +13,10 @@ const UploadFile = ({
   textPlaceholder,
   containerClassName,
   boxContainerClassName,
-  handleInputChange,
   ...field
 }) => {
-  const { register } = useFormContext();
   const [preview, setPreview] = useState("");
   const [previews, setPreviews] = useState([]);
-
-  // console.log("🚀 ~ useEffect ~ src:", src)
-  // useEffect(() => {
-  //   if (src && typeof src === "object") {
-  //     setPreview(URL.createObjectURL(src));
-  //   } else if(src) {
-  //     setPreview(src);
-  //   }
-  // }, [src]);
 
   const changeFile = (e) => {
     let files = e.target.files;
@@ -37,10 +26,8 @@ const UploadFile = ({
         filesArray.push(URL.createObjectURL(file));
       }
       setPreviews(filesArray);
-      if (handleInputChange) handleInputChange(e.target.name, files);
     } else {
       setPreview(URL.createObjectURL(files?.[0]));
-      if (handleInputChange) handleInputChange(e.target.name, files?.[0]);
     }
   };
 
@@ -58,7 +45,7 @@ const UploadFile = ({
             alt="preview"
             className="absolute ltr:right-0 rtl:left-0 -top-1 h-16 cursor-pointer border-2 rounded-md border-black w-20 object-contain shadow z-20"
           />
-        ): null}
+        ) : null}
 
         {label ? (
           <label
@@ -75,18 +62,26 @@ const UploadFile = ({
           </label>
         ) : null}
         <div className="relative">
-          <input
-            id={label}
-            type="file"
-            {...field}
-            min={field?.type === "number" ? "0" : ""}
-            className={`border top-0 left-0 w-full h-full z-10 absolute opacity-0 rounded p-1 ${className} ${
-              error ? "border-red-200 text-red-500" : ""
-            }`}
-            {...register(field.name, {
-              required: field?.required,
-              onChange: (e) => changeFile(e),
-            })}
+          <Controller
+            name={field.name}
+            render={({ field: { onChange } }) => {
+              return (
+                <input
+                  id={label}
+                  type="file"
+                  {...field}
+                  className={`border top-0 left-0 w-full h-full z-10 absolute opacity-0 rounded p-1 ${className} ${
+                    error ? "border-red-200 text-red-500" : ""
+                  }`}
+                  onChange={(e) => {
+                    onChange(
+                      field?.multiple ? e.target.files : e.target.files.at(0)
+                    );
+                    changeFile(e);
+                  }}
+                />
+              );
+            }}
           />
           <span
             className={`bg-gray-100 dark:bg-[#2c2c2c] rounded-md hover:bg-gray-200 min-h-[37px] cursor-pointer capitalize left-0 w-full h-full top-0 flex gap-4 items-center justify-center ${boxContainerClassName}`}

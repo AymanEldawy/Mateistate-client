@@ -3,7 +3,12 @@
 import { getValue } from "@testing-library/user-event/dist/utils";
 import IndeterminateCheckbox from "Components/StructurePage/Tables/IndeterminateCheckbox";
 import { Link } from "react-router-dom";
-import { PaletteIcon } from "./Icons";
+import { CheckIcon, NotAllowIcon, PaletteIcon } from "./Icons";
+import {
+  FLAT_PROPERTY_TYPES,
+  SELECT_LISTS,
+  FLAT_PROPERTY_COLORS,
+} from "./constants";
 
 export const account = [
   {
@@ -50,13 +55,28 @@ export const account = [
       );
     },
   },
-  { header: "type", accessorKey: "type" },
+  {
+    header: "type",
+    accessorKey: "type",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs ${
+          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+        }`}
+      >
+        {SELECT_LISTS("account_type")?.find((c) => c?.id === getValue())?.name}
+      </span>
+    ),
+  },
   {
     header: "currency",
     accessorKey: "currency_id",
     cell: ({ row, getValue }) => {
       return (
-        <Link className="text-blue-500 capitalize" to={`/update/currency/${getValue()}`}>
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/currency/${getValue()}`}
+        >
           {row.original.currency_name}
         </Link>
       );
@@ -67,7 +87,10 @@ export const account = [
     accessorKey: "parent_id",
     cell: ({ row, getValue }) => {
       return (
-        <Link className="text-blue-500 capitalize" to={`/update/account/${getValue()}`}>
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/account/${getValue()}`}
+        >
           {row.original.parent_name}
         </Link>
       );
@@ -78,7 +101,10 @@ export const account = [
     accessorKey: "final_id",
     cell: ({ row, getValue }) => {
       return (
-        <Link className="text-blue-500 capitalize" to={`/update/account/${getValue()}`}>
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/account/${getValue()}`}
+        >
           {row.original.final_name}
         </Link>
       );
@@ -120,10 +146,30 @@ export const user = [
     accessorKey: "created_at",
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
-  { header: "card_type", accessorKey: "card_type" },
-  { header: "date_of_birth", accessorKey: "date_of_birth" },
+  {
+    header: "card_type",
+    accessorKey: "card_type",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs ${
+          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+        }`}
+      >
+        {SELECT_LISTS("user_type")?.find((c) => c?.id === getValue())?.name}
+      </span>
+    ),
+  },
+  {
+    header: "date_of_birth",
+    accessorKey: "date_of_birth",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "passport_number", accessorKey: "passport_number" },
-  { header: "passport_expiry", accessorKey: "passport_expiry" },
+  {
+    header: "passport_expiry",
+    accessorKey: "passport_expiry",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   {
     header: "national_id",
     accessorKey: "national_id",
@@ -161,6 +207,7 @@ export const user = [
   { header: "files", accessorKey: "files" },
   { header: "nationality", accessorKey: "nationality" },
 ];
+
 export const lessor = [
   {
     id: "select",
@@ -202,7 +249,11 @@ export const lessor = [
     },
   },
   { header: "passport", accessorKey: "passport" },
-  { header: "passport_expiry_date", accessorKey: "passport_expiry_date" },
+  {
+    header: "passport_expiry_date",
+    accessorKey: "passport_expiry_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "id_card", accessorKey: "id_card" },
   { header: "lessor_card", accessorKey: "lessor_card" },
   { header: "cell_phone", accessorKey: "cell_phone" },
@@ -216,6 +267,7 @@ export const lessor = [
   { header: "note", accessorKey: "note" },
   { header: "role", accessorKey: "role" },
 ];
+
 export const owner = [
   {
     id: "select",
@@ -265,6 +317,7 @@ export const owner = [
   { header: "address", accessorKey: "address" },
   { header: "nationality", accessorKey: "nationality" },
 ];
+
 export const seller = [
   {
     id: "select",
@@ -483,6 +536,7 @@ export const country = [
   },
   { header: "code", accessorKey: "code" },
 ];
+
 export const currency = [
   {
     id: "select",
@@ -589,7 +643,11 @@ export const building = [
   { header: "basin_number", accessorKey: "basin_number" },
   { header: "bond_number", accessorKey: "bond_number" },
   { header: "bond_type", accessorKey: "bond_type" },
-  { header: "bond_date", accessorKey: "bond_date" },
+  {
+    header: "bond_date",
+    accessorKey: "bond_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "owner_id", accessorKey: "owner_id" },
   { header: "display", accessorKey: "display" },
   { header: "statement", accessorKey: "statement" },
@@ -624,7 +682,20 @@ export const building = [
   { header: "office_floor", accessorKey: "office_floor" },
   { header: "underground_parking", accessorKey: "underground_parking" },
   { header: "bank_id", accessorKey: "bank_id" },
-  { header: "gen_entries", accessorKey: "gen_entries" },
+  {
+    header: "gen_entries",
+    accessorKey: "gen_entries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
 ];
 
 export const building_buying = [
@@ -659,12 +730,26 @@ export const building_buying = [
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
   { header: "amount", accessorKey: "amount" },
-  { header: "gen_entries", accessorKey: "gen_entries" },
+  {
+    header: "gen_entries",
+    accessorKey: "gen_entries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "building_id", accessorKey: "building_id" },
   { header: "supplier_account_id", accessorKey: "supplier_account_id" },
   { header: "statement", accessorKey: "statement" },
 ];
+
 export const building_editorial_entry = [
   {
     id: "select",
@@ -699,6 +784,7 @@ export const building_editorial_entry = [
   { header: "building_id", accessorKey: "building_id" },
   { header: "building_cost", accessorKey: "building_cost" },
 ];
+
 export const building_investment = [
   {
     id: "select",
@@ -726,16 +812,38 @@ export const building_investment = [
   },
   // { header: "id", accessorKey: "id" },
   { header: "owner_id", accessorKey: "owner_id" },
-  { header: "investment_start_date", accessorKey: "investment_start_date" },
-  { header: "investment_end_date", accessorKey: "investment_end_date" },
+  {
+    header: "investment_start_date",
+    accessorKey: "investment_start_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "investment_end_date",
+    accessorKey: "investment_end_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "terminating_tenancies", accessorKey: "terminating_tenancies" },
   { header: "investment_value", accessorKey: "investment_value" },
-  { header: "gen_entries", accessorKey: "gen_entries" },
+  {
+    header: "gen_entries",
+    accessorKey: "gen_entries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "currency_val", accessorKey: "currency_val" },
   { header: "tenants", accessorKey: "tenants" },
   { header: "renters_insurance", accessorKey: "renters_insurance" },
 ];
+
 export const building_pictures = [
   {
     id: "select",
@@ -770,6 +878,7 @@ export const building_pictures = [
   { header: "picture", accessorKey: "picture" },
   { header: "building_id", accessorKey: "building_id" },
 ];
+
 export const building_real_estate_development = [
   {
     id: "select",
@@ -799,13 +908,18 @@ export const building_real_estate_development = [
   { header: "account_id", accessorKey: "account_id" },
   // { header: "create_within_id", accessorKey: "create_within_id" },
   { header: "building_receipt", accessorKey: "building_receipt" },
-  { header: "received_date", accessorKey: "received_date" },
+  {
+    header: "received_date",
+    accessorKey: "received_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "amount", accessorKey: "amount" },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "currency_val", accessorKey: "currency_val" },
   { header: "note", accessorKey: "note" },
   { header: "building_id", accessorKey: "building_id" },
 ];
+
 export const building_real_estate_management = [
   {
     id: "select",
@@ -917,9 +1031,38 @@ export const accounting_voucher_main_data = [
   { header: "note", accessorKey: "note" },
   { header: "debit", accessorKey: "debit" },
   { header: "credit", accessorKey: "credit" },
-  { header: "feedback", accessorKey: "feedback" },
+  {
+    header: "feedback",
+    accessorKey: "feedback",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "seller_id", accessorKey: "seller_id" },
-  { header: "connect_with", accessorKey: "connect_with" },
+  {
+    header: "connect_with",
+    accessorKey: "connect_with",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs ${
+          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+        }`}
+      >
+        {
+          SELECT_LISTS("contract_connect_with")?.find(
+            (c) => c?.id === getValue()
+          )?.name
+        }
+      </span>
+    ),
+  },
   { header: "debit_amount", accessorKey: "debit_amount" },
   { header: "debit_total", accessorKey: "debit_total" },
   { header: "credit_total", accessorKey: "credit_total" },
@@ -977,20 +1120,124 @@ export const accounting_voucher_pattern = [
   { header: "list_name", accessorKey: "list_name" },
   { header: "default_account_id", accessorKey: "default_account_id" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
-  { header: "auto_transfer_entry", accessorKey: "auto_transfer_entry" },
-  { header: "required_cost_center", accessorKey: "required_cost_center" },
-  { header: "required_statement", accessorKey: "required_statement" },
+  {
+    header: "auto_transfer_entry",
+    accessorKey: "auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "required_cost_center",
+    accessorKey: "required_cost_center",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "required_statement",
+    accessorKey: "required_statement",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   {
     header: "default_print_folder_path",
     accessorKey: "default_print_folder_path",
   },
-  { header: "show_debit_field", accessorKey: "show_debit_field" },
-  { header: "show_credit_field", accessorKey: "show_credit_field" },
+  {
+    header: "show_debit_field",
+    accessorKey: "show_debit_field",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "show_credit_field",
+    accessorKey: "show_credit_field",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "debit_field_label", accessorKey: "debit_field_label" },
   { header: "credit_field_label", accessorKey: "credit_field_label" },
-  { header: "show_currency", accessorKey: "show_currency" },
-  { header: "show_cost_center", accessorKey: "show_cost_center" },
-  { header: "show_note", accessorKey: "show_note" },
+  {
+    header: "show_currency",
+    accessorKey: "show_currency",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "show_cost_center",
+    accessorKey: "show_cost_center",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "show_note",
+    accessorKey: "show_note",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "odd_table_color", accessorKey: "odd_table_color" },
   { header: "even_table_color", accessorKey: "even_table_color" },
   { header: "sms", accessorKey: "sms" },
@@ -1070,7 +1317,20 @@ export const apartment = [
   { header: "building_id", accessorKey: "building_id" },
   { header: "apartment_no", accessorKey: "apartment_no" },
   { header: "floor", accessorKey: "floor" },
-  { header: "type", accessorKey: "type" },
+  {
+    header: "flat_type",
+    accessorKey: "flat_type",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs capitalize `}
+        style={{
+          background: FLAT_PROPERTY_COLORS?.[`apartment_${getValue()}`],
+        }}
+      >
+        {FLAT_PROPERTY_TYPES?.[`apartment_${getValue()}`]}
+      </span>
+    ),
+  },
   { header: "description", accessorKey: "description" },
   { header: "category", accessorKey: "category" },
   { header: "area", accessorKey: "area" },
@@ -1078,18 +1338,70 @@ export const apartment = [
   { header: "view", accessorKey: "view" },
   { header: "bathroom_count", accessorKey: "bathroom_count" },
   { header: "balcony_count", accessorKey: "balcony_count" },
-  { header: "has_lawsuit", accessorKey: "has_lawsuit" },
+  {
+    header: "has_lawsuit",
+    accessorKey: "has_lawsuit",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "main_cost_center_id", accessorKey: "main_cost_center_id" },
   { header: "cost_center_id", accessorKey: "cost_center_id" },
-  { header: "property_type", accessorKey: "property_type" },
+  {
+    header: "property_type",
+    accessorKey: "property_type",
+    cell: ({ getValue }) => {
+      console.log(
+        SELECT_LISTS("flat_property_type"),
+        'SELECT_LISTS("flat_property_type")'
+      );
+      return (
+        <span
+          className={`rounded-md text-white py-1 px-2 text-xs ${
+            getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+          }`}
+        >
+          {
+            SELECT_LISTS("flat_property_type")?.find(
+              (c) => c?.id === getValue()
+            )?.name
+          }
+        </span>
+      );
+    },
+  },
   { header: "water_meter", accessorKey: "water_meter" },
   { header: "electricity_meter", accessorKey: "electricity_meter" },
   { header: "statement", accessorKey: "statement" },
   { header: "x_index", accessorKey: "x_index" },
   { header: "y_index", accessorKey: "y_index" },
   { header: "room_count", accessorKey: "room_count" },
-  { header: "property_values_id", accessorKey: "property_values_id" },
-  { header: "hex", accessorKey: "hex" },
+  {
+    header: "property_values_id",
+    accessorKey: "property_values_id",
+    cell: ({ row }) => {
+      console.log(
+        SELECT_LISTS("flat_property_type"),
+        'SELECT_LISTS("flat_property_type")'
+      );
+      return (
+        <span
+          className={`rounded-md text-white py-1 px-2 text-xs `}
+          style={{ background: row.original.hex }}
+        >
+          {row.original.row_index}
+        </span>
+      );
+    },
+  },
+  // { header: "hex", accessorKey: "hex" },
   { header: "cost_price", accessorKey: "cost_price" },
   { header: "amount_paid", accessorKey: "amount_paid" },
   { header: "cost_currency_id", accessorKey: "cost_currency_id" },
@@ -1125,7 +1437,8 @@ export const apartment_pictures = [
   { header: "apartment_id", accessorKey: "apartment_id" },
   { header: "picture", accessorKey: "picture" },
 ];
-export const apartment_property_values = [
+
+export const property_values = [
   {
     id: "select",
     size: 40,
@@ -1156,11 +1469,27 @@ export const apartment_property_values = [
   { header: "view", accessorKey: "view" },
   { header: "bathroom_count", accessorKey: "bathroom_count" },
   { header: "balcony_count", accessorKey: "balcony_count" },
-  { header: "property_type", accessorKey: "property_type" },
+  {
+    header: "property_type",
+    accessorKey: "property_type",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs ${
+          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+        }`}
+      >
+        {
+          SELECT_LISTS("flat_property_type")?.find((c) => c?.id === getValue())
+            ?.name
+        }
+      </span>
+    ),
+  },
   { header: "note", accessorKey: "note" },
   { header: "room_count", accessorKey: "room_count" },
   { header: "hex", accessorKey: "hex" },
 ];
+
 export const apartment_rental_price = [
   {
     id: "select",
@@ -1188,10 +1517,15 @@ export const apartment_rental_price = [
   },
   // { header: "id", accessorKey: "id" },
   { header: "apartment_id", accessorKey: "apartment_id" },
-  { header: "date", accessorKey: "date" },
+  {
+    header: "date",
+    accessorKey: "date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "price", accessorKey: "price" },
   { header: "currency_id", accessorKey: "currency_id" },
 ];
+
 export const apartment_selling_price = [
   {
     id: "select",
@@ -1219,7 +1553,11 @@ export const apartment_selling_price = [
   },
   // { header: "id", accessorKey: "id" },
   { header: "apartment_id", accessorKey: "apartment_id" },
-  { header: "date", accessorKey: "date" },
+  {
+    header: "date",
+    accessorKey: "date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "price", accessorKey: "price" },
   { header: "currency_id", accessorKey: "currency_id" },
 ];
@@ -1253,8 +1591,34 @@ export const contract = [
   },
   // { header: "id", accessorKey: "id" },
   { header: "number", accessorKey: "number" },
-  { header: "feedback", accessorKey: "feedback" },
-  { header: "lawsuit", accessorKey: "lawsuit" },
+  {
+    header: "feedback",
+    accessorKey: "feedback",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "lawsuit",
+    accessorKey: "lawsuit",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "client_id", accessorKey: "client_id" },
   { header: "building_id", accessorKey: "building_id" },
   { header: "apartment_id", accessorKey: "apartment_id" },
@@ -1267,7 +1631,11 @@ export const contract = [
   { header: "phono", accessorKey: "phono" },
   { header: "area", accessorKey: "area" },
   { header: "status", accessorKey: "status" },
-  { header: "date", accessorKey: "date" },
+  {
+    header: "date",
+    accessorKey: "date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "contract_place", accessorKey: "contract_place" },
   { header: "rental_period_text", accessorKey: "rental_period_text" },
   { header: "rent_type", accessorKey: "rent_type" },
@@ -1280,7 +1648,19 @@ export const contract = [
   { header: "previous_contract_count", accessorKey: "previous_contract_count" },
   { header: "current_contract_count", accessorKey: "current_contract_count" },
   { header: "current_contract_count", accessorKey: "current_contract_count" },
-  { header: "contract_type", accessorKey: "contract_type" },
+  {
+    header: "contract_type",
+    accessorKey: "contract_type",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs ${
+          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+        }`}
+      >
+        {SELECT_LISTS("contract_type")?.find((c) => c?.id === getValue())?.name}
+      </span>
+    ),
+  },
   { header: "contract_value", accessorKey: "contract_value" },
   { header: "monthly_value", accessorKey: "monthly_value" },
   { header: "currency_id", accessorKey: "currency_id" },
@@ -1300,8 +1680,16 @@ export const contract = [
   { header: "electricity_insurance", accessorKey: "electricity_insurance" },
   { header: "last_meter_reading", accessorKey: "last_meter_reading" },
   { header: "contract_duration", accessorKey: "contract_duration" },
-  { header: "start_date", accessorKey: "start_date" },
-  { header: "end_date", accessorKey: "end_date" },
+  {
+    header: "start_date",
+    accessorKey: "start_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "end_date",
+    accessorKey: "end_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "payment_type", accessorKey: "payment_type" },
   { header: "cost_center_id", accessorKey: "cost_center_id" },
   { header: "revenue_account_id", accessorKey: "revenue_account_id" },
@@ -1339,7 +1727,11 @@ export const contract = [
     accessorKey: "commission_from_owner_note",
   },
   { header: "contract_terms", accessorKey: "contract_terms" },
-  { header: "termination_date", accessorKey: "termination_date" },
+  {
+    header: "termination_date",
+    accessorKey: "termination_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "owner_total_amount", accessorKey: "owner_total_amount" },
   { header: "new_amount", accessorKey: "new_amount" },
   { header: "round_to", accessorKey: "round_to" },
@@ -1351,9 +1743,17 @@ export const contract = [
   },
   { header: "fine_note", accessorKey: "fine_note" },
   { header: "evacuation_request", accessorKey: "evacuation_request" },
-  { header: "evacuation_date", accessorKey: "evacuation_date" },
+  {
+    header: "evacuation_date",
+    accessorKey: "evacuation_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "clearance_printed", accessorKey: "clearance_printed" },
-  { header: "clearance_printed_date", accessorKey: "clearance_printed_date" },
+  {
+    header: "clearance_printed_date",
+    accessorKey: "clearance_printed_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
 ];
 
 export const contract_cycle = [
@@ -1383,15 +1783,80 @@ export const contract_cycle = [
   },
   // { header: "id", accessorKey: "id" },
   { header: "contract_id", accessorKey: "contract_id" },
-  { header: "contract_documented", accessorKey: "contract_documented" },
-  { header: "contract_certifying", accessorKey: "contract_certifying" },
+  {
+    header: "contract_documented",
+    accessorKey: "contract_documented",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "contract_certifying",
+    accessorKey: "contract_certifying",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   {
     header: "contract_certifying_body",
     accessorKey: "contract_certifying_body",
   },
-  { header: "contract_received", accessorKey: "contract_received" },
-  { header: "contract_delivered", accessorKey: "contract_delivered" },
-  { header: "contract_signed", accessorKey: "contract_signed" },
+  {
+    header: "contract_received",
+    accessorKey: "contract_received",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "contract_delivered",
+    accessorKey: "contract_delivered",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "contract_signed",
+    accessorKey: "contract_signed",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "municipal_license_num", accessorKey: "municipal_license_num" },
   { header: "municipal_license_from", accessorKey: "municipal_license_from" },
   { header: "municipal_license_to", accessorKey: "municipal_license_to" },
@@ -1430,7 +1895,19 @@ export const contract_financial = [
   },
   // { header: "id", accessorKey: "id" },
   { header: "contract_id", accessorKey: "contract_id" },
-  { header: "contract_type", accessorKey: "contract_type" },
+  {
+    header: "contract_type",
+    accessorKey: "contract_type",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs ${
+          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+        }`}
+      >
+        {SELECT_LISTS("contract_type")?.find((c) => c?.id === getValue())?.name}
+      </span>
+    ),
+  },
   { header: "contract_value", accessorKey: "contract_value" },
   { header: "monthly_value", accessorKey: "monthly_value" },
   { header: "currency_id", accessorKey: "currency_id" },
@@ -1450,8 +1927,16 @@ export const contract_financial = [
   { header: "electricity_insurance", accessorKey: "electricity_insurance" },
   { header: "last_meter_reading", accessorKey: "last_meter_reading" },
   { header: "contract_duration", accessorKey: "contract_duration" },
-  { header: "start_date", accessorKey: "start_date" },
-  { header: "end_date", accessorKey: "end_date" },
+  {
+    header: "start_date",
+    accessorKey: "start_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "end_date",
+    accessorKey: "end_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "paid_type", accessorKey: "paid_type" },
   { header: "cost_center_id", accessorKey: "cost_center_id" },
   { header: "revenue_account_id", accessorKey: "revenue_account_id" },
@@ -1541,11 +2026,29 @@ export const contract_pattern = [
     accessorKey: "created_at",
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
-  { header: "contract_type", accessorKey: "contract_type" },
+  {
+    header: "contract_type",
+    accessorKey: "contract_type",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs ${
+          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+        }`}
+      >
+        {
+          SELECT_LISTS("contact_pattern_contract_type")?.find(
+            (c) => c?.id === getValue()
+          )?.name
+        }
+      </span>
+    ),
+  },
+  { header: "assets_type", accessorKey: "assets_type" },
   { header: "code", accessorKey: "code" },
   {
     header: "name",
     accessorKey: "name",
+    size: 200,
     cell: ({ getValue, row }) => {
       return (
         <Link
@@ -1559,10 +2062,65 @@ export const contract_pattern = [
   },
   { header: "list_name", accessorKey: "list_name" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
-  { header: "gen_enteries", accessorKey: "gen_enteries" },
-  { header: "auto_gen_enteries", accessorKey: "auto_gen_enteries" },
-  { header: "auto_transfer_entry", accessorKey: "auto_transfer_entry" },
-  { header: "record_date_created", accessorKey: "record_date_created" },
+  {
+    header: "gen_enteries",
+    accessorKey: "gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "auto_gen_enteries",
+    accessorKey: "auto_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "auto_transfer_entry",
+    accessorKey: "auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "record_date_created",
+    accessorKey: "record_date_created",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs ${
+          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+        }`}
+      >
+        {
+          SELECT_LISTS("contact_pattern_record_created_date")?.find(
+            (c) => c?.id === getValue()
+          )?.name
+        }
+      </span>
+    ),
+  },
   {
     header: "new_contract_without_terminating",
     accessorKey: "new_contract_without_terminating",
@@ -1611,43 +2169,343 @@ export const contract_pattern = [
   {
     header: "move_cost_center_with_revenue",
     accessorKey: "move_cost_center_with_revenue",
+    cell: ({ getValue }) => {
+      let value = getValue();
+      return (
+        <div className={`rounded-md py-1 px-2 text-sm flex gap-2 items-center`}>
+          {value?.Debit && value?.Credit ? (
+            <>
+              <div className="flex gap-2 items-center bg-teal-500 text-white rounded-md px-2 py-1">
+                {!value.Debit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Debit{" "}
+                  </>
+                ) : null}
+              </div>
+              <div className="flex gap-2 items-center bg-rose-700 text-white rounded-md px-2 py-1">
+                {!value.Credit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" /> Credit
+                  </>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <span className="w-full flex justify-center">
+              <NotAllowIcon className="w-6 h-6 text-red-500" />
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   {
     header: "move_cost_center_with_tenant",
     accessorKey: "move_cost_center_with_tenant",
+    cell: ({ getValue }) => {
+      let value = getValue();
+      return (
+        <div className={`rounded-md py-1 px-2 text-sm flex gap-2 items-center`}>
+          {value?.Debit && value?.Credit ? (
+            <>
+              <div className="flex gap-2 items-center bg-teal-500 text-white rounded-md px-2 py-1">
+                {!value.Debit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Debit{" "}
+                  </>
+                ) : null}
+              </div>
+              <div className="flex gap-2 items-center bg-rose-700 text-white rounded-md px-2 py-1">
+                {!value.Credit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" /> Credit
+                  </>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <span className="w-full flex justify-center">
+              <NotAllowIcon className="w-6 h-6 text-red-500" />
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   {
     header: "move_cost_center_with_insurance_revenue",
     accessorKey: "move_cost_center_with_insurance_revenue",
+    cell: ({ getValue }) => {
+      let value = getValue();
+      return (
+        <div className={`rounded-md py-1 px-2 text-sm flex gap-2 items-center`}>
+          {value?.Debit && value?.Credit ? (
+            <>
+              <div className="flex gap-2 items-center bg-teal-500 text-white rounded-md px-2 py-1">
+                {!value.Debit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Debit{" "}
+                  </>
+                ) : null}
+              </div>
+              <div className="flex gap-2 items-center bg-rose-700 text-white rounded-md px-2 py-1">
+                {!value.Credit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" /> Credit
+                  </>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <span className="w-full flex justify-center">
+              <NotAllowIcon className="w-6 h-6 text-red-500" />
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   {
     header: "move_cost_center_with_price_revenue",
     accessorKey: "move_cost_center_with_price_revenue",
+    cell: ({ getValue }) => {
+      let value = getValue();
+      return (
+        <div className={`rounded-md py-1 px-2 text-sm flex gap-2 items-center`}>
+          {value?.Debit && value?.Credit ? (
+            <>
+              <div className="flex gap-2 items-center bg-teal-500 text-white rounded-md px-2 py-1">
+                {!value.Debit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Debit{" "}
+                  </>
+                ) : null}
+              </div>
+              <div className="flex gap-2 items-center bg-rose-700 text-white rounded-md px-2 py-1">
+                {!value.Credit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" /> Credit
+                  </>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <span className="w-full flex justify-center">
+              <NotAllowIcon className="w-6 h-6 text-red-500" />
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   {
     header: "move_cost_center_with_intention_ratifying",
     accessorKey: "move_cost_center_with_intention_ratifying",
+    cell: ({ getValue }) => {
+      let value = getValue();
+      return (
+        <div className={`rounded-md py-1 px-2 text-sm flex gap-2 items-center`}>
+          {value?.Debit && value?.Credit ? (
+            <>
+              <div className="flex gap-2 items-center bg-teal-500 text-white rounded-md px-2 py-1">
+                {!value.Debit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Debit{" "}
+                  </>
+                ) : null}
+              </div>
+              <div className="flex gap-2 items-center bg-rose-700 text-white rounded-md px-2 py-1">
+                {!value.Credit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" /> Credit
+                  </>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <span className="w-full flex justify-center">
+              <NotAllowIcon className="w-6 h-6 text-red-500" />
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   {
     header: "move_cost_center_with_other_fee",
     accessorKey: "move_cost_center_with_other_fee",
+    cell: ({ getValue }) => {
+      let value = getValue();
+      return (
+        <div className={`rounded-md py-1 px-2 text-sm flex gap-2 items-center`}>
+          {value?.Debit && value?.Credit ? (
+            <>
+              <div className="flex gap-2 items-center bg-teal-500 text-white rounded-md px-2 py-1">
+                {!value.Debit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Debit{" "}
+                  </>
+                ) : null}
+              </div>
+              <div className="flex gap-2 items-center bg-rose-700 text-white rounded-md px-2 py-1">
+                {!value.Credit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" /> Credit
+                  </>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <span className="w-full flex justify-center">
+              <NotAllowIcon className="w-6 h-6 text-red-500" />
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   {
     header: "move_cost_center_with_commission_client",
     accessorKey: "move_cost_center_with_commission_client",
+    cell: ({ getValue }) => {
+      let value = getValue();
+      return (
+        <div className={`rounded-md py-1 px-2 text-sm flex gap-2 items-center`}>
+          {value?.Debit && value?.Credit ? (
+            <>
+              <div className="flex gap-2 items-center bg-teal-500 text-white rounded-md px-2 py-1">
+                {!value.Debit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Debit{" "}
+                  </>
+                ) : null}
+              </div>
+              <div className="flex gap-2 items-center bg-rose-700 text-white rounded-md px-2 py-1">
+                {!value.Credit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" /> Credit
+                  </>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <span className="w-full flex justify-center">
+              <NotAllowIcon className="w-6 h-6 text-red-500" />
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   {
     header: "move_cost_center_with_commission_owner",
     accessorKey: "move_cost_center_with_commission_owner",
+    cell: ({ getValue }) => {
+      let value = getValue();
+      return (
+        <div className={`rounded-md py-1 px-2 text-sm flex gap-2 items-center`}>
+          {value?.Debit && value?.Credit ? (
+            <>
+              <div className="flex gap-2 items-center bg-teal-500 text-white rounded-md px-2 py-1">
+                {!value.Debit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Debit{" "}
+                  </>
+                ) : null}
+              </div>
+              <div className="flex gap-2 items-center bg-rose-700 text-white rounded-md px-2 py-1">
+                {!value.Credit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" /> Credit
+                  </>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <span className="w-full flex justify-center">
+              <NotAllowIcon className="w-6 h-6 text-red-500" />
+            </span>
+          )}
+        </div>
+      );
+    },
   },
-  ,
+
   {
     header: "move_cost_center_with_contract_fines_terminating",
     accessorKey: "move_cost_center_with_contract_fines_terminating",
+    cell: ({ getValue }) => {
+      let value = getValue();
+      return (
+        <div className={`rounded-md py-1 px-2 text-sm flex gap-2 items-center`}>
+          {value?.Debit && value?.Credit ? (
+            <>
+              <div className="flex gap-2 items-center bg-teal-500 text-white rounded-md px-2 py-1">
+                {!value.Debit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Debit{" "}
+                  </>
+                ) : null}
+              </div>
+              <div className="flex gap-2 items-center bg-rose-700 text-white rounded-md px-2 py-1">
+                {!value.Credit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" /> Credit
+                  </>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <span className="w-full flex justify-center">
+              <NotAllowIcon className="w-6 h-6 text-red-500" />
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   {
     header: "move_cost_center_with_decisiveness_granted",
     accessorKey: "move_cost_center_with_decisiveness_granted",
+    cell: ({ getValue }) => {
+      let value = getValue();
+      return (
+        <div className={`rounded-md py-1 px-2 text-sm flex gap-2 items-center`}>
+          {value?.Debit && value?.Credit ? (
+            <>
+              <div className="flex gap-2 items-center bg-teal-500 text-white rounded-md px-2 py-1">
+                {!value.Debit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Debit{" "}
+                  </>
+                ) : null}
+              </div>
+              <div className="flex gap-2 items-center bg-rose-700 text-white rounded-md px-2 py-1">
+                {!value.Credit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" /> Credit
+                  </>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <span className="w-full flex justify-center">
+              <NotAllowIcon className="w-6 h-6 text-red-500" />
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   { header: "contract_terms", accessorKey: "contract_terms" },
   { header: "folder_default_printing", accessorKey: "folder_default_printing" },
@@ -1659,6 +2517,36 @@ export const contract_pattern = [
   {
     header: "move_cost_center_with_contract_proceeds_rerminating",
     accessorKey: "move_cost_center_with_contract_proceeds_rerminating",
+    cell: ({ getValue }) => {
+      let value = getValue();
+      return (
+        <div className={`rounded-md py-1 px-2 text-sm flex gap-2 items-center`}>
+          {value?.Debit && value?.Credit ? (
+            <>
+              <div className="flex gap-2 items-center bg-teal-500 text-white rounded-md px-2 py-1">
+                {!value.Debit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Debit{" "}
+                  </>
+                ) : null}
+              </div>
+              <div className="flex gap-2 items-center bg-rose-700 text-white rounded-md px-2 py-1">
+                {!value.Credit ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" /> Credit
+                  </>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <span className="w-full flex justify-center">
+              <NotAllowIcon className="w-6 h-6 text-red-500" />
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   { header: "sms", accessorKey: "sms" },
 ];
@@ -1721,9 +2609,15 @@ export const contract_receipt_number = [
   // { header: "id", accessorKey: "id" },
   { header: "contract_id", accessorKey: "contract_id" },
   { header: "receipt_number", accessorKey: "receipt_number" },
-  { header: "receipt_date", accessorKey: "receipt_date" },
+  {
+    header: "receipt_date",
+    accessorKey: "receipt_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "receipt_statement", accessorKey: "receipt_statement" },
 ];
+
+//here
 
 // ==== Start financial
 export const financial_data = [
@@ -1767,10 +2661,26 @@ export const financial_data = [
   { header: "beneficiary_name", accessorKey: "beneficiary_name" },
   { header: "cost_center_id", accessorKey: "cost_center_id" },
   { header: "note", accessorKey: "note" },
-  { header: "date", accessorKey: "date" },
-  { header: "due_date", accessorKey: "due_date" },
-  { header: "due_end_date", accessorKey: "due_end_date" },
-  { header: "without_due_date", accessorKey: "without_due_date" },
+  {
+    header: "date",
+    accessorKey: "date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "due_date",
+    accessorKey: "due_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "due_end_date",
+    accessorKey: "due_end_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "without_due_date",
+    accessorKey: "without_due_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "bank_id", accessorKey: "bank_id" },
   { header: "obverse_account_id", accessorKey: "obverse_account_id" },
   { header: "obverse_account_note", accessorKey: "obverse_account_note" },
@@ -1787,7 +2697,11 @@ export const financial_data = [
   { header: "return_status", accessorKey: "return_status" },
   { header: "deposit_status", accessorKey: "deposit_status" },
   { header: "clipboard_number", accessorKey: "clipboard_number" },
-  { header: "clipboard_date", accessorKey: "clipboard_date" },
+  {
+    header: "clipboard_date",
+    accessorKey: "clipboard_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   {
     header: "clipboard_receipt_number",
     accessorKey: "clipboard_receipt_number",
@@ -1829,7 +2743,23 @@ export const bill_patterns = [
     accessorKey: "created_at",
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
-  { header: "paperType", accessorKey: "paperType" },
+  {
+    header: "paper_type",
+    accessorKey: "paper_type",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs ${
+          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+        }`}
+      >
+        {
+          SELECT_LISTS("bill_pattern_paper_type")?.find(
+            (c) => c?.id === getValue()
+          )?.name
+        }
+      </span>
+    ),
+  },
   { header: "code", accessorKey: "code" },
   {
     header: "name",
@@ -1848,19 +2778,78 @@ export const bill_patterns = [
   { header: "list_name", accessorKey: "list_name" },
   { header: "default_account_id", accessorKey: "default_account_id" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
-  { header: "gen_entries", accessorKey: "gen_entries" },
+  {
+    header: "gen_entries",
+    accessorKey: "gen_entries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "auto_gen_entries", accessorKey: "auto_gen_entries" },
-  { header: "auto_transfer_entry", accessorKey: "auto_transfer_entry" },
+  {
+    header: "auto_transfer_entry",
+    accessorKey: "auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "default_print_folder", accessorKey: "default_print_folder" },
   { header: "deportable", accessorKey: "deportable" },
-  { header: "deportable_gen_enteries", accessorKey: "deportable_gen_enteries" },
+  {
+    header: "deportable_gen_enteries",
+    accessorKey: "deportable_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   {
     header: "deportable_auto_gen_enteries",
     accessorKey: "deportable_auto_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "deportable_auto_transfer_entry",
     accessorKey: "deportable_auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   { header: "deportable_default_date", accessorKey: "deportable_default_date" },
   {
@@ -1889,14 +2878,47 @@ export const bill_patterns = [
   },
   { header: "collection", accessorKey: "collection" },
 
-  { header: "collection_gen_enteries", accessorKey: "collection_gen_enteries" },
+  {
+    header: "collection_gen_enteries",
+    accessorKey: "collection_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   {
     header: "collection_auto_gen_enteries",
     accessorKey: "collection_auto_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "collection_auto_transfer_entry",
     accessorKey: "collection_auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   { header: "collection_default_date", accessorKey: "collection_default_date" },
   {
@@ -1953,14 +2975,47 @@ export const bill_patterns = [
     accessorKey: "commission_credit_account_id",
   },
   { header: "partial_collection", accessorKey: "partial_collection" },
-  { header: "partial_gen_enteries", accessorKey: "partial_gen_enteries" },
+  {
+    header: "partial_gen_enteries",
+    accessorKey: "partial_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   {
     header: "partial_auto_gen_enteries",
     accessorKey: "partial_auto_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "partial_auto_transfer_entry",
     accessorKey: "partial_auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "partial_default_account_is_building_bank",
@@ -1990,14 +3045,44 @@ export const bill_patterns = [
   {
     header: "endorsement_gen_enteries",
     accessorKey: "endorsement_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "endorsement_auto_gen_enteries",
     accessorKey: "endorsement_auto_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "endorsement_auto_transfer_entry",
     accessorKey: "endorsement_auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "endorsement_default_date",
@@ -2020,14 +3105,47 @@ export const bill_patterns = [
     accessorKey: "endorsement_credit_account_id",
   },
   { header: "returnable", accessorKey: "returnable" },
-  { header: "returnable_gen_enteries", accessorKey: "returnable_gen_enteries" },
+  {
+    header: "returnable_gen_enteries",
+    accessorKey: "returnable_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   {
     header: "returnable_auto_gen_enteries",
     accessorKey: "returnable_auto_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "returnable_auto_transfer_entry",
     accessorKey: "returnable_auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   { header: "returnable_default_date", accessorKey: "returnable_default_date" },
   {
@@ -2114,7 +3232,11 @@ export const installment = [
   { header: "contract_id", accessorKey: "contract_id" },
   { header: "total_amount", accessorKey: "total_amount" },
   { header: "first_batch", accessorKey: "first_batch" },
-  { header: "payment_date", accessorKey: "payment_date" },
+  {
+    header: "payment_date",
+    accessorKey: "payment_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "voucher_pattern_id", accessorKey: "voucher_pattern_id" },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "currency_val", accessorKey: "currency_val" },
@@ -2126,16 +3248,41 @@ export const installment = [
   { header: "installments_numbers", accessorKey: "installments_numbers" },
   { header: "each_number", accessorKey: "each_number" },
   { header: "each_duration", accessorKey: "each_duration" },
-  { header: "first_installment_date", accessorKey: "first_installment_date" },
+  {
+    header: "first_installment_date",
+    accessorKey: "first_installment_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "installment_price", accessorKey: "installment_price" },
   { header: "final_payment", accessorKey: "final_payment" },
   { header: "begin_number", accessorKey: "begin_number" },
-  { header: "installment_date", accessorKey: "installment_date" },
+  {
+    header: "installment_date",
+    accessorKey: "installment_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "installment_statement", accessorKey: "installment_statement" },
   { header: "beneficiary_name", accessorKey: "beneficiary_name" },
-  { header: "gen_entries_type", accessorKey: "gen_entries_type" },
+  {
+    header: "gen_entries_type",
+    accessorKey: "gen_entries_type",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs ${
+          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+        }`}
+      >
+        {
+          SELECT_LISTS("installment_entries_type")?.find(
+            (c) => c?.id === getValue()
+          )?.name
+        }
+      </span>
+    ),
+  },
   { header: "bank_id", accessorKey: "bank_id" },
 ];
+
 export const installment_data = [
   {
     id: "select",
@@ -2162,14 +3309,22 @@ export const installment_data = [
     ),
   },
   // { header: "id", accessorKey: "id" },
-  { header: "due_date", accessorKey: "due_date" },
+  {
+    header: "due_date",
+    accessorKey: "due_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "number", accessorKey: "number" },
   { header: "amount", accessorKey: "amount" },
   { header: "bank_id", accessorKey: "bank_id" },
   { header: "client_id", accessorKey: "client_id" },
   { header: "observe_account_id", accessorKey: "observe_account_id" },
   { header: "statement", accessorKey: "statement" },
-  { header: "end_due_date", accessorKey: "end_due_date" },
+  {
+    header: "end_due_date",
+    accessorKey: "end_due_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "beneficiary_name", accessorKey: "beneficiary_name" },
   { header: "installment_id", accessorKey: "installment_id" },
 ];
@@ -2207,7 +3362,20 @@ export const op_collection = [
     accessorKey: "created_at",
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
-  { header: "feedback", accessorKey: "feedback" },
+  {
+    header: "feedback",
+    accessorKey: "feedback",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "amount", accessorKey: "amount" },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "debit_account_id", accessorKey: "debit_account_id" },
@@ -2260,7 +3428,20 @@ export const op_deportation = [
     accessorKey: "created_at",
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
-  { header: "feedback", accessorKey: "feedback" },
+  {
+    header: "feedback",
+    accessorKey: "feedback",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "amount", accessorKey: "amount" },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "debit_account_id", accessorKey: "debit_account_id" },
@@ -2272,6 +3453,63 @@ export const op_deportation = [
     accessorKey: "accounting_voucher_main_data_id",
   },
 ];
+export const op_endorsement = [
+  {
+    id: "select",
+    size: 40,
+    isResizingColumn: false,
+    header: ({ table }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: table.getIsAllRowsSelected(),
+          indeterminate: table.getIsSomeRowsSelected(),
+          onChange: table.getToggleAllRowsSelectedHandler(),
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: row.getIsSelected(),
+          disabled: !row.getCanSelect(),
+          indeterminate: row.getIsSomeSelected(),
+          onChange: row.getToggleSelectedHandler(),
+        }}
+      />
+    ),
+  },
+  // { header: "id", accessorKey: "id" },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "feedback",
+    accessorKey: "feedback",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  { header: "amount", accessorKey: "amount" },
+  { header: "currency_id", accessorKey: "currency_id" },
+  { header: "debit_account_id", accessorKey: "debit_account_id" },
+  { header: "credit_account_id", accessorKey: "credit_account_id" },
+  { header: "cost_center_id", accessorKey: "cost_center_id" },
+  { header: "note", accessorKey: "note" },
+  {
+    header: "accounting_voucher_main_data_id",
+    accessorKey: "accounting_voucher_main_data_id",
+  },
+];
+
 export const op_return = [
   {
     id: "select",
@@ -2303,7 +3541,20 @@ export const op_return = [
     accessorKey: "created_at",
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
-  { header: "feedback", accessorKey: "feedback" },
+  {
+    header: "feedback",
+    accessorKey: "feedback",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "amount", accessorKey: "amount" },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "debit_account_id", accessorKey: "debit_account_id" },
@@ -2447,28 +3698,171 @@ export const voucher_pattern = [
   { header: "list_name", accessorKey: "list_name" },
   { header: "default_account_id", accessorKey: "default_account_id" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
-  { header: "auto_gen_entries", accessorKey: "auto_gen_entries" },
-  { header: "auto_transfer_entry", accessorKey: "auto_transfer_entry" },
-  { header: "gen_entries", accessorKey: "gen_entries" },
+  {
+    header: "auto_gen_entries",
+    accessorKey: "auto_gen_entries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "auto_transfer_entry",
+    accessorKey: "auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "gen_entries",
+    accessorKey: "gen_entries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "generate_records", accessorKey: "generate_records" },
-  { header: "show_contract_field", accessorKey: "show_contract_field" },
+  {
+    header: "show_contract_field",
+    accessorKey: "show_contract_field",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   {
     header: "show_contract_cost_center",
     accessorKey: "show_contract_cost_center",
   },
-  { header: "required_cost_center", accessorKey: "required_cost_center" },
-  { header: "required_statement", accessorKey: "required_statement" },
+  {
+    header: "required_cost_center",
+    accessorKey: "required_cost_center",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "required_statement",
+    accessorKey: "required_statement",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   {
     header: "default_print_folder_path",
     accessorKey: "default_print_folder_path",
   },
-  { header: "show_debit_field", accessorKey: "show_debit_field" },
-  { header: "show_credit_field", accessorKey: "show_credit_field" },
+  {
+    header: "show_debit_field",
+    accessorKey: "show_debit_field",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "show_credit_field",
+    accessorKey: "show_credit_field",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "debit_field_label", accessorKey: "debit_field_label" },
   { header: "credit_field_label", accessorKey: "credit_field_label" },
-  { header: "show_currency", accessorKey: "show_currency" },
-  { header: "show_cost_center", accessorKey: "show_cost_center" },
-  { header: "show_note", accessorKey: "show_note" },
+  {
+    header: "show_currency",
+    accessorKey: "show_currency",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "show_cost_center",
+    accessorKey: "show_cost_center",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
+  {
+    header: "show_note",
+    accessorKey: "show_note",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "odd_table_color", accessorKey: "odd_table_color" },
   { header: "even_table_color", accessorKey: "even_table_color" },
   { header: "sms", accessorKey: "sms" },
@@ -2645,6 +4039,7 @@ export const assets_accounts = [
   { header: "losses_account_id", accessorKey: "losses_account_id" },
   { header: "evaluation_account_id", accessorKey: "evaluation_account_id" },
 ];
+
 export const assets_depreciation = [
   {
     id: "select",
@@ -2679,7 +4074,11 @@ export const assets_depreciation = [
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "depreciation_mode", accessorKey: "depreciation_mode" },
   { header: "is_depreciation_monthly", accessorKey: "is_depreciation_monthly" },
-  { header: "depreciation_begin_date", accessorKey: "depreciation_begin_date" },
+  {
+    header: "depreciation_begin_date",
+    accessorKey: "depreciation_begin_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "age", accessorKey: "age" },
   { header: "depreciation_avg", accessorKey: "depreciation_avg" },
   { header: "scrap_value", accessorKey: "scrap_value" },
@@ -2688,6 +4087,7 @@ export const assets_depreciation = [
   { header: "old_year_depreciation", accessorKey: "old_year_depreciation" },
   { header: "old_year_maintenance", accessorKey: "old_year_maintenance" },
 ];
+
 export const assets_input = [
   {
     id: "select",
@@ -2722,7 +4122,11 @@ export const assets_input = [
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "importer", accessorKey: "importer" },
   { header: "enter_account_id", accessorKey: "enter_account_id" },
-  { header: "enter_date", accessorKey: "enter_date" },
+  {
+    header: "enter_date",
+    accessorKey: "enter_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "enter_value", accessorKey: "enter_value" },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "enter_cost_center_id", accessorKey: "enter_cost_center_id" },
@@ -2732,6 +4136,7 @@ export const assets_input = [
   },
   { header: "enter_note", accessorKey: "enter_note" },
 ];
+
 export const assets_maintenance = [
   {
     id: "select",
@@ -2765,12 +4170,29 @@ export const assets_maintenance = [
   },
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "maintenance_contract", accessorKey: "maintenance_contract" },
-  { header: "maintenance_begin_date", accessorKey: "maintenance_begin_date" },
-  { header: "maintenance_end_date", accessorKey: "maintenance_end_date" },
+  {
+    header: "maintenance_begin_date",
+    accessorKey: "maintenance_begin_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "maintenance_end_date",
+    accessorKey: "maintenance_end_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "guaranty", accessorKey: "guaranty" },
-  { header: "guaranty_begin_date", accessorKey: "guaranty_begin_date" },
-  { header: "guaranty_end_date", accessorKey: "guaranty_end_date" },
+  {
+    header: "guaranty_begin_date",
+    accessorKey: "guaranty_begin_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "guaranty_end_date",
+    accessorKey: "guaranty_end_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
 ];
+
 export const assets_sale = [
   {
     id: "select",
@@ -2804,7 +4226,11 @@ export const assets_sale = [
   },
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "is_sale", accessorKey: "is_sale" },
-  { header: "sale_date", accessorKey: "sale_date" },
+  {
+    header: "sale_date",
+    accessorKey: "sale_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "sale_customer", accessorKey: "sale_customer" },
   { header: "sales_account_id", accessorKey: "sales_account_id" },
   { header: "sale_value", accessorKey: "sale_value" },
@@ -2812,6 +4238,7 @@ export const assets_sale = [
   { header: "currency_sale_val", accessorKey: "currency_sale_val" },
   { header: "sale_note", accessorKey: "sale_note" },
 ];
+
 export const assets_shipping = [
   {
     id: "select",
@@ -2846,8 +4273,16 @@ export const assets_shipping = [
   { header: "assets_id", accessorKey: "assets_id" },
   { header: "shipping", accessorKey: "shipping" },
   { header: "shipping_no", accessorKey: "shipping_no" },
-  { header: "shipping_date", accessorKey: "shipping_date" },
-  { header: "arrive_date", accessorKey: "arrive_date" },
+  {
+    header: "shipping_date",
+    accessorKey: "shipping_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "arrive_date",
+    accessorKey: "arrive_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "arrive_place", accessorKey: "arrive_place" },
   { header: "import_permit", accessorKey: "import_permit" },
   { header: "custom_note", accessorKey: "custom_note" },
@@ -2892,27 +4327,59 @@ export const lawsuit = [
   { header: "number", accessorKey: "number" },
   { header: "type", accessorKey: "type" },
   { header: "contract_id", accessorKey: "contract_id" },
-  { header: "start_date", accessorKey: "start_date" },
+  {
+    header: "start_date",
+    accessorKey: "start_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "lawsuit_no", accessorKey: "lawsuit_no" },
-  { header: "open_date", accessorKey: "open_date" },
-  { header: "exec_date", accessorKey: "exec_date" },
+  {
+    header: "open_date",
+    accessorKey: "open_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "exec_date",
+    accessorKey: "exec_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "stop_exec", accessorKey: "stop_exec" },
-  { header: "stop_exec_date", accessorKey: "stop_exec_date" },
+  {
+    header: "stop_exec_date",
+    accessorKey: "stop_exec_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "stop_exec_note", accessorKey: "stop_exec_note" },
-  { header: "stop_pay_date", accessorKey: "stop_pay_date" },
-  { header: "quittance_date", accessorKey: "quittance_date" },
+  {
+    header: "stop_pay_date",
+    accessorKey: "stop_pay_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "quittance_date",
+    accessorKey: "quittance_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   {
     header: "quittance_electricity_date",
     accessorKey: "quittance_electricity_date",
   },
   { header: "rent", accessorKey: "rent" },
   { header: "is_ended", accessorKey: "is_ended" },
-  { header: "end_date", accessorKey: "end_date" },
+  {
+    header: "end_date",
+    accessorKey: "end_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "exe_no", accessorKey: "exe_no" },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "currency_val", accessorKey: "currency_val" },
   { header: "lawyer_rent", accessorKey: "lawyer_rent" },
-  { header: "lawyer_rent_date", accessorKey: "lawyer_rent_date" },
+  {
+    header: "lawyer_rent_date",
+    accessorKey: "lawyer_rent_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "lawyer_entry", accessorKey: "lawyer_entry" },
   { header: "lawyer_debit_account_id", accessorKey: "lawyer_debit_account_id" },
   {
@@ -2921,7 +4388,11 @@ export const lawsuit = [
   },
   { header: "lawyer_note", accessorKey: "lawyer_note" },
   { header: "maintenance_rent", accessorKey: "maintenance_rent" },
-  { header: "maintenance_rent_date", accessorKey: "maintenance_rent_date" },
+  {
+    header: "maintenance_rent_date",
+    accessorKey: "maintenance_rent_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "maintenance_entry", accessorKey: "maintenance_entry" },
   {
     header: "maintenance_debit_account_id",
@@ -2933,7 +4404,11 @@ export const lawsuit = [
   },
   { header: "maintenance_note", accessorKey: "maintenance_note" },
   { header: "furniture", accessorKey: "furniture" },
-  { header: "furniture_date", accessorKey: "furniture_date" },
+  {
+    header: "furniture_date",
+    accessorKey: "furniture_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "furniture_entry", accessorKey: "furniture_entry" },
   {
     header: "furniture_debit_account_id",
@@ -2989,9 +4464,21 @@ export const maintenance_order = [
   { header: "complaint_id", accessorKey: "complaint_id" },
   { header: "maintenance_worker_id", accessorKey: "maintenance_worker_id" },
   { header: "work_kind", accessorKey: "work_kind" },
-  { header: "start_date", accessorKey: "start_date" },
-  { header: "end_expected_date", accessorKey: "end_expected_date" },
-  { header: "close_date", accessorKey: "close_date" },
+  {
+    header: "start_date",
+    accessorKey: "start_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "end_expected_date",
+    accessorKey: "end_expected_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "close_date",
+    accessorKey: "close_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "order_state", accessorKey: "order_state" },
   { header: "reason_not_realized", accessorKey: "reason_not_realized" },
   { header: "convert_to", accessorKey: "convert_to" },
@@ -3003,7 +4490,11 @@ export const maintenance_order = [
   { header: "delay", accessorKey: "delay" },
   { header: "delay_reason", accessorKey: "delay_reason" },
   { header: "create_entry", accessorKey: "create_entry" },
-  { header: "entry_date", accessorKey: "entry_date" },
+  {
+    header: "entry_date",
+    accessorKey: "entry_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "entry_value", accessorKey: "entry_value" },
   { header: "entry_currency_id", accessorKey: "entry_currency_id" },
   { header: "entry_currency_val", accessorKey: "entry_currency_val" },
@@ -3083,6 +4574,7 @@ export const material_group = [
     },
   },
 ];
+
 export const materials = [
   {
     id: "select",
@@ -3153,7 +4645,11 @@ export const materials = [
   { header: "last_price", accessorKey: "last_price" },
   { header: "max_price", accessorKey: "max_price" },
   { header: "sale_avg_price", accessorKey: "sale_avg_price" },
-  { header: "sale_last_price_date", accessorKey: "sale_last_price_date" },
+  {
+    header: "sale_last_price_date",
+    accessorKey: "sale_last_price_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "sale_last_price", accessorKey: "sale_last_price" },
   { header: "sale_max_price", accessorKey: "sale_max_price" },
 ];
@@ -3197,16 +4693,46 @@ export const parking = [
   { header: "floor_no", accessorKey: "floor_no" },
   { header: "area", accessorKey: "area" },
   { header: "area_unit", accessorKey: "area_unit" },
-  { header: "parking_kind", accessorKey: "parking_kind" },
+  {
+    header: "parking_kind",
+    accessorKey: "parking_kind",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md text-white py-1 px-2 text-xs capitalize `}
+        style={{ background: FLAT_PROPERTY_COLORS?.[`parking_${getValue()}`] }}
+      >
+        {FLAT_PROPERTY_TYPES?.[`parking_${getValue()}`]}
+      </span>
+    ),
+  },
+
   { header: "description", accessorKey: "description" },
   { header: "view", accessorKey: "view" },
   { header: "customer_id", accessorKey: "customer_id" },
-  { header: "has_lawsuit", accessorKey: "has_lawsuit" },
+  {
+    header: "has_lawsuit",
+    accessorKey: "has_lawsuit",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "cost_center_id", accessorKey: "cost_center_id" },
-  { header: "purchase_date", accessorKey: "purchase_date" },
+  {
+    header: "purchase_date",
+    accessorKey: "purchase_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "flat_owner", accessorKey: "flat_owner" },
   { header: "note", accessorKey: "note" },
 ];
+
 export const parking_pictures = [
   {
     id: "select",
@@ -3241,6 +4767,7 @@ export const parking_pictures = [
   { header: "parking_id", accessorKey: "parking_id" },
   { header: "picture", accessorKey: "picture" },
 ];
+
 export const parking_price = [
   {
     id: "select",
@@ -3273,10 +4800,18 @@ export const parking_price = [
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
   { header: "parking_id", accessorKey: "parking_id" },
-  { header: "date1", accessorKey: "date1" },
+  {
+    header: "date1",
+    accessorKey: "date1",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "print1", accessorKey: "print1" },
   { header: "currency1_id", accessorKey: "currency1_id" },
-  { header: "date2", accessorKey: "date2" },
+  {
+    header: "date2",
+    accessorKey: "date2",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "prnumber", accessorKey: "prnumber" },
   { header: "currency2_id", accessorKey: "currency2_id" },
   { header: "cost_price", accessorKey: "cost_price" },
@@ -3334,7 +4869,20 @@ export const shop = [
   { header: "unified_num", accessorKey: "unified_num" },
   { header: "manservant_room", accessorKey: "manservant_room" },
   { header: "driver_room", accessorKey: "driver_room" },
-  { header: "has_lawsuit", accessorKey: "has_lawsuit" },
+  {
+    header: "has_lawsuit",
+    accessorKey: "has_lawsuit",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { header: "customer_id", accessorKey: "customer_id" },
   { header: "customer_owner_id", accessorKey: "customer_owner_id" },
   { header: "flat_owner", accessorKey: "flat_owner" },
@@ -3342,10 +4890,15 @@ export const shop = [
   { header: "electricity_meter", accessorKey: "electricity_meter" },
   { header: "bond_type", accessorKey: "bond_type" },
   { header: "bond_no", accessorKey: "bond_no" },
-  { header: "bond_date", accessorKey: "bond_date" },
+  {
+    header: "bond_date",
+    accessorKey: "bond_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "type", accessorKey: "type" },
   { header: "note", accessorKey: "note" },
 ];
+
 export const shop_fixed_assets = [
   {
     id: "select",
@@ -3382,6 +4935,7 @@ export const shop_fixed_assets = [
   { header: "value", accessorKey: "value" },
   { header: "note", accessorKey: "note" },
 ];
+
 export const shop_pictures = [
   {
     id: "select",
@@ -3416,6 +4970,7 @@ export const shop_pictures = [
   { header: "shop_id", accessorKey: "shop_id" },
   { header: "picture", accessorKey: "picture" },
 ];
+
 export const shop_rent_price = [
   {
     id: "select",
@@ -3454,6 +5009,7 @@ export const shop_rent_price = [
   { header: "cost_currency_id", accessorKey: "cost_currency_id" },
   { header: "rent", accessorKey: "rent" },
 ];
+
 export const shop_selling_price = [
   {
     id: "select",
@@ -3533,7 +5089,11 @@ export const villa = [
   { header: "street", accessorKey: "street" },
   { header: "doc_type", accessorKey: "doc_type" },
   { header: "doc_no", accessorKey: "doc_no" },
-  { header: "doc_date", accessorKey: "doc_date" },
+  {
+    header: "doc_date",
+    accessorKey: "doc_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "piece_no", accessorKey: "piece_no" },
   { header: "basin_no", accessorKey: "basin_no" },
   { header: "water_meter", accessorKey: "water_meter" },
@@ -3541,6 +5101,7 @@ export const villa = [
   { header: "customer_owner_id", accessorKey: "customer_owner_id" },
   { header: "note", accessorKey: "note" },
 ];
+
 export const villa_accounts = [
   {
     id: "select",
@@ -3580,6 +5141,7 @@ export const villa_accounts = [
   { header: "insurance_account_id", accessorKey: "insurance_account_id" },
   { header: "lessor_id", accessorKey: "lessor_id" },
 ];
+
 export const villa_assets = [
   {
     id: "select",
@@ -3616,6 +5178,7 @@ export const villa_assets = [
   { header: "value", accessorKey: "value" },
   { header: "note", accessorKey: "note" },
 ];
+
 export const villa_exterior_details = [
   {
     id: "select",
@@ -3663,6 +5226,7 @@ export const villa_exterior_details = [
   { header: "garden_area", accessorKey: "garden_area" },
   { header: "garden_state", accessorKey: "garden_state" },
 ];
+
 export const villa_interior_details = [
   {
     id: "select",
@@ -3710,6 +5274,7 @@ export const villa_interior_details = [
   { header: "security_system", accessorKey: "security_system" },
   { header: "security_type", accessorKey: "security_type" },
 ];
+
 export const villa_pictures = [
   {
     id: "select",
@@ -3744,6 +5309,7 @@ export const villa_pictures = [
   { header: "villa_id", accessorKey: "villa_id" },
   { header: "picture", accessorKey: "picture" },
 ];
+
 export const villa_rent_price = [
   {
     id: "select",
@@ -3776,10 +5342,15 @@ export const villa_rent_price = [
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
   { header: "villa_id", accessorKey: "villa_id" },
-  { header: "date", accessorKey: "date" },
+  {
+    header: "date",
+    accessorKey: "date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "price", accessorKey: "price" },
   { header: "currency_id", accessorKey: "currency_id" },
 ];
+
 export const villa_selling_price = [
   {
     id: "select",
@@ -3807,7 +5378,11 @@ export const villa_selling_price = [
   },
   // { header: "id", accessorKey: "id" },
   { header: "villa_id", accessorKey: "villa_id" },
-  { header: "date", accessorKey: "date" },
+  {
+    header: "date",
+    accessorKey: "date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "price", accessorKey: "price" },
   { header: "currency_id", accessorKey: "currency_id" },
 ];
@@ -3828,7 +5403,10 @@ export const store = [
     accessorKey: "name",
     cell: ({ getValue, row }) => {
       return (
-        <Link className="text-blue-500 capitalize" to={`/update/store/${row.original.id}`}>
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/store/${row.original.id}`}
+        >
           {getValue()}
         </Link>
       );
@@ -3843,7 +5421,10 @@ export const store = [
     accessorKey: "parent_id",
     cell: ({ row, getValue }) => {
       return (
-        <Link className="text-blue-500 capitalize" to={`/update/store/${getValue()}`}>
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/store/${getValue()}`}
+        >
           {row.original.parent_name}
         </Link>
       );
@@ -3854,7 +5435,10 @@ export const store = [
     accessorKey: "store_final_id",
     cell: ({ row, getValue }) => {
       return (
-        <Link className="text-blue-500 capitalize" to={`/update/store/${getValue()}`}>
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/store/${getValue()}`}
+        >
           {row.original.final_name}
         </Link>
       );
@@ -3920,14 +5504,44 @@ const bill_group = [
   {
     header: "gen_entries",
     accessorKey: "gen_entries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "auto_gen_entries",
     accessorKey: "auto_gen_entries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "auto_transfer_entry",
     accessorKey: "auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "default_print_folder",
@@ -3941,14 +5555,44 @@ const bill_group = [
   {
     header: "deportable_gen_enteries",
     accessorKey: "deportable_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "deportable_auto_gen_enteries",
     accessorKey: "deportable_auto_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "deportable_auto_transfer_entry",
     accessorKey: "deportable_auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "deportable_default_date",
@@ -3988,14 +5632,44 @@ const bill_group = [
   {
     header: "collection_gen_enteries",
     accessorKey: "collection_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "collection_auto_gen_enteries",
     accessorKey: "collection_auto_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "collection_auto_transfer_entry",
     accessorKey: "collection_auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "collection_default_date",
@@ -4067,14 +5741,44 @@ const bill_group = [
   {
     header: "partial_gen_enteries",
     accessorKey: "partial_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "partial_auto_gen_enteries",
     accessorKey: "partial_auto_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "partial_auto_transfer_entry",
     accessorKey: "partial_auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "partial_default_account_is_building_bank",
@@ -4108,14 +5812,44 @@ const bill_group = [
   {
     header: "endorsement_gen_enteries",
     accessorKey: "endorsement_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "endorsement_auto_gen_enteries",
     accessorKey: "endorsement_auto_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "endorsement_auto_transfer_entry",
     accessorKey: "endorsement_auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "endorsement_default_date",
@@ -4146,14 +5880,44 @@ const bill_group = [
   {
     header: "returnable_gen_enteries",
     accessorKey: "returnable_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "returnable_auto_gen_enteries",
     accessorKey: "returnable_auto_gen_enteries",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "returnable_auto_transfer_entry",
     accessorKey: "returnable_auto_transfer_entry",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
   },
   {
     header: "returnable_default_date",
@@ -4234,6 +5998,30 @@ const bill_group = [
 const bill = [
   // { header: "id", accessorKey: "id" },
   {
+    id: "select",
+    size: 40,
+    isResizingColumn: false,
+    header: ({ table }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: table.getIsAllRowsSelected(),
+          indeterminate: table.getIsSomeRowsSelected(),
+          onChange: table.getToggleAllRowsSelectedHandler(),
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: row.getIsSelected(),
+          disabled: !row.getCanSelect(),
+          indeterminate: row.getIsSomeSelected(),
+          onChange: row.getToggleSelectedHandler(),
+        }}
+      />
+    ),
+  },
+  {
     header: "created_at",
     accessorKey: "created_at",
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
@@ -4266,15 +6054,21 @@ const bill = [
     accessorKey: "cost_center_id",
   },
   { header: "note", accessorKey: "note" },
-  { header: "date", accessorKey: "date" },
+  {
+    header: "date",
+    accessorKey: "date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { header: "due_date", accessorKey: "due_date" },
   {
     header: "due_end_date",
     accessorKey: "due_end_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
   {
     header: "without_due_date",
     accessorKey: "without_due_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
   {
     header: "bank_id",
@@ -4325,6 +6119,7 @@ const bill = [
   {
     header: "clipboard_date",
     accessorKey: "clipboard_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
   {
     header: "clipboard_receipt_number",
@@ -4333,6 +6128,165 @@ const bill = [
   {
     header: "clipboard_internal_number",
     accessorKey: "clipboard_internal_number",
+  },
+];
+
+const contracts = [
+  {
+    id: "select",
+    size: 40,
+    isResizingColumn: false,
+    header: ({ table }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: table.getIsAllRowsSelected(),
+          indeterminate: table.getIsSomeRowsSelected(),
+          onChange: table.getToggleAllRowsSelectedHandler(),
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: row.getIsSelected(),
+          disabled: !row.getCanSelect(),
+          indeterminate: row.getIsSomeSelected(),
+          onChange: row.getToggleSelectedHandler(),
+        }}
+      />
+    ),
+  },
+  { header: "number", accessorKey: "number" },
+  { header: "type", accessorKey: "type" },
+];
+
+const land = [
+  {
+    id: "select",
+    size: 40,
+    isResizingColumn: false,
+    header: ({ table }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: table.getIsAllRowsSelected(),
+          indeterminate: table.getIsSomeRowsSelected(),
+          onChange: table.getToggleAllRowsSelectedHandler(),
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: row.getIsSelected(),
+          disabled: !row.getCanSelect(),
+          indeterminate: row.getIsSomeSelected(),
+          onChange: row.getToggleSelectedHandler(),
+        }}
+      />
+    ),
+  },
+  { accessorKey: "id", header: "id" },
+  { accessorKey: "created_at", header: "created_at" },
+  { accessorKey: "number", header: "number" },
+  { accessorKey: "type", header: "type" },
+  { accessorKey: "ban", header: "ban" },
+  { accessorKey: "land_no", header: "land_no" },
+  { accessorKey: "name", header: "name" },
+  { accessorKey: "last_name", header: "last_name" },
+  {
+    accessorKey: "customer_id",
+    header: "customer_id",
+  },
+  { accessorKey: "date", header: "date" },
+  { accessorKey: "city", header: "city" },
+  { accessorKey: "region", header: "region" },
+  { accessorKey: "space", header: "space" },
+  { accessorKey: "area", header: "area" },
+  { accessorKey: "area_unit", header: "area_unit" },
+  { accessorKey: "price", header: "price" },
+  { accessorKey: "license_no", header: "license_no" },
+  { accessorKey: "license", header: "license" },
+  { accessorKey: "license_date", header: "license_date" },
+  { accessorKey: "details", header: "details" },
+  { accessorKey: "land_type", header: "land_type" },
+  { accessorKey: "side", header: "side" },
+  { accessorKey: "street_name", header: "street_name" },
+  { accessorKey: "street_count", header: "street_count" },
+  { accessorKey: "buildble", header: "buildble" },
+  { accessorKey: "landowner", header: "landowner" },
+  { accessorKey: "begin_land_value", header: "begin_land_value" },
+  {
+    accessorKey: "currency_begin_land_id",
+    header: "currency_begin_land_id",
+  },
+  { accessorKey: "currency_val_begin_land", header: "currency_val_begin_land" },
+  {
+    accessorKey: "begin_land_cost_center_id",
+    header: "begin_land_cost_center_id",
+  },
+  {
+    accessorKey: "currency_purchase_id",
+    header: "currency_purchase_id",
+  },
+  { accessorKey: "currency_val_purchase", header: "currency_val_purchase" },
+  { accessorKey: "purchase_note", header: "purchase_note" },
+  {
+    accessorKey: "account_id",
+    header: "account_id",
+  },
+  {
+    accessorKey: "cuowner_id",
+    header: "cuowner_id",
+  },
+  {
+    accessorKey: "cost_center_id",
+    header: "cost_center_id",
+  },
+  {
+    accessorKey: "bank_account_id",
+    header: "bank_account_id",
+  },
+  { accessorKey: "commission_percent", header: "commission_percent" },
+  {
+    accessorKey: "account_comm_income_id",
+    header: "account_comm_income_id",
+  },
+  { accessorKey: "used_end_date", header: "used_end_date" },
+  {
+    accessorKey: "customer_owner_id",
+    header: "customer_owner_id",
+  },
+  {
+    accessorKey: "owner_account_id",
+    header: "owner_account_id",
+  },
+  { accessorKey: "identity_value", header: "identity_value" },
+  {
+    accessorKey: "currency_identity_id",
+    header: "currency_identity_id",
+  },
+  { accessorKey: "currency_valid_entity", header: "currency_valid_entity" },
+  { accessorKey: "identity_begin_date", header: "identity_begin_date" },
+  { accessorKey: "identity_end_date", header: "identity_end_date" },
+  {
+    accessorKey: "create_entry_investment",
+    header: "create_entry_investment",
+  },
+  {
+    accessorKey: "identity_entry_id",
+    header: "identity_entry_id",
+  },
+  { accessorKey: "identity_note", header: "identity_note" },
+  { accessorKey: "ltn_land_type", header: "ltn_land_type" },
+  { accessorKey: "ltn_city", header: "ltn_city" },
+  { accessorKey: "ltn_region", header: "ltn_region" },
+  { accessorKey: "ltn_space", header: "ltn_space" },
+  { accessorKey: "ltn_license", header: "ltn_license" },
+  { accessorKey: "ltn_side", header: "ltn_side" },
+  { accessorKey: "rent", header: "rent" },
+  {
+    accessorKey: "rent_currency_id",
+    header: "rent_currency_id",
   },
 ];
 
@@ -4358,10 +6312,11 @@ const TABLES = {
   accounting_voucher_pictures,
   apartment,
   apartment_pictures,
-  apartment_property_values,
+  property_values,
   apartment_rental_price,
   apartment_selling_price,
   contract,
+  contracts,
   contract_cycle,
   contract_financial,
   contract_linked_parking,
@@ -4410,6 +6365,7 @@ const TABLES = {
   store,
   bill,
   bill_pattern: bill_group,
+  land,
 };
 
 export default function getTableColumns(name) {

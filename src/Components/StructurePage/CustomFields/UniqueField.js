@@ -13,7 +13,6 @@ const UniqueField = ({
   containerClassName,
   error,
   table,
-  handleInputChange,
   index,
   updatedName,
   selectContainerClassName,
@@ -45,7 +44,7 @@ const UniqueField = ({
           ) : null}
         </label>
       ) : null}
-      <div className={`relative flex items-center border  dark:border-dark-border rounded-md ${selectContainerClassName}`}>
+      <div className={`relative flex items-center border dark:border-dark-border rounded-md ${selectContainerClassName}`}>
         <Controller
           name={updatedName || field.name}
           control={control}
@@ -55,21 +54,22 @@ const UniqueField = ({
               <Select
                 options={list}
                 // value={watch(field?.name)}
+                name={updatedName || field?.name}
                 className="w-full border-none"
                 classNames={{
                   indicatorsContainer: () => "!hidden bg-black",
                   control: (state) => "dark:!bg-[#2c2c2c] !border-none",
                   container: (state) => "!bg-none !bg-transparent !border-none",
-                  singleValue: () => "dark:text-gray-200",
+                  singleValue: () => "dark:text-gray-200 unique-valid",
                   menuList: () => "dark:bg-dark-bg",
                 }}
-                value={list?.find((c) => c?.value === watch(field?.name))}
+                value={list?.find((c) => c?.value === watch(updatedName|| field?.name))}
                 defaultValue={list?.find(
-                  (c) => c?.value === watch(field?.name)
+                  (c) => c?.value === watch(updatedName|| field?.name)
                 )}
                 // onChange={onChange}
                 onChange={(option) =>
-                  handleInputChange(updatedName || field?.name, option?.value)
+                  onChange(option?.value)
                 }
               />
             );

@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 
 import { Button } from "Components/Global/Button";
@@ -8,6 +7,10 @@ import { toast } from "react-toastify";
 import { ApiActions } from "Helpers/Lib/api";
 import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import { Fields } from "./Fields";
+import { useParams } from "react-router-dom";
+import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
+import useRefTable from "Hooks/useRefTable";
+import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
 
 let CACHE_LIST = {};
 
@@ -15,23 +18,28 @@ const getCachedList = (tableName) => {
   return CACHE_LIST[tableName];
 };
 
-const FormSingular = ({ name, fields, onClose, oldValues, refetchData }) => {
-  const methods = useForm({ defaultValues: oldValues });
+const FormSingular = ({ name, onClose, refetchData, layout }) => {
+  const params = useParams();
+  const methods = useForm({
+    defaultValues:
+      layout === "update"
+        ? async () => await GET_UPDATE_DATE(name, params?.id)
+        : {},
+  });
   const [loading, setLoading] = useState(false);
   const {
     handleSubmit,
     reset,
-    formState: { errors, isDirty,dirtyFields },
+    formState: { errors, isDirty, dirtyFields, isSubmitting },
     getValues,
     setValue,
     watch,
   } = methods;
 
+  const fields = useMemo(() => getFormByTableName(name), [name]);
+
   useEffect(() => {
     getRefTables();
-    // if(oldValues) {
-    //   setValue(...oldValues)
-    // }
   }, [name]);
 
   const getRefTables = async () => {
@@ -48,25 +56,39 @@ const FormSingular = ({ name, fields, onClose, oldValues, refetchData }) => {
       }
     }
   };
-  const handleInputChange = (name, value) => {
-    setValue(name, value, {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
-  };
 
   // Handel Submit
   const onSubmit = async (value) => {
     if (!isDirty) return;
     setLoading(true);
 
-    const res = await ApiActions.insert(name, {
-      data: value,
-    });
+    let values = {};
+    for (const key in value) {
+      let val = value[key];
+      if (val !== undefined && val !== null && val !== "") {
+        values[key] = val;
+      }
+    }
+
+    let res = null;
+
+    if (layout === "update") {
+      res = await ApiActions.update(name, {
+        conditions: [{ type: "and", conditions: [["id", "=", params?.id]] }],
+        updates: values,
+      });
+    } else {
+      res = await ApiActions.insert(name, {
+        data: values,
+      });
+    }
 
     if (res?.success) {
-      toast.success("Successfully added item in " + name);
+      toast.success(
+        layout === "update"
+          ? `Successfully update row: ${values?.name} in ${name}`
+          : "Successfully added item in " + name
+      );
       if (!!onClose) onClose();
       if (!!refetchData) refetchData();
       // reset form
@@ -86,10 +108,13 @@ const FormSingular = ({ name, fields, onClose, oldValues, refetchData }) => {
           errors={errors}
           getCachedList={getCachedList}
           fields={fields}
-          handleInputChange={handleInputChange}
         />
         <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
-          <Button title="Submit" loading={loading} disabled={!isDirty} />
+          <Button
+            title="Submit"
+            loading={loading}
+            disabled={!isDirty || isSubmitting}
+          />
         </div>
       </form>
     </FormProvider>

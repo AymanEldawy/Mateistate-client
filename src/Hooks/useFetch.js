@@ -7,7 +7,7 @@ const GLOBAL_READ_DATA = {
   // cost_center: getCostCenter
 }
 
-const useFetch = (name) => {
+const useFetch = (name, params) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,7 +20,7 @@ const useFetch = (name) => {
         res = await get()
       }
       else 
-        res = await ApiActions.read(name)
+        res = await ApiActions.read(name, params)
       setData(res.result);
       setLoading(false);
     } catch (error) {

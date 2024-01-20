@@ -6,33 +6,34 @@ import useFormSteps from "Hooks/useFormSteps";
 import { Fields } from "./Fields";
 import INSERT_FUNCTION from "Helpers/Lib/operations/global-insert";
 import { FormProvider, useForm } from "react-hook-form";
-import { Button } from "Components/Global/Button";
-import TableForm from "./TableForm";
-import { GalleryForm } from "./GalleryForm";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { ButtonsStepsGroup } from "Components/Global/ButtonsStepsGroup";
+import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
+import { useParams } from 'react-router-dom';
 
-const CACHE_LIST = {};
-
-const getCachedList = (tableName) => {
-  return CACHE_LIST[tableName];
-};
-
-const FormSteps = ({ name, onClose, refetchData, oldValues, allowTabs }) => {
+const FormSteps = ({ name, onClose, refetchData, layout, allowTabs }) => {
+  const params = useParams();
   const {
     next,
     back,
     goTo,
     isLast,
+    isFirst,
     currentIndex,
     tab,
     formSettings,
     steps,
     fields,
     getCachedList,
-  } = useFormSteps({ name, oldValues });
+  } = useFormSteps({ name });
 
-  const methods = useForm({ defaultValues: oldValues });
+  const methods = useForm({
+    defaultValues:
+      layout === "update"
+        ? async () => await GET_UPDATE_DATE(name, params?.id)
+        : {},
+  });
+
   const [loading, setLoading] = useState(false);
   const {
     handleSubmit,
@@ -42,23 +43,14 @@ const FormSteps = ({ name, onClose, refetchData, oldValues, allowTabs }) => {
     setValue,
   } = methods;
 
-  const handleInputChange = (name, value) => {
-    let names = `${[tab]}.${[name]}`;
-    setValue(names, value, {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
-  };
 
   // Handel Submit
   const onSubmit = async (value) => {
-    console.log("🚀 ~ onSubmit ~ value:", value);
     next();
     if (!isLast()) return;
     setLoading(true);
     const getTheFunInsert = INSERT_FUNCTION[name];
-    const res = await getTheFunInsert({ data: { test: "tes", ...value } });
+    const res = await getTheFunInsert({ data: value });
 
     if (res?.success) {
       toast.success("Successfully added item in " + name);
@@ -77,9 +69,6 @@ const FormSteps = ({ name, onClose, refetchData, oldValues, allowTabs }) => {
       <FormHeadingTitleSteps
         name={name}
         steps={steps}
-        // changeTab={(tabIndex) => {
-        //   if (allowTabs) goTo(tabIndex);
-        // }}
         activeStage={currentIndex}
       />
       <div className="h-5" />
@@ -91,7 +80,6 @@ const FormSteps = ({ name, onClose, refetchData, oldValues, allowTabs }) => {
                 <TableFields
                   activeStage={tab}
                   values={watch()?.[tab]}
-                  handleInputChange={handleInputChange}
                   fields={fields}
                   getCachedList={!!getCachedList ? getCachedList : undefined}
                 />
@@ -103,13 +91,13 @@ const FormSteps = ({ name, onClose, refetchData, oldValues, allowTabs }) => {
                 values={watch()?.[tab]}
                 errors={errors}
                 getCachedList={getCachedList}
-                handleInputChange={handleInputChange}
               />
             )}
           </>
         ) : null}
         <ButtonsStepsGroup
           isLast={isLast}
+          isFirst={isFirst}
           loading={loading}
           steps={steps}
           back={back}

@@ -262,3 +262,11 @@ body.dark .has-checked:has(input:checked) input {
 .css-13cymwt-control {
   border: none !important;
 }
+
+input[type="color"] {
+  background: transparent !important;
+}
+
+div:has(> div > .unique-valid:not(:empty))  {
+  @apply bg-blue-100
+}

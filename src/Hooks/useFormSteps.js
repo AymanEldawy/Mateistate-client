@@ -1,14 +1,15 @@
-import getFormByTableName from "Helpers/Forms/new-tables-forms";
+import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
 import { ApiActions } from "Helpers/Lib/api";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSSR } from "react-i18next";
 
-const useFormSteps = ({ oldValues, name }) => {
+const useFormSteps = ({ name }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [tab, setTab] = useState("");
   const [fields, setFields] = useState([]);
   const [formSettings, setFormSettings] = useState({});
   const [CACHE_LIST, setCACHE_LIST] = useState({});
+  const [firstTab, setFirstTab] = useState(null)
 
   // Get data
   let formSchema = useMemo(() => {
@@ -17,7 +18,7 @@ const useFormSteps = ({ oldValues, name }) => {
   }, [name]);
 
   const forms = useMemo(() => formSchema?.forms, [formSchema]);
-  const steps = useMemo(() => formSchema?.steps, [formSchema]);
+  const steps = useMemo(() => Object.keys(formSchema?.forms), [formSchema]);
 
   const isFirst = () => currentIndex === 0;
   const isLast = () => currentIndex === steps?.length - 1;
@@ -52,10 +53,10 @@ const useFormSteps = ({ oldValues, name }) => {
     if (!fields?.length) return;
     let hash = {};
     for (const field of fields) {
-      if (hash[field?.ref_table]) continue;
+      if (hash[field?.ref_table] || CACHE_LIST?.[field?.ref_table]) continue;
 
       if (field.is_ref) {
-        const response = await ApiActions.read(field?.ref_table);
+        const response = await ApiActions.read(field?.ref_table, field?.conditions || {});
         hash[field?.ref_table] = response?.result;
       }
     }
@@ -65,34 +66,15 @@ const useFormSteps = ({ oldValues, name }) => {
     }));
   };
 
-  // check if form is more then step
-  useEffect(() => {
-    if (!steps) return;
-
-    let tab = steps?.[0];
-    setFields(forms[tab]?.fields || []);
-    setFormSettings(forms[tab]);
-    checkRefTable(tab);
-  }, [steps, forms]);
-
-  async function checkRefTable(fields) {
-    if (!fields?.length) return;
-    for (const field of fields) {
-      if (field.is_ref) {
-        const response = await ApiActions.read(field?.ref_table);
-        CACHE_LIST[field?.ref_table] = response?.result;
-        for (const item of response?.result) {
-          CACHE_LIST[item.id] = item.name || item.number || item.id;
-        }
-      }
-    }
-  }
-
   useEffect(() => {
     let tabName = steps?.[currentIndex];
-    setTab(tabName);
+    setTab(forms?.[tabName]?.tab_name);
+    // setTab(tabName);
     setFields(forms?.[tabName]?.fields || []);
     setFormSettings(forms?.[tabName]);
+    if(!firstTab) {
+      setFirstTab(forms?.[tabName]?.tab_name)
+    }
   }, [currentIndex]);
 
   return {
@@ -108,6 +90,8 @@ const useFormSteps = ({ oldValues, name }) => {
     fields,
     formSchema,
     getCachedList,
+    firstTab,
+    CACHE_LIST
   };
 };
 

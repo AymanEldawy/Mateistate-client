@@ -1,6 +1,6 @@
 import React from "react";
 
-const SearchIcon = () => {
+const SearchIcon = (props) => {
   return (
     <svg
       className="w-5 h-5 text-gray-500"
@@ -8,6 +8,7 @@ const SearchIcon = () => {
       fill="currentColor"
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         fillRule="evenodd"

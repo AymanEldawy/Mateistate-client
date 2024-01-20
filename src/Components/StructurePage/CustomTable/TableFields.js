@@ -1,14 +1,14 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { Input, UniqueField } from "Components/StructurePage/CustomFields";
-import { IncreaseTableBar } from "../Forms/IncreaseTableBar";
+import { IncreaseTableBar } from "./IncreaseTableBar";
 
 const TableFields = ({
   fields,
   getCachedList,
   tab,
+  deleteRowComponent,
   errors,
-  handleInputChange,
   renderColumns,
   renderData,
   containerClassName,
@@ -20,8 +20,15 @@ const TableFields = ({
   rowClassName,
   onRowClick,
   rowsCount,
+  onBlurNumbersField,
 }) => {
-  const [increaseCount, setIncreaseCount] = useState(rowsCount || 20);
+  const [increaseCount, setIncreaseCount] = useState(10);
+
+  useEffect(() => {
+    if (rowsCount > 10) {
+      setIncreaseCount(rowsCount);
+    }
+  }, [rowsCount]);
 
   return (
     <>
@@ -80,19 +87,25 @@ const TableFields = ({
                       key={index}
                     >
                       <td className={`min-w-[40px] ${tdClassName} border`}>
-                        {onRowClick ? (
-                          <button
-                            onClick={() => onRowClick(index)}
-                            className="text-center w-full block min-w-[20px]"
-                          >
-                            {index}
-                          </button>
+                        {!!onRowClick ? (
+                          <div className="flex items-center relative">
+                            {deleteRowComponent
+                              ? deleteRowComponent(index)
+                              : null}
+                            <button
+                              type="button"
+                              onClick={() => onRowClick(index)}
+                              className="text-center w-full block min-w-[20px]"
+                            >
+                              {index + 1}
+                            </button>
+                          </div>
                         ) : (
                           <div
                             className="text-center w-full block"
                             role="button"
                           >
-                            {index}
+                            {index + 1}
                           </div>
                         )}
                       </td>
@@ -120,8 +133,11 @@ const TableFields = ({
                                   containerClassName="!min-w-[190px] border-0 !rounded-none !h-full"
                                   className="!min-w-[190px] border-0 !rounded-none !h-full"
                                   selectContainerClassName="border-none"
-                                  error={errors?.[tab]?.[field?.name] ? 'Field is required' : ''}
-                                  handleInputChange={handleInputChange}
+                                  error={
+                                    errors?.[tab]?.[field?.name]
+                                      ? "Field is required"
+                                      : ""
+                                  }
                                   list={
                                     !!getCachedList
                                       ? getCachedList(field?.ref_table)
@@ -134,10 +150,14 @@ const TableFields = ({
                                   key={`${field?.name}`}
                                   updatedName={`${tab}.${index}.${field?.name}`}
                                   label={""}
-                                  error={errors?.[tab]?.[field?.name] ? 'Field is required' : ''}
+                                  error={
+                                    errors?.[tab]?.[field?.name]
+                                      ? "Field is required"
+                                      : ""
+                                  }
                                   containerClassName="h-10 !h-full min-w-[55px]"
                                   inputClassName={"border-0 !rounded-none"}
-                                  handleInputChange={handleInputChange}
+                                  onBlur={onBlurNumbersField}
                                 />
                               )}
                             </td>
@@ -159,4 +179,4 @@ const TableFields = ({
   );
 };
 
-export default memo(TableFields);
+export default TableFields;

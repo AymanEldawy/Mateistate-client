@@ -10,15 +10,18 @@ import {
 } from "Components/StructurePage/CustomFields";
 import { IGNORED_Fields } from "Helpers/constants";
 import { ButtonField } from "Components/StructurePage/CustomFields/ButtonField";
+import { useFormContext } from "react-hook-form";
 
 export const Fields = ({
   fields,
   values,
   errors,
   getCachedList,
-  handleInputChange,
   tab,
+  globalButtonsActions,
 }) => {
+  const { watch } = useFormContext();
+
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
       {fields?.map((field, i) => {
@@ -47,11 +50,14 @@ export const Fields = ({
             />
           );
         } else if (field?.name === "btn_action") {
-          return <ButtonField
-            {...field}
-            key={`${field?.label}`}
-            watch={tab ? `${tab}.${field?.watch}` : field.watch}
-          />;
+          return (
+            <ButtonField
+              {...field}
+              key={`${field?.label}`}
+              watch={tab ? `${tab}.${field?.watch}` : field.watch}
+              globalButtonsActions={globalButtonsActions}
+            />
+          );
         } else if (field?.is_ref) {
           return (
             <UniqueField
@@ -68,7 +74,6 @@ export const Fields = ({
                   ? errors?.[tab]?.[field?.name]?.type
                   : errors?.[field?.name]?.type
               }
-              handleInputChange={handleInputChange}
             />
           );
         } else if (field?.key === "radio") {
@@ -85,7 +90,6 @@ export const Fields = ({
                   ? errors?.[tab]?.[field?.name]?.type
                   : errors?.[field?.name]?.type
               }
-              handleInputChange={handleInputChange}
             />
           );
         } else if (field?.key === "select") {
@@ -97,12 +101,12 @@ export const Fields = ({
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               label={field?.name?.replace(/_/g, " ")}
               values={values}
+              value={watch(tab ? `${tab}.${field?.name}` : field?.name)}
               error={
                 tab
                   ? errors?.[tab]?.[field?.name]?.type
                   : errors?.[field?.name]?.type
               }
-              handleInputChange={handleInputChange}
             />
           );
         } else if (field?.key === "image") {
@@ -123,7 +127,6 @@ export const Fields = ({
                   ? errors?.[tab]?.[field?.name]?.type
                   : errors?.[field?.name]?.type
               }
-              handleInputChange={handleInputChange}
             />
           );
         } else if (field?.key === "switch") {
@@ -137,7 +140,6 @@ export const Fields = ({
               label={field?.name?.replace(/_/g, " ")}
               values={values}
               error={errors?.[field?.name] ? "Field is required" : ""}
-              handleInputChange={handleInputChange}
             />
             // <></>
           );
@@ -157,7 +159,6 @@ export const Fields = ({
                   ? errors?.[tab]?.[field?.name]?.type
                   : errors?.[field?.name]?.type
               }
-              handleInputChange={handleInputChange}
             />
           );
         } else {
@@ -169,12 +170,12 @@ export const Fields = ({
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               label={field?.name?.replace(/_/g, " ")}
               values={values}
+              tab={tab}
               error={
                 tab
                   ? errors?.[tab]?.[field?.name]?.type
                   : errors?.[field?.name]?.type
               }
-              // handleInputChange={handleInputChange}
             />
           );
         }

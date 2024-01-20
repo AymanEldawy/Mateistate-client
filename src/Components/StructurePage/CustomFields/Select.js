@@ -12,14 +12,13 @@ const CustomSelect = ({
   keyLabel = "name",
   isArray,
   value,
-  handleInputChange,
   updatedName,
   values,
   ...field
 }) => {
   const { name } = field;
   const [list, setList] = useState([]);
-  const { register, control } = useFormContext();
+  const { register, control, watch } = useFormContext();
 
   useEffect(() => {
     setList(
@@ -29,23 +28,6 @@ const CustomSelect = ({
       }))
     );
   }, [field?.list?.length]);
-
-  // const getVal = useMemo(() => {
-  //   const getName = () => {
-  //     let splitName = field.name;
-  //     let value = values
-  //     while(splitName.split(".").length > 1) {
-  //       console.log('callled lop');
-  //       splitName = splitName.slice(1);
-  //       value = value[splitName?.[0]]
-  //     }
-  //     console.log("🚀 ~ getName ~ splitName:", splitName, value)
-  //     // if (splitName.length > 1) return getName(name, values[splitName.at(0)]);
-  //     // return values[name];
-  //   };
-  //   return getName(updatedName || field.name, values);
-  // }, [Object.keys(values).length]);
-  // console.log("🚀 ~ getVal ~ getVal:", getVal);
 
   return (
     <div className={"flex flex-col " + containerClassName}>
@@ -65,14 +47,9 @@ const CustomSelect = ({
         </label>
       ) : null}
       <Controller
-        name={updatedName || field.name}
+        name={updatedName || field?.name}
         control={control}
         render={({ field: { onChange }, value, ref }) => {
-          console.log(
-            values,
-            values?.[updatedName || field?.name],
-            "values?.[updatedName || field?.name]"
-          );
           return (
             <Select
               className="border rounded-md bg-none bg-transparent"
@@ -80,15 +57,15 @@ const CustomSelect = ({
                 control: (state) => "dark:!bg-[#2c2c2c]",
                 container: (state) =>
                   "!bg-none !bg-transparent dark:!border-dark-border",
-                singleValue: () => "dark:text-gray-200",
+                singleValue: () => "dark:text-gray-200 unique-valid",
                 menuList: () => "dark:bg-dark-bg",
               }}
               options={list}
-              value={list.find(
-                (c) => c.value === values?.[updatedName || field?.name]
+              value={list?.find(
+                (c) => c?.value === watch(updatedName || field?.name)
               )}
               onChange={(option) => {
-                handleInputChange(updatedName || field?.name, option?.value);
+                onChange(option?.value);
               }}
             />
           );

@@ -1,6 +1,6 @@
-import BlockPaper from "Components/BlockPaper/BlockPaper";
+import BlockPaper from "Components/Global/BlockPaper";
 import { NotAllowIcon } from "Helpers/Icons";
-import Layout from "Layout";
+import Layout from "Components/Layout";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";

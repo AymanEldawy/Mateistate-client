@@ -21,7 +21,7 @@ const FormHeadingTitleSteps = ({ steps, name, changeTab, activeStage }) => {
                     : ""
                 } p-2 px-4 text-sm text-gray-500 dark:text-gray-200 font-normal flex-1 capitalize whitespace-nowrap`}
               >
-                {step?.replace(/_/g, ' ')}
+                {step?.replace(/_/g, ' ').replace(`${name}`, '')}
               </button>
             ))}
           </div>

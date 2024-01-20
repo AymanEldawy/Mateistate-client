@@ -1,8 +1,9 @@
 import { FLAT_PROPERTY_TABS_SETTINGS } from "Helpers/constants";
 import { createContext, useContext, useEffect, useState } from "react";
 
-const CACHE_UPDATES_Apartments = {};
 const FlatColoringContext = createContext(null);
+
+const COLLECTION_COUNTS = {};
 
 const calculateRoomCount = (collections, setRoomCounts) => {
   const counts = {};
@@ -16,18 +17,10 @@ const calculateRoomCount = (collections, setRoomCounts) => {
 
 export const FlatColoringProvider = ({ children }) => {
   const [hex, setHex] = useState(0);
-  const [selectedColor, setSelectedColor] = useState(0);
+  const [selectedColor, setSelectedColor] = useState(null);
   const [flatsDetails, setFlatsDetails] = useState({});
   const [canInsertColor, setCanInsertColor] = useState(false);
-  const [COLLECTION_COUNTS, setCOLLECTION_COUNTS] = useState({});
   const [roomCounts, setRoomCounts] = useState({});
-
-  const insertToCollections = (hash, hex) => {
-    setCOLLECTION_COUNTS({
-      ...COLLECTION_COUNTS,
-      [hash]: hex,
-    });
-  };
 
   useEffect(() => {
     calculateRoomCount(COLLECTION_COUNTS, setRoomCounts);
@@ -48,11 +41,15 @@ export const FlatColoringProvider = ({ children }) => {
 
   const onInsertColor = (tab, indexHash, additional) => {
     let tabSettings = FLAT_PROPERTY_TABS_SETTINGS[tab];
+    let flatType = tabSettings?.type
+      ? { [tabSettings?.type_col_name]: tabSettings?.type }
+      : {};
     let rest = additional
-      ? { ...additional, [tabSettings?.no]: additional?.name }
+      ? { ...additional, [tabSettings?.no]: additional?.name, ...flatType }
       : {};
 
-    insertToCollections(additional?.name, hex);
+    COLLECTION_COUNTS[additional?.name] = hex
+
     setFlatsDetails((prev) => ({
       ...prev,
       [tab]: {
@@ -61,6 +58,7 @@ export const FlatColoringProvider = ({ children }) => {
           ...prev?.[tab]?.[indexHash],
           ...rest,
           hex: hex,
+          row_index: selectedColor,
         },
       },
     }));

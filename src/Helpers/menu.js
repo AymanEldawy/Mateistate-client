@@ -64,7 +64,6 @@ export const menuData = [
     link: "cards",
     icon: <ClipboardIcon />,
     children: [
-
       {
         key: "Building",
         name: "Building Card",
@@ -88,7 +87,7 @@ export const menuData = [
       {
         key: "Land",
         name: "Land Card",
-        link: "/list/Land",
+        link: "/list/land",
       },
       {
         key: "Villa",
@@ -189,13 +188,14 @@ export const menuData = [
     name: "Realty Transactions",
     link: "realty",
     icon: <BanknoteIcon />,
-    children:   [...getContractMenus(),
-    // children: [
+    children: [
+      // children: [
       // {
       //   key: "Contracts",
       //   name: "Contracts",
       //   link: "",
-      //   subChild: getContractMenus(),
+      //   subChild: getContractMenus,
+      //   type: "fun",
       // },
       // {
       //   key: "Contracts",
@@ -260,16 +260,35 @@ export const menuData = [
       //   //   },
       //   // ],
       // },
+
+      {
+        key: "Bills",
+        name: "Bills",
+        link: "",
+        subChild: [
+          {
+            key: "electricity",
+            name: "Electricity bills",
+            link: "/bills/bill",
+          },
+          // {
+          //   key: "electricity",
+          //   name: "Electricity bills",
+          //   link: "/bills/bill",
+          // },
+          // {
+          //   key: "electricity",
+          //   name: "Electricity bills",
+          //   link: "/bills/bill",
+          // },
+        ],
+      },
       {
         key: "services",
         name: "Services contracts",
         link: "/list/",
       },
-      {
-        key: "electricity",
-        name: "Electricity bills",
-        link: "/list/",
-      },
+
       {
         key: "lawsuit",
         name: "Lawsuit",
@@ -449,19 +468,65 @@ export const menuData = [
       {
         key: "Receipt Voucher",
         name: "Receipt Voucher",
-        link: "/vouchers/1/receipt-voucher",
+        link: "/vouchers/1/receipt-voucher/1",
       },
       {
         key: "Payment Voucher",
         name: "Payment Voucher",
-        link: "/vouchers/2/payment-voucher",
+        link: "/vouchers/2/payment-voucher/1",
       },
       {
-        key: "voucher patterns",
-        name: "Voucher patterns",
-        link: "/vouchers/entry",
+        key: "voucher Entry",
+        name: "Voucher Entry",
+        link: "/vouchers/entries/1",
       },
     ],
   },
-
+  {
+    key: "Reports",
+    name: "Reports",
+    link: "",
+    icon: <ToolsIcon />,
+    children: [
+      {
+        key: "Reports contracts",
+        name: "Reports contracts",
+        link: "/reports/contracts",
+      },
+      {
+        key: "Reports bills",
+        name: "Reports bills",
+        link: "/reports/bills",
+      },
+      {
+        key: "Reports vouchers receipts",
+        name: "Reports vouchers receipts",
+        link: "/reports/vouchers/receipts",
+      },
+      {
+        key: "Reports vouchers payments",
+        name: "Reports vouchers payments",
+        link: "/reports/vouchers/payments",
+      },
+      {
+        key: "Reports vouchers entries",
+        name: "Reports vouchers entries",
+        link: "/reports/vouchers/entries/1",
+      },
+    ],
+  },
 ];
+
+const getMenu = async () => {
+  const res = await getContractMenus();
+  console.log("🚀 ~ getMenu ~ res:", res)
+  menuData[4].children.push({
+    key: 'Contracts 2',
+    name: 'Contracts',
+    subChild: res
+  })
+  return menuData
+};
+  console.log("🚀 ~ getMenu ~ menuData:", menuData)
+
+export default getMenu;

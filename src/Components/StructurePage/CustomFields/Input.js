@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
 const Input = ({
@@ -10,10 +10,23 @@ const Input = ({
   readOnly,
   index,
   updatedName,
+  tab,
+  onBlur,
   ...field
 }) => {
-  const { register } = useFormContext();
+  const { register, watch } = useFormContext();
   const { name } = field;
+  const watchField = field?.watch;
+  const watchFieldName = tab ? `${tab}.${watchField}` : watchField;
+  const watchFieldCondition = field?.condition;
+
+  useEffect(() => {
+    if (watchField && watch(watchFieldName) === watchFieldCondition) {
+      console.log(field, 'true');
+    } else {
+      
+    }
+  }, [watch(watchFieldName)])
 
   return (
     <div className={"flex flex-col " + containerClassName} key={field?.name}>
@@ -47,6 +60,7 @@ const Input = ({
           required: field?.required,
           validate: (value) => {},
         })}
+        onBlur={onBlur}
       />
       {error ? (
         <p className="bg-red-200 mt-2 rounded text-sm text-red-500 px-2 py-1">

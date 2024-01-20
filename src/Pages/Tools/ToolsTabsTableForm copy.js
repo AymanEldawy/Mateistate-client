@@ -10,9 +10,9 @@ import TableBody from "Components/StructurePage/CustomTable/TableBody";
 import TableRow from "Components/StructurePage/CustomTable/TableRow";
 import TableCol from "Components/StructurePage/CustomTable/TableCol";
 import { Input, UniqueField } from "Components/StructurePage/CustomFields";
-import getFormByTableName from "Helpers/Forms/new-tables-forms";
+import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
 import useFlatColoring from "Hooks/useFlatColoring";
-import { IncreaseTableBar } from "Components/StructurePage/Forms/IncreaseTableBar";
+import { IncreaseTableBar } from "Components/StructurePage/CustomTable/IncreaseTableBar";
 
 export const ToolsTabsTableForm = ({
   onOpen,
@@ -23,7 +23,6 @@ export const ToolsTabsTableForm = ({
   getCachedList,
   getValuesWithoutSubmit,
   setGetIndexOfRowUpdated,
-  handleInputChange
 }) => {
   const { onSelectColor, selectedColor } = useFlatColoring();
   const [grid, setGrid] = useState([]);
@@ -32,7 +31,7 @@ export const ToolsTabsTableForm = ({
   const [columns, setColumns] = useState([]);
 
   const fields = useMemo(() => {
-    return getFormByTableName("apartment_property_values");
+    return getFormByTableName("property_values");
   }, []);
 
   useEffect(() => {

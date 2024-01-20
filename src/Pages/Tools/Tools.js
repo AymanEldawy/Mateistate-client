@@ -1,4 +1,4 @@
-import BlockPaper from "Components/BlockPaper/BlockPaper";
+import BlockPaper from "Components/Global/BlockPaper";
 import ContentBar from "Components/Global/ContentBar/ContentBar";
 import { ApiActions } from "Helpers/Lib/api";
 import { useEffect, useState } from "react";
@@ -7,38 +7,27 @@ import { ToolsColorsBar } from "./ToolsColorsBar";
 import { FlatColoringProvider } from "Hooks/useFlatColoring";
 import { FormProvider, useForm } from "react-hook-form";
 import ToolsWarper from "./ToolsWarper";
-
-const CACHE_APARTMENTS = {};
-
-const findList = async (type, id) => {
-  const response = await ApiActions.read(type, {
-    conditions: [{ type: "and", conditions: [["id", "=", id]] }],
-  });
-  let data = response?.result;
-  if (data.length) {
-    for (const row of data) {
-      CACHE_APARTMENTS[row?.number] = row;
-    }
-  }
-};
-
-const refetchBuildingAssets = (id) => {
-  for (const asset of ["apartment", "villa", "shop", "parking"]) {
-    findList(asset, id);
-  }
-};
+import useFetch from "Hooks/useFetch";
 
 const Tools = () => {
   const { id } = useParams();
   const location = useLocation();
   const rowState = location?.state?.row;
   const methods = useForm({ defaultValues: {} });
+  const { data, loading, error } = useFetch("property_values");
   const [rowData, setRowData] = useState();
+
+  const { reset } = methods;
 
   const getBuildingData = async () => {
     const res = await ApiActions.getById("building", id);
     setRowData(res.result.at(0));
   };
+
+  useEffect(() => {
+    if (loading) return;
+    reset({ grid: data?.sort((a, b) => a?.row_index - b?.row_index) });
+  }, [loading]);
 
   useEffect(() => {
     if (!id) return;
@@ -48,7 +37,6 @@ const Tools = () => {
     } else {
       setRowData(rowState);
     }
-    refetchBuildingAssets(id);
   }, [id, rowState]);
 
   return (

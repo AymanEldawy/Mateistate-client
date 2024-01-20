@@ -62,15 +62,15 @@ export const getUsers = async () => {
 
 export const getCostCenter = async () => {
   return await ApiActions.read("cost_center", {
-    joins: [
-      {
-        type: "join",
-        table: "cost_center",
-        conditions: { "cost_center.parent_id": "cost_center.id" },
-      },
-    ],
+    // joins: [
+    //   {
+    //     type: "join",
+    //     table: "cost_center",
+    //     conditions: { "cost_center.parent_id": "cost_center.id" },
+    //   },
+    // ],
     sorts: [{ column: "created_at", order: "DESC", nulls: "last" }],
-    columns: ["cost_center.*", "cost_center.name as parent_name"],
+    // columns: ["cost_center.*", "cost_center.name as parent_name"],
   });
 };
 
