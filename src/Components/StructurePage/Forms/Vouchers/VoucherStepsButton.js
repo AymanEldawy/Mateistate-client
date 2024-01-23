@@ -1,4 +1,4 @@
-import { ChevronIcon, DoubleArrowIcon, SearchIcon } from "Helpers/Icons";
+import { ChevronIcon, DoubleArrowIcon, SearchIcon } from "Components/Icons";
 import React, { useState } from "react";
 
 export const VoucherStepsButton = ({ number, goTo, maxLength, isNewOne }) => {

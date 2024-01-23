@@ -1,5 +1,5 @@
 import React from "react";
-import { MoonIcon, SunIcon } from "Helpers/Icons";
+import { MoonIcon, SunIcon } from "Components/Icons";
 
 const ToggleThemeBar = ({ theme, changeTheme }) => {
   return (

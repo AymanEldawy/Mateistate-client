@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SearchIcon, FilterIcon } from "Helpers/Icons";
+import { SearchIcon, FilterIcon } from "Components/Icons";
 import Backdrop from "Components/Global/Backdrop";
 import { useTranslation } from "react-i18next";
 

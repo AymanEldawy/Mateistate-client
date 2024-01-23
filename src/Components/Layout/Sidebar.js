@@ -3,7 +3,7 @@ import * as React from 'react';
 import { menuData } from 'Helpers/menu';
 import { Link } from 'react-router-dom';
 import logo from 'Assets/Images/abrepair-logo.svg';
-import { ChevronIcon, PowerIcon } from 'Helpers/Icons';
+import { ChevronIcon, PowerIcon } from 'Components/Icons';
 import { IconsBar } from './IconsBar';
 import { useTranslation } from 'react-i18next';
 

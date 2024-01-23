@@ -1,14 +1,30 @@
-import {
-  APARTMENT_STEPS_CONTRACT,
-  ASSETS_STEPS,
-  BUILDING_STEPS,
-  LAND_STEPS_CONTRACT,
-  PARKING_STEPS_CONTRACT,
-  SHOP_STEPS_CONTRACT,
-  VILLA_STEPS,
-} from "Helpers/constants";
 import { ApiActions } from "../api";
 import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
+import { generateEntryFromContract } from "./vouchers-actions";
+import { CONTRACTS_ASSETS_TYPE } from "Helpers/constants";
+
+const CONTRACT_GRID_FORMS_NAMES = {
+  contract_pictures: {
+    table: "contract_pictures",
+    conditions: [""],
+  },
+  contract_other_fees: {
+    table: "contract_other_fees",
+    conditions: ["fee_amount", "account_id"],
+  },
+  contract_fixed_assets: {
+    table: "contract_fixed_assets",
+    conditions: ["assets_id", "value"],
+  },
+  contract_linked_parking: {
+    table: "contract_linked_parking",
+    conditions: ["main_contract_id", "building_id", "account_id"],
+  },
+  contract_receipt_number: {
+    table: "contract_receipt_number",
+    conditions: ["receipt_number", "receipt_date"],
+  },
+};
 
 //
 const getLastContractNumber = async () => {
@@ -128,43 +144,185 @@ const dynamicInsertIntoContract = async ({
   contractType,
   ...additionalParams
 }) => {
+  console.log("🚀 ~ data:", data);
   let steps = Object.values(getFormByTableName(tableName)?.forms)?.map(
     (c) => c?.tab_name
   );
 
   const list = {};
   // Loop through all the data and save each step with the table name in database which mean
-  for (const step in steps) {
+  for (const step of steps) {
     list[step] = data?.[step];
   }
 
-  // Insert to contract
-  const response = await ApiActions.insert("contract", {
-    data: {
-      contract_type: contractType,
-      number: await getLastContractNumber(),
-    },
-  });
+  let response = null;
+  if (data?.contract?.id) {
+    response = await ApiActions.update("contract", {
+      conditions: [
+        { type: "and", conditions: [["id", "=", data?.contract?.id]] },
+      ],
+      updates: data?.contract,
+    });
+  } else {
+    // Insert into contract or update
+    response = await ApiActions.insert("contract", {
+      data: {
+        contract_type: contractType,
+        flat_type: data?.flat_type,
+      },
+    });
+  }
 
   if (response.success) {
-    const contract_id = response?.record?.id;
+    const contract_id = response?.record?.id || data?.contract?.id;
 
-    for (const name in list) {
-      if (list[name]) {
-        // const res = await ApiActions.insert(name, {
-        ApiActions.insert(name, {
+    // for (const name in list) {
+    //   if (list[name]) {
+    //     let values = list[name];
+    //     if (CONTRACT_GRID_FORMS_NAMES?.[name]) {
+    //       let tab = CONTRACT_GRID_FORMS_NAMES?.[name];
+    //       if (name === "contract_pictures") {
+    //         insertIntoContractPictures({
+    //           values,
+    //           contract_id,
+    //         });
+    //       } else {
+    //         insertIntoContractGridTabs({
+    //           values,
+    //           tab,
+    //           contract_id,
+    //         });
+    //       }
+    //     } else {
+    //       if (values?.id) {
+    //         await ApiActions.update(name, {
+    //           conditions: [
+    //             { type: "and", conditions: [["id", "=", values?.id]] },
+    //           ],
+    //           updates: values,
+    //         });
+    //       } else {
+    //         ApiActions.insert(name, {
+    //           data: {
+    //             ...values,
+    //             contract_id,
+    //           },
+    //         });
+    //       }
+    //     }
+    //   }
+    // }
+    // @Voucher -> Generate entries `Contract value`, `Insurance value`
+
+    if (list?.[data?.tabName]?.gen_entries) {
+      console.log('gen entries');
+      generateEntryFromContract({
+        contractId: contract_id,
+        assetsType: CONTRACTS_ASSETS_TYPE?.[data?.flat_type],
+        assetsTypeNumber: 1,
+        buildingNumber: 2,
+        contractNumber: response?.record?.number,
+        values: list?.[data?.tabName],
+      });
+    }
+    if (list?.[data?.tabName].paid_type === 4) {
+      const installmentData = data?.installment;
+      const installmentGridData = data?.installment_grid;
+      // @installment       ->      Generate installment
+      // @firstBatchVoucher ->      Generate installment
+      await insertIntoContractInstallment({
+        installment: installmentData,
+        installment_grid: installmentGridData,
+        contract_id,
+      });
+    }
+    return response;
+  }
+};
+
+const insertIntoContractInstallment = async ({
+  contract_id,
+  installment,
+  installment_grid,
+}) => {
+  let installment_id = installment?.id;
+
+  if (installment?.id) {
+    await ApiActions.update("installment", {
+      conditions: [{ type: "and", conditions: [["id", "=", installment?.id]] }],
+      updates: installment,
+    });
+  } else {
+    const response = await ApiActions.insert("installment", {
+      data: {
+        ...installment,
+        contract_id,
+      },
+    });
+    installment_id = response?.record?.id;
+  }
+
+  for (const item of installment_grid) {
+    if (item?.id) {
+      await ApiActions.update("installment_data", {
+        conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
+        updates: item,
+      });
+    } else {
+      await ApiActions.insert("installment_data", {
+        data: {
+          ...item,
+          installment_id,
+        },
+      });
+    }
+  }
+};
+
+const insertIntoContractPictures = async ({ values, contract_id }) => {
+  if (!values || !contract_id) return;
+
+  for (const picture of values) {
+    let data = {
+      picture: "", // url
+      contract_id,
+    };
+
+    await ApiActions.insert("contract_pictures", {
+      data,
+    });
+  }
+};
+
+const insertIntoContractGridTabs = async ({
+  values,
+  tab: { table, conditions },
+  contract_id,
+}) => {
+  if (!values || !table || !contract_id) return;
+
+  for (const item of values) {
+    let isValid = true;
+    for (const condition of conditions) {
+      if (!item[condition]) {
+        isValid = false;
+      }
+    }
+    if (isValid) {
+      if (item.id) {
+        await ApiActions.update(table, {
+          conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
+          updates: item,
+        });
+      } else {
+        await ApiActions.insert(table, {
           data: {
-            ...list[name],
+            ...item,
             contract_id,
           },
         });
       }
     }
-
-    // Paid type 4
-    // => insert into installment
-    // Termination fees
-    return response;
   }
 };
 

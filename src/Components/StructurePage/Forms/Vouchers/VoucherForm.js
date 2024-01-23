@@ -13,6 +13,7 @@ import { Button } from "Components/Global/Button";
 import { VoucherStepsButton } from "./VoucherStepsButton";
 import useFetch from "Hooks/useFetch";
 import { GET_NEW_VOUCHER_ENTRY_GRID } from "Helpers/constants";
+import { usePopupForm } from "Hooks/usePopupForm";
 
 let CACHE_LIST = {};
 
@@ -21,6 +22,7 @@ const getCachedList = (tableName) => {
 };
 
 const VoucherForm = ({ layout }) => {
+  const { refTable } = usePopupForm();
   const params = useParams();
   const { name, type } = params;
   const { data, loading, error } = useFetch("voucher_main_data", {
@@ -83,11 +85,28 @@ const VoucherForm = ({ layout }) => {
   }, [number]);
 
   useEffect(() => {
-    if(loading) return;
+    if (loading) return;
     if (number > (data?.at(0)?.number || 0)) {
       setIsNewOne(true);
     }
   }, [loading]);
+
+  useEffect(() => {
+    if (refTable?.isClosed) {
+      reFetchRefTable(refTable?.table);
+    }
+  }, [refTable?.isClosed]);
+
+  const reFetchRefTable = async (table) => {
+    const response = await ApiActions.read(table);
+    if (response?.length) {
+      CACHE_LIST[table] = response?.result;
+    }
+  };
+
+  useEffect(() => {
+    getRefTables();
+  }, [name, type]);
 
   const getRefTables = async () => {
     for (const field of [...gridFields]) {
@@ -103,10 +122,6 @@ const VoucherForm = ({ layout }) => {
       }
     }
   };
-
-  useEffect(() => {
-    getRefTables();
-  }, [name, type]);
 
   const goTo = (num) => {
     if (num > (data?.at(0)?.number || 0)) {
@@ -193,7 +208,7 @@ const VoucherForm = ({ layout }) => {
           </span>
         }
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <VoucherHead
             isAccounting={+type === 2}
             fields={fields}

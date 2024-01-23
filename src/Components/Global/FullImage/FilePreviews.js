@@ -20,32 +20,34 @@ export const FilePreviews = ({ images }) => {
             key={imgSrc}
             src={imgSrc}
             alt={`file ${index}`}
-            className=" rounded-full border h-10 min-w-[40px] -ml-3 shadow-md shrink-0"
+            className=" rounded-full border h-10 w-[40px] -ml-3 shadow-md shrink-0"
           />
         ))}
         {images?.length > 5 ? (
-          <span className=" rounded-full border h-10 min-w-[40px] -ml-3 shadow-md flex items-center justify-center bg-blue-500 text-white">
+          <span className=" rounded-full border h-10 w-[40px] -ml-3 shadow-md flex items-center justify-center bg-blue-500 text-white">
             +{images?.slice(5)?.length}
           </span>
         ) : null}
       </div>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        modalClassName="!p-2"
-        containerClassName="max-w-[575px] z-20"
-      >
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 rounded-xl z-20">
-          {images?.map((imgSrc, index) => (
-            <FullImage
-              key={imgSrc}
-              src={imgSrc}
-              alt={`file ${index}`}
-              className="w-full shadow-lg border max-w-none rounded-md object-cover "
-            />
-          ))}
-        </div>
-      </Modal>
+      {open ? (
+        <Modal
+          open={true}
+          onClose={() => setOpen(false)}
+          modalClassName="!p-2"
+          containerClassName="!z-20"
+        >
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 rounded-xl z-20">
+            {images?.map((imgSrc, index) => (
+              <FullImage
+                key={imgSrc}
+                src={imgSrc}
+                alt={`file ${index}`}
+                className="w-full shadow-lg border max-w-none rounded-md object-cover "
+              />
+            ))}
+          </div>
+        </Modal>
+      ) : null}
     </>
   );
 };

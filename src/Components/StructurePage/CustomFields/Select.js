@@ -14,6 +14,7 @@ const CustomSelect = ({
   value,
   updatedName,
   values,
+  selectClassNames,
   ...field
 }) => {
   const { name } = field;
@@ -52,17 +53,18 @@ const CustomSelect = ({
         render={({ field: { onChange }, value, ref }) => {
           return (
             <Select
-              className="border rounded-md bg-none bg-transparent"
+              className={`border rounded-md bg-none bg-transparent ${selectClassName}`}
               classNames={{
                 control: (state) => "dark:!bg-[#2c2c2c]",
                 container: (state) =>
                   "!bg-none !bg-transparent dark:!border-dark-border",
                 singleValue: () => "dark:text-gray-200 unique-valid",
                 menuList: () => "dark:bg-dark-bg",
+                ...selectClassNames,
               }}
               options={list}
               value={list?.find(
-                (c) => c?.value === watch(updatedName || field?.name)
+                (c) => c?.value === +watch(updatedName || field?.name)
               )}
               onChange={(option) => {
                 onChange(option?.value);

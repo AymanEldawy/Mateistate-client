@@ -1,17 +1,17 @@
 import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 
-const Modal = ({ open, onClose, children }) => {
+const Modal = ({ open, onClose, children, containerClassName }) => {
+  
   useEffect(() => {
-    if(open)
-    document.body.style.overflow = "hidden";
-}, []);
+    if (open) document.body.style.overflow = "hidden";
+  }, []);
 
   return createPortal(
-
     <div
       className={`
       fixed top-0 left-0 bottom-0 right-0 z-50 flex items-center justify-center backdrop-blur-sm bg-[#0008]
+      ${containerClassName}
       ${
         open ? "pointer-events-auto opacity-1" : "pointer-events-none opacity-0"
       }
@@ -24,8 +24,9 @@ const Modal = ({ open, onClose, children }) => {
       >
         {children}
       </div>
-    </div>
-  , document.getElementById('portal-modal'))
+    </div>,
+    document.getElementById("portal-modal")
+  );
 };
 
 export default Modal;

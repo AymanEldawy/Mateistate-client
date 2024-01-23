@@ -14,7 +14,7 @@ const Tools = () => {
   const location = useLocation();
   const rowState = location?.state?.row;
   const methods = useForm({ defaultValues: {} });
-  const { data, loading, error } = useFetch("property_values");
+  const { data, loading, error, refetchData } = useFetch("property_values");
   const [rowData, setRowData] = useState();
 
   const { reset } = methods;
@@ -60,7 +60,7 @@ const Tools = () => {
             </ContentBar>
           }
         >
-          <ToolsWarper row={rowData} />
+          <ToolsWarper row={rowData}  refetchPropertyValuesData={refetchData}/>
         </BlockPaper>
       </FlatColoringProvider>
     </FormProvider>

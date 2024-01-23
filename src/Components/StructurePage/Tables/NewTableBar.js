@@ -1,4 +1,4 @@
-import { EyeIcon, SearchIcon, TrashIcon } from "Helpers/Icons";
+import { EyeIcon, SearchIcon, TrashIcon } from "Components/Icons";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { DebouncedInput } from "../CustomFields";

@@ -1,5 +1,5 @@
 import Loading from "Components/Global/Loading";
-import { CheckIcon, ChevronIcon, NotAllowIcon } from "Helpers/Icons";
+import { CheckIcon, ChevronIcon, NotAllowIcon } from "Components/Icons";
 import useFetch from "Hooks/useFetch";
 import React from "react";
 import { Link } from "react-router-dom";

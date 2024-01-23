@@ -3,11 +3,12 @@
 import { getValue } from "@testing-library/user-event/dist/utils";
 import IndeterminateCheckbox from "Components/StructurePage/Tables/IndeterminateCheckbox";
 import { Link } from "react-router-dom";
-import { CheckIcon, NotAllowIcon, PaletteIcon } from "./Icons";
+import { CheckIcon, NotAllowIcon, PaletteIcon } from "../Components/Icons";
 import {
   FLAT_PROPERTY_TYPES,
   SELECT_LISTS,
   FLAT_PROPERTY_COLORS,
+  CONTRACTS_ASSETS_TYPE,
 } from "./constants";
 
 export const account = [
@@ -140,7 +141,20 @@ export const user = [
     ),
   },
   // { header: "id", accessorKey: "id" },
-  { header: "number", accessorKey: "number" },
+  {
+    header: "number",
+    accessorKey: "number",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/user/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   {
     header: "created_at",
     accessorKey: "created_at",
@@ -149,15 +163,19 @@ export const user = [
   {
     header: "card_type",
     accessorKey: "card_type",
-    cell: ({ getValue }) => (
-      <span
-        className={`rounded-md text-white py-1 px-2 text-xs ${
-          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
-        }`}
-      >
-        {SELECT_LISTS("user_type")?.find((c) => c?.id === getValue())?.name}
-      </span>
-    ),
+    cell: ({ getValue, row }) => {
+      return (
+        <Link className="capitalize" to={`/update/user/${row.original.id}`}>
+          <span
+            className={`rounded-md text-white py-1 px-2 text-xs ${
+              getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
+            }`}
+          >
+            {SELECT_LISTS("user_type")?.find((c) => c?.id === getValue())?.name}
+          </span>
+        </Link>
+      );
+    },
   },
   {
     header: "date_of_birth",
@@ -1315,7 +1333,20 @@ export const apartment = [
   },
   // { header: "id", accessorKey: "id" },
   { header: "building_id", accessorKey: "building_id" },
-  { header: "apartment_no", accessorKey: "apartment_no" },
+  {
+    header: "apartment_no",
+    accessorKey: "apartment_no",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/apartment/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   { header: "floor", accessorKey: "floor" },
   {
     header: "flat_type",
@@ -2053,7 +2084,9 @@ export const contract_pattern = [
       return (
         <Link
           className="text-blue-500 capitalize"
-          to={`/update/contract_pattern/${row.original.id}`}
+          to={`/patterns/update/contract_pattern/${getValue()}/${
+            row.original.id
+          }`}
         >
           {getValue()}
         </Link>
@@ -3273,7 +3306,7 @@ export const installment = [
         }`}
       >
         {
-          SELECT_LISTS("installment_entries_type")?.find(
+          SELECT_LISTS("installment_voucher_type")?.find(
             (c) => c?.id === getValue()
           )?.name
         }
@@ -4688,8 +4721,23 @@ export const parking = [
     accessorKey: "created_at",
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
+  { header: "number", accessorKey: "number" },
   { header: "building_id", accessorKey: "building_id" },
-  { header: "parking_no", accessorKey: "parking_no" },
+  {
+    header: "parking_no",
+    accessorKey: "parking_no",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/parking/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
+
   { header: "floor_no", accessorKey: "floor_no" },
   { header: "area", accessorKey: "area" },
   { header: "area_unit", accessorKey: "area_unit" },
@@ -4698,7 +4746,7 @@ export const parking = [
     accessorKey: "parking_kind",
     cell: ({ getValue }) => (
       <span
-        className={`rounded-md text-white py-1 px-2 text-xs capitalize `}
+        className={`rounded-md whitespace-nowrap text-white py-1 px-2 text-xs capitalize `}
         style={{ background: FLAT_PROPERTY_COLORS?.[`parking_${getValue()}`] }}
       >
         {FLAT_PROPERTY_TYPES?.[`parking_${getValue()}`]}
@@ -4854,8 +4902,21 @@ export const shop = [
   },
   { header: "building_id", accessorKey: "building_id" },
   { header: "number", accessorKey: "number" },
-  { header: "shop_no", accessorKey: "shop_no" },
-  { header: "shop_kind", accessorKey: "shop_kind" },
+  {
+    header: "shop_no",
+    accessorKey: "shop_no",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/apartment/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
+  // { header: "shop_kind", accessorKey: "shop_kind" },
   { header: "description", accessorKey: "description" },
   { header: "x_index", accessorKey: "x_index" },
   { header: "y_index", accessorKey: "y_index" },
@@ -5082,7 +5143,20 @@ export const villa = [
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
   { header: "complex_name", accessorKey: "complex_name" },
-  { header: "villa_no", accessorKey: "villa_no" },
+  {
+    header: "villa_no",
+    accessorKey: "villa_no",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/villa/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   { header: "emirate", accessorKey: "emirate" },
   { header: "area", accessorKey: "area" },
   { header: "suburb", accessorKey: "suburb" },
@@ -6157,7 +6231,70 @@ const contracts = [
     ),
   },
   { header: "number", accessorKey: "number" },
-  { header: "type", accessorKey: "type" },
+  {
+    header: "flat_type",
+    accessorKey: "flat_type",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/contracts/${row.original.id}`}
+        >
+          {CONTRACTS_ASSETS_TYPE?.[getValue()]}
+        </Link>
+      );
+    },
+  },
+  {
+    header: "contract_type",
+    accessorKey: "contract_type",
+    cell: ({ getValue, row }) => {
+      let contractType = SELECT_LISTS("contact_pattern_contract_type")?.find(
+        (c) => c.id === getValue()
+        )?.name?.toLowerCase();
+      let flatType = CONTRACTS_ASSETS_TYPE?.[row.original.flat_type]
+      let updateUrl = `/contracts/update/${contractType}/apartment_${contractType}_contract?flat_type=${flatType}&contract_id=${row.original.contract_id}`
+      return (
+        <Link
+          className={`capitalize px-2 py-1 text-sx rounded-md ${
+            getValue() === 1
+              ? "bg-purple-500 text-white"
+              : "bg-orange-500 text-white"
+          }`}
+          // to={`/contracts/${row.original.id}`}
+          to={updateUrl}
+        >
+          {contractType}
+        </Link>
+      );
+    },
+  },
+  { header: "feedback", accessorKey: "feedback" },
+  { header: "lawsuit", accessorKey: "lawsuit" },
+  { header: "commission_percentage", accessorKey: "commission_percentage" },
+  { header: "commission_value", accessorKey: "commission_value" },
+  { header: "building_id", accessorKey: "building_id" },
+  { header: "termination_date", accessorKey: "termination_date" },
+  { header: "contract_type", accessorKey: "contract_type" },
+  { header: "contract_value", accessorKey: "contract_value" },
+  { header: "monthly_value", accessorKey: "monthly_value" },
+  { header: "currency_id", accessorKey: "currency_id" },
+  { header: "currency_val", accessorKey: "currency_val" },
+  { header: "discount_rate", accessorKey: "discount_rate" },
+  { header: "discount_value", accessorKey: "discount_value" },
+  { header: "final_price", accessorKey: "final_price" },
+  { header: "start_duration_date", accessorKey: "start_duration_date" },
+  { header: "end_duration_date", accessorKey: "end_duration_date" },
+  { header: "paid_type", accessorKey: "paid_type" },
+  { header: "assets_number", accessorKey: "assets_number" },
+  { header: "client_id", accessorKey: "client_id" },
+  { header: "building_id", accessorKey: "building_id" },
+  { header: "parking_id", accessorKey: "parking_id" },
+  { header: "description", accessorKey: "description" },
+  { header: "lessor_id", accessorKey: "lessor_id" },
+  { header: "seller_id", accessorKey: "seller_id" },
+  { header: "property_delivery_date", accessorKey: "property_delivery_date" },
+  { header: "issue_date", accessorKey: "issue_date" },
 ];
 
 const land = [
@@ -6185,19 +6322,91 @@ const land = [
       />
     ),
   },
-  { accessorKey: "id", header: "id" },
-  { accessorKey: "created_at", header: "created_at" },
+  // { accessorKey: "id", header: "id" },
+  {
+    accessorKey: "created_at",
+    header: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { accessorKey: "number", header: "number" },
+
+  {
+    accessorKey: "land_no",
+    header: "land_no",
+
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/land/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
+  {
+    accessorKey: "name",
+    header: "name",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/land/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
+  {
+    accessorKey: "last_name",
+    header: "last_name",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/land/${row.original.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   { accessorKey: "type", header: "type" },
-  { accessorKey: "ban", header: "ban" },
-  { accessorKey: "land_no", header: "land_no" },
-  { accessorKey: "name", header: "name" },
-  { accessorKey: "last_name", header: "last_name" },
+  {
+    accessorKey: "ban",
+    header: "ban",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   {
     accessorKey: "customer_id",
     header: "customer_id",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/update/account/${getValue()}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
   },
-  { accessorKey: "date", header: "date" },
+  {
+    accessorKey: "date",
+    header: "date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { accessorKey: "city", header: "city" },
   { accessorKey: "region", header: "region" },
   { accessorKey: "space", header: "space" },
@@ -6206,13 +6415,30 @@ const land = [
   { accessorKey: "price", header: "price" },
   { accessorKey: "license_no", header: "license_no" },
   { accessorKey: "license", header: "license" },
-  { accessorKey: "license_date", header: "license_date" },
+  {
+    accessorKey: "license_date",
+    header: "license_date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
   { accessorKey: "details", header: "details" },
   { accessorKey: "land_type", header: "land_type" },
   { accessorKey: "side", header: "side" },
   { accessorKey: "street_name", header: "street_name" },
   { accessorKey: "street_count", header: "street_count" },
-  { accessorKey: "buildble", header: "buildble" },
+  {
+    accessorKey: "buildble",
+    header: "buildble",
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded-md px-2 py-1 text-xs ${
+          getValue() ? "bg-green-500" : "bg-red-500 text-white"
+        }`}
+      >
+        {" "}
+        {getValue() ? "Yes" : "No"}
+      </span>
+    ),
+  },
   { accessorKey: "landowner", header: "landowner" },
   { accessorKey: "begin_land_value", header: "begin_land_value" },
   {

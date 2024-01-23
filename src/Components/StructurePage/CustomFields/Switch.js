@@ -1,5 +1,5 @@
 import React from "react";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
 const Input = ({
   labelClassName,
@@ -11,6 +11,7 @@ const Input = ({
   // register,
   ...field
 }) => {
+  const { watch } = useFormContext();
   const { name } = field;
 
   return (
@@ -44,6 +45,7 @@ const Input = ({
                   type="checkbox"
                   className="sr-only peer"
                   onChange={(e) => onChange(e.target.checked)}
+                  checked={watch(updatedName || field?.name)}
                 />
               );
             }}

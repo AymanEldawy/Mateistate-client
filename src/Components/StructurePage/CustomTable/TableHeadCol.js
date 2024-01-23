@@ -1,5 +1,5 @@
 import React from "react";
-import { SortIcon } from "Helpers/Icons";
+import { SortIcon } from "Components/Icons";
 
 const TableHeadCol = ({ children, scope, classes, sort, sortBy }) => {
   return (

@@ -1,5 +1,5 @@
 import Backdrop from "Components/Global/Backdrop";
-import { CloseIcon } from "Helpers/Icons";
+import { CloseIcon } from "Components/Icons";
 import React from "react";
 
 export const Drawer = ({ direction, children, onClose }) => {

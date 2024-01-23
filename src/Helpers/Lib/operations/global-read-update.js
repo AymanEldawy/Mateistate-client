@@ -33,8 +33,10 @@ export const getBuildingUpdate = async (id) => {
     building_editorial_entry: building_editorial_entry?.result?.at(0),
     building_investment: building_investment?.result?.at(0),
     building_pictures: building_pictures?.result,
-    building_real_estate_development: building_real_estate_development?.result?.at(0),
-    building_real_estate_management: building_real_estate_management?.result?.at(0),
+    building_real_estate_development:
+      building_real_estate_development?.result?.at(0),
+    building_real_estate_management:
+      building_real_estate_management?.result?.at(0),
   };
 
   console.log(groupData);
@@ -133,11 +135,11 @@ export const getShopUpdate = async (id) => {
   const shop_selling_price = await fetchData("shop_selling_price", "id", id);
 
   const groupData = {
-    general: shop,
-    "fixed assets": shop_fixed_assets,
-    pictures: shop_pictures,
-    "rent price": shop_rent_price,
-    "selling price": shop_selling_price,
+    shop: shop?.result?.at(0),
+    shop_fixed_assets: shop_fixed_assets?.result?.at(0),
+    shop_pictures: shop_pictures?.result?.at(0),
+    shop_rent_price: shop_rent_price?.result?.at(0),
+    shop_selling_price: shop_selling_price?.result?.at(0),
   };
 
   console.log(groupData);
@@ -164,14 +166,14 @@ export const getVillaUpdate = async (id) => {
   const villa_selling_price = await fetchData("villa_selling_price", "id", id);
 
   const groupData = {
-    general: villa,
-    "villa accounts": villa_accounts,
-    "villa assets": villa_assets,
-    "villa exterior_details": villa_exterior_details,
-    "villa interior_details": villa_interior_details,
-    "villa pictures": villa_pictures,
-    "villa rent_price": villa_rent_price,
-    "villa selling price": villa_selling_price,
+    villa: villa?.result?.at(0),
+    villa_accounts: villa_accounts?.result?.at(0),
+    villa_assets: villa_assets?.result?.at(0),
+    villa_exterior_details: villa_exterior_details?.result?.at(0),
+    villa_interior_details: villa_interior_details?.result?.at(0),
+    villa_pictures: villa_pictures?.result?.at(0),
+    villa_rent_price: villa_rent_price?.result?.at(0),
+    villa_selling_price: villa_selling_price?.result?.at(0),
   };
 
   console.log(groupData);
@@ -180,6 +182,7 @@ export const getVillaUpdate = async (id) => {
 };
 
 export const getContractUpdate = async (id) => {
+  const contract = await fetchData("contract", "id", id);
   const contract_commission = await fetchData(
     "contract_commission",
     "contract_id",
@@ -218,9 +221,17 @@ export const getContractUpdate = async (id) => {
     id
   );
 
+  const installment = await fetchData("installment", "contract_id", id);
+  const installment_grid = await fetchData(
+    "installment_data",
+    "installment_id",
+    installment?.result?.at(0)?.id
+  );
+
   // apartment_rent_contract
 
   const groupData = {
+    contract: contract?.result?.at(0),
     contract_commission: contract_commission?.result?.at(0),
     contract_terms: contract_terms?.result?.at(0),
     contract_pictures: contract_pictures?.result,
@@ -230,56 +241,140 @@ export const getContractUpdate = async (id) => {
     contract_cycle: contract_cycle?.result?.at(0),
     contract_termination: contract_termination?.result?.at(0),
     contract_receipt_number: contract_receipt_number?.result,
+    installment: installment?.result?.at(0),
+    installment_grid: installment_grid?.result,
   };
-
-  console.log(groupData);
 
   return groupData;
 };
 
-const getApartmentContract = async (id) => {
-  const contract = await fetchData("contract", "id", id);
+const getApartmentRentContract = async (id) => {
+  // const contract = await fetchData("contract", "id", id);
   const contractGroup = await getContractUpdate(id);
-  const apartment = await fetchData(
+  const apartment_rent_contract = await fetchData(
     "apartment_rent_contract",
     "contract_id",
     id
   );
-  const rent_contract_financial = await fetchData(
-    "rent_contract_financial",
+  const contract_rent_financial = await fetchData(
+    "contract_rent_financial",
     "contract_id",
     id
   );
+
+  const groupData = {
+    ...contractGroup,
+    apartment_rent_contract: apartment_rent_contract?.result?.at(0),
+    contract_rent_financial: contract_rent_financial?.result?.at(0),
+  };
+
+  return groupData;
 };
 
-const getShopContract = async (id) => {
-  const contract = await fetchData("contract", "id", id);
+const getShopRentContract = async (id) => {
+  // const contract = await fetchData("contract", "id", id);
   const contractGroup = await getContractUpdate(id);
-  const apartment = await fetchData(
-    "apartment_rent_contract",
+  const shop_rent_contract = await fetchData(
+    "shop_rent_contract",
     "contract_id",
     id
   );
-  const rent_contract_financial = await fetchData(
-    "rent_contract_financial",
+  const contract_rent_financial = await fetchData(
+    "contract_rent_financial",
     "contract_id",
     id
   );
+
+  const groupData = {
+    ...contractGroup,
+    shop_rent_contract: shop_rent_contract?.result?.at(0),
+    contract_rent_financial: contract_rent_financial?.result?.at(0),
+  };
+
+  return groupData;
 };
 
-const getParkingContract = async (id) => {
-  const contract = await fetchData("contract", "id", id);
+const getParkingRentContract = async (id) => {
+  // const contract = await fetchData("contract", "id", id);
   const contractGroup = await getContractUpdate(id);
-  const apartment = await fetchData(
+  const parking = await fetchData("parking_rent_contract", "contract_id", id);
+  const contract_rent_financial_parking = await fetchData(
+    "contract_rent_financial_parking",
+    "contract_id",
+    id
+  );
+  const groupData = {
+    ...contractGroup,
+    parking_rent_contract: parking?.result?.at(0),
+    contract_rent_financial_parking_parking:
+      contract_rent_financial_parking?.result?.at(0),
+  };
+
+  return groupData;
+};
+
+const getApartmentSaleContract = async (id) => {
+  // const contract = await fetchData("contract", "id", id);
+  const contractGroup = await getContractUpdate(id);
+  const apartment_sale_contract = await fetchData(
     "apartment_rent_contract",
     "contract_id",
     id
   );
-  const rent_contract_financial = await fetchData(
-    "rent_contract_financial_parking",
+  const contract_sale_financial = await fetchData(
+    "contract_sale_financial",
     "contract_id",
     id
   );
+
+  const groupData = {
+    ...contractGroup,
+    apartment_sale_contract: apartment_sale_contract?.result?.at(0),
+    contract_sale_financial: contract_sale_financial?.result?.at(0),
+  };
+
+  return groupData;
+};
+const getShopSaleContract = async (id) => {
+  // const contract = await fetchData("contract", "id", id);
+  const contractGroup = await getContractUpdate(id);
+  const shop_sale_contract = await fetchData(
+    "shop_rent_contract",
+    "contract_id",
+    id
+  );
+  const contract_sale_financial = await fetchData(
+    "contract_sale_financial",
+    "contract_id",
+    id
+  );
+
+  const groupData = {
+    ...contractGroup,
+    shop_sale_contract: shop_sale_contract?.result?.at(0),
+    contract_sale_financial: contract_sale_financial?.result?.at(0),
+  };
+
+  return groupData;
+};
+
+const getParkingSaleContract = async (id) => {
+  // const contract = await fetchData("contract", "id", id);
+  const contractGroup = await getContractUpdate(id);
+  const parking = await fetchData("parking_sale_contract", "contract_id", id);
+  const contract_sale_financial_parking = await fetchData(
+    "contract_sale_financial_parking",
+    "contract_id",
+    id
+  );
+  const groupData = {
+    ...contractGroup,
+    parking_sale_contract: parking?.result?.at(0),
+    contract_sale_financial_parking:
+      contract_sale_financial_parking?.result?.at(0),
+  };
+
+  return groupData;
 };
 
 async function getVoucherData({
@@ -324,9 +419,12 @@ export const GLOBAL_READ_GROUP_DATA = {
   parking: getParkingUpdate,
   shop: getShopUpdate,
   villa: getVillaUpdate,
-  shop_contract: getShopContract,
-  parking_contract: getParkingContract,
-  apartment_contract: getApartmentContract,
+  shop_rent_contract: getShopRentContract,
+  parking_rent_contract: getParkingRentContract,
+  apartment_rent_contract: getApartmentRentContract,
+  shop_sale_contract: getShopSaleContract,
+  parking_sale_contract: getParkingSaleContract,
+  apartment_sale_contract: getApartmentSaleContract,
   entry: async (number) =>
     await getVoucherData({
       number,
@@ -359,7 +457,7 @@ export default async function GET_UPDATE_DATE(name, id, params) {
     const res = await ApiActions.read(name, {
       conditions: [{ type: "and", conditions: [["id", "=", id]] }],
     });
-    console.log("🚀 ~ GET_UPDATE_DATE ~ res:", res, id)
+    console.log("🚀 ~ GET_UPDATE_DATE ~ res:", res, id);
     return res.result?.at(0);
   }
 }

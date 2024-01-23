@@ -1,4 +1,4 @@
-import { LockIcon } from "Helpers/Icons";
+import { LockIcon } from "Components/Icons";
 import useFlatColoring from "Hooks/useFlatColoring";
 
 export const ToolsColorsBar = () => {

@@ -14,7 +14,7 @@ const Input = ({
   onBlur,
   ...field
 }) => {
-  const { register, watch } = useFormContext();
+  const { register, watch, setValue } = useFormContext();
   const { name } = field;
   const watchField = field?.watch;
   const watchFieldName = tab ? `${tab}.${watchField}` : watchField;
@@ -27,6 +27,14 @@ const Input = ({
       
     }
   }, [watch(watchFieldName)])
+
+  useEffect(() => {
+    let val = field?.defaultValue || field?.value || watch(updatedName || field?.name)
+    console.log("🚀 ~ useEffect ~ val:", val)
+    if(val && field.type === 'date') {
+      setValue(updatedName || field?.name, new Date(val).toISOString()?.substring(0, 10))
+    }
+  }, [field?.defaultValue])
 
   return (
     <div className={"flex flex-col " + containerClassName} key={field?.name}>
@@ -53,7 +61,8 @@ const Input = ({
          `}
         type={field?.type}
         readOnly={readOnly}
-        defaultValue={field.type === "number" ? 0 : null}
+        defaultValue={field?.defaultValue || field.type === "number" ? 0 : null}
+        // value={}
         {...register(updatedName || field.name, {
           valueAsNumber: field.type === "number",
           valueAsDate: field.type === "data",

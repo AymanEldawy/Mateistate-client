@@ -123,7 +123,7 @@ export const getBuilding = async () => {
         conditions: { "building.account_id": "account.id" },
       },
     ],
-    
+
     columns: [
       "building.*",
       "account.name as construction_account", // 3 account
@@ -136,7 +136,7 @@ export const getBuilding = async () => {
       "currency.name as currency_name",
       // "currency.name as currency_name",
     ],
-        
+
     sorts: [{ column: "created_at", order: "DESC", nulls: "last" }],
   });
 };
@@ -148,3 +148,91 @@ export const getDataWithPagination = async (name, params) => {
     ...params,
   });
 };
+
+export const getContracts = async () => {
+  console.log("called");
+  return await ApiActions.read("contract", {
+    joins: [
+      {
+        type: "join",
+        table: "contract_rent_financial",
+        conditions: { "contract.id": "contract_rent_financial.contract_id" },
+      },
+      // {
+      //   type: "join",
+      //   table: "contract_rent_financial",
+      //   conditions: { "contract.id": "contract_rent_financial_parking.contract_id" },
+      // },
+      // {
+      //   type: "join",
+      //   table: "apartment_rent_contract",
+      //   conditions: { "contract.id": "apartment_rent_contract.contract_id" },
+      // },
+      // {
+      //   type: "join",
+      //   table: "shop_rent_contract",
+      //   conditions: { "contract.id": "shop_rent_contract.contract_id" },
+      // },
+      // {
+      //   type: "join",
+      //   table: "shop_rent_contract",
+      //   conditions: { "contract.id": "shop_rent_contract.contract_id" },
+      // },
+      // {
+      //   type: "join",
+      //   table: "parking_rent_contract",
+      //   conditions: { "contract.id": "parking_rent_contract.contract_id" },
+      // },
+      // {
+      //   type: "join",
+      //   table: "apartment_sale_contract",
+      //   conditions: { "contract.id": "apartment_sale_contract.contract_id" },
+      // },
+      // {
+      //   type: "join",
+      //   table: "shop_sale_contract",
+      //   conditions: { "contract.id": "shop_sale_contract.contract_id" },
+      // },
+      // {
+      //   type: "join",
+      //   table: "parking_sale_contract",
+      //   conditions: { "contract.id": "parking_sale_contract.contract_id" },
+      // },
+      // {
+      //   type: "join",
+      //   table: "contract_rent_financial",
+      //   conditions: { "contract.id": "contract_rent_financial.contract_id" },
+      // },
+      // {
+      //   type: "join",
+      //   table: "contract_rent_financial_parking",
+      //   conditions: {
+      //     "contract.id": "contract_rent_financial_parking.contract_id",
+      //   },
+      // },
+      // {
+      //   type: "join",
+      //   table: "contract_sale_financial",
+      //   conditions: { "contract.id": "contract_sale_financial.contract_id" },
+      // },
+      // {
+      //   type: "join",
+      //   table: "contract_sale_financial_parking",
+      //   conditions: {
+      //     "contract.id": "contract_sale_financial_parking.contract_id",
+      //   },
+      // },
+    ],
+    columns: ['contract.*','contract.id as contract_id']
+  });
+};
+
+// contract_commission;
+// contract_terms;
+// contract_pictures;
+// contract_other_fees;
+// contract_fixed_assets;
+// contract_linked_parking;
+// contract_cycle;
+// contract_termination;
+// contract_receipt_number;

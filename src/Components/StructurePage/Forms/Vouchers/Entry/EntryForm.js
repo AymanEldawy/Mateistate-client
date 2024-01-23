@@ -14,14 +14,16 @@ import { currency } from "Helpers/columns-structure";
 import { toast } from "react-toastify";
 import { insertIntoGrid } from "Helpers/Lib/operations/global-insert";
 import { GET_NEW_ENTRY_GRID } from "Helpers/constants";
+import { usePopupForm } from "Hooks/usePopupForm";
 let CACHE_LIST = {};
 
 const getCachedList = (tableName) => {
   return CACHE_LIST[tableName];
 };
 
-const EntryForm = () => {
+const EntryForm = ({ oldValue, onlyView }) => {
   const params = useParams();
+  const { refTable } = usePopupForm();
   const { data, loading, error } = useFetch("entry_main_data", {
     limit: 1,
     sorts: [{ column: "number", order: "DESC", nulls: "last" }],
@@ -62,7 +64,13 @@ const EntryForm = () => {
   }, [number]);
 
   useEffect(() => {
-    if(loading) return;
+    if (oldValue) {
+      reset(oldValue);
+    }
+  }, [oldValue]);
+
+  useEffect(() => {
+    if (loading) return;
     if (number > (data?.at(0)?.number || 0)) {
       setIsNewOne(true);
     }
@@ -97,6 +105,19 @@ const EntryForm = () => {
   useEffect(() => {
     getRefTables();
   }, []);
+
+  useEffect(() => {
+    if (refTable?.isClosed) {
+      reFetchRefTable(refTable?.table);
+    }
+  }, [refTable?.isClosed]);
+
+  const reFetchRefTable = async (table) => {
+    const response = await ApiActions.read(table);
+    if (response?.length) {
+      CACHE_LIST[table] = response?.result;
+    }
+  };
 
   const calculateDifferences = useCallback(() => {
     let grid = watch("grid");
@@ -173,7 +194,6 @@ const EntryForm = () => {
     }
   };
 
-
   return (
     <FormProvider {...methods}>
       <BlockPaper
@@ -184,11 +204,11 @@ const EntryForm = () => {
                 {isNewOne ? "New" : ""}
               </span>
             ) : null}
-            Entry {number}
+            Entry {number || oldValue?.number}
           </>
         }
       >
-        <form onSubmit={handleSubmit(onSubmit)} key={number}>
+        <form onSubmit={handleSubmit(onSubmit)} key={number || oldValue?.number} noValidate>
           <EntryHead
             fields={fields}
             errors={errors}
@@ -215,6 +235,7 @@ const EntryForm = () => {
             maxLength={data?.at(0)?.number || 0}
             goTo={goTo}
             values={watch()}
+            onlyView
           />
         </form>
       </BlockPaper>

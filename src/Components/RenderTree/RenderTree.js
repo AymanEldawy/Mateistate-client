@@ -1,28 +1,19 @@
 import { useCallback } from "react";
-import { useEffect } from "react";
 import { useState } from "react";
 
 import {
   FolderEmptyIcon,
   FolderMinusIcon,
   FolderPlusIcon,
-} from "Helpers/Icons";
+} from "Components/Icons";
 
-import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import Modal from "Components/Global/Modal/Modal";
 import TreeViewItem from "./TreeViewItem";
-import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
-import SuperForm from "Components/StructurePage/Forms/CustomForm/FormSingular";
 import { DynamicForm } from "Components/StructurePage/Forms/CustomForm/DynamicForm";
 
 const RenderTree = ({ chartTree, name, deleteItem, onSubmit, refetchData }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [open, setOpen] = useState({});
-  const [fields, setFields] = useState([]);
-
-  useEffect(() => {
-    setFields(getFormByTableName(name?.toLowerCase()));
-  }, []);
 
   const toggleOpen = (itemId, level) => {
     if (open[level] === itemId) {

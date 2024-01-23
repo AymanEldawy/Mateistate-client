@@ -13,7 +13,6 @@ import { ToolsTabsTable } from "./ToolsTabsTable";
 import { generateApartments } from "Helpers/functions";
 
 const findList = async (type, id, setFlatsDetails) => {
-  console.log(type, FLAT_PROPERTY_TABS_SETTINGS);
   let name = FLAT_PROPERTY_TABS_SETTINGS[type]?.no;
   const response = await ApiActions.read(type, {
     conditions: [{ type: "and", conditions: [["building_id", "=", id]] }],
@@ -23,12 +22,19 @@ const findList = async (type, id, setFlatsDetails) => {
   let hashApartmentTypes = {};
   if (data.length) {
     for (const row of data) {
-      let newType = FLAT_PROPERTY_TYPES[`${type}_${row?.flat_type}`];
+      let assetsType =
+        type === "apartment"
+          ? `${type}_${row?.flat_type}`
+          : type === "parking"
+          ? `${type}_${row?.parking_kind}`
+          : type;
+      let newType = FLAT_PROPERTY_TYPES[assetsType];
       hashApartmentTypes[newType] = {
         ...hashApartmentTypes?.[newType],
         [row?.[name]]: row,
       };
     }
+
     setFlatsDetails((prev) => ({
       ...prev,
       ...hashApartmentTypes,
@@ -42,7 +48,9 @@ const refetchBuildingAssets = (id, setFlatsDetails) => {
   }
 };
 
-const ToolsWarper = ({ row }) => {
+const UPDATES_ROW = {};
+
+const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
   const { flatsDetails, setFlatsDetails } = useFlatColoring();
   const {
     handleSubmit,
@@ -51,21 +59,28 @@ const ToolsWarper = ({ row }) => {
   const { watch } = useFormContext();
   const [selectedTab, setSelectedTab] = useState(FLAT_PROPERTY_TABS[0]);
 
-  console.log(watch(), flatsDetails);
-
   useEffect(() => {
     if (!row?.id) return;
     refetchBuildingAssets(row?.id, setFlatsDetails);
   }, [row?.id]);
 
-  const onSubmit = (value) => {
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      console.log(name, value, type);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  const onSubmit = async (value) => {
     let grid = watch("grid");
-    generateApartments(grid, flatsDetails, row?.id);
+    const response = await generateApartments(grid, flatsDetails, row?.id);
+    if (response?.isCompleted) {
+      refetchPropertyValuesData();
+    }
   };
 
-  console.log(row);
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="overflow-auto max-h-96">
         <ToolsTabsTableForm errors={errors} />
       </div>

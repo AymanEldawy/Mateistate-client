@@ -18,26 +18,25 @@ import { toast } from "react-toastify";
 
 const PatternsForm = ({ layout }) => {
   const params = useParams();
-  const name = params?.name;
+  console.log("🚀 ~ PatternsForm ~ params:", params)
+  const pattern = params?.pattern;
 
-  const type = params?.type;
-  const contractAssetsType = name?.split("_").at(0);
-  const [openInstallmentForm, setOpenInstallmentForm] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const methods = useForm({
     defaultValues:
       layout === "update"
-        ? async () => await GET_UPDATE_DATE(name, params?.id)
+        ? async () => await GET_UPDATE_DATE(pattern, params?.id)
         : {},
   });
+
+
   const {
     handleSubmit,
     watch,
     formState: { errors, isDirty },
     setValue,
   } = methods;
-
   const {
     next,
     back,
@@ -49,7 +48,10 @@ const PatternsForm = ({ layout }) => {
     steps,
     fields,
     getCachedList,
-  } = useFormSteps({ name });
+  } = useFormSteps({ name: pattern });
+
+  console.log(watch(), '----');
+
 
   // Handel Submit
   // Handel Submit
@@ -70,12 +72,12 @@ const PatternsForm = ({ layout }) => {
     let res = null;
 
     if (layout === "update") {
-      res = await ApiActions.update(name, {
+      res = await ApiActions.update(pattern, {
         conditions: [{ type: "and", conditions: [["id", "=", params?.id]] }],
         updates: values,
       });
     } else {
-      res = await ApiActions.insert(name, {
+      res = await ApiActions.insert(pattern, {
         data: values,
       });
     }
@@ -83,11 +85,11 @@ const PatternsForm = ({ layout }) => {
     if (res?.success) {
       toast.success(
         layout === "update"
-          ? `Successfully update row: ${values?.name} in ${name}`
-          : "Successfully added item in " + name
+          ? `Successfully update row: ${values?.name} in ${pattern}`
+          : "Successfully added item in " + pattern
       );
     } else {
-      toast.error("Failed to add new item in " + name);
+      toast.error("Failed to add new item in " + pattern);
     }
     setLoading(false);
   };
@@ -95,17 +97,17 @@ const PatternsForm = ({ layout }) => {
 
   return (
     <>
-      <div key={name}>
+      <div key={pattern}>
         <FormProvider {...methods}>
           <BlockPaper>
             <FormHeadingTitleSteps
-              name={name}
+              name={pattern}
               steps={steps}
               // changeTab={goTo}
               activeStage={currentIndex}
             />
             <div className="h-5" />
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <Fields
                 values={watch()}
                 fields={fields}

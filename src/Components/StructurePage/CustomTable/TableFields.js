@@ -1,6 +1,10 @@
 import { memo, useEffect, useState } from "react";
 
-import { Input, UniqueField } from "Components/StructurePage/CustomFields";
+import {
+  Input,
+  Select,
+  UniqueField,
+} from "Components/StructurePage/CustomFields";
 import { IncreaseTableBar } from "./IncreaseTableBar";
 
 const TableFields = ({
@@ -25,7 +29,7 @@ const TableFields = ({
   const [increaseCount, setIncreaseCount] = useState(10);
 
   useEffect(() => {
-    if (rowsCount > 10) {
+    if (rowsCount) {
       setIncreaseCount(rowsCount);
     }
   }, [rowsCount]);
@@ -145,20 +149,41 @@ const TableFields = ({
                                   }
                                 />
                               ) : (
-                                <Input
-                                  {...field}
-                                  key={`${field?.name}`}
-                                  updatedName={`${tab}.${index}.${field?.name}`}
-                                  label={""}
-                                  error={
-                                    errors?.[tab]?.[field?.name]
-                                      ? "Field is required"
-                                      : ""
-                                  }
-                                  containerClassName="h-10 !h-full min-w-[55px]"
-                                  inputClassName={"border-0 !rounded-none"}
-                                  onBlur={onBlurNumbersField}
-                                />
+                                <>
+                                  {field?.key === "select" ? (
+                                    <Select
+                                      {...field}
+                                      key={`${field?.name}`}
+                                      updatedName={`${tab}.${index}.${field?.name}`}
+                                      label={""}
+                                      selectClassName="!rounded-none !border-0 !border-transparent"
+                                      selectClassNames={{
+                                        control: (state) =>
+                                          "dark:!bg-[#2c2c2c] !rounded-none",
+                                      }}
+                                      error={
+                                        errors?.[tab]?.[field?.name]
+                                          ? "Field is required"
+                                          : ""
+                                      }
+                                    />
+                                  ) : (
+                                    <Input
+                                      {...field}
+                                      key={`${field?.name}`}
+                                      updatedName={`${tab}.${index}.${field?.name}`}
+                                      label={""}
+                                      error={
+                                        errors?.[tab]?.[field?.name]
+                                          ? "Field is required"
+                                          : ""
+                                      }
+                                      containerClassName="h-10 !h-full min-w-[55px]"
+                                      inputClassName={"border-0 !rounded-none"}
+                                      onBlur={onBlurNumbersField}
+                                    />
+                                  )}
+                                </>
                               )}
                             </td>
                           );

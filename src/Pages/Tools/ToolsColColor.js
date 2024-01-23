@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { Button } from "Components/Global/Button";
 import { getValueOfInputColor } from "Helpers/functions";
-import { EditIcon } from "Helpers/Icons";
+import { EditIcon } from "Components/Icons";
 import TableCol from "Components/StructurePage/CustomTable/TableCol";
 import { Input } from "Components/StructurePage/CustomFields";
 import useFlatColoring from "Hooks/useFlatColoring";

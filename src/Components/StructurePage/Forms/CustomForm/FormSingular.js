@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
 import useRefTable from "Hooks/useRefTable";
 import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
+import { usePopupForm } from "Hooks/usePopupForm";
 
 let CACHE_LIST = {};
 
@@ -18,13 +19,14 @@ const getCachedList = (tableName) => {
   return CACHE_LIST[tableName];
 };
 
-const FormSingular = ({ name, onClose, refetchData, layout }) => {
+const FormSingular = ({ name, onClose, refetchData, layout, oldValues }) => {
+  const { refTable } = usePopupForm();
   const params = useParams();
   const methods = useForm({
     defaultValues:
       layout === "update"
         ? async () => await GET_UPDATE_DATE(name, params?.id)
-        : {},
+        : oldValues || {},
   });
   const [loading, setLoading] = useState(false);
   const {
@@ -36,11 +38,34 @@ const FormSingular = ({ name, onClose, refetchData, layout }) => {
     watch,
   } = methods;
 
+  useEffect(() => {
+    if (layout !== "update" && oldValues) {
+      reset(oldValues);
+    }
+  }, [oldValues]);
+
   const fields = useMemo(() => getFormByTableName(name), [name]);
 
   useEffect(() => {
     getRefTables();
   }, [name]);
+
+  useEffect(() => {
+    if (refTable?.isClosed) {
+      reFetchRefTable(refTable?.table);
+    }
+  }, [refTable?.isClosed]);
+
+  const getCachedList = (tableName) => {
+    return CACHE_LIST[tableName];
+  };
+
+  const reFetchRefTable = async (table) => {
+    const response = await ApiActions.read(table);
+    if (response?.length) {
+      CACHE_LIST[table] = response?.result;
+    }
+  };
 
   const getRefTables = async () => {
     if (!fields?.length) return;
@@ -102,7 +127,7 @@ const FormSingular = ({ name, onClose, refetchData, layout }) => {
   return (
     <FormProvider {...methods}>
       <FormHeadingTitle title={name} />
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Fields
           values={getValues()}
           errors={errors}

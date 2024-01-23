@@ -44,7 +44,7 @@ const Chart = () => {
       ],
     });
 
-    if (res.success) await refetchData();
+    if (res.success) refetchData();
   };
 
   const onSubmit = async (values) => {
@@ -62,12 +62,15 @@ const Chart = () => {
     }
   };
 
+  console.log(loading,'load');
+
   return (
-    <BlockPaper title={t("chart")}>
+    <BlockPaper title={t("chart")} key={name}>
       {!loading ? (
         <>
           {chartTree?.length ? (
             <RenderTree
+              
               chartTree={chartTree}
               name={name}
               deleteItem={deleteItem}

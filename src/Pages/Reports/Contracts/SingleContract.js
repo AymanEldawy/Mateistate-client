@@ -1,8 +1,8 @@
 import BlockPaper from "Components/Global/BlockPaper";
+import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
 import { usePopupForm } from "Hooks/usePopupForm";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
 
 const levels = [
   "contract",
@@ -19,28 +19,61 @@ const levels = [
 
 const SingleContract = () => {
   const { id } = useParams();
-  
+  const [data, setData] = useState({});
+
+  const getContractData = async () => {
+    const response = await GET_UPDATE_DATE("apartment_rent_contract", id);
+    console.log("🚀 ~ getContractData ~ response:", response);
+    if (response?.contract) setData(response);
+  };
+
+  useEffect(() => {
+    getContractData();
+  }, [id]);
+  console.log(data);
+
   return (
     <BlockPaper title={`contract ${id}`}>
-     
-      <div className="divide-x-2 my-4" />
-      {/* {levels?.map((level) => {
-        let levelData = data?.[level];
-        return (
-          <ul className="flex flex-col gap-2">
-            {Object.entries(levelData)?.map(([key, val]) => {
-              if (key === "id") return;
-              return (
-                <li key={key} className="border-b last:border-b-0 py-2 text-black capitalize">
-                  {key} <span className="text-black font-medium">{val}</span>
-                </li>
-              );
-            })}
-          </ul>
-        );
-      })} */}
+
+      <pre className="break-words">{JSON.stringify(data)}</pre>
     </BlockPaper>
   );
 };
 
 export default SingleContract;
+
+
+/**
+ Contract information 
+
+Financial Information 
+Contract duration
+
+Payments
+
+Commission 
+
+Contract termination
+
+Contract terms
+Recipes No.
+
+Other fees:
+
+ Contract information 
+
+Financial Information 
+Contract duration
+
+Payments
+
+Commission 
+
+Contract termination
+
+Contract terms
+Recipes No.
+
+Other fees:
+
+ */

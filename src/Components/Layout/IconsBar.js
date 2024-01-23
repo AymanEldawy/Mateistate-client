@@ -3,7 +3,7 @@ import NotificationBar from 'Components/Menu/NotificationBar/NotificationBar';
 import ToggleThemeBar from 'Components/Menu/ToggleThemeBar/ToggleThemeBar';
 import UserBar from 'Components/Menu/UserBar/UserBar';
 import { useTheme } from 'Hooks/useTheme';
-import { FitScreenIcon, FullScreenIcon } from 'Helpers/Icons';
+import { FitScreenIcon, FullScreenIcon } from 'Components/Icons';
 import { exitFullscreen, openFullscreen } from 'Helpers/functions';
 import React, { useState } from 'react';
 

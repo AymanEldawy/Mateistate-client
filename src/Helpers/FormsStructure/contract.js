@@ -6,6 +6,7 @@ import {
   SELECT_LISTS,
   SHOP_STEPS_CONTRACT,
 } from "Helpers/constants";
+import { validate } from "uuid";
 
 const contract = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
@@ -173,7 +174,7 @@ const contract_linked_parking = [
   {
     name: "building_id",
     type: "uuid",
-    required: true,
+    required: false,
     is_ref: true,
     ref_table: "building",
     ref_col: "id",
@@ -195,6 +196,7 @@ const contract_linked_parking = [
     ref_col: "id",
   },
 ];
+
 const contract_pictures = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
   {
@@ -365,6 +367,15 @@ const contract_fixed_assets = [
 const rent_contract_financial = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
   {
+    name: "bank",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "bank",
+    ref_col: "id",
+    hide_in_form: true,
+  },
+  {
     name: "contract_id",
     type: "uuid",
     required: false,
@@ -380,20 +391,20 @@ const rent_contract_financial = [
     intValue: true,
     list: SELECT_LISTS("contract_type"),
   },
-  { name: "contract_value", type: "number", required: false },
-  { name: "monthly_value", type: "number", required: false },
+  { name: "contract_value", type: "number", required: true },
+  { name: "monthly_value", type: "number", required: true },
   {
     name: "currency_id",
     type: "uuid",
-    required: false,
+    required: true,
     is_ref: true,
     ref_table: "currency",
     ref_col: "id",
   },
-  { name: "currency_val", type: "number", required: false },
+  { name: "currency_val", type: "number", required: true },
   { name: "discount_rate", type: "number", required: false },
   { name: "discount_value", type: "number", required: false },
-  { name: "final_price", type: "number", required: false },
+  { name: "final_price", type: "number", required: true },
   {
     name: "discount_account_id",
     type: "uuid",
@@ -421,16 +432,18 @@ const rent_contract_financial = [
   {
     name: "start_duration_date",
     type: "date",
-    required: false,
+    required: true,
     watch: "contract_duration",
+    defaultValue: new Date(),
     condition: 4,
   },
   {
     name: "end_duration_date",
     type: "date",
-    required: false,
+    required: true,
     watch: "contract_duration",
     condition: 4,
+    defaultValue: new Date(new Date().getMonth() + 1),
   },
   {
     name: "paid_type",
@@ -504,6 +517,12 @@ const rent_contract_financial = [
     is_ref: true,
     ref_table: "account",
     ref_col: "id",
+  },
+  {
+    name: "gen_entries",
+    type: "boolean",
+    required: false,
+    key: "switch",
   },
 ];
 const contract_rent_financial_parking = [
@@ -586,7 +605,6 @@ const contract_rent_financial_parking = [
     name: "btn_action",
     action: ACTIONS.OPEN_INSTALLMENT_FORM,
     label: "Open Installment panel",
-    onClick: () => {},
     condition: 4,
     watch: "paid_type",
   },
@@ -639,6 +657,12 @@ const contract_rent_financial_parking = [
     ref_col: "id",
   },
   { name: "other_fees", type: "text", required: false },
+  {
+    name: "gen_entries",
+    type: "boolean",
+    required: false,
+    key: "switch",
+  },
 ];
 
 const contract_sale_financial = [
@@ -754,6 +778,12 @@ const contract_sale_financial = [
     ref_col: "id",
   },
   { name: "date", type: "date", required: false },
+  {
+    name: "gen_entries",
+    type: "boolean",
+    required: false,
+    key: "switch",
+  },
 ];
 const contract_sale_financial_parking = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
@@ -857,6 +887,12 @@ const contract_sale_financial_parking = [
   { name: "amount", type: "number", required: false },
   { name: "discount_contract_amount", type: "number", required: false },
   { name: "date", type: "date", required: false },
+  {
+    name: "gen_entries",
+    type: "boolean",
+    required: false,
+    key: "switch",
+  },
 ];
 
 // Contract Differences
@@ -867,6 +903,14 @@ const apartment_sale_contract = [
   { name: "number", type: "number", required: false, hide_in_form: true },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
+  {
+    name: "client_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
   {
     name: "building_id",
     type: "uuid",
@@ -885,14 +929,7 @@ const apartment_sale_contract = [
     ref_name: "apartment_no",
   },
   { name: "description", type: "text", required: false },
-  {
-    name: "client_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
+
   {
     name: "seller_id",
     type: "uuid",
@@ -903,7 +940,13 @@ const apartment_sale_contract = [
     ref_name: "full_name",
   },
   { name: "ownership", type: "text", required: false },
-  { name: "nationality", required: false, key: 'select', intValue: true, list: SELECT_LISTS('nationality_list') },
+  {
+    name: "nationality",
+    required: false,
+    key: "select",
+    intValue: true,
+    list: SELECT_LISTS("nationality_list"),
+  },
   { name: "work_phone", type: "number", required: false },
   { name: "phono", type: "number", required: false },
   { name: "property_delivery_date", type: "date", required: true },
@@ -927,7 +970,14 @@ const parking_sale_contract = [
   { name: "number", type: "number", required: false, hide_in_form: true },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
-
+  {
+    name: "client_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
   {
     name: "building_id",
     type: "uuid",
@@ -945,14 +995,7 @@ const parking_sale_contract = [
     ref_col: "id",
   },
   { name: "description", type: "text", required: false },
-  {
-    name: "client_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
+
   {
     name: "lessor_id",
     type: "uuid",
@@ -972,7 +1015,13 @@ const parking_sale_contract = [
     ref_name: "full_name",
   },
   { name: "ownership", type: "text", required: false },
-  { name: "nationality", required: false, key: 'select', intValue: true, list: SELECT_LISTS('nationality_list') },
+  {
+    name: "nationality",
+    required: false,
+    key: "select",
+    intValue: true,
+    list: SELECT_LISTS("nationality_list"),
+  },
   { name: "work_phone", type: "number", required: false },
   { name: "phone", type: "number", required: false },
   {
@@ -998,7 +1047,14 @@ const shop_sale_contract = [
   { name: "number", type: "number", required: false, hide_in_form: true },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
-
+  {
+    name: "client_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
   {
     name: "building_id",
     type: "uuid",
@@ -1017,14 +1073,7 @@ const shop_sale_contract = [
     ref_name: "shop_no",
   },
   { name: "description", type: "text", required: false },
-  {
-    name: "client_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
+
   {
     name: "seller_id",
     type: "uuid",
@@ -1035,7 +1084,13 @@ const shop_sale_contract = [
     ref_name: "full_name",
   },
   { name: "ownership", type: "text", required: false },
-  { name: "nationality", required: false, key: 'select', intValue: true, list: SELECT_LISTS('nationality_list') },
+  {
+    name: "nationality",
+    required: false,
+    key: "select",
+    intValue: true,
+    list: SELECT_LISTS("nationality_list"),
+  },
   { name: "work_phone", type: "number", required: false },
   { name: "phono", type: "number", required: false },
   { name: "property_delivery_date", type: "date", required: true },
@@ -1094,7 +1149,13 @@ const land_sale_contract = [
     ref_name: "full_name",
   },
   { name: "ownership", type: "text", required: false },
-  { name: "nationality", required: false, key: 'select', intValue: true, list: SELECT_LISTS('nationality_list') },
+  {
+    name: "nationality",
+    required: false,
+    key: "select",
+    intValue: true,
+    list: SELECT_LISTS("nationality_list"),
+  },
   { name: "work_phone", type: "number", required: false },
   { name: "phono", type: "number", required: false },
   { name: "status", type: "text", required: false },
@@ -1111,7 +1172,14 @@ const apartment_rent_contract = [
   { name: "number", type: "number", required: false, hide_in_form: true },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
-
+  {
+    name: "client_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
   {
     name: "building_id",
     type: "uuid",
@@ -1130,14 +1198,7 @@ const apartment_rent_contract = [
     ref_name: "apartment_no",
   },
   { name: "description", type: "text", required: false },
-  {
-    name: "client_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
+
   {
     name: "lessor_id",
     type: "uuid",
@@ -1157,7 +1218,13 @@ const apartment_rent_contract = [
     ref_name: "full_name",
   },
   { name: "ownership", type: "text", required: false },
-  { name: "nationality", required: false, key: 'select', intValue: true, list: SELECT_LISTS('nationality_list') },
+  {
+    name: "nationality",
+    required: false,
+    key: "select",
+    intValue: true,
+    list: SELECT_LISTS("nationality_list"),
+  },
   { name: "work_phone", type: "number", required: false },
   { name: "phono", type: "number", required: false },
   {
@@ -1199,7 +1266,14 @@ const parking_rent_contract = [
   { name: "number", type: "number", required: false, hide_in_form: true },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
-
+  {
+    name: "client_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
   {
     name: "building_id",
     type: "uuid",
@@ -1217,14 +1291,7 @@ const parking_rent_contract = [
     ref_col: "id",
   },
   { name: "description", type: "text", required: false },
-  {
-    name: "client_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
+
   {
     name: "lessor_id",
     type: "uuid",
@@ -1244,7 +1311,13 @@ const parking_rent_contract = [
     ref_name: "full_name",
   },
   { name: "ownership", type: "text", required: false },
-  { name: "nationality", required: false, key: 'select', intValue: true, list: SELECT_LISTS('nationality_list') },
+  {
+    name: "nationality",
+    required: false,
+    key: "select",
+    intValue: true,
+    list: SELECT_LISTS("nationality_list"),
+  },
   { name: "work_phone", type: "number", required: false },
   { name: "phone", type: "number", required: false },
   {
@@ -1279,7 +1352,14 @@ const shop_rent_contract = [
   { name: "number", type: "number", required: false, hide_in_form: true },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
-  
+  {
+    name: "client_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
   {
     name: "building_id",
     type: "uuid",
@@ -1298,14 +1378,7 @@ const shop_rent_contract = [
     ref_name: "shop_no",
   },
   { name: "description", type: "text", required: false },
-  {
-    name: "client_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
+
   {
     name: "lessor_id",
     type: "uuid",
@@ -1326,7 +1399,13 @@ const shop_rent_contract = [
   },
   { name: "ownership", type: "text", required: false },
 
-  { name: "nationality", required: false, key: 'select', intValue: true, list: SELECT_LISTS('nationality_list') },
+  {
+    name: "nationality",
+    required: false,
+    key: "select",
+    intValue: true,
+    list: SELECT_LISTS("nationality_list"),
+  },
   { name: "work_phone", type: "number", required: false },
   { name: "phono", type: "number", required: false },
   {
@@ -1371,7 +1450,7 @@ const apartment_rent_contract_group = {
     },
     [APARTMENT_STEPS_CONTRACT.apartment_contract_financial]: {
       fields: rent_contract_financial,
-      tab_name: "rent_contract_financial",
+      tab_name: "contract_rent_financial",
     },
     [APARTMENT_STEPS_CONTRACT.apartment_contract_commission]: {
       fields: contract_commission,
@@ -1425,7 +1504,7 @@ const shop_rent_contract_group = {
     },
     [SHOP_STEPS_CONTRACT.shop_contract_financial]: {
       fields: rent_contract_financial,
-      tab_name: "rent_contract_financial",
+      tab_name: "contract_rent_financial",
     },
     // payments
     [SHOP_STEPS_CONTRACT.shop_contract_commission]: {

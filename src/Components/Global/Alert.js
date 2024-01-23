@@ -5,7 +5,7 @@ import {
   HourglassIcon,
   InformationIcon,
   NotAllowIcon,
-} from "Helpers/Icons";
+} from "Components/Icons";
 
 const Alert = ({ alertMessage }) => {
   const alertType = (alert) => {

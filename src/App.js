@@ -12,6 +12,8 @@ import Backdrop from "Components/Global/Backdrop";
 import Sidebar from "Components/Layout/Sidebar";
 import Footer from "Components/Layout/Footer";
 import PopupForm from "Components/StructurePage/Forms/CustomForm/PopupForm";
+import { VoucherEntriesViewProvider } from "Hooks/useVoucherEntriesView";
+import { VoucherView } from "Components/StructurePage/Forms/Vouchers/VoucherView";
 
 function App() {
   const [mode, setMode] = useState("dark");
@@ -36,26 +38,29 @@ function App() {
       <BrowserRouter>
         <ThemeProvider>
           <PopupFormProvider>
-            <ListsGuidsProvider>
-              <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                // hideProgressBar={false}
-                // newestOnTop={false}
-                // draggable
-                theme="light"
-              />
-              <div id="layout-wrapper" className={"flex flex-col h-screen "}>
-                <Header setOpen={setOpen} mode={mode} setMode={setMode} />
-                <Menu />
-                <Backdrop open={open} onClose={() => setOpen(false)} />
-                <Sidebar setOpen={setOpen} open={open} />
-                <Routes />
-                <Footer />
-              </div>
-              {/* <Alert  /> */}
-              <PopupForm />
-            </ListsGuidsProvider>
+            <VoucherEntriesViewProvider>
+              <ListsGuidsProvider>
+                <ToastContainer
+                  position="top-center"
+                  autoClose={2000}
+                  // hideProgressBar={false}
+                  // newestOnTop={false}
+                  // draggable
+                  theme="light"
+                />
+                <div id="layout-wrapper" className={"flex flex-col h-screen "}>
+                  <Header setOpen={setOpen} mode={mode} setMode={setMode} />
+                  <Menu />
+                  <Backdrop open={open} onClose={() => setOpen(false)} />
+                  <Sidebar setOpen={setOpen} open={open} />
+                  <Routes />
+                  <Footer />
+                </div>
+                {/* <Alert  /> */}
+                <PopupForm />
+                <VoucherView />
+              </ListsGuidsProvider>
+            </VoucherEntriesViewProvider>
           </PopupFormProvider>
         </ThemeProvider>
       </BrowserRouter>

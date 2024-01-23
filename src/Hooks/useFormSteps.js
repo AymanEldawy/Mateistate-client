@@ -1,15 +1,15 @@
 import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
 import { ApiActions } from "Helpers/Lib/api";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSSR } from "react-i18next";
+import { useEffect, useMemo, useState } from "react";
+import { usePopupForm } from "./usePopupForm";
 
 const useFormSteps = ({ name }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(1);
   const [tab, setTab] = useState("");
   const [fields, setFields] = useState([]);
   const [formSettings, setFormSettings] = useState({});
   const [CACHE_LIST, setCACHE_LIST] = useState({});
-  const [firstTab, setFirstTab] = useState(null)
+  const { refTable } = usePopupForm();
 
   // Get data
   let formSchema = useMemo(() => {
@@ -19,6 +19,10 @@ const useFormSteps = ({ name }) => {
 
   const forms = useMemo(() => formSchema?.forms, [formSchema]);
   const steps = useMemo(() => Object.keys(formSchema?.forms), [formSchema]);
+  const tabNames = useMemo(
+    () => Object.values(formSchema?.forms)?.map((f) => f?.tab_name),
+    [formSchema]
+  );
 
   const isFirst = () => currentIndex === 0;
   const isLast = () => currentIndex === steps?.length - 1;
@@ -41,12 +45,29 @@ const useFormSteps = ({ name }) => {
     getRefTables();
   }, [name]);
 
+  
   useEffect(() => {
     getRefTables();
   }, [currentIndex, fields?.length]);
-
+  
+  useEffect(() => {
+    if (refTable?.isClosed) {
+      reFetchRefTable(refTable?.table)
+    }
+  }, [refTable?.isClosed]);
+  
   const getCachedList = (tableName) => {
     return CACHE_LIST[tableName];
+  };
+
+  const reFetchRefTable = async (table) => {
+    const response = await ApiActions.read(table);
+    if (response?.length) {
+      setCACHE_LIST((prev) => ({
+        ...prev,
+        [table]: response?.result,
+      }));
+    }
   };
 
   const getRefTables = async () => {
@@ -56,7 +77,10 @@ const useFormSteps = ({ name }) => {
       if (hash[field?.ref_table] || CACHE_LIST?.[field?.ref_table]) continue;
 
       if (field.is_ref) {
-        const response = await ApiActions.read(field?.ref_table, field?.conditions || {});
+        const response = await ApiActions.read(
+          field?.ref_table,
+          field?.conditions || {}
+        );
         hash[field?.ref_table] = response?.result;
       }
     }
@@ -72,9 +96,6 @@ const useFormSteps = ({ name }) => {
     // setTab(tabName);
     setFields(forms?.[tabName]?.fields || []);
     setFormSettings(forms?.[tabName]);
-    if(!firstTab) {
-      setFirstTab(forms?.[tabName]?.tab_name)
-    }
   }, [currentIndex]);
 
   return {
@@ -90,8 +111,8 @@ const useFormSteps = ({ name }) => {
     fields,
     formSchema,
     getCachedList,
-    firstTab,
-    CACHE_LIST
+    tabNames,
+    CACHE_LIST,
   };
 };
 

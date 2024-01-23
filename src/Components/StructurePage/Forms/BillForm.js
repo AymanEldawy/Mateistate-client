@@ -110,7 +110,7 @@ const BillForm = () => {
           <FormProvider {...method}>
             <FormHeadingTitle title={name} />
             <div className="h-5" />
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <Fields
                 fields={fields}
                 // tab={tab}

@@ -7,7 +7,7 @@ import {
   ToolsIcon,
   UserIcon,
   ClipboardIcon,
-} from "./Icons";
+} from "../Components/Icons";
 import { getContractMenus } from "./functions";
 
 export const menuData = [

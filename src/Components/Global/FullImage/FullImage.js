@@ -44,18 +44,20 @@ export const FullImage = ({ src, alt, height, width, ...imgProps }) => {
           UnK
         </span>
       )}
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        modalClassName="!p-2"
-        containerClassName="max-w-[575px] z-50"
-      >
-        <img
-          src={src}
-          alt={alt}
-          className="xs:w-96 min-w-[270px] w-full max-w-none max-h-[90vh] rounded-md object-cover "
-        />
-      </Modal>
+      {open ? (
+        <Modal
+          open={true}
+          onClose={() => setOpen(false)}
+          modalClassName="!p-2"
+          containerClassName=" z-50"
+        >
+          <img
+            src={src}
+            alt={alt}
+            className="xs:w-96 min-w-[270px] w-full max-w-none max-h-[90vh] rounded-md object-cover "
+          />
+        </Modal>
+      ) : null}
     </>
   );
 };

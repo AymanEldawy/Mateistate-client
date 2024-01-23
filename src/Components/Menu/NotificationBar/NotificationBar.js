@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import BallIcon from "Helpers/Icons/BallIcon";
+import BallIcon from "Components/Icons/BallIcon";
 import NotificationCard from "./NotificationCard";
 const NotificationBar = () => {
   const [open, setOpen] = useState(false);

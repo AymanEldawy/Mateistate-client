@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { FullImage } from "Components/Global/FullImage/FullImage";
-import { FolderPlusIcon } from "Helpers/Icons";
+import { FolderPlusIcon } from "Components/Icons";
 import { Controller } from "react-hook-form";
 import { FilePreviews } from "Components/Global/FullImage/FilePreviews";
 

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ApiActions } from "./Lib/api";
 import {
+  FLATS_TABLE_NAME,
   FLAT_PROPERTY_TABS_SETTINGS,
   FLAT_PROPERTY_TYPES,
   SELECT_LISTS,
@@ -101,7 +102,6 @@ export const getPrefix = (tab) => {
 
 export async function getContractMenus() {
   const res = await ApiActions.read("contract_pattern");
-  console.log("🚀 ~ getContractMenus ~ res:", res);
   let hash = {};
 
   for (const item of res?.result) {
@@ -120,15 +120,19 @@ export async function getContractMenus() {
 
   for (const menu in hash) {
     let theItem = hash[menu];
+
     if (theItem.direct) {
+      let assetsType = SELECT_LISTS("contact_pattern_assets_type")?.find(
+        (c) => c.id === +theItem?.assets_type
+      );
       let name = theItem.name;
       let contractType = SELECT_LISTS("contact_pattern_contract_type")?.find(
         (c) => c.id === theItem.contract_type
-      )?.name;
+      );
 
       let link = `/contracts/add/${contractType?.toLowerCase()}/${
         theItem.name
-      }_${contractType}_contract`;
+      }_${contractType}_contract?flat_type=${assetsType?.name}`;
       menus.push({
         key: theItem.name,
         name,
@@ -140,11 +144,17 @@ export async function getContractMenus() {
         let contractType = SELECT_LISTS("contact_pattern_contract_type")?.find(
           (c) => c.id === subItem.contract_type
         )?.name;
+        let assetsType = SELECT_LISTS("contact_pattern_assets_type")?.find(
+          (c) => c.id === +subItem?.assets_type
+        );
 
         let name = `${subItem.name}_${contractType?.toLowerCase()}_contract`;
         let link = `/contracts/add/${contractType?.toLowerCase()}/${
           subItem.name
-        }_${contractType?.toLowerCase()}_contract`;
+        }_${contractType?.toLowerCase()}_contract?flat_type=${
+          assetsType?.name
+        }`;
+
         subMenu.push({
           key: subItem.name,
           name,
@@ -219,25 +229,12 @@ export const generateApartments = async (properties, flats, building_id) => {
   }
 
   for (const flat in flats) {
-    console.log("🚀 ~ generateApartments ~ flat:", flat);
-    let flatTableName = "apartment";
-    switch (flat) {
-      case "underground parking":
-      case "parking":
-        flatTableName = "parking";
-        break;
-      case "shop":
-        flatTableName = "shop";
-        break;
-      default:
-        flatTableName = "apartment";
-        break;
-    }
+    let flatTableName = FLATS_TABLE_NAME[flat] || "apartment";
     let flatsGroup = Object.values(flats[flat]);
+
     for (const flat of flatsGroup) {
       let hex = flat?.hex;
       if (hashProperty?.[hex]?.id) delete hashProperty?.[hex].id;
-      console.log(hashProperty, "hashProperty");
       let data = {
         building_id,
         ...flat,
@@ -249,15 +246,15 @@ export const generateApartments = async (properties, flats, building_id) => {
       delete data.name;
       delete data.room_count;
 
-      let flatType = FLAT_PROPERTY_TYPES[`${flatTableName}_${data?.flat_type}`];
+      let flatNameType =
+        flatTableName === "apartment"
+          ? `${flatTableName}_${data?.flat_type}`
+          : flatTableName === "parking"
+          ? `${flatTableName}_${data?.parking_kind}`
+          : flat;
+      let flatType = FLAT_PROPERTY_TYPES[flatNameType];
+
       let typeSettings = FLAT_PROPERTY_TABS_SETTINGS[flatType];
-      console.log(
-        "🚀 ~ generateApartments ~ typeSettings:",
-        data?.flat_type,
-        "flatType ",
-        flatTableName,
-        typeSettings
-      );
 
       if (data?.id) {
         const response = await ApiActions.update(flatTableName, {
@@ -276,12 +273,101 @@ export const generateApartments = async (properties, flats, building_id) => {
         }
       }
     }
-    console.log("🚀 ~ generateApartments ~ hashProperty:", hashProperty);
-    console.log("🚀 ~ generateApartments ~ hashProperty:", hashProperty);
   }
   toast.update(isLoading, {
     render: "Finished the process",
-    type: "success",
     autoClose: 2000,
   });
+
+  return {
+    isCompleted: true,
+  };
+};
+
+export function getMonthsDiff(start_date, end_date, price) {
+  const startDate = new Date(start_date);
+  const endDate = new Date(end_date);
+
+  const monthsDiff =
+    (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+    (endDate.getMonth() - startDate.getMonth()) +
+    1;
+
+  const monthlyPrice = Math.floor(price / monthsDiff);
+  const remainingPrice = price % monthsDiff;
+
+  return { monthlyPrice, remainingPrice, startDate, endDate, monthsDiff };
+}
+
+export function dividePrice1(start_date, end_date, price) {
+  let { monthlyPrice, remainingPrice, startDate, endDate, monthsDiff } =
+    getMonthsDiff(start_date, end_date, price);
+
+  const result = [];
+
+  let currentDate = startDate;
+  for (let i = 0; i < monthsDiff; i++) {
+    const formattedDate = currentDate.toLocaleString("default", {
+      month: "long",
+      year: "numeric",
+    });
+    result.push({ month: formattedDate, price: monthlyPrice });
+    currentDate.setMonth(currentDate.getMonth() + 1);
+  }
+
+  result[result.length - 1].price += remainingPrice;
+
+  return result;
+}
+
+export function dividePrice(
+  start_date,
+  price,
+  numbers,
+  duration,
+  each_duration
+) {
+  const monthlyPrice = Math.floor(price / numbers);
+  const remainingPrice = price % numbers;
+
+  const result = [];
+
+  let currentDate = new Date(start_date);
+
+  for (let i = 0; i < numbers; i++) {
+    const formattedDate = currentDate.toISOString()?.substring(0, 10);
+
+    // increase weeks
+    if (duration === 1) {
+      currentDate.setDate(currentDate.getDate() + each_duration * 7);
+    }
+    // increase months
+    if (duration === 2) {
+      currentDate.setDate(currentDate.getMonth() + each_duration);
+    }
+    // increase year
+    if (duration === 3) {
+      currentDate.setDate(currentDate.getFullYear() + each_duration);
+    }
+
+    let end = new Date(currentDate.getTime() - 86400000)
+      .toISOString()
+      ?.substring(0, 10);
+    result.push({ month: formattedDate, price: monthlyPrice, end });
+    // currentDate.setMonth(currentDate.getMonth() + 1);
+  }
+
+  if (result[result.length - 1]?.price)
+    result[result.length - 1].price += remainingPrice;
+
+  return result;
+}
+
+export const getCreatedFromUrl = (name, id) => {
+  switch (name) {
+    case "contract":
+      return `/contracts/${id}`
+    default:
+      return;
+  }
 };

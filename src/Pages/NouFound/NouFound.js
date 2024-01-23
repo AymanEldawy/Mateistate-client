@@ -1,5 +1,5 @@
 import BlockPaper from "Components/Global/BlockPaper";
-import { NotAllowIcon } from "Helpers/Icons";
+import { NotAllowIcon } from "Components/Icons";
 import Layout from "Components/Layout";
 import React from "react";
 import { useTranslation } from "react-i18next";

@@ -2,7 +2,7 @@ import * as React from "react";
 
 import menuData from "Helpers/menu";
 import { Link } from "react-router-dom";
-import { ChevronIcon } from "Helpers/Icons";
+import { ChevronIcon } from "Components/Icons";
 import { useTranslation } from "react-i18next";
 
 const Menu = () => {

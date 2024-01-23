@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import useFormSteps from "Hooks/useFormSteps";
@@ -9,9 +9,16 @@ import { FormProvider, useForm } from "react-hook-form";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { ButtonsStepsGroup } from "Components/Global/ButtonsStepsGroup";
 import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
-const FormSteps = ({ name, onClose, refetchData, layout, allowTabs }) => {
+const FormSteps = ({
+  name,
+  onClose,
+  refetchData,
+  layout,
+  allowTabs,
+  oldValues = null,
+}) => {
   const params = useParams();
   const {
     next,
@@ -31,7 +38,7 @@ const FormSteps = ({ name, onClose, refetchData, layout, allowTabs }) => {
     defaultValues:
       layout === "update"
         ? async () => await GET_UPDATE_DATE(name, params?.id)
-        : {},
+        : oldValues || {},
   });
 
   const [loading, setLoading] = useState(false);
@@ -43,7 +50,15 @@ const FormSteps = ({ name, onClose, refetchData, layout, allowTabs }) => {
     setValue,
   } = methods;
 
+  useEffect(() => {
+    if (layout !== "update" && oldValues) {
+      reset(oldValues);
+    }
+  }, [oldValues]);
 
+  console.log(watch());
+
+  
   // Handel Submit
   const onSubmit = async (value) => {
     next();
@@ -72,7 +87,7 @@ const FormSteps = ({ name, onClose, refetchData, layout, allowTabs }) => {
         activeStage={currentIndex}
       />
       <div className="h-5" />
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         {fields?.length ? (
           <>
             {formSettings?.formType === "grid" ? (

@@ -9,7 +9,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { ResizeBar } from "./TableResizeBar";
 import BlockPaper from "Components/Global/BlockPaper";
-import { SortIcon } from "Helpers/Icons";
+import { SortIcon } from "Components/Icons";
 import { useTranslation } from "react-i18next";
 import { NewTableBar } from "./NewTableBar";
 import { TablePagination } from "./TablePagination";

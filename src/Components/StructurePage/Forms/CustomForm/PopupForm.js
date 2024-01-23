@@ -10,29 +10,11 @@ import { DynamicForm } from "./DynamicForm";
 const PopupForm = () => {
   const { openForm, dispatchForm } = usePopupForm();
   const { table, open } = openForm;
-  // Get data
-  let formSchema = useMemo(() => {
-    const forms = getFormByTableName(table);
-    return forms;
-  }, [table]);
 
-  const forms = useMemo(() => formSchema?.forms, [formSchema]);
-  const steps = useMemo(() => formSchema?.steps, [formSchema]);
-
-  // Handel Submit
-  const onSubmit = async (values) => {
-    let res = await ApiActions.insert(table, {
-      data: values,
-    });
-
-    if (res?.statusText === "OK") {
-      toast.success("Added Successfully...");
-    }
-  };
-
+  if(!open) return;
+  
   return (
-    <Modal open={open} onClose={() => dispatchForm({})}>
-      {/* <FormHeadingTitle title={`Create new ${table}`} /> */}
+    <Modal open={open} onClose={() => dispatchForm({})} containerClassName="!z-[70]">
       <DynamicForm onClose={() => dispatchForm({})} name={table} />
     </Modal>
   );

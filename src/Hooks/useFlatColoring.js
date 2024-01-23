@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 const FlatColoringContext = createContext(null);
 
 const COLLECTION_COUNTS = {};
+const UPDATES_ROOMS = {};
 
 const calculateRoomCount = (collections, setRoomCounts) => {
   const counts = {};
@@ -48,7 +49,9 @@ export const FlatColoringProvider = ({ children }) => {
       ? { ...additional, [tabSettings?.no]: additional?.name, ...flatType }
       : {};
 
-    COLLECTION_COUNTS[additional?.name] = hex
+    UPDATES_ROOMS[additional?.name] = true;
+
+    COLLECTION_COUNTS[additional?.name] = hex;
 
     setFlatsDetails((prev) => ({
       ...prev,

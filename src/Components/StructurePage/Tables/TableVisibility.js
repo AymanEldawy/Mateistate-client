@@ -1,5 +1,5 @@
 import { Drawer } from "Components/Global/Drawer";
-import { CloseIcon } from "Helpers/Icons";
+import { CloseIcon } from "Components/Icons";
 import { useLocalStorage } from "Hooks/useLocalStorage";
 
 export const TableVisibility = ({

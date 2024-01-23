@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { usePopupForm } from "Hooks/usePopupForm";
-import { PlusIcon } from "Helpers/Icons";
+import { PlusIcon } from "Components/Icons";
 import { useState } from "react";
 import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
@@ -44,7 +44,9 @@ const UniqueField = ({
           ) : null}
         </label>
       ) : null}
-      <div className={`relative flex items-center border dark:border-dark-border rounded-md ${selectContainerClassName}`}>
+      <div
+        className={`relative flex items-center border dark:border-dark-border rounded-md ${selectContainerClassName}`}
+      >
         <Controller
           name={updatedName || field.name}
           control={control}
@@ -55,6 +57,7 @@ const UniqueField = ({
                 options={list}
                 // value={watch(field?.name)}
                 name={updatedName || field?.name}
+                // required={field?.required}
                 className="w-full border-none"
                 classNames={{
                   indicatorsContainer: () => "!hidden bg-black",
@@ -63,21 +66,19 @@ const UniqueField = ({
                   singleValue: () => "dark:text-gray-200 unique-valid",
                   menuList: () => "dark:bg-dark-bg",
                 }}
-                value={list?.find((c) => c?.value === watch(updatedName|| field?.name))}
+                value={list?.find(
+                  (c) => c?.value === watch(updatedName || field?.name)
+                )}
                 defaultValue={list?.find(
-                  (c) => c?.value === watch(updatedName|| field?.name)
+                  (c) => c?.value === watch(updatedName || field?.name)
                 )}
                 // onChange={onChange}
-                onChange={(option) =>
-                  onChange(option?.value)
-                }
+                onChange={(option) => onChange(option?.value)}
               />
             );
           }}
           rules={{
-            validate: (value) => {
-              return true;
-            },
+            required: field?.required,
           }}
         />
 

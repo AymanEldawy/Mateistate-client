@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import logo from "Assets/Images/abrepair-logo.svg";
-import BarsIcon from "Helpers/Icons/BarsIcon";
+import BarsIcon from "Components/Icons/BarsIcon";
 import { IconsBar } from "./IconsBar";
 import { SearchBar } from "Components/StructurePage/CustomFields";
 

@@ -1,5 +1,5 @@
-import { PlusIcon } from "Helpers/Icons";
-import MinusIcon from "Helpers/Icons/MinusIcon";
+import { PlusIcon } from "Components/Icons";
+import MinusIcon from "Components/Icons/MinusIcon";
 import React from "react";
 
 export const IncreaseTableBar = ({ increaseCount, setIncreaseCount }) => {
