@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { VoucherHead } from "./VoucherHead";
 import { VoucherFooter } from "./VoucherFooter";
 import BlockPaper from "Components/Global/BlockPaper";
@@ -12,13 +12,33 @@ import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
 import { Button } from "Components/Global/Button";
 import { VoucherStepsButton } from "./VoucherStepsButton";
 import useFetch from "Hooks/useFetch";
-import { GET_NEW_VOUCHER_ENTRY_GRID } from "Helpers/constants";
+import { CREATED_FROM, GET_NEW_VOUCHER_ENTRY_GRID } from "Helpers/constants";
 import { usePopupForm } from "Hooks/usePopupForm";
+import { generateEntryFromReceiptVoucher } from "Helpers/Lib/operations/vouchers-actions";
 
 let CACHE_LIST = {};
+let CACHE_ROW_VALUE = {};
 
 const getCachedList = (tableName) => {
   return CACHE_LIST[tableName];
+};
+
+const PATTERN_SETTINGS = {
+  auto_gen_entries: true,
+  auto_transfer_entry: true,
+  code: 32,
+  debit_field_label: "Debit test name",
+  default_account_id: "c85a8ba7-c9fa-493e-ad81-7d2898f3b1f5",
+  gen_entries: true,
+  name: "Receipts",
+  required_cost_center: true,
+  required_statement: true,
+  show_contract_cost_center: true,
+  show_contract_field: true,
+  show_cost_center: true,
+  show_currency: true,
+  show_debit_field: true,
+  show_note: true,
 };
 
 const VoucherForm = ({ layout }) => {
@@ -38,6 +58,7 @@ const VoucherForm = ({ layout }) => {
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors, isDirty },
   } = methods;
 
@@ -77,7 +98,6 @@ const VoucherForm = ({ layout }) => {
       reset(col);
     }
   };
-  console.log(watch());
 
   useEffect(() => {
     if (!number) return;
@@ -109,7 +129,8 @@ const VoucherForm = ({ layout }) => {
   }, [name, type]);
 
   const getRefTables = async () => {
-    for (const field of [...gridFields]) {
+    for (const field of [...gridFields, fields.seller_id]) {
+      console.log("🚀 ~ getRefTables ~ field:", field);
       if (field.is_ref) {
         const response = await ApiActions.read(field?.ref_table, {
           columns: ["id", field?.ref_name || "name"],
@@ -133,36 +154,79 @@ const VoucherForm = ({ layout }) => {
     setNumber(num);
   };
 
-  const onSubmit = async (value) => {
-    let values = {};
-    for (const key in value) {
-      let val = value[key];
-      if (val !== undefined && val !== null && val !== "") {
-        values[key] = val;
-      }
+  const calculateAmount = useCallback((row, val, column) => {
+    let prevValue = watch(column);
+    let newValue = prevValue;
+    let value = parseInt(val);
+    if (!value) return;
+
+    if (CACHE_ROW_VALUE?.[row]) {
+      newValue -= CACHE_ROW_VALUE?.[row];
+      newValue += value;
+    } else {
+      newValue += value;
     }
+
+    CACHE_ROW_VALUE[row] = value;
+    setValue(column, newValue);
+  }, []);
+
+  console.log(watch());
+
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      if (!type) return;
+      if (name?.indexOf("grid.") === -1) return;
+      let currentVal = watch(name);
+      let nameSplit = name?.split(".");
+      let row = nameSplit?.[1];
+      let columnName = nameSplit?.[2];
+
+      if (columnName === "credit" || columnName === "debit")
+        calculateAmount(row, currentVal, columnName);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  const onSubmit = async (value) => {
+    let grid = watch("grid");
+    delete value.grid;
+    let values = {};
 
     let res = null;
 
+    delete value.gen_entries;
+
     if (layout === "update") {
-      res = await ApiActions.update(name, {
+      res = await ApiActions.update("voucher_main_data", {
         conditions: [{ type: "and", conditions: [["id", "=", params?.id]] }],
-        updates: values,
+        updates: value,
       });
     } else {
-      res = await ApiActions.insert(name, {
-        data: values,
+      res = await ApiActions.insert("voucher_main_data", {
+        data: value,
       });
+
       if (res?.status) {
+        let itemId = res?.result?.at(0)?.id;
         insertIntoGrid({
           layout: layout,
-          gridTableName:
-            +type === 2 ? "voucher_grid_data" : "voucher_grid_data",
-          grid: watch("grid"),
-          itemId: res?.result?.at(0)?.id,
-          refName:
-            +type === 2 ? "voucher_main_data_id" : "voucher_main_data_id",
+          gridTableName: "voucher_grid_data",
+          grid,
+          itemId,
         });
+
+        if (PATTERN_SETTINGS?.auto_gen_entries) {
+          // Generate A Constraint
+          generateEntryFromReceiptVoucher({
+            values,
+            created_from:
+              +type === 1 ? CREATED_FROM?.receipt : CREATED_FROM?.payment,
+            grid,
+            created_from_id: itemId,
+          });
+        }
       }
     }
 
@@ -179,15 +243,15 @@ const VoucherForm = ({ layout }) => {
 
   const insertIntoGrid = async (grid, itemId) => {
     for (const item of grid) {
-      if (item?.id && (item.account_id || item?.observe_account_id)) {
-        ApiActions.update("entry_grid_data", {
+      if (item?.id && item.account_id) {
+        ApiActions.update("voucher_grid_data", {
           conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
           updates: item,
         });
       } else {
-        if (item.account_id || item?.observe_account_id) {
-          ApiActions.insert("entry_grid_data", {
-            data: { ...item, entry_main_data_id: itemId },
+        if (item.account_id) {
+          ApiActions.insert("voucher_grid_data", {
+            data: { ...item, voucher_main_data_id: itemId },
           });
         }
       }
@@ -210,11 +274,12 @@ const VoucherForm = ({ layout }) => {
       >
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <VoucherHead
-            isAccounting={+type === 2}
+            isPaymentVoucher={+type === 2}
             fields={fields}
             name={name}
             errors={errors}
             CACHE_LIST={CACHE_LIST}
+            PATTERN_SETTINGS={PATTERN_SETTINGS}
           />
           <TableFields
             fields={gridFields}
@@ -228,6 +293,8 @@ const VoucherForm = ({ layout }) => {
             name={name}
             errors={errors}
             CACHE_LIST={CACHE_LIST}
+            isNewOne={isNewOne}
+            PATTERN_SETTINGS={PATTERN_SETTINGS}
           />
           <div className="flex items-center mt-4 border-t pt-2 justify-between">
             <VoucherStepsButton

@@ -1,11 +1,6 @@
-import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 const Modal = ({ open, onClose, children, containerClassName }) => {
-  
-  useEffect(() => {
-    if (open) document.body.style.overflow = "hidden";
-  }, []);
 
   return createPortal(
     <div

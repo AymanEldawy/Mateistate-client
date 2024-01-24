@@ -1,16 +1,12 @@
 import React from "react";
-import { Input } from "../../CustomFields";
+import { Input, Switch, UploadFile } from "../../CustomFields";
 import { useTranslation } from "react-i18next";
 
-export const VoucherFooter = ({
-  fields,
-  errors,
-  values,
-}) => {
+export const VoucherFooter = ({ fields, errors, values, isNewOne }) => {
   const { t } = useTranslation();
 
   return (
-    <div>
+    <div className="flex justify-between items-end">
       <div className="w-1/3 flex flex-col mt-4 capitalize">
         <div className="flex">
           <div className="w-1/3 text-center">{t("debit")}</div>
@@ -20,25 +16,25 @@ export const VoucherFooter = ({
           <div className="w-1/3">
             <Input
               readOnly
-              {...fields["debit"]}
+              {...fields?.debit_amount}
               label=""
               type="number"
-              value={values?.["debit"] || ""}
+              value={values?.debit_amount || ""}
               className="border-0 !rounded-none !h-full"
-              name="debit"
-              error={errors?.debit ? "Field is required" : ""}
+              name="debit_amount"
+              error={errors?.debit_amount ? "Field is required" : ""}
             />
           </div>
           <div className="w-1/3">
             <Input
               readOnly
-              {...fields["credit"]}
+              {...fields?.credit_amount}
               label=""
               type="number"
-              value={values?.["credit"] || ""}
+              value={values?.credit_amount || ""}
               className="border-0 !rounded-none !h-full"
-              name="credit"
-              error={errors?.credit ? "Field is required" : ""}
+              name="credit_amount"
+              error={errors?.credit_amount ? "Field is required" : ""}
             />
           </div>
           <div className="w-1/3 whitespace-nowrap">Total current amount</div>
@@ -47,29 +43,51 @@ export const VoucherFooter = ({
           <div className="w-1/3">
             <Input
               readOnly
-              {...fields["debit"]}
+              {...fields?.debit_total}
               label=""
               type="number"
-              value={values?.["debit"] || ""}
+              value={values?.debit_total || ""}
               className="border-0 !rounded-none !h-full"
-              name="debit"
-              error={errors?.debit ? "Field is required" : ""}
+              name="debit_total"
+              error={errors?.debit_total ? "Field is required" : ""}
             />
           </div>
           <div className="w-1/3">
             <Input
               readOnly
-              {...fields["credit"]}
+              {...fields?.credit_total}
               label=""
               type="number"
-              value={values?.["credit"] || ""}
+              value={values?.credit_total || ""}
               className="border-0 !rounded-none !h-full"
-              name="credit"
-              error={errors?.credit ? "Field is required" : ""}
+              name="credit_total"
+              error={errors?.credit_total ? "Field is required" : ""}
             />
           </div>
           <div className="w-1/3">Final amount</div>
         </div>
+      </div>
+      <div className="flex gap-4 items-end">
+        {isNewOne ? null : (
+          <UploadFile
+            name="picture"
+            containerClassName="w-[160px]"
+            values={values}
+            label="Pictures"
+            multiple
+            error={errors?.picture?.type}
+          />
+        )}
+        <Switch
+          {...fields?.gen_entires}
+          containerClassName="!flex-row gap-2"
+          defaultChecked={values?.gen_entires}
+          values={values}
+          value={values?.gen_entires || ""}
+          name="gen_entries"
+          label="Generate a constraint"
+          error={errors?.gen_entries ? "Field is required" : ""}
+        />
       </div>
     </div>
   );

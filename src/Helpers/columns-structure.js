@@ -10,6 +10,7 @@ import {
   FLAT_PROPERTY_COLORS,
   CONTRACTS_ASSETS_TYPE,
 } from "./constants";
+import { getCreatedFromUrl } from "./functions";
 
 export const account = [
   {
@@ -701,7 +702,7 @@ export const building = [
   { header: "underground_parking", accessorKey: "underground_parking" },
   { header: "bank_id", accessorKey: "bank_id" },
   {
-    header: "gen_entries",
+    header: "Generate a constraint",
     accessorKey: "gen_entries",
     cell: ({ getValue }) => (
       <span
@@ -749,7 +750,7 @@ export const building_buying = [
   },
   { header: "amount", accessorKey: "amount" },
   {
-    header: "gen_entries",
+    header: "Generate a constraint",
     accessorKey: "gen_entries",
     cell: ({ getValue }) => (
       <span
@@ -843,7 +844,7 @@ export const building_investment = [
   { header: "terminating_tenancies", accessorKey: "terminating_tenancies" },
   { header: "investment_value", accessorKey: "investment_value" },
   {
-    header: "gen_entries",
+    header: "Generate a constraint",
     accessorKey: "gen_entries",
     cell: ({ getValue }) => (
       <span
@@ -2812,7 +2813,7 @@ export const bill_patterns = [
   { header: "default_account_id", accessorKey: "default_account_id" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
   {
-    header: "gen_entries",
+    header: "Generate a constraint",
     accessorKey: "gen_entries",
     cell: ({ getValue }) => (
       <span
@@ -3760,7 +3761,7 @@ export const voucher_pattern = [
     ),
   },
   {
-    header: "gen_entries",
+    header: "Generate a constraint",
     accessorKey: "gen_entries",
     cell: ({ getValue }) => (
       <span
@@ -5576,7 +5577,7 @@ const bill_group = [
     accessorKey: "shortcut_key",
   },
   {
-    header: "gen_entries",
+    header: "Generate a constraint",
     accessorKey: "gen_entries",
     cell: ({ getValue }) => (
       <span
@@ -6249,11 +6250,11 @@ const contracts = [
     header: "contract_type",
     accessorKey: "contract_type",
     cell: ({ getValue, row }) => {
-      let contractType = SELECT_LISTS("contact_pattern_contract_type")?.find(
-        (c) => c.id === getValue()
-        )?.name?.toLowerCase();
-      let flatType = CONTRACTS_ASSETS_TYPE?.[row.original.flat_type]
-      let updateUrl = `/contracts/update/${contractType}/apartment_${contractType}_contract?flat_type=${flatType}&contract_id=${row.original.contract_id}`
+      let contractType = SELECT_LISTS("contact_pattern_contract_type")
+        ?.find((c) => c.id === getValue())
+        ?.name?.toLowerCase();
+      let flatType = CONTRACTS_ASSETS_TYPE?.[row.original.flat_type];
+      let updateUrl = `/contracts/update/${contractType}/apartment_${contractType}_contract?flat_type=${flatType}&contract_id=${row.original.contract_id}`;
       return (
         <Link
           className={`capitalize px-2 py-1 text-sx rounded-md ${
@@ -6516,6 +6517,57 @@ const land = [
   },
 ];
 
+const entry_main_data = [
+  {
+    header: "number",
+    accessorKey: "number",
+    cell: ({ getValue }) => {
+      return (
+        <Link
+          className="text-blue-500 capitalize"
+          to={`/vouchers/entries/${getValue()}`}
+        >
+          Entry number {getValue()}
+        </Link>
+      );
+    },
+  },
+  {
+    header: "created_at",
+    accessorKey: "created_at",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
+  },
+  {
+    header: "created_from",
+    accessorKey: "created_from",
+    cell: ({ getValue, row }) => {
+      let createdFrom = getCreatedFromUrl(getValue(), row.original.created_from_id)
+      return (
+        <Link
+          className={`text-blue-500 ${createdFrom?.classes} capitalize`}
+          to={createdFrom?.href}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
+  {
+    header: "currency_id",
+    accessorKey: "currency_id",
+  },
+  {
+    header: "Currency Value",
+    accessorKey: "currency_val",
+  },
+  { header: "Note", accessorKey: "note", size: 250 },
+  { header: "debit", accessorKey: "debit" },
+  { header: "credit", accessorKey: "credit" },
+  { header: "difference", accessorKey: "difference" },
+
+  
+];
+
 const TABLES = {
   account,
   lessor,
@@ -6592,8 +6644,10 @@ const TABLES = {
   bill,
   bill_pattern: bill_group,
   land,
+  entry_main_data,
 };
 
 export default function getTableColumns(name) {
+  console.log(name?.replace("-", "_"), "---");
   return TABLES[name?.replace("-", "_")] || [];
 }

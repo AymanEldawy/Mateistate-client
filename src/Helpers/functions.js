@@ -366,7 +366,10 @@ export function dividePrice(
 export const getCreatedFromUrl = (name, id) => {
   switch (name) {
     case "contract":
-      return `/contracts/${id}`
+      return {
+        href: `/contracts/${id}`,
+        classes: "bg-red-600 text-white p-2 rounded-md text-xs",
+      };
     default:
       return;
   }

@@ -8,18 +8,20 @@ import {
 
 export const VoucherHead = ({
   fields,
-  isAccounting,
+  isPaymentVoucher,
   errors,
   values,
   getCachedList,
   CACHE_LIST,
+  PATTERN_SETTINGS,
 }) => {
+  console.log("🚀 ~ PATTERN_SETTINGS:", PATTERN_SETTINGS);
   return (
     <div className="flex gap-4 lg:gap-8 justify-between">
       <div className="w-2/3">
         <div
           className={`grid gap-4  ${
-            isAccounting ? "grid-cols-2" : "grid-cols-3"
+            isPaymentVoucher ? "grid-cols-2" : "grid-cols-3"
           }`}
         >
           <Input
@@ -30,17 +32,6 @@ export const VoucherHead = ({
             name="created_at"
             error={errors?.created_at ? "Field is required" : ""}
           />
-          {isAccounting ? null : (
-            <>
-              <Select
-                {...fields["connect_with"]}
-                label={"connect with"}
-                value={values?.connect_with}
-                error={errors?.connect_with ? "Field is required" : ""}
-              />
-              {/* <UniqueField {...fields["connect_with_id"]} /> */}
-            </>
-          )}
           <UniqueField
             {...fields["account_id"]}
             className="min-w-[170px] border-0 !rounded-none !h-full"
@@ -52,6 +43,17 @@ export const VoucherHead = ({
             label={"account"}
             value={values?.account_id || ""}
           />
+          {PATTERN_SETTINGS?.show_contract_field ? (
+            <>
+              <Select
+                {...fields["connect_with"]}
+                label={"connect with"}
+                value={values?.connect_with}
+                error={errors?.connect_with ? "Field is required" : ""}
+              />
+              {/* <UniqueField {...fields["connect_with_id"]} /> */}
+            </>
+          ) : null}
           <UniqueField
             {...fields["currency_id"]}
             className="min-w-[170px] border-0 !rounded-none !h-full"
@@ -106,41 +108,55 @@ export const VoucherHead = ({
             error={errors?.feedback ? "Field is required" : ""}
           />
         </div>
-        {isAccounting ? null : (
-          <UniqueField
-            {...fields["seller_id"]}
-            containerClassName="mt-[10px]"
-            className="min-w-[170px] border-0 !rounded-none !h-full"
-            table={"seller"}
-            name="seller_id"
-            getCachedList={getCachedList}
-            error={errors?.seller_id ? "Field is required" : ""}
-            list={CACHE_LIST?.seller}
-            label={"seller"}
-            value={values?.seller_id || ""}
-          />
-        )}
+        <UniqueField
+          {...fields["seller_id"]}
+          containerClassName="mt-[10px]"
+          className="min-w-[170px] border-0 !rounded-none !h-full"
+          table={"seller"}
+          name="seller_id"
+          getCachedList={getCachedList}
+          error={errors?.seller_id ? "Field is required" : ""}
+          list={CACHE_LIST?.seller}
+          label={"seller"}
+          value={values?.seller_id || ""}
+        />
         <div className="grid grid-cols-2 gap-4">
-          <Input
+          <label className="flex flex-col gap-1">
+            Debit:{" "}
+            <input
+              readOnly
+              className="max-w-fit border read-only:bg-blue-100 dark:read-only:bg-[#444] rounded p-1"
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            Credit:{" "}
+            <input
+              readOnly
+              className="max-w-fit border read-only:bg-blue-100 dark:read-only:bg-[#444] rounded p-1"
+            />
+          </label>
+          {/* <Input
             readOnly
-            {...fields["debit"]}
+            // {...fields["debit"]}
+            label="debit"
             labelClassName="hidden"
             type="number"
-            value={values?.debit || ""}
+            // value={values?.debit || ""}
             className="border-0 !rounded-none !h-full"
-            name="debit"
-            error={errors?.debit ? "Field is required" : ""}
+            // name="debit"
+            // error={errors?.debit ? "Field is required" : ""}
           />
           <Input
             readOnly
-            {...fields["credit"]}
+            // {...fields["credit"]}
+            label="credit"
             labelClassName="hidden"
             type="number"
-            value={values?.credit || ""}
+            // // value={values?.credit || ""}
             className="border-0 !rounded-none !h-full"
-            name="credit"
-            error={errors?.credit ? "Field is required" : ""}
-          />
+            // name="credit"
+            // // error={errors?.credit ? "Field is required" : ""}
+          /> */}
         </div>
       </div>
     </div>

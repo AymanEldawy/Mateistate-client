@@ -1,3 +1,4 @@
+import { CREATED_FROM } from "Helpers/constants";
 import { ApiActions } from "../api";
 
 const getVoucherNumber = async (name) => {
@@ -86,7 +87,7 @@ export const insertIntoEntry = async ({
   created_from,
   created_from_id,
 }) => {
-  const number = await getVoucherNumber("entry_main_data") || 1;
+  const number = (await getVoucherNumber("entry_main_data")) || 1;
 
   const res = await ApiActions.insert("entry_main_data", {
     data: {
@@ -106,6 +107,7 @@ export const insertIntoEntry = async ({
 };
 
 export const insertIntoEntryGrid = async ({
+  created_at,
   account_id,
   debit,
   credit,
@@ -117,6 +119,7 @@ export const insertIntoEntryGrid = async ({
 }) => {
   const res = await ApiActions.insert("entry_grid_data", {
     data: {
+      created_at,
       account_id,
       debit,
       credit,
@@ -137,35 +140,33 @@ export const generateEntryFromContract = async ({
   assetsTypeNumber,
   buildingNumber,
 }) => {
-  console.log("🚀 ~ generateEntryFromContract ~ values:", values);
-  let currency_id = values?.currency_id;
-  let currency_val = values?.currency_val;
-  let contract_value = values?.contract_value;
-  let current_securing_value = values?.current_securing_value;
-  let cost_center_id = values?.cost_center_id;
-  let customer_account_id = values?.customer_account_id;
-  let revenue_account_id = values?.revenue_account_id;
-  let insurance_account_id = values?.insurance_account_id;
-  let created_at = values?.start_duration_date;
-  let note = `Contract rent number ${contractNumber} ${assetsType} number ${assetsTypeNumber} building ${buildingNumber}`;
-  let debit = contract_value + current_securing_value;
-  let credit = contract_value + current_securing_value;
-  let difference = credit - debit;
-
-  console.log({
+  let {
     currency_id,
     currency_val,
-    note,
-    debit,
-    credit,
-    difference,
-    created_from: "contract",
-    created_from_id: contractId,
-  });
+    contract_value,
+    current_securing_value,
+    cost_center_id,
+    customer_account_id,
+    revenue_account_id,
+    insurance_account_id,
+    created_at,
+  } = values;
 
-  let grids = [];
+  let note = `Contract rent number ${contractNumber} ${assetsType} number ${assetsTypeNumber} building ${buildingNumber}`;
+  let debit = current_securing_value
+    ? contract_value + current_securing_value
+    : contract_value;
+  let credit = debit;
+
+  let difference = credit - debit;
+
+  if (difference !== 0) return;
+
+  let gridRows = [];
   let entry_main_data_id = 0;
-  grids.push({
+
+  gridRows.push({
+    created_at,
     account_id: customer_account_id,
     debit: contract_value,
     observe_account_id: revenue_account_id,
@@ -176,7 +177,8 @@ export const generateEntryFromContract = async ({
     entry_main_data_id,
   });
 
-  grids.push({
+  gridRows.push({
+    created_at,
     account_id: revenue_account_id,
     debit: 0,
     observe_account_id: customer_account_id,
@@ -188,7 +190,8 @@ export const generateEntryFromContract = async ({
   });
 
   if (current_securing_value) {
-    grids.push({
+    gridRows.push({
+      created_at,
       account_id: customer_account_id,
       debit: current_securing_value,
       observe_account_id: insurance_account_id,
@@ -199,7 +202,8 @@ export const generateEntryFromContract = async ({
       entry_main_data_id,
     });
 
-    grids.push({
+    gridRows.push({
+      created_at,
       account_id: insurance_account_id,
       debit: 0,
       observe_account_id: customer_account_id,
@@ -217,17 +221,99 @@ export const generateEntryFromContract = async ({
     debit,
     credit,
     difference,
-    created_from: "contract", // contract
-    created_from_id: contractId, // contract id
+    created_from: CREATED_FROM?.contract,
+    created_from_id: contractId,
   });
 
   if (response?.success) {
     let entry_main_data_id = response?.record?.id;
-    for (const item of grids) {
+    for (const item of gridRows) {
       insertIntoEntryGrid({
         ...item,
         entry_main_data_id,
       });
     }
+  }
+};
+
+export const generateEntryFromReceiptVoucher = async ({
+  values,
+  created_from,
+  created_from_id,
+  grid,
+}) => {
+
+  let {
+    currency_id,
+    currency_val,
+    note,
+    debit,
+    credit,
+    difference,
+    account_id,
+    cost_center_id,
+  } = values;
+
+  const response = await insertIntoEntry({
+    currency_id,
+    currency_val,
+    note,
+    debit,
+    credit,
+    difference,
+    created_from,
+    created_from_id,
+  });
+
+  if (!response?.success) {
+    console.log("failed to generate entries from " + created_from);
+    return;
+  }
+  let entry_main_data_id = response?.record?.id;
+
+  let gridRows = [];
+
+  let keyNameSearch = "";
+  if (created_from === CREATED_FROM.receipt) {
+    keyNameSearch = "credit";
+  } else {
+    keyNameSearch = "debit";
+  }
+  
+  note = `Generate A Constraint from ${created_from} number ${response?.record?.number}`
+
+  gridRows.push({
+    account_id,
+    observe_account_id: grid?.at(0)?.account_id,
+    currency_id,
+    cost_center_id,
+    note,
+    debit: 0,
+    credit: 0,
+    entry_main_data_id,
+    [keyNameSearch]: values?.[keyNameSearch],
+  });
+
+  for (const item of grid) {
+    gridRows.push({
+      account_id: item?.account_id,
+      observe_account_id: account_id,
+      currency_id,
+      cost_center_id,
+      note,
+      debit: 0,
+      credit: 0,
+      entry_main_data_id,
+      [keyNameSearch]: item?.[keyNameSearch],
+    });
+  }
+
+  console.log(gridRows, 'gridRows');
+
+  for (const item of gridRows) {
+    insertIntoEntryGrid({
+      ...item,
+      entry_main_data_id,
+    });
   }
 };

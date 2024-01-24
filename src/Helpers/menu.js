@@ -511,7 +511,7 @@ export const menuData = [
       {
         key: "Reports vouchers entries",
         name: "Reports vouchers entries",
-        link: "/reports/vouchers/entries/1",
+        link: "/reports/entries/",
       },
     ],
   },

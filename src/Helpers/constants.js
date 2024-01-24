@@ -345,10 +345,10 @@ export const SELECT_LISTS = (listName) => {
     // contract
 
     contract_connect_with: [
-      { name: "nothing", id: 1 },
-      { name: "contract", id: 2 },
-      { name: "lawsuit", id: 3 },
-      { name: "bill", id: 4 },
+      { name: "Nothing", id: 1 },
+      { name: "Contract", id: 2 },
+      { name: "Lawsuit", id: 3 },
+      { name: "Bill", id: 4 },
     ],
 
     contract_status: [
@@ -743,3 +743,12 @@ export const GET_NEW_VOUCHER_ENTRY_GRID = () => {
       obverse_account_id: null,
     }));
 };
+
+
+export const CREATED_FROM = {
+  contract:"Contract",
+  receipt:"Receipt Voucher",
+  payment:"Payment Voucher",
+  lawsuit:"Lawsuit",
+  bill:"Bill",
+}

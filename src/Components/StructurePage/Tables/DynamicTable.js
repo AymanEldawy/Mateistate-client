@@ -45,6 +45,7 @@ export const DynamicTable = ({
   const [columnVisibility, setColumnVisibility] = useState({});
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const columns = useMemo(() => getTableColumns(tableName), [tableName]);
+  console.log("🚀 ~ columns:", columns, tableName)
 
   useEffect(() => {
     const storageTable = getTable(tableName);
@@ -117,6 +118,8 @@ export const DynamicTable = ({
     }
     setOpenConfirmation(false);
   };
+
+  console.log(columns);
 
   return (
     <>

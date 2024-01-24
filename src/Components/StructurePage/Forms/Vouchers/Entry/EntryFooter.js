@@ -43,7 +43,7 @@ export const EntryFooter = ({
           error={errors?.debit ? "Field is required" : ""}
         />
         {values?.created_from_id ? (
-          <Link to={getCreatedFromUrl(values?.created_from, values?.created_from_id)} className="bg-teal-500 text-white py-1 px-2 text-sm ltr:ml-auto rtl:mr-auto rounded-md">Original</Link>
+          <Link to={getCreatedFromUrl(values?.created_from, values?.created_from_id).href} className={`bg-teal-500 text-white ${getCreatedFromUrl(values?.created_from, values?.created_from_id).classes} py-1 px-2 text-sm ltr:ml-auto rtl:mr-auto rounded-md `}>Original</Link>
         ) : null}
       </div>
       {onlyView ? null : (

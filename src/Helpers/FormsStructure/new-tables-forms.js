@@ -207,7 +207,13 @@ const land = [
 const account = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "number", name: "number", type: "number", required: true, hide_in_form: true },
+  {
+    label: "number",
+    name: "number",
+    type: "number",
+    required: true,
+    hide_in_form: true,
+  },
   { label: "name", name: "name", type: "text", required: true },
   {
     label: "type",
@@ -1121,11 +1127,19 @@ const accounting_voucher_main_data = [
     ref_col: "id",
   },
   { label: "sms", name: "sms", type: "text", required: false },
+  {
+    label: "gen_entries",
+    name: "gen_entries",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
 ];
+
 const accounting_voucher_pattern_general = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "code", name: "code", type: "text", required: false },
+  { label: "code", name: "code", type: "number", required: true },
   { label: "name", name: "name", type: "text", required: true },
   { label: "list_name", name: "list_name", type: "text", required: false },
   {
@@ -1385,9 +1399,9 @@ const apartment = [
     is_ref: true,
     ref_table: "property_values",
     ref_col: "id",
-    ref_name: 'row_index',
+    ref_name: "row_index",
   },
-  { label: "hex", name: "hex", type: "text", required: false, readOnly:true },
+  { label: "hex", name: "hex", type: "text", required: false, readOnly: true },
   { label: "cost_price", name: "cost_price", type: "number", required: false },
   {
     label: "amount_paid",
@@ -1463,9 +1477,9 @@ const property_values = [
   {
     label: "property_type",
     name: "property_type",
-    key: 'select',
+    key: "select",
     required: false,
-    list: SELECT_LISTS('flat_property_type')
+    list: SELECT_LISTS("flat_property_type"),
   },
 ];
 const apartment_rental_price = [
@@ -2660,7 +2674,7 @@ const installment = [
     key: "select",
     list: SELECT_LISTS("installment_voucher_type"),
     required: false,
-    defaultValue: 1
+    defaultValue: 1,
   },
   {
     label: "first_batch",
@@ -2704,7 +2718,7 @@ const installment = [
     name: "rest_amount",
     type: "number",
     required: false,
-    readOnly: true
+    readOnly: true,
   },
   {
     label: "client_id",
@@ -2802,7 +2816,7 @@ const installment = [
     type: "text",
     required: false,
   },
-  
+
   {
     label: "bank_id",
     name: "bank_id",
@@ -3191,6 +3205,13 @@ const voucher_main_data = [
     ref_table: "account",
     ref_col: "id",
   },
+  {
+    label: "gen_entries",
+    name: "gen_entries",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
 ];
 
 const voucher_grid_data = [
@@ -3245,7 +3266,7 @@ const voucher_grid_data = [
 const voucher_pattern_general = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "code", name: "code", type: "text", required: false },
+  { label: "code", name: "code", type: "number", required: true },
   { label: "name", name: "name", type: "text", required: true },
   { label: "list_name", name: "list_name", type: "text", required: false },
   {
@@ -3276,6 +3297,7 @@ const voucher_pattern_general = [
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "gen_entries",
   },
   {
     label: "auto_transfer_entry",
@@ -3283,6 +3305,7 @@ const voucher_pattern_general = [
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "gen_entries",
   },
   {
     label: "generate_records",
@@ -3412,7 +3435,13 @@ const voucher_pattern_group = {
 const assets_group = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "number", name: "number", type: "number", required: true, hide_in_form: true },
+  {
+    label: "number",
+    name: "number",
+    type: "number",
+    required: true,
+    hide_in_form: true,
+  },
   { label: "type", name: "type", type: "number", required: true },
   { label: "name", name: "name", type: "text", required: true },
   { label: "last_name", name: "last_name", type: "text", required: false },
@@ -4054,7 +4083,13 @@ const lawsuit = [
 const maintenance_order = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "number", name: "number", type: "text", required: false, hide_in_form: true },
+  {
+    label: "number",
+    name: "number",
+    type: "text",
+    required: false,
+    hide_in_form: true,
+  },
   { label: "type", name: "type", type: "number", required: false },
   {
     label: "maintenance_order_no",
@@ -4200,7 +4235,13 @@ const maintenance_order = [
 const material_group = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "number", name: "number", type: "text", required: false, hide_in_form: true },
+  {
+    label: "number",
+    name: "number",
+    type: "text",
+    required: false,
+    hide_in_form: true,
+  },
   { label: "type", name: "type", type: "number", required: false },
   { label: "code", name: "code", type: "text", required: false },
   { label: "name", name: "name", type: "text", required: true },
@@ -4220,7 +4261,13 @@ const material_group = [
 const materials = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "number", name: "number", type: "text", required: false, hide_in_form: true },
+  {
+    label: "number",
+    name: "number",
+    type: "text",
+    required: false,
+    hide_in_form: true,
+  },
   { label: "type", name: "type", type: "number", required: false },
   { label: "code", name: "code", type: "text", required: false },
   { label: "name", name: "name", type: "text", required: true },
@@ -4402,9 +4449,9 @@ const parking = [
     is_ref: true,
     ref_table: "property_values",
     ref_col: "id",
-    ref_name: 'row_index'
+    ref_name: "row_index",
   },
-  { label: "hex", name: "hex", type: "text", required: false,readOnly:true  },
+  { label: "hex", name: "hex", type: "text", required: false, readOnly: true },
   { label: "x_index", name: "x_index", type: "number", required: false },
   { label: "y_index", name: "y_index", type: "number", required: false },
   { label: "Note", name: "note", type: "text", required: false },
@@ -4533,9 +4580,9 @@ const shop = [
     is_ref: true,
     ref_table: "property_values",
     ref_col: "id",
-    ref_name: 'row_index'
+    ref_name: "row_index",
   },
-  { label: "hex", name: "hex", type: "text", required: false, readOnly:true  },
+  { label: "hex", name: "hex", type: "text", required: false, readOnly: true },
   {
     label: "has_lawsuit",
     name: "has_lawsuit",
@@ -5061,7 +5108,13 @@ const villa_selling_price = [
 export const store = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "number", name: "number", type: "text", required: false, hide_in_form: true },
+  {
+    label: "number",
+    name: "number",
+    type: "text",
+    required: false,
+    hide_in_form: true,
+  },
   { label: "type", name: "type", type: "number", required: true },
   { label: "code", name: "code", type: "text", required: false },
   { label: "name", name: "name", type: "text", required: true },
@@ -5097,7 +5150,13 @@ export const store = [
 // ==== End entry
 const entry_main_data = [
   { label: "id", name: "id", type: "uuid", required: false },
-  { label: "number", name: "number", type: "number", required: true, hide_in_form: true },
+  {
+    label: "number",
+    name: "number",
+    type: "number",
+    required: true,
+    hide_in_form: true,
+  },
   {
     label: "created_at",
     name: "created_at",

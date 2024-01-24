@@ -384,7 +384,7 @@ async function getVoucherData({
   tableGridNameId,
   voucherType,
 }) {
-  console.log(number, tableName, tableGridName, "-----sa");
+  
   let conditions = [{ type: "and", conditions: [["number", "=", number]] }];
   if (voucherType) {
     conditions.push({
@@ -392,9 +392,11 @@ async function getVoucherData({
       conditions: [["voucher_type", "=", voucherType]],
     });
   }
+
   const res = await ApiActions.read(tableName, {
     conditions,
   });
+  
   const mainData = res?.result?.at(0);
 
   const responseGrid = await ApiActions.read(tableGridName, {

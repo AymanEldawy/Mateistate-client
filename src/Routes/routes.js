@@ -7,7 +7,6 @@ import Login from "Pages/Login/Login";
 import Tools from "Pages/Tools/Tools";
 import NouFound from "Pages/NouFound/NouFound";
 import ContractForm from "Components/StructurePage/Forms/ContractForm";
-import Installment from "Components/StructurePage/Forms/InstallmentForm";
 import SingleContract from "Pages/Reports/Contracts/SingleContract";
 import Contracts from "Pages/Reports/Contracts/Contracts";
 import Bill from "Components/StructurePage/Forms/BillForm";
@@ -35,23 +34,26 @@ const authProtectedRoutes = [
   { path: "/reports/vouchers/:type", component: <Vouchers /> },
   { path: "/reports/bills", component: <Bills /> },
   { path: "/reports/contracts", component: <Contracts /> },
+  
   { path: "/contracts/:id", component: <SingleContract /> },
   { path: "/contracts/add/:type/:name", component: <ContractForm /> },
   { path: "/contracts/update/:type/:name", component: <ContractForm layout="update" /> },
-  // handle contracts
+ 
+  // Vouchers 
   { path: "/vouchers/:type/:name/:number", component: <VoucherForm /> },
   { path: "/vouchers/entries/:number", component: <EntryForm /> },
 
-  
-  { path: "/list/installment", component: <Installment /> },
-  { path: "/list/:name", component: <List /> },
-  {
+    {
     path: "/patterns/:name",
     component: <List addPageHref={{ allowName: true, href: "/patterns/add/" }} />,
   },
   { path: "/patterns/add/:pattern", component: <PatternsForm /> },
   { path: "/patterns/update/:pattern/:name/:id", component: <PatternsForm layout="update" /> },
+
   { path: "/bills/:name", component: <Bill /> },
+  { path: "/update/bills/:name/:id", component: <Bill layout="update" /> },
+
+  { path: "/list/:name", component: <List /> },
   { path: "/update/:name/:id", component: <Update /> },
   { path: "/chart/:name", component: <Chart /> },
 ];

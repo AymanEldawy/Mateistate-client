@@ -48,9 +48,13 @@ const EntryForm = ({ oldValue, onlyView }) => {
       currency_val: 0,
       debit: 0,
       difference: 0,
+      note: '',
+      created_at: "",
       grid: GET_NEW_ENTRY_GRID(),
     };
+
     const res = await GET_UPDATE_DATE("entry", num);
+    
     if (res?.id) {
       reset(res);
     } else {
@@ -73,6 +77,8 @@ const EntryForm = ({ oldValue, onlyView }) => {
     if (loading) return;
     if (number > (data?.at(0)?.number || 0)) {
       setIsNewOne(true);
+    } else {
+      setIsNewOne(false);
     }
   }, [loading]);
 
@@ -179,13 +185,13 @@ const EntryForm = ({ oldValue, onlyView }) => {
 
   const insertIntoGrid = async (grid, itemId) => {
     for (const item of grid) {
-      if (item?.id && (item.account_id || item?.observe_account_id)) {
+      if (item?.id && (item.account_id && item?.observe_account_id)) {
         ApiActions.update("entry_grid_data", {
           conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
           updates: item,
         });
       } else {
-        if (item.account_id || item?.observe_account_id) {
+        if (item.account_id && item?.observe_account_id) {
           ApiActions.insert("entry_grid_data", {
             data: { ...item, entry_main_data_id: itemId },
           });
@@ -235,7 +241,7 @@ const EntryForm = ({ oldValue, onlyView }) => {
             maxLength={data?.at(0)?.number || 0}
             goTo={goTo}
             values={watch()}
-            onlyView
+            onlyView={onlyView}
           />
         </form>
       </BlockPaper>

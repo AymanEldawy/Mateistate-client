@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { usePopupForm } from "./usePopupForm";
 
 const useFormSteps = ({ name }) => {
-  const [currentIndex, setCurrentIndex] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [tab, setTab] = useState("");
   const [fields, setFields] = useState([]);
   const [formSettings, setFormSettings] = useState({});
