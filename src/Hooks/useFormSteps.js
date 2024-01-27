@@ -9,6 +9,7 @@ const useFormSteps = ({ name }) => {
   const [fields, setFields] = useState([]);
   const [formSettings, setFormSettings] = useState({});
   const [CACHE_LIST, setCACHE_LIST] = useState({});
+  const [refresh, setRefresh] = useState(false)
   const { refTable } = usePopupForm();
 
   // Get data
@@ -45,28 +46,24 @@ const useFormSteps = ({ name }) => {
     getRefTables();
   }, [name]);
 
-  
   useEffect(() => {
     getRefTables();
   }, [currentIndex, fields?.length]);
-  
+
   useEffect(() => {
     if (refTable?.isClosed) {
-      reFetchRefTable(refTable?.table)
+      reFetchRefTable(refTable?.table);
     }
   }, [refTable?.isClosed]);
-  
-  const getCachedList = (tableName) => {
-    return CACHE_LIST[tableName];
-  };
 
   const reFetchRefTable = async (table) => {
     const response = await ApiActions.read(table);
-    if (response?.length) {
+    if (response?.result?.length) {
       setCACHE_LIST((prev) => ({
         ...prev,
         [table]: response?.result,
       }));
+      setRefresh((p) => !p);
     }
   };
 
@@ -96,7 +93,7 @@ const useFormSteps = ({ name }) => {
     // setTab(tabName);
     setFields(forms?.[tabName]?.fields || []);
     setFormSettings(forms?.[tabName]);
-  }, [currentIndex]);
+  }, [currentIndex, name]);
 
   return {
     next,
@@ -110,7 +107,6 @@ const useFormSteps = ({ name }) => {
     steps,
     fields,
     formSchema,
-    getCachedList,
     tabNames,
     CACHE_LIST,
   };

@@ -15,11 +15,9 @@ import { toast } from "react-toastify";
 import { insertIntoGrid } from "Helpers/Lib/operations/global-insert";
 import { GET_NEW_ENTRY_GRID } from "Helpers/constants";
 import { usePopupForm } from "Hooks/usePopupForm";
+
 let CACHE_LIST = {};
 
-const getCachedList = (tableName) => {
-  return CACHE_LIST[tableName];
-};
 
 const EntryForm = ({ oldValue, onlyView }) => {
   const params = useParams();
@@ -29,6 +27,7 @@ const EntryForm = ({ oldValue, onlyView }) => {
     sorts: [{ column: "number", order: "DESC", nulls: "last" }],
   });
   const methods = useForm();
+  const [refresh, setRefresh] = useState(false)
   const [number, setNumber] = useState(params?.number);
   const [isNewOne, setIsNewOne] = useState(false);
 
@@ -64,6 +63,7 @@ const EntryForm = ({ oldValue, onlyView }) => {
 
   useEffect(() => {
     if (!number) return;
+    setValue('number', number)
     getEntryValues(number);
   }, [number]);
 
@@ -120,8 +120,9 @@ const EntryForm = ({ oldValue, onlyView }) => {
 
   const reFetchRefTable = async (table) => {
     const response = await ApiActions.read(table);
-    if (response?.length) {
+    if (response?.result?.length) {
       CACHE_LIST[table] = response?.result;
+      setRefresh(p=>!p)
     }
   };
 
@@ -228,7 +229,7 @@ const EntryForm = ({ oldValue, onlyView }) => {
               tab="grid"
               errors={errors}
               rowsCount={isNewOne ? 5 : watch("grid")?.length}
-              getCachedList={getCachedList}
+              CACHE_LIST={CACHE_LIST}
               onBlurNumbersField={onBlurNumbersField}
             />
           </div>

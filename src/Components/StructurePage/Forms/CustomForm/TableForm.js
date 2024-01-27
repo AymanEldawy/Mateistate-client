@@ -13,13 +13,7 @@ import TableCol from "Components/StructurePage/CustomTable/TableCol";
 import TableBody from "Components/StructurePage/CustomTable/TableBody";
 import { Input, UniqueField } from "Components/StructurePage/CustomFields";
 
-const TableForm = ({
-  fields,
-  getCachedList,
-  activeStage,
-  values,
-  errors,
-}) => {
+const TableForm = ({ fields, CACHE_LIST, activeStage, values, errors }) => {
   const [increaseCount, setIncreaseCount] = useState(10);
 
   return (
@@ -77,10 +71,10 @@ const TableForm = ({
                           className="!min-w-[190px] border-0 !rounded-none !h-full"
                           error={errors?.account_id ? "Field is required" : ""}
                           key={`${field?.name}`}
-                          getCachedList={getCachedList}
+                          CACHE_LIST={CACHE_LIST}
                           list={
-                            !!getCachedList
-                              ? getCachedList(field?.ref_table)
+                            !!CACHE_LIST
+                              ? CACHE_LIST?.[field?.ref_table]
                               : []
                           }
                         />

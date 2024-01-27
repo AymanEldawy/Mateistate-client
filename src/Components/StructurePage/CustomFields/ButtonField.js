@@ -7,9 +7,10 @@ export const ButtonField = ({
   globalButtonsActions,
   ...field
 }) => {
+  console.log("🚀 ~ field:", field);
   const { watch } = useFormContext();
 
-  if (watch(fieldWatch) !== 4) return;
+  if (field?.condition && watch(fieldWatch) !== 4) return;
 
   return (
     <div className="flex items-end">
@@ -18,7 +19,7 @@ export const ButtonField = ({
         onClick={() => globalButtonsActions(field?.action)}
         // onClick={field.onClick}
         title={field?.label}
-        classes="w-fit h-fit"
+        classes={`w-fit h-fit ${field?.classes}`}
       />
     </div>
   );

@@ -262,6 +262,13 @@ export const SELECT_LISTS = (listName) => {
     nationality_list,
     type: ["Debit", "Credit"],
 
+    bill_connect_with: [
+      { name: "Nothing", id: 1 },
+      { name: "Contract", id: 2 },
+      { name: "Lawsuit", id: 3 },
+      { name: "Bill", id: 4 },
+    ],
+
     user_type: [
       { name: "Supplier", id: 1 },
       { name: "Customer", id: 2 },
@@ -395,6 +402,11 @@ export const SELECT_LISTS = (listName) => {
 
 export const ACTIONS = {
   OPEN_INSTALLMENT_FORM: "OPEN_INSTALLMENT_FORM",
+  OPEN_COLLECTION_FORM: "OPEN_COLLECTION_FORM",
+  OPEN_DEPORTATION_FORM: "OPEN_DEPORTATION_FORM",
+  OPEN_ENDORSEMENT_FORM: "OPEN_ENDORSEMENT_FORM",
+  OPEN_RETURN_FORM: "OPEN_RETURN_FORM",
+  OPEN_TERMINATION_FINES_FORM: "OPEN_TERMINATION_FINES_FORM",
 };
 
 export const BUILDING_STEPS = {
@@ -456,18 +468,18 @@ export const CONTRACTS_PATTERN_STEPS = {
   contract_moving_cost_center: "contract_moving_cost_center",
   contract_contract_terms: "contract_contract_terms",
   contract_default_printing_folder: "contract_default_printing_folder",
-  contract_sms: "contract_sms",
+  contract_sms: "contract SMS",
 };
 
 export const VOUCHER_PATTERN_STEPS = {
   voucher_general: "voucher_general",
   voucher_fields: "voucher_fields",
-  voucher_sms: "",
+  voucher_sms: "SMS",
 };
 export const ACCOUNTING_VOUCHER_PATTERN_STEPS = {
   accounting_voucher_general: "accounting_voucher_general",
   accounting_voucher_fields: "accounting_voucher_fields",
-  accounting_voucher_sms: "",
+  accounting_voucher_sms: "SMS",
 };
 
 export const BILL_PATTERN_STEPS = {
@@ -744,11 +756,18 @@ export const GET_NEW_VOUCHER_ENTRY_GRID = () => {
     }));
 };
 
-
 export const CREATED_FROM = {
-  contract:"Contract",
-  receipt:"Receipt Voucher",
-  payment:"Payment Voucher",
-  lawsuit:"Lawsuit",
-  bill:"Bill",
-}
+  contract: "Contract",
+  receipt: "Receipt Voucher",
+  payment: "Payment Voucher",
+  lawsuit: "Lawsuit",
+  bill: "Bill",
+};
+
+export const SHOULD_GENERATE_ENTRIES = {
+  op_collection: true,
+  op_partial_collection: true,
+  op_deportation: true,
+  op_endorsement: true,
+  op_return: true,
+};

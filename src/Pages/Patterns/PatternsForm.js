@@ -18,7 +18,6 @@ import { toast } from "react-toastify";
 
 const PatternsForm = ({ layout }) => {
   const params = useParams();
-  console.log("🚀 ~ PatternsForm ~ params:", params)
   const pattern = params?.pattern;
 
   const [loading, setLoading] = useState(false);
@@ -29,7 +28,6 @@ const PatternsForm = ({ layout }) => {
         ? async () => await GET_UPDATE_DATE(pattern, params?.id)
         : {},
   });
-
 
   const {
     handleSubmit,
@@ -47,24 +45,20 @@ const PatternsForm = ({ layout }) => {
     formSettings,
     steps,
     fields,
-    getCachedList,
+    CACHE_LIST,
   } = useFormSteps({ name: pattern });
 
-  console.log(watch(), '----');
-
-
-  // Handel Submit
-  // Handel Submit
   const onSubmit = async (value) => {
     next();
     if (!isLast() || !isDirty) return;
+    console.log("called", isLast());
 
     setLoading(true);
 
     let values = {};
     for (const key in value) {
       let val = value[key];
-      if (val !== undefined && val !== null && val !== '') {
+      if (val !== undefined && val !== null && val !== "") {
         values[key] = val;
       }
     }
@@ -94,7 +88,6 @@ const PatternsForm = ({ layout }) => {
     setLoading(false);
   };
 
-
   return (
     <>
       <div key={pattern}>
@@ -114,7 +107,7 @@ const PatternsForm = ({ layout }) => {
                 // tab={tab}
                 // values={watch()}
                 errors={errors}
-                getCachedList={getCachedList}
+                CACHE_LIST={CACHE_LIST}
               />
               <ButtonsStepsGroup
                 isLast={isLast}

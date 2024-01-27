@@ -14,8 +14,6 @@ const Input = ({
   const { watch } = useFormContext();
   const { name } = field;
 
-  console.log(!watch(field?.disabledCondition),'---',);
-
   return (
     <div className={"flex flex-col " + containerClassName}>
       {label ? (

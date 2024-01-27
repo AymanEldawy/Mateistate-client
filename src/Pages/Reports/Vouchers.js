@@ -21,8 +21,8 @@ const VOUCHER_TYPES = {
 
 const Vouchers = () => {
   const { type } = useParams();
-  console.log("🚀 ~ Vouchers ~ type:", type);
   const voucherType = VOUCHER_TYPES[type];
+
   const { loading, data, error, refetchData } = useFetch("voucher_main_data", {
     conditions: [
       { type: "and", conditions: [["voucher_type", "=", voucherType?.type]] },
@@ -39,7 +39,7 @@ const Vouchers = () => {
       limit: 1,
       sorts: [{ column: "number", order: "DESC", nulls: "last" }],
     });
-    console.log(voucherType);
+    
     const number = response?.data?.at(0)?.number;
     navigate(`${voucherType?.href}/${number || 1}`);
   };

@@ -16,8 +16,6 @@ const Entries = () => {
     navigate(`/vouchers/entries/${number || 1}`);
   };
 
-  console.log(data,'---');
-
   return (
     <div key={name}>
       <DynamicTable

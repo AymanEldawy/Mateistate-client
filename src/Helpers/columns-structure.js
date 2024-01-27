@@ -1390,10 +1390,6 @@ export const apartment = [
     header: "property_type",
     accessorKey: "property_type",
     cell: ({ getValue }) => {
-      console.log(
-        SELECT_LISTS("flat_property_type"),
-        'SELECT_LISTS("flat_property_type")'
-      );
       return (
         <span
           className={`rounded-md text-white py-1 px-2 text-xs ${
@@ -1419,10 +1415,6 @@ export const apartment = [
     header: "property_values_id",
     accessorKey: "property_values_id",
     cell: ({ row }) => {
-      console.log(
-        SELECT_LISTS("flat_property_type"),
-        'SELECT_LISTS("flat_property_type")'
-      );
       return (
         <span
           className={`rounded-md text-white py-1 px-2 text-xs `}
@@ -1595,198 +1587,6 @@ export const apartment_selling_price = [
 ];
 // ==== End apartment
 
-// contract
-export const contract = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  // { header: "id", accessorKey: "id" },
-  { header: "number", accessorKey: "number" },
-  {
-    header: "feedback",
-    accessorKey: "feedback",
-    cell: ({ getValue }) => (
-      <span
-        className={`rounded-md px-2 py-1 text-xs ${
-          getValue() ? "bg-green-500" : "bg-red-500 text-white"
-        }`}
-      >
-        {" "}
-        {getValue() ? "Yes" : "No"}
-      </span>
-    ),
-  },
-  {
-    header: "lawsuit",
-    accessorKey: "lawsuit",
-    cell: ({ getValue }) => (
-      <span
-        className={`rounded-md px-2 py-1 text-xs ${
-          getValue() ? "bg-green-500" : "bg-red-500 text-white"
-        }`}
-      >
-        {" "}
-        {getValue() ? "Yes" : "No"}
-      </span>
-    ),
-  },
-  { header: "client_id", accessorKey: "client_id" },
-  { header: "building_id", accessorKey: "building_id" },
-  { header: "apartment_id", accessorKey: "apartment_id" },
-  { header: "description", accessorKey: "description" },
-  { header: "lessor_id", accessorKey: "lessor_id" },
-  { header: "seller_id", accessorKey: "seller_id" },
-  { header: "trade_name", accessorKey: "trade_name" },
-  { header: "nationality", accessorKey: "nationality" },
-  { header: "work_phone", accessorKey: "work_phone" },
-  { header: "phono", accessorKey: "phono" },
-  { header: "area", accessorKey: "area" },
-  { header: "status", accessorKey: "status" },
-  {
-    header: "date",
-    accessorKey: "date",
-    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
-  },
-  { header: "contract_place", accessorKey: "contract_place" },
-  { header: "rental_period_text", accessorKey: "rental_period_text" },
-  { header: "rent_type", accessorKey: "rent_type" },
-  { header: "contract_status", accessorKey: "contract_status" },
-  { header: "aprtment_status", accessorKey: "aprtment_status" },
-  { header: "ownership", accessorKey: "ownership" },
-  { header: "renting_purpose", accessorKey: "renting_purpose" },
-  { header: "resident_count", accessorKey: "resident_count" },
-  { header: "payment_method", accessorKey: "payment_method" },
-  { header: "previous_contract_count", accessorKey: "previous_contract_count" },
-  { header: "current_contract_count", accessorKey: "current_contract_count" },
-  { header: "current_contract_count", accessorKey: "current_contract_count" },
-  {
-    header: "contract_type",
-    accessorKey: "contract_type",
-    cell: ({ getValue }) => (
-      <span
-        className={`rounded-md text-white py-1 px-2 text-xs ${
-          getValue() === 1 ? "bg-purple-500" : "bg-orange-400"
-        }`}
-      >
-        {SELECT_LISTS("contract_type")?.find((c) => c?.id === getValue())?.name}
-      </span>
-    ),
-  },
-  { header: "contract_value", accessorKey: "contract_value" },
-  { header: "monthly_value", accessorKey: "monthly_value" },
-  { header: "currency_id", accessorKey: "currency_id" },
-  { header: "currency_val", accessorKey: "currency_val" },
-  { header: "discount_rate", accessorKey: "discount_rate" },
-  { header: "discount_value", accessorKey: "discount_value" },
-  { header: "final_price", accessorKey: "final_price" },
-  { header: "discount_account_id", accessorKey: "discount_account_id" },
-  { header: "previous_insurance", accessorKey: "previous_insurance" },
-  {
-    header: "current_insurance_percentage",
-    accessorKey: "current_insurance_percentage",
-  },
-  { header: "current_insurance_value", accessorKey: "current_insurance_value" },
-  { header: "contract_price", accessorKey: "contract_price" },
-  { header: "contract_validate", accessorKey: "contract_validate" },
-  { header: "electricity_insurance", accessorKey: "electricity_insurance" },
-  { header: "last_meter_reading", accessorKey: "last_meter_reading" },
-  { header: "contract_duration", accessorKey: "contract_duration" },
-  {
-    header: "start_date",
-    accessorKey: "start_date",
-    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
-  },
-  {
-    header: "end_date",
-    accessorKey: "end_date",
-    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
-  },
-  { header: "payment_type", accessorKey: "payment_type" },
-  { header: "cost_center_id", accessorKey: "cost_center_id" },
-  { header: "revenue_account_id", accessorKey: "revenue_account_id" },
-  { header: "customer_account_id", accessorKey: "customer_account_id" },
-  { header: "insurance_account_id", accessorKey: "insurance_account_id" },
-  {
-    header: "contract_price_account_id",
-    accessorKey: "contract_price_account_id",
-  },
-  {
-    header: "contract_validate_account_id",
-    accessorKey: "contract_validate_account_id",
-  },
-  { header: "other_fees", accessorKey: "other_fees" },
-  { header: "fee_revenue_account_id", accessorKey: "fee_revenue_account_id" },
-  { header: "custom_duration_value", accessorKey: "custom_duration_value" },
-  { header: "commission_percentage", accessorKey: "commission_percentage" },
-  { header: "commission_value", accessorKey: "commission_value" },
-  { header: "commission_account_id", accessorKey: "commission_account_id" },
-  { header: "commission_note", accessorKey: "commission_note" },
-  {
-    header: "commission_from_owner_percentage",
-    accessorKey: "commission_from_owner_percentage",
-  },
-  {
-    header: "commission_from_owner_value",
-    accessorKey: "commission_from_owner_value",
-  },
-  {
-    header: "commission_from_owner_account_id",
-    accessorKey: "commission_from_owner_account_id",
-  },
-  {
-    header: "commission_from_owner_note",
-    accessorKey: "commission_from_owner_note",
-  },
-  { header: "contract_terms", accessorKey: "contract_terms" },
-  {
-    header: "termination_date",
-    accessorKey: "termination_date",
-    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
-  },
-  { header: "owner_total_amount", accessorKey: "owner_total_amount" },
-  { header: "new_amount", accessorKey: "new_amount" },
-  { header: "round_to", accessorKey: "round_to" },
-  { header: "revenue_note", accessorKey: "revenue_note" },
-  { header: "fines", accessorKey: "fines" },
-  {
-    header: "fines_revenue_account_id",
-    accessorKey: "fines_revenue_account_id",
-  },
-  { header: "fine_note", accessorKey: "fine_note" },
-  { header: "evacuation_request", accessorKey: "evacuation_request" },
-  {
-    header: "evacuation_date",
-    accessorKey: "evacuation_date",
-    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
-  },
-  { header: "clearance_printed", accessorKey: "clearance_printed" },
-  {
-    header: "clearance_printed_date",
-    accessorKey: "clearance_printed_date",
-    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
-  },
-];
 
 export const contract_cycle = [
   {
@@ -2097,8 +1897,8 @@ export const contract_pattern = [
   { header: "list_name", accessorKey: "list_name" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
   {
-    header: "gen_enteries",
-    accessorKey: "gen_enteries",
+    header: "gen_entries",
+    accessorKey: "gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -2111,8 +1911,8 @@ export const contract_pattern = [
     ),
   },
   {
-    header: "auto_gen_enteries",
-    accessorKey: "auto_gen_enteries",
+    header: "auto_gen_entries",
+    accessorKey: "auto_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -2746,7 +2546,7 @@ export const financial_data = [
   },
 ];
 
-export const bill_patterns = [
+export const bill_pattern = [
   {
     id: "select",
     size: 40,
@@ -2802,7 +2602,7 @@ export const bill_patterns = [
       return (
         <Link
           className="text-blue-500 capitalize"
-          to={`/update/bill_patterns/${row.original.id}`}
+          to={`/update/bill_pattern/${row.original.id}`}
         >
           {getValue()}
         </Link>
@@ -2844,8 +2644,8 @@ export const bill_patterns = [
   { header: "default_print_folder", accessorKey: "default_print_folder" },
   { header: "deportable", accessorKey: "deportable" },
   {
-    header: "deportable_gen_enteries",
-    accessorKey: "deportable_gen_enteries",
+    header: "deportable_gen_entries",
+    accessorKey: "deportable_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -2858,8 +2658,8 @@ export const bill_patterns = [
     ),
   },
   {
-    header: "deportable_auto_gen_enteries",
-    accessorKey: "deportable_auto_gen_enteries",
+    header: "deportable_auto_gen_entries",
+    accessorKey: "deportable_auto_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -2913,8 +2713,8 @@ export const bill_patterns = [
   { header: "collection", accessorKey: "collection" },
 
   {
-    header: "collection_gen_enteries",
-    accessorKey: "collection_gen_enteries",
+    header: "collection_gen_entries",
+    accessorKey: "collection_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -2927,8 +2727,8 @@ export const bill_patterns = [
     ),
   },
   {
-    header: "collection_auto_gen_enteries",
-    accessorKey: "collection_auto_gen_enteries",
+    header: "collection_auto_gen_entries",
+    accessorKey: "collection_auto_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -3010,8 +2810,8 @@ export const bill_patterns = [
   },
   { header: "partial_collection", accessorKey: "partial_collection" },
   {
-    header: "partial_gen_enteries",
-    accessorKey: "partial_gen_enteries",
+    header: "partial_gen_entries",
+    accessorKey: "partial_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -3024,8 +2824,8 @@ export const bill_patterns = [
     ),
   },
   {
-    header: "partial_auto_gen_enteries",
-    accessorKey: "partial_auto_gen_enteries",
+    header: "partial_auto_gen_entries",
+    accessorKey: "partial_auto_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -3077,8 +2877,8 @@ export const bill_patterns = [
   },
   { header: "endorsable", accessorKey: "endorsable" },
   {
-    header: "endorsement_gen_enteries",
-    accessorKey: "endorsement_gen_enteries",
+    header: "endorsement_gen_entries",
+    accessorKey: "endorsement_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -3091,8 +2891,8 @@ export const bill_patterns = [
     ),
   },
   {
-    header: "endorsement_auto_gen_enteries",
-    accessorKey: "endorsement_auto_gen_enteries",
+    header: "endorsement_auto_gen_entries",
+    accessorKey: "endorsement_auto_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -3140,8 +2940,8 @@ export const bill_patterns = [
   },
   { header: "returnable", accessorKey: "returnable" },
   {
-    header: "returnable_gen_enteries",
-    accessorKey: "returnable_gen_enteries",
+    header: "returnable_gen_entries",
+    accessorKey: "returnable_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -3154,8 +2954,8 @@ export const bill_patterns = [
     ),
   },
   {
-    header: "returnable_auto_gen_enteries",
-    accessorKey: "returnable_auto_gen_enteries",
+    header: "returnable_auto_gen_entries",
+    accessorKey: "returnable_auto_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -5628,8 +5428,8 @@ const bill_group = [
     accessorKey: "deportable",
   },
   {
-    header: "deportable_gen_enteries",
-    accessorKey: "deportable_gen_enteries",
+    header: "deportable_gen_entries",
+    accessorKey: "deportable_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -5642,8 +5442,8 @@ const bill_group = [
     ),
   },
   {
-    header: "deportable_auto_gen_enteries",
-    accessorKey: "deportable_auto_gen_enteries",
+    header: "deportable_auto_gen_entries",
+    accessorKey: "deportable_auto_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -5705,8 +5505,8 @@ const bill_group = [
   },
 
   {
-    header: "collection_gen_enteries",
-    accessorKey: "collection_gen_enteries",
+    header: "collection_gen_entries",
+    accessorKey: "collection_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -5719,8 +5519,8 @@ const bill_group = [
     ),
   },
   {
-    header: "collection_auto_gen_enteries",
-    accessorKey: "collection_auto_gen_enteries",
+    header: "collection_auto_gen_entries",
+    accessorKey: "collection_auto_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -5814,8 +5614,8 @@ const bill_group = [
     accessorKey: "partial_collection",
   },
   {
-    header: "partial_gen_enteries",
-    accessorKey: "partial_gen_enteries",
+    header: "partial_gen_entries",
+    accessorKey: "partial_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -5828,8 +5628,8 @@ const bill_group = [
     ),
   },
   {
-    header: "partial_auto_gen_enteries",
-    accessorKey: "partial_auto_gen_enteries",
+    header: "partial_auto_gen_entries",
+    accessorKey: "partial_auto_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -5885,8 +5685,8 @@ const bill_group = [
     accessorKey: "endorsable",
   },
   {
-    header: "endorsement_gen_enteries",
-    accessorKey: "endorsement_gen_enteries",
+    header: "endorsement_gen_entries",
+    accessorKey: "endorsement_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -5899,8 +5699,8 @@ const bill_group = [
     ),
   },
   {
-    header: "endorsement_auto_gen_enteries",
-    accessorKey: "endorsement_auto_gen_enteries",
+    header: "endorsement_auto_gen_entries",
+    accessorKey: "endorsement_auto_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -5953,8 +5753,8 @@ const bill_group = [
     accessorKey: "returnable",
   },
   {
-    header: "returnable_gen_enteries",
-    accessorKey: "returnable_gen_enteries",
+    header: "returnable_gen_entries",
+    accessorKey: "returnable_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -5967,8 +5767,8 @@ const bill_group = [
     ),
   },
   {
-    header: "returnable_auto_gen_enteries",
-    accessorKey: "returnable_auto_gen_enteries",
+    header: "returnable_auto_gen_entries",
+    accessorKey: "returnable_auto_gen_entries",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md px-2 py-1 text-xs ${
@@ -6206,7 +6006,7 @@ const bill = [
   },
 ];
 
-const contracts = [
+const contract = [
   {
     id: "select",
     size: 40,
@@ -6519,6 +6319,30 @@ const land = [
 
 const entry_main_data = [
   {
+    id: "select",
+    size: 40,
+    isResizingColumn: false,
+    header: ({ table }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: table.getIsAllRowsSelected(),
+          indeterminate: table.getIsSomeRowsSelected(),
+          onChange: table.getToggleAllRowsSelectedHandler(),
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: row.getIsSelected(),
+          disabled: !row.getCanSelect(),
+          indeterminate: row.getIsSomeSelected(),
+          onChange: row.getToggleSelectedHandler(),
+        }}
+      />
+    ),
+  },
+  {
     header: "number",
     accessorKey: "number",
     cell: ({ getValue }) => {
@@ -6594,7 +6418,6 @@ const TABLES = {
   apartment_rental_price,
   apartment_selling_price,
   contract,
-  contracts,
   contract_cycle,
   contract_financial,
   contract_linked_parking,
@@ -6602,7 +6425,7 @@ const TABLES = {
   contract_pictures,
   contract_receipt_number,
   financial_data,
-  bill_patterns,
+  bill_pattern,
   installment,
   installment_data,
   op_collection,
@@ -6648,6 +6471,5 @@ const TABLES = {
 };
 
 export default function getTableColumns(name) {
-  console.log(name?.replace("-", "_"), "---");
   return TABLES[name?.replace("-", "_")] || [];
 }

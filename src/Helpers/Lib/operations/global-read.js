@@ -7,11 +7,11 @@ export const getAccount = async (name) => {
     // conditions: [{ type: "and", conditions: ["count(*)"] }],
     // conditions: [{ type: "and", conditions: [["COUNT(*)"]] }],
     joins: [
-      {
-        type: "join",
-        table: "currency",
-        conditions: { "account.currency_id": "currency.id" },
-      },
+      // {
+      //   type: "join",
+      //   table: "currency",
+      //   conditions: { "account.currency_id": "currency.id" },
+      // },
       // {
       //   type: "join",
       //   table: "account as t2",
@@ -25,7 +25,7 @@ export const getAccount = async (name) => {
     ],
     sorts: [{ column: "created_at", order: "ASC", nulls: "last" }],
     // columns: ["account.*", "currency.name as currency_name", 't2.name as parent_name', "t3.name as final_name"],
-    columns: ["account.*", "currency.name as currency_name"],
+    // columns: ["account.*", "currency.name as currency_name"],
   });
 };
 
@@ -150,7 +150,6 @@ export const getDataWithPagination = async (name, params) => {
 };
 
 export const getContracts = async () => {
-  console.log("called");
   return await ApiActions.read("contract", {
     joins: [
       {

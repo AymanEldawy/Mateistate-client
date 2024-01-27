@@ -17,16 +17,13 @@ const useRefTable = (fields) => {
     }
   };
 
-  const getCachedList = (tableName) => {
-    return CACHE_LIST[tableName];
-  };
 
   useEffect(() => {
     if(!fields?.length) return;
     fetchData();
   }, [fields?.length]);
 
-  return { CACHE_LIST, getCachedList };
+  return { CACHE_LIST, CACHE_LIST };
 };
 
 export default useRefTable;

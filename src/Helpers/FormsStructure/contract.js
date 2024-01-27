@@ -218,7 +218,7 @@ const contract_pictures = [
 ];
 const contract_termination = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
-  { name: "number", type: "number", required: false, hide_in_form: true },
+  { name: "number", type: "number", required: false, hide_in_form: false },
   { name: "termination_date", type: "date", required: false },
   { name: "owner_total_amount", type: "number", required: false },
   { name: "new_amount", type: "number", required: false },
@@ -263,11 +263,17 @@ const contract_termination = [
     ref_col: "id",
     hide_in_form: true,
   },
+  {
+    name: "btn_action",
+    action: ACTIONS.OPEN_TERMINATION_FINES_FORM,
+    label: "Open Terminations fines",
+    onClick: () => {},
+  },
 ];
 
 const termination_fines_grid = [
   { name: "id", type: "uuid", required: false },
-  { name: "created_at", type: "timestamptz", required: false },
+  { name: "created_at", type: "date", required: false },
   {
     name: "contract_termination_fines_id",
     type: "uuid",
@@ -275,6 +281,8 @@ const termination_fines_grid = [
     is_ref: true,
     ref_table: "contract_termination_fines",
     ref_col: "id",
+    hide_in_form: true
+
   },
   {
     name: "contract_id",
@@ -283,6 +291,7 @@ const termination_fines_grid = [
     is_ref: true,
     ref_table: "contract",
     ref_col: "id",
+    hide_in_form: true
   },
   {
     name: "account_id",
@@ -785,6 +794,7 @@ const contract_sale_financial = [
     key: "switch",
   },
 ];
+
 const contract_sale_financial_parking = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
   {
@@ -900,7 +910,7 @@ const contract_sale_financial_parking = [
 //  === Apartment
 const apartment_sale_contract = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
-  { name: "number", type: "number", required: false, hide_in_form: true },
+  { name: "number", type: "number", required: false, hide_in_form: false },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
   {
@@ -967,7 +977,7 @@ const apartment_sale_contract = [
 //  === parking
 const parking_sale_contract = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
-  { name: "number", type: "number", required: false, hide_in_form: true },
+  { name: "number", type: "number", required: false, hide_in_form: false },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
   {
@@ -1044,7 +1054,7 @@ const parking_sale_contract = [
 //  === Shop
 const shop_sale_contract = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
-  { name: "number", type: "number", required: false, hide_in_form: true },
+  { name: "number", type: "number", required: false, hide_in_form: false },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
   {
@@ -1110,7 +1120,7 @@ const shop_sale_contract = [
 //  === land
 const land_sale_contract = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
-  { name: "number", type: "number", required: false, hide_in_form: true },
+  { name: "number", type: "number", required: false, hide_in_form: false },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
   {
@@ -1169,7 +1179,7 @@ const land_sale_contract = [
 //  === Apartment
 const apartment_rent_contract = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
-  { name: "number", type: "number", required: false, hide_in_form: true },
+  { name: "number", type: "number", required: false, hide_in_form: false },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
   {
@@ -1263,7 +1273,7 @@ const apartment_rent_contract = [
 //  === parking
 const parking_rent_contract = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
-  { name: "number", type: "number", required: false, hide_in_form: true },
+  { name: "number", type: "number", required: false, hide_in_form: false },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
   {
@@ -1349,7 +1359,7 @@ const parking_rent_contract = [
 //  === Shop
 const shop_rent_contract = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
-  { name: "number", type: "number", required: false, hide_in_form: true },
+  { name: "number", type: "number", required: false, hide_in_form: false },
   { name: "feedback", type: "boolean", required: false, key: "switch" },
   { name: "lawsuit", type: "boolean", required: false, key: "switch" },
   {
@@ -1779,7 +1789,7 @@ export const CONTRACTS_FORM = {
 // unused
 const contract_fee = [
   { name: "id", type: "uuid", required: false, hide_in_form: true },
-  { name: "number", type: "number", required: false, hide_in_form: true },
+  { name: "number", type: "number", required: false, hide_in_form: false },
   {
     name: "contract_id",
     type: "uuid",

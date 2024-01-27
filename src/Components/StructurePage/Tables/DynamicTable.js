@@ -34,7 +34,7 @@ export const DynamicTable = ({
   setOpen,
   refetchData,
   loading,
-  onClickAdd
+  onClickAdd,
 }) => {
   const { t } = useTranslation();
   const { getTable, setTable } = useLocalStorage();
@@ -45,7 +45,6 @@ export const DynamicTable = ({
   const [columnVisibility, setColumnVisibility] = useState({});
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const columns = useMemo(() => getTableColumns(tableName), [tableName]);
-  console.log("🚀 ~ columns:", columns, tableName)
 
   useEffect(() => {
     const storageTable = getTable(tableName);
@@ -119,8 +118,6 @@ export const DynamicTable = ({
     setOpenConfirmation(false);
   };
 
-  console.log(columns);
-
   return (
     <>
       <ConfirmModal
@@ -129,7 +126,7 @@ export const DynamicTable = ({
         setOpen={setOpenConfirmation}
       />
       <BlockPaper
-        title={defaultTitle||tableName}
+        title={defaultTitle || tableName}
         subTitle={
           table.getGroupedSelectedRowModel()?.rows.length ? (
             <span className="text-blue-500 rounded-md text-sm font-medium capitalize">
@@ -183,10 +180,10 @@ export const DynamicTable = ({
                           : ""
                       }
                       `}
-                        onClick={
-                          header.column.getCanSort() &&
-                          header.column.getToggleSortingHandler()
-                        }
+                        onClick={() => {
+                          if (header.column.getCanSort())
+                            header.column.getToggleSortingHandler();
+                        }}
                       >
                         {/* {header.column.columnDef.header} */}
                         <div className="flex relative items-center">

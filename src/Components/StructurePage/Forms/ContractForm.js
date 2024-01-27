@@ -17,9 +17,10 @@ import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { insertIntoEntry } from "Helpers/Lib/operations/vouchers-actions";
+import { insertIntoEntry } from "Helpers/Lib/operations/vouchers-insert";
 import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
+import TerminationFinesForm from "./TerminationFinesForm";
 
 async function fetchAndMergeBuildingInfo(buildingId, setValue, firstTab) {
   const response = await ApiActions.read("building", {
@@ -79,7 +80,6 @@ function onWatchChangesInTab1(name, value, setValue, tabNames, watch) {
 }
 
 function onWatchChangesInTab2(name, value, setValue, tabNames, watch) {
-  console.log(name, value, tabNames);
   switch (name) {
     case "discount_rate":
     case "contract_value": {
@@ -167,34 +167,34 @@ function onWatchChangesInTab2(name, value, setValue, tabNames, watch) {
       setValue(`installment.client_id`, value);
       return;
     case "gen_entries": {
-    //   let currency_id = watch(`${tabNames}.currency_id`);
-    //   let currency_val = watch(`${tabNames}.currency_val`);
-    //   let contract_value = watch(`${tabNames}.contract_value`);
-    //   let current_securing_value = watch(`${tabNames}.current_securing_value`);
-    //   let cost_center_id = watch(`${tabNames}.cost_center_id`);
-    //   let customer_account_id = watch(`${tabNames}.customer_account_id`);
-    //   let revenue_account_id = watch(`${tabNames}.revenue_account_id`);
-    //   let insurance_account_id = watch(`${tabNames}.insurance_account_id`);
-    //   let created_at = watch(`${tabNames}.start_duration_date`);
-    //   let note = ``;
-    //   let debit = 0;
-    //   let credit = 0;
-    //   let difference = credit - debit;
+      //   let currency_id = watch(`${tabNames}.currency_id`);
+      //   let currency_val = watch(`${tabNames}.currency_val`);
+      //   let contract_value = watch(`${tabNames}.contract_value`);
+      //   let current_securing_value = watch(`${tabNames}.current_securing_value`);
+      //   let cost_center_id = watch(`${tabNames}.cost_center_id`);
+      //   let customer_account_id = watch(`${tabNames}.customer_account_id`);
+      //   let revenue_account_id = watch(`${tabNames}.revenue_account_id`);
+      //   let insurance_account_id = watch(`${tabNames}.insurance_account_id`);
+      //   let created_at = watch(`${tabNames}.start_duration_date`);
+      //   let note = ``;
+      //   let debit = 0;
+      //   let credit = 0;
+      //   let difference = credit - debit;
 
-    //   insertIntoEntry({
-    //     created_at,
-    //     currency_id,
-    //     currency_val,
-    //     note,
-    //     debit,
-    //     credit,
-    //     difference,
-    //     created_from: 2, // contract
-    //     created_from_id: "", // contract id
-    //     number: "",
-    //   });
-    // }
-    return;
+      //   insertIntoEntry({
+      //     created_at,
+      //     currency_id,
+      //     currency_val,
+      //     note,
+      //     debit,
+      //     credit,
+      //     difference,
+      //     created_from: 2, // contract
+      //     created_from_id: "", // contract id
+      //     number: "",
+      //   });
+      // }
+      return;
     }
 
     default:
@@ -249,6 +249,8 @@ function onWatchChangesInstallmentTab(name, value, setValue, tabNames, watch) {
 
 function onOpenInstallmentForm(values, tabNames) {}
 
+const SHOULD_UPDATES = {};
+
 const ContractForm = ({ layout }) => {
   const params = useParams();
   const [searchQuery] = useSearchParams();
@@ -259,6 +261,8 @@ const ContractForm = ({ layout }) => {
   const contractName = `${assetType}_${type}_contract`;
   const [loading, setLoading] = useState(false);
   const [openInstallmentForm, setOpenInstallmentForm] = useState(false);
+  const [openTerminationFinesForm, setOpenTerminationFinesForm] =
+    useState(false);
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const method = useForm({
     defaultValues:
@@ -283,7 +287,7 @@ const ContractForm = ({ layout }) => {
     steps,
     fields,
     tabNames,
-    getCachedList,
+    CACHE_LIST,
   } = useFormSteps({ name: contractName });
 
   // watch in tab 1
@@ -294,6 +298,9 @@ const ContractForm = ({ layout }) => {
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
+      let tab = name?.split(".")?.at(0);
+      if (type) SHOULD_UPDATES[tab] = true;
+
       switch (name) {
         case assetTypeIdPathInData:
           fetchAndMergeAssetInfo(
@@ -349,7 +356,9 @@ const ContractForm = ({ layout }) => {
         setOpenInstallmentForm(true);
         onOpenInstallmentForm(watch(), tabNames);
         return;
-
+      case ACTIONS.OPEN_TERMINATION_FINES_FORM:
+        setOpenTerminationFinesForm(true);
+        return;
       default:
         return;
     }
@@ -366,11 +375,23 @@ const ContractForm = ({ layout }) => {
     }
 
     const getTheFunInsert = INSERT_FUNCTION[contractName];
+    let finalValue = value;
+    if (layout === "update") {
+      for (const key in value) {
+        if (!SHOULD_UPDATES?.[key] && key !== "contract") {
+          delete value?.[key];
+        }
+      }
+    }
+
+    // return;
+
     const res = await getTheFunInsert({
       ...value,
       flat_type: CONTRACTS_ASSETS_TYPE?.[assetType],
       tabName: tabNames?.[1],
       layout,
+      SHOULD_UPDATES,
     });
 
     if (res?.success) {
@@ -381,7 +402,7 @@ const ContractForm = ({ layout }) => {
     setLoading(false);
   };
 
-  console.log(watch());
+  console.log(watch(), SHOULD_UPDATES);
 
   return (
     <>
@@ -389,10 +410,18 @@ const ContractForm = ({ layout }) => {
         <FormProvider {...method}>
           {openInstallmentForm ? (
             <InstallmentForm
-              getCachedList={getCachedList}
+              CACHE_LIST={CACHE_LIST}
               errors={errors}
               onClose={() => setOpenInstallmentForm(false)}
               contract_id={contract_id}
+            />
+          ) : null}
+          {openTerminationFinesForm ? (
+            <TerminationFinesForm
+              errors={errors}
+              contract_id={contract_id}
+              CACHE_LIST={CACHE_LIST}
+              onClose={() => setOpenTerminationFinesForm(false)}
             />
           ) : null}
           <BlockPaper>
@@ -410,7 +439,7 @@ const ContractForm = ({ layout }) => {
                     tab={tab}
                     errors={errors}
                     formSettings={formSettings}
-                    getCachedList={!!getCachedList ? getCachedList : undefined}
+                    CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
                     fields={fields}
                     values={watch()?.[tab]}
                   />
@@ -421,7 +450,7 @@ const ContractForm = ({ layout }) => {
                   tab={tab}
                   values={watch()?.[tab]}
                   errors={errors}
-                  getCachedList={getCachedList}
+                  CACHE_LIST={CACHE_LIST}
                   globalButtonsActions={globalButtonsActions}
                 />
               )}
@@ -434,7 +463,7 @@ const ContractForm = ({ layout }) => {
                       dispatchVoucherEntries({
                         table: "entry_main_data",
                         grid: "entry_grid_data",
-                        ref_name: 'created_from_id',
+                        ref_name: "created_from_id",
                         id: contract_id,
                       })
                     }
@@ -449,6 +478,11 @@ const ContractForm = ({ layout }) => {
                 loading={loading}
                 steps={steps}
                 back={back}
+                disabled={
+                  layout === "update" &&
+                  Object.keys(SHOULD_UPDATES).length === 0 &&
+                  isLast()
+                }
               />
             </form>
             <div className="flex justify-center gap-2 items-center py-4 border-t mt-4">

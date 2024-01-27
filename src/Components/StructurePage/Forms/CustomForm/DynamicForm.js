@@ -10,8 +10,6 @@ export const DynamicForm = ({ name, refetchData, onClose, layout, oldValues }) =
     return;
   }, [name]);
 
-  console.log(oldValues);
-
   return (
     <div key={name}>
       <Suspense fallback={<>loading</>}>

@@ -14,6 +14,8 @@ import Footer from "Components/Layout/Footer";
 import PopupForm from "Components/StructurePage/Forms/CustomForm/PopupForm";
 import { VoucherEntriesViewProvider } from "Hooks/useVoucherEntriesView";
 import { VoucherView } from "Components/StructurePage/Forms/Vouchers/VoucherView";
+import { generateDataStarting } from "Helpers/test-data-starting";
+import { generateEntryFromContract } from "Helpers/Lib/operations/vouchers-insert";
 
 function App() {
   const [mode, setMode] = useState("dark");
@@ -31,6 +33,7 @@ function App() {
       window.removeEventListener("resize", resize);
     };
   }, []);
+  
 
   return (
     // h-[95vh] overflow-y-auto overflow-x-hidden

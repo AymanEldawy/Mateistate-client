@@ -5,7 +5,6 @@ export const VoucherEntriesViewContext = createContext();
 
 export const VoucherEntriesViewProvider = ({ children }) => {
   const [voucherInfo, setVoucherInfo] = useState({});
-  console.log("🚀 ~ VoucherEntriesViewProvider ~ voucherInfo:", voucherInfo);
 
   const dispatchVoucherEntries = ({ table, grid, ref_name, id }) => {
     if (id) {

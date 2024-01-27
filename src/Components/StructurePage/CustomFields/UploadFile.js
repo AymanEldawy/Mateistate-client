@@ -13,6 +13,7 @@ const UploadFile = ({
   textPlaceholder,
   containerClassName,
   boxContainerClassName,
+  updatedName,
   ...field
 }) => {
   const [preview, setPreview] = useState("");
@@ -63,7 +64,7 @@ const UploadFile = ({
         ) : null}
         <div className="relative">
           <Controller
-            name={field.name}
+            name={updatedName || field.name}
             render={({ field: { onChange } }) => {
               return (
                 <input

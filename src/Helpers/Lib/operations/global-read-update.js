@@ -39,8 +39,6 @@ export const getBuildingUpdate = async (id) => {
       building_real_estate_management?.result?.at(0),
   };
 
-  console.log(groupData);
-
   return groupData;
 };
 
@@ -74,7 +72,6 @@ export const getApartmentUpdate = async (id) => {
     apartment_rental_price: apartment_rental_price?.result,
     apartment_selling_price: apartment_selling_price?.result,
   };
-  console.log(groupData);
 
   return groupData;
 };
@@ -104,7 +101,6 @@ export const getAssetsUpdate = async (id) => {
     assets_sale: assets_sale?.result?.at(0),
     assets_shipping: assets_shipping?.result?.at(0),
   };
-  console.log(groupData);
 
   return groupData;
 };
@@ -123,7 +119,6 @@ export const getParkingUpdate = async (id) => {
     parking_price: parking_price?.result,
     parking_pictures: parking_pictures?.result,
   };
-  console.log(groupData);
 
   return groupData;
 };
@@ -142,7 +137,6 @@ export const getShopUpdate = async (id) => {
     shop_selling_price: shop_selling_price?.result?.at(0),
   };
 
-  console.log(groupData);
 
   return groupData;
 };
@@ -176,7 +170,6 @@ export const getVillaUpdate = async (id) => {
     villa_selling_price: villa_selling_price?.result?.at(0),
   };
 
-  console.log(groupData);
 
   return groupData;
 };
@@ -459,7 +452,6 @@ export default async function GET_UPDATE_DATE(name, id, params) {
     const res = await ApiActions.read(name, {
       conditions: [{ type: "and", conditions: [["id", "=", id]] }],
     });
-    console.log("🚀 ~ GET_UPDATE_DATE ~ res:", res, id);
     return res.result?.at(0);
   }
 }

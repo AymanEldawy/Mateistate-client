@@ -31,7 +31,8 @@ const FormSteps = ({
     formSettings,
     steps,
     fields,
-    getCachedList,
+    CACHE_LIST,
+    tabNames
   } = useFormSteps({ name });
 
   const methods = useForm({
@@ -55,9 +56,6 @@ const FormSteps = ({
       reset(oldValues);
     }
   }, [oldValues]);
-
-  console.log(watch());
-
   
   // Handel Submit
   const onSubmit = async (value) => {
@@ -79,6 +77,8 @@ const FormSteps = ({
     setLoading(false);
   };
 
+  console.log(watch(), '-d');
+
   return (
     <FormProvider {...methods}>
       <FormHeadingTitleSteps
@@ -93,10 +93,10 @@ const FormSteps = ({
             {formSettings?.formType === "grid" ? (
               <div key={steps?.[currentIndex]}>
                 <TableFields
-                  activeStage={tab}
+                  tab={tab}
                   values={watch()?.[tab]}
                   fields={fields}
-                  getCachedList={!!getCachedList ? getCachedList : undefined}
+                  CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
                 />
               </div>
             ) : (
@@ -105,7 +105,7 @@ const FormSteps = ({
                 fields={fields}
                 values={watch()?.[tab]}
                 errors={errors}
-                getCachedList={getCachedList}
+                CACHE_LIST={CACHE_LIST}
               />
             )}
           </>

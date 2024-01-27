@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 const GLOBAL_READ_DATA = {
   account: getAccount,
-  contracts: getContracts
+  contract: getContracts
   // cost_center: getCostCenter
 }
 

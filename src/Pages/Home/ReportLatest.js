@@ -24,7 +24,7 @@ export const ReportLatest = ({
     limit: limit,
     sorts: [{ column: "created_at", order: "DESC", nulls: "last" }],
   });
-  console.log("🚀 ~ data:", data, name, 'name')
+
   return (
     <div className={`${containerClassName} flex flex-col  w-full h-full`}>
       <div className="flex items-center justify-between border-b pb-1 dark:border-dark-border">
@@ -44,7 +44,7 @@ export const ReportLatest = ({
           <>
             {data?.length ? (
               <>
-                {data?.map((item) => {
+                {data?.slice(0,4)?.map((item) => {
                   if (renderItem) return renderItem(item);
                   else
                     return (

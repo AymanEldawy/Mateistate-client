@@ -274,3 +274,8 @@ div:has(> div > .unique-valid:not(:empty))  {
 input[type="date"]:valid {
   @apply bg-teal-200
 }
+
+.css-13cymwt-control,
+body table tbody td input:not(:read-only) {
+  background: none !important;
+}

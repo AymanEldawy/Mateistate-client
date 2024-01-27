@@ -1,7 +1,7 @@
 import { DropDowns } from "Helpers/functions";
 import React from "react";
 
-export const DisplayRow = ({ row, getCachedList }) => {
+export const DisplayRow = ({ row, CACHE_LIST }) => {
   return (
     <ul className="flex flex-col mt-4 rounded-md p-2 overflow-auto max-h-full pb-12">
       {Object.entries(row).map(([key, value]) => {
@@ -9,7 +9,7 @@ export const DisplayRow = ({ row, getCachedList }) => {
           value = DropDowns(key)[value].name
         } 
         if(key?.indexOf('guid') !== -1) {
-          value = getCachedList(value) || value
+          value = CACHE_LIST?.[value] || value
         }
         return (
           <li

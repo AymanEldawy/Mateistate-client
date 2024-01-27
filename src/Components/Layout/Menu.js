@@ -86,9 +86,7 @@ const Menu = () => {
 
   React.useEffect(() => {
     const getMen = async () => {
-      // console.log("🚀 ~ getMen ~ menu:")
       const menu = await menuData();
-      // console.log("🚀 ~ getMen ~ menu:", menu)
       setMenu(menu);
     };
     getMen()

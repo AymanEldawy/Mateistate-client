@@ -9,19 +9,17 @@ import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import { Fields } from "./Fields";
 import { useParams } from "react-router-dom";
 import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
-import useRefTable from "Hooks/useRefTable";
 import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
 import { usePopupForm } from "Hooks/usePopupForm";
+import { SHOULD_GENERATE_ENTRIES } from "Helpers/constants";
 
 let CACHE_LIST = {};
-
-const getCachedList = (tableName) => {
-  return CACHE_LIST[tableName];
-};
 
 const FormSingular = ({ name, onClose, refetchData, layout, oldValues }) => {
   const { refTable } = usePopupForm();
   const params = useParams();
+  const [refresh, setRefresh] = useState(false);
+  const { openForm } = usePopupForm();
   const methods = useForm({
     defaultValues:
       layout === "update"
@@ -56,14 +54,11 @@ const FormSingular = ({ name, onClose, refetchData, layout, oldValues }) => {
     }
   }, [refTable?.isClosed]);
 
-  const getCachedList = (tableName) => {
-    return CACHE_LIST[tableName];
-  };
-
   const reFetchRefTable = async (table) => {
     const response = await ApiActions.read(table);
-    if (response?.length) {
+    if (response?.result?.length) {
       CACHE_LIST[table] = response?.result;
+      setRefresh((p) => !p);
     }
   };
 
@@ -107,6 +102,10 @@ const FormSingular = ({ name, onClose, refetchData, layout, oldValues }) => {
         data: values,
       });
     }
+    
+    if (SHOULD_GENERATE_ENTRIES?.[name] && openForm?.gen_entries) {
+      console.log("called", value, name, params, openForm);
+    }
 
     if (res?.success) {
       toast.success(
@@ -131,7 +130,7 @@ const FormSingular = ({ name, onClose, refetchData, layout, oldValues }) => {
         <Fields
           values={getValues()}
           errors={errors}
-          getCachedList={getCachedList}
+          CACHE_LIST={CACHE_LIST}
           fields={fields}
         />
         <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">

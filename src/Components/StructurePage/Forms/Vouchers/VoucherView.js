@@ -18,7 +18,7 @@ export const VoucherView = () => {
         },
       ],
     });
-    console.log("🚀 ~ fetchVoucher ~ response:", response);
+
     if (response?.success) {
       const responseGrid = await ApiActions.read(voucherInfo?.grid, {
         conditions: [
@@ -30,7 +30,7 @@ export const VoucherView = () => {
           },
         ],
       });
-      console.log("🚀 ~ fetchVoucher ~ responseGrid:", responseGrid);
+
       setValues({
         ...response?.result?.at(0),
         grid: responseGrid?.result,

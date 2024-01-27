@@ -1,5 +1,6 @@
 import {
   ACCOUNTING_VOUCHER_PATTERN_STEPS,
+  ACTIONS,
   APARTMENT_STEPS,
   ASSETS_STEPS,
   BILL_PATTERN_STEPS,
@@ -212,7 +213,7 @@ const account = [
     name: "number",
     type: "number",
     required: true,
-    hide_in_form: true,
+    // hide_in_form: true,
   },
   { label: "name", name: "name", type: "text", required: true },
   {
@@ -503,7 +504,7 @@ const currency = [
 
 const building = [
   { label: "id", name: "id", type: "uuid", required: false },
-  { label: "number", name: "number", type: "text", required: true },
+  // { label: "number", name: "number", type: "text", required: true },
   { label: "name", name: "name", type: "text", required: true },
   { label: "emirate", name: "emirate", type: "text", required: false },
   { label: "suburb", name: "suburb", type: "text", required: false },
@@ -512,8 +513,9 @@ const building = [
   {
     label: "building_number",
     name: "building_number",
-    type: "text",
+    type: "number",
     required: false,
+    hide_in_form: true,
   },
   { label: "part_number", name: "part_number", type: "text", required: false },
   {
@@ -1139,7 +1141,7 @@ const accounting_voucher_main_data = [
 const accounting_voucher_pattern_general = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "code", name: "code", type: "number", required: true },
+  { label: "code", name: "code", type: "number", required: false },
   { label: "name", name: "name", type: "text", required: true },
   { label: "list_name", name: "list_name", type: "text", required: false },
   {
@@ -1431,6 +1433,7 @@ const apartment_pictures = [
     is_ref: true,
     ref_table: "apartment",
     ref_col: "id",
+    hide_in_form: true
   },
   {
     label: "picture",
@@ -1559,18 +1562,19 @@ const contract_pattern_general = [
     required: false,
   },
   {
-    label: "gen_enteries",
-    name: "gen_enteries",
+    label: "gen_entries",
+    name: "gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
   },
   {
-    label: "auto_gen_enteries",
-    name: "auto_gen_enteries",
+    label: "auto_gen_entries",
+    name: "auto_gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "gen_entries",
   },
   {
     label: "auto_transfer_entry",
@@ -1578,6 +1582,7 @@ const contract_pattern_general = [
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "gen_entries",
   },
   {
     label: "record_date_created",
@@ -1848,7 +1853,25 @@ const bill = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
   { label: "number", name: "number", type: "number", required: false },
-  { label: "type", name: "type", type: "number", required: true },
+  {
+    label: "feedback",
+    name: "feedback",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "connect_with",
+    name: "connect_with",
+    key: "select",
+    required: false,
+    list: SELECT_LISTS("bill_connect_with"),
+  },
+  {
+    label: "connect_with_id",
+    name: "connect_with_id",
+  },
+  { label: "type", name: "type", type: "number", required: true, hide_in_form: true },
   {
     label: "internal_number",
     name: "internal_number",
@@ -1864,6 +1887,12 @@ const bill = [
     is_ref: true,
     ref_table: "currency",
     ref_col: "id",
+  },
+  {
+    label: "Currency Value",
+    name: "currency_val",
+    type: "number",
+    required: false,
   },
   {
     label: "seller_id",
@@ -1898,12 +1927,19 @@ const bill = [
   },
   { label: "Note", name: "note", type: "text", required: false },
   { label: "date", name: "date", type: "date", required: false },
-  { label: "due_date", name: "due_date", type: "date", required: false },
+  {
+    label: "due_date",
+    name: "due_date",
+    type: "date",
+    required: false,
+    disabledCondition: "without_due_date",
+  },
   {
     label: "due_end_date",
     name: "due_end_date",
     type: "date",
     required: false,
+    disabledCondition: "without_due_date",
   },
   {
     label: "without_due_date",
@@ -1969,8 +2005,8 @@ const bill = [
     required: false,
   },
   {
-    label: "endors_status",
-    name: "endors_status",
+    label: "endorse_status",
+    name: "endorse_status",
     type: "checkbox",
     key: "switch",
     required: false,
@@ -2013,6 +2049,13 @@ const bill = [
     type: "number",
     required: false,
   },
+  {
+    label: "gen_entries",
+    name: "gen_entries",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
 ];
 
 const bill_general = [
@@ -2025,7 +2068,7 @@ const bill_general = [
     list: SELECT_LISTS("bill_pattern_paper_type"),
     required: true,
   },
-  { label: "code", name: "code", type: "text", required: false },
+  // { label: "code", name: "code", type: "number", required: false },
   { label: "name", name: "name", type: "text", required: true },
   { label: "list_name", name: "list_name", type: "text", required: false },
   {
@@ -2056,6 +2099,7 @@ const bill_general = [
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "gen_entries",
   },
   {
     label: "auto_transfer_entry",
@@ -2063,6 +2107,7 @@ const bill_general = [
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "gen_entries",
   },
   {
     label: "default_print_folder",
@@ -2071,6 +2116,7 @@ const bill_general = [
     required: false,
   },
 ];
+
 const bill_deportable = [
   {
     label: "deportable",
@@ -2080,18 +2126,19 @@ const bill_deportable = [
     required: false,
   },
   {
-    label: "deportable_gen_enteries",
-    name: "deportable_gen_enteries",
+    label: "deportable_gen_entries",
+    name: "deportable_gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
   },
   {
-    label: "deportable_auto_gen_enteries",
-    name: "deportable_auto_gen_enteries",
+    label: "deportable_auto_gen_entries",
+    name: "deportable_auto_gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "deportable_gen_entries",
   },
   {
     label: "deportable_auto_transfer_entry",
@@ -2099,6 +2146,7 @@ const bill_deportable = [
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "deportable_gen_entries",
   },
   {
     label: "deportable_default_date",
@@ -2108,8 +2156,8 @@ const bill_deportable = [
     // here list --  future
   },
   {
-    label: "deportable_default_account_is_onwer",
-    name: "deportable_default_account_is_onwer",
+    label: "deportable_default_account_is_owner",
+    name: "deportable_default_account_is_owner",
     type: "checkbox",
     key: "switch",
     required: false,
@@ -2164,18 +2212,19 @@ const bill_collection = [
   },
 
   {
-    label: "collection_gen_enteries",
-    name: "collection_gen_enteries",
+    label: "collection_gen_entries",
+    name: "collection_gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
   },
   {
-    label: "collection_auto_gen_enteries",
-    name: "collection_auto_gen_enteries",
+    label: "collection_auto_gen_entries",
+    name: "collection_auto_gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "collection_gen_entries",
   },
   {
     label: "collection_auto_transfer_entry",
@@ -2183,6 +2232,7 @@ const bill_collection = [
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "collection_gen_entries",
   },
   {
     label: "collection_default_date",
@@ -2309,18 +2359,19 @@ const bill_partial_collection = [
     required: false,
   },
   {
-    label: "partial_gen_enteries",
-    name: "partial_gen_enteries",
+    label: "partial_gen_entries",
+    name: "partial_gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
   },
   {
-    label: "partial_auto_gen_enteries",
-    name: "partial_auto_gen_enteries",
+    label: "partial_auto_gen_entries",
+    name: "partial_auto_gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "partial_gen_entries",
   },
   {
     label: "partial_auto_transfer_entry",
@@ -2328,6 +2379,7 @@ const bill_partial_collection = [
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "partial_gen_entries",
   },
   {
     label: "partial_default_account_is_building_bank",
@@ -2385,18 +2437,19 @@ const bill_endorsement = [
     required: false,
   },
   {
-    label: "endorsement_gen_enteries",
-    name: "endorsement_gen_enteries",
+    label: "endorsement_gen_entries",
+    name: "endorsement_gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
   },
   {
-    label: "endorsement_auto_gen_enteries",
-    name: "endorsement_auto_gen_enteries",
+    label: "endorsement_auto_gen_entries",
+    name: "endorsement_auto_gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "endorsement_gen_entries",
   },
   {
     label: "endorsement_auto_transfer_entry",
@@ -2404,6 +2457,7 @@ const bill_endorsement = [
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "endorsement_gen_entries",
   },
   {
     label: "endorsement_default_date",
@@ -2454,18 +2508,19 @@ const bill_return = [
     required: false,
   },
   {
-    label: "returnable_gen_enteries",
-    name: "returnable_gen_enteries",
+    label: "returnable_gen_entries",
+    name: "returnable_gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
   },
   {
-    label: "returnable_auto_gen_enteries",
-    name: "returnable_auto_gen_enteries",
+    label: "returnable_auto_gen_entries",
+    name: "returnable_auto_gen_entries",
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "returnable_gen_entries",
   },
   {
     label: "returnable_auto_transfer_entry",
@@ -2473,6 +2528,7 @@ const bill_return = [
     type: "checkbox",
     key: "switch",
     required: false,
+    disabledCondition: "returnable_gen_entries",
   },
   {
     label: "returnable_default_date",
@@ -2522,7 +2578,7 @@ const bill_return = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "returnable_debit_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -2531,7 +2587,7 @@ const bill_return = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "returnable_credit_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -2661,6 +2717,7 @@ const installment = [
     is_ref: true,
     ref_table: "contract",
     ref_col: "id",
+    hide_in_form: true,
   },
   {
     label: "total_amount",
@@ -2934,6 +2991,114 @@ const op_collection = [
     ref_table: "cost_center",
     ref_col: "id",
   },
+  { label: "Note", name: "note", type: "text", required: false },
+  {
+    label: "commission_value",
+    name: "commission_value",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "commission_percentage",
+    name: "commission_percentage",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "commission_debit_id",
+    name: "commission_debit_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "commission_credit_id",
+    name: "commission_credit_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "commission_cost_center_id",
+    name: "commission_cost_center_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "cost_center",
+    ref_col: "id",
+  },
+  {
+    label: "commission_note",
+    name: "commission_note",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "accounting_voucher_main_data_id",
+    name: "accounting_voucher_main_data_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "accounting_voucher_main_data",
+    ref_col: "id",
+  },
+];
+const op_partial_collection = [
+  { label: "id", name: "id", type: "uuid", required: false },
+  { label: "created_at", name: "created_at", type: "date", required: false },
+  {
+    label: "feedback",
+    name: "feedback",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  { label: "amount_obtained", name: "amount_obtained", type: "number", required: false },
+  {
+    label: "currency_id",
+    name: "currency_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "currency",
+    ref_col: "id",
+  },
+  {
+    label: "debit_account_id",
+    name: "debit_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "credit_account_id",
+    name: "credit_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "cost_center_id",
+    name: "cost_center_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "cost_center",
+    ref_col: "id",
+  },
+  { label: "total_value", name: "total_value", type: "number", required: false, readOnly: true },
+  { label: "total_sum", name: "total_sum", type: "number", required: false, readOnly: true },
+  { label: "total_sum_prev", name: "total_sum_prev", type: "number", required: false, readOnly: true },
+  { label: "rest", name: "rest", type: "number", required: false, readOnly: true },
+
   { label: "Note", name: "note", type: "text", required: false },
   {
     label: "commission_value",
@@ -3266,7 +3431,7 @@ const voucher_grid_data = [
 const voucher_pattern_general = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "code", name: "code", type: "number", required: true },
+  { label: "code", name: "code", type: "number", required: false },
   { label: "name", name: "name", type: "text", required: true },
   { label: "list_name", name: "list_name", type: "text", required: false },
   {
@@ -3349,6 +3514,7 @@ const voucher_pattern_general = [
     required: false,
   },
 ];
+
 const voucher_pattern_fields = [
   {
     label: "show_debit_field",
@@ -3471,7 +3637,13 @@ const assets = [
     ref_col: "id",
   },
   { label: "name", name: "name", type: "text", required: true },
-  { label: "code", name: "code", type: "text", required: false },
+  {
+    label: "code",
+    name: "code",
+    type: "number",
+    required: false,
+    hide_in_form: true,
+  },
   { label: "barcode", name: "barcode", type: "text", required: false },
   { label: "Note", name: "note", type: "text", required: false },
   {
@@ -4243,7 +4415,7 @@ const material_group = [
     hide_in_form: true,
   },
   { label: "type", name: "type", type: "number", required: false },
-  { label: "code", name: "code", type: "text", required: false },
+  { label: "code", name: "code", type: "number", required: false },
   { label: "name", name: "name", type: "text", required: true },
   { label: "last_name", name: "last_name", type: "text", required: false },
   { label: "Note", name: "note", type: "text", required: false },
@@ -4269,7 +4441,7 @@ const materials = [
     hide_in_form: true,
   },
   { label: "type", name: "type", type: "number", required: false },
-  { label: "code", name: "code", type: "text", required: false },
+  { label: "code", name: "code", type: "number", required: false },
   { label: "name", name: "name", type: "text", required: true },
   { label: "last_name", name: "last_name", type: "text", required: false },
   { label: "unity1", name: "unity1", type: "text", required: false },
@@ -4467,6 +4639,8 @@ const parking_pictures = [
     is_ref: true,
     ref_table: "parking",
     ref_col: "id",
+    hide_in_form: true
+
   },
   {
     label: "picture",
@@ -4670,6 +4844,7 @@ const shop_pictures = [
     is_ref: true,
     ref_table: "shop",
     ref_col: "id",
+    hide_in_form: true
   },
   {
     label: "picture",
@@ -5116,7 +5291,7 @@ export const store = [
     hide_in_form: true,
   },
   { label: "type", name: "type", type: "number", required: true },
-  { label: "code", name: "code", type: "text", required: false },
+  { label: "code", name: "code", type: "number", required: false },
   { label: "name", name: "name", type: "text", required: true },
   { label: "last_name", name: "last_name", type: "text", required: false },
   { label: "address", name: "address", type: "text", required: false },
@@ -5156,6 +5331,7 @@ const entry_main_data = [
     type: "number",
     required: true,
     hide_in_form: true,
+    defaultValue: 1,
   },
   {
     label: "created_at",
@@ -5304,13 +5480,11 @@ const apartment_group = {
     [APARTMENT_STEPS.apartment_rental_price]: {
       fields: apartment_rental_price,
       tab_name: "apartment_rental_price",
-
       formType: "grid",
     },
     [APARTMENT_STEPS.apartment_selling_price]: {
       fields: apartment_selling_price,
       tab_name: "apartment_selling_price",
-
       formType: "grid",
     },
   },
@@ -5454,12 +5628,13 @@ const FORMS = {
   voucher_pattern: voucher_pattern_group,
   accounting_voucher_pattern: accounting_voucher_pattern_group,
   contract_pattern: contract_pattern_group,
-  bill_patterns: bill_group,
+  bill_pattern: bill_group,
   // installment
   installment,
   installment_data,
   // operations
   op_collection,
+  op_partial_collection,
   op_deportation,
   op_endorsement,
   op_return,

@@ -45,7 +45,7 @@ export const VoucherStepsButton = ({ number, goTo, maxLength, isNewOne }) => {
       <div className="flex rounded-md items-center border overflow-hidden">
         <input
           className="p-1 w-16"
-          inputmode="numeric"
+          inputMode="numeric"
           value={num}
           onChange={(e) => setNum(e.target.value.replace(/[^0-9]/g, ""))}
         />

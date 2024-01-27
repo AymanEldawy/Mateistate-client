@@ -2,7 +2,13 @@ import React from "react";
 import { Input, Switch, UploadFile } from "../../CustomFields";
 import { useTranslation } from "react-i18next";
 
-export const VoucherFooter = ({ fields, errors, values, isNewOne }) => {
+export const VoucherFooter = ({
+  fields,
+  errors,
+  values,
+  isNewOne,
+  PATTERN_SETTINGS,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -78,16 +84,18 @@ export const VoucherFooter = ({ fields, errors, values, isNewOne }) => {
             error={errors?.picture?.type}
           />
         )}
-        <Switch
-          {...fields?.gen_entires}
-          containerClassName="!flex-row gap-2"
-          defaultChecked={values?.gen_entires}
-          values={values}
-          value={values?.gen_entires || ""}
-          name="gen_entries"
-          label="Generate a constraint"
-          error={errors?.gen_entries ? "Field is required" : ""}
-        />
+        {PATTERN_SETTINGS?.gen_entires ? (
+          <Switch
+            {...fields?.gen_entires}
+            containerClassName="!flex-row gap-2"
+            defaultChecked={values?.gen_entires}
+            values={values}
+            value={values?.gen_entires || ""}
+            name="gen_entries"
+            label="Generate a constraint"
+            error={errors?.gen_entries ? "Field is required" : ""}
+          />
+        ) : null}
       </div>
     </div>
   );

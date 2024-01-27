@@ -11,17 +11,16 @@ export const VoucherHead = ({
   isPaymentVoucher,
   errors,
   values,
-  getCachedList,
   CACHE_LIST,
   PATTERN_SETTINGS,
 }) => {
-  console.log("🚀 ~ PATTERN_SETTINGS:", PATTERN_SETTINGS);
   return (
     <div className="flex gap-4 lg:gap-8 justify-between">
       <div className="w-2/3">
         <div
           className={`grid gap-4  ${
-            isPaymentVoucher ? "grid-cols-2" : "grid-cols-3"
+            'grid-cols-3'
+            // isPaymentVoucher ? "grid-cols-2" : "grid-cols-3"
           }`}
         >
           <Input
@@ -37,7 +36,7 @@ export const VoucherHead = ({
             className="min-w-[170px] border-0 !rounded-none !h-full"
             table={"account"}
             name="account_id"
-            getCachedList={getCachedList}
+            CACHE_LIST={CACHE_LIST}
             error={errors?.account_id ? "Field is required" : ""}
             list={CACHE_LIST?.account}
             label={"account"}
@@ -54,26 +53,30 @@ export const VoucherHead = ({
               {/* <UniqueField {...fields["connect_with_id"]} /> */}
             </>
           ) : null}
-          <UniqueField
-            {...fields["currency_id"]}
-            className="min-w-[170px] border-0 !rounded-none !h-full"
-            table={"currency"}
-            name="currency_id"
-            getCachedList={getCachedList}
-            error={errors?.currency_id ? "Field is required" : ""}
-            list={CACHE_LIST?.currency}
-            label={"currency"}
-            value={values?.currency_id || ""}
-          />
-          <Input
-            {...fields["currency_val"]}
-            type="text"
-            label="Currency val"
-            value={values?.currency_val || ""}
-            className="border-0 !rounded-none !h-full"
-            name="currency_val"
-            error={errors?.currency_val ? "Field is required" : ""}
-          />
+          {PATTERN_SETTINGS?.show_currency ? (
+            <>
+              <UniqueField
+                {...fields["currency_id"]}
+                className="min-w-[170px] border-0 !rounded-none !h-full"
+                table={"currency"}
+                name="currency_id"
+                CACHE_LIST={CACHE_LIST}
+                error={errors?.currency_id ? "Field is required" : ""}
+                list={CACHE_LIST?.currency}
+                label={"currency"}
+                value={values?.currency_id || ""}
+              />
+              <Input
+                {...fields["currency_val"]}
+                type="text"
+                label="Currency val"
+                value={values?.currency_val || ""}
+                className="border-0 !rounded-none !h-full"
+                name="currency_val"
+                error={errors?.currency_val ? "Field is required" : ""}
+              />
+            </>
+          ) : null}
           <Textarea
             {...fields["note"]}
             label="Note"
@@ -114,7 +117,7 @@ export const VoucherHead = ({
           className="min-w-[170px] border-0 !rounded-none !h-full"
           table={"seller"}
           name="seller_id"
-          getCachedList={getCachedList}
+          CACHE_LIST={CACHE_LIST}
           error={errors?.seller_id ? "Field is required" : ""}
           list={CACHE_LIST?.seller}
           label={"seller"}

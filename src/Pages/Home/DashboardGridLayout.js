@@ -5,10 +5,10 @@ export const DashboardGridLayout = () => {
   return (
     <div className="flex gap-4 h-full px-8">
       <div className="flex-1 flex flex-col -translate-y-4 h-full gap-4">
-        <div className="flex-1 shadow bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
+        <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
           <ReportLatest itemHref="/update/contract" href="/reports/contracts" name="contract" />
         </div>
-        <div className="flex-1 shadow bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
+        <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
           <ReportLatest itemHref="/update/building" href="/list/building" name="building" />
         </div>
       </div>
@@ -45,10 +45,10 @@ export const DashboardGridLayout = () => {
         </div>
       </div>
       <div className="flex-1 flex flex-col -translate-y-4 h-full gap-4">
-        <div className="flex-1 shadow bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2  h-1/2">
+        <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2  h-1/2">
           <ReportLatest itemHref="/update/account" name="account" href="/list/account" />
         </div>
-        <div className="flex-1 shadow bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2  h-1/2">
+        <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2  h-1/2">
           <ReportLatest itemHref="/update/bill" name="bill" href="/reports/bills" />
         </div>
       </div>

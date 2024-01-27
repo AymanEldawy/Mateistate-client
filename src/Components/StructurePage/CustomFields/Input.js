@@ -22,7 +22,6 @@ const Input = ({
 
   useEffect(() => {
     if (watchField && watch(watchFieldName) === watchFieldCondition) {
-      console.log(field, 'true');
     } else {
       
     }
@@ -30,7 +29,6 @@ const Input = ({
 
   useEffect(() => {
     let val = field?.defaultValue || field?.value || watch(updatedName || field?.name)
-    console.log("🚀 ~ useEffect ~ val:", val)
     if(val && field.type === 'date') {
       setValue(updatedName || field?.name, new Date(val).toISOString()?.substring(0, 10))
     }
@@ -60,7 +58,7 @@ const Input = ({
         } 
          `}
         type={field?.type}
-        readOnly={readOnly}
+        readOnly={readOnly|| (field?.disabledCondition && watch(field?.disabledCondition))}
         defaultValue={field?.defaultValue || field.type === "number" ? 0 : null}
         // value={}
         {...register(updatedName || field.name, {

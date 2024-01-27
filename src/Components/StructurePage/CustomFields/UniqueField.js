@@ -16,6 +16,7 @@ const UniqueField = ({
   index,
   updatedName,
   selectContainerClassName,
+  CACHE_LIST,
   ...field
 }) => {
   const { dispatchForm } = usePopupForm();
@@ -61,7 +62,7 @@ const UniqueField = ({
                 className="w-full border-none"
                 classNames={{
                   indicatorsContainer: () => "!hidden bg-black",
-                  control: (state) => "dark:!bg-[#2c2c2c] !border-none",
+                  control: (state) => "bg-transparent !border-none",
                   container: (state) => "!bg-none !bg-transparent !border-none",
                   singleValue: () => "dark:text-gray-200 unique-valid",
                   menuList: () => "dark:bg-dark-bg",

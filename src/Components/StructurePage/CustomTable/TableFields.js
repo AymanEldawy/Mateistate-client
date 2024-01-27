@@ -9,7 +9,7 @@ import { IncreaseTableBar } from "./IncreaseTableBar";
 
 const TableFields = ({
   fields,
-  getCachedList,
+  CACHE_LIST,
   tab,
   deleteRowComponent,
   errors,
@@ -22,6 +22,7 @@ const TableFields = ({
   thClassName,
   tdClassName,
   rowClassName,
+  rowStyles,
   onRowClick,
   rowsCount,
   onBlurNumbersField,
@@ -62,9 +63,9 @@ const TableFields = ({
                       return;
                     else {
                       return (
-                        <th className={`px-4 py-2 border ${thClassName}`}>
+                        <th key={col?.name} className={`px-4 py-2 border ${thClassName}`}>
                           <div className="flex gap-2 items-center justify-between">
-                            {col?.name}
+                            {col?.label ||  col?.name}
                           </div>
                         </th>
                       );
@@ -89,6 +90,11 @@ const TableFields = ({
                           : rowClassName
                       }
                       key={index}
+                      style={
+                        typeof rowStyles === "function"
+                          ? rowStyles(index)
+                          : rowStyles
+                      }
                     >
                       <td className={`min-w-[40px] ${tdClassName} border`}>
                         {!!onRowClick ? (
@@ -143,8 +149,8 @@ const TableFields = ({
                                       : ""
                                   }
                                   list={
-                                    !!getCachedList
-                                      ? getCachedList(field?.ref_table)
+                                    !!CACHE_LIST
+                                      ? CACHE_LIST?.[field?.ref_table]
                                       : []
                                   }
                                 />

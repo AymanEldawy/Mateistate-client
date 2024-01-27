@@ -10,7 +10,7 @@ import { Button } from "Components/Global/Button";
 import useFlatColoring from "Hooks/useFlatColoring";
 import { useForm, useFormContext } from "react-hook-form";
 import { ToolsTabsTable } from "./ToolsTabsTable";
-import { generateApartments } from "Helpers/functions";
+import { generateApartments } from "Helpers/Lib/operations/global-insert";
 
 const findList = async (type, id, setFlatsDetails) => {
   let name = FLAT_PROPERTY_TABS_SETTINGS[type]?.no;
@@ -65,9 +65,7 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
   }, [row?.id]);
 
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
-      console.log(name, value, type);
-    });
+    const subscription = watch((value, { name, type }) => {});
     return () => subscription.unsubscribe();
   }, [watch]);
 

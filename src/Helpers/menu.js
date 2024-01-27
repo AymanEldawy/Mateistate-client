@@ -8,7 +8,8 @@ import {
   UserIcon,
   ClipboardIcon,
 } from "../Components/Icons";
-import { getContractMenus } from "./functions";
+import { ApiActions } from "./Lib/api";
+import { SELECT_LISTS } from "./constants";
 
 export const menuData = [
   {
@@ -189,100 +190,6 @@ export const menuData = [
     link: "realty",
     icon: <BanknoteIcon />,
     children: [
-      // children: [
-      // {
-      //   key: "Contracts",
-      //   name: "Contracts",
-      //   link: "",
-      //   subChild: getContractMenus,
-      //   type: "fun",
-      // },
-      // {
-      //   key: "Contracts",
-      //   name: "Contracts",
-      //   link: "",
-      //   // dynamic menu
-      //   // subChild: [
-      //   //   {
-      //   //     key: 1,
-      //   //     name: "Rent Contracts",
-      //   //     link: "",
-      //   //     subChild: [
-      //   //       {
-      //   //         key: 1,
-      //   //         name: "Flat rent contract",
-      //   //         link: "/rent/flat_rent_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 2,
-      //   //         name: "Apartment rent contract",
-      //   //         link: "/rent/apartment_rent_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 3,
-      //   //         name: "Shop rent contract",
-      //   //         link: "/rent/shop_rent_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 4,
-      //   //         name: "Parking rent contract",
-      //   //         link: "/rent/parking_rent_contract/",
-      //   //       },
-      //   //     ],
-      //   //   },
-
-      //   //   {
-      //   //     key: 2,
-      //   //     name: "Sale Contracts",
-      //   //     link: "",
-      //   //     subChild: [
-      //   //       {
-      //   //         key: 1,
-      //   //         name: "Flat sale contract",
-      //   //         link: "/sale/flat_sale_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 2,
-      //   //         name: "Shop sale contract",
-      //   //         link: "/sale/shop_sale_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 3,
-      //   //         name: "Parking sale contract",
-      //   //         link: "/sale/parking_sale_contract",
-      //   //       },
-      //   //       {
-      //   //         key: 4,
-      //   //         name: "Land sale contract",
-      //   //         link: "/sale/land_sale_contract",
-      //   //       },
-      //   //     ],
-      //   //   },
-      //   // ],
-      // },
-
-      {
-        key: "Bills",
-        name: "Bills",
-        link: "",
-        subChild: [
-          {
-            key: "electricity",
-            name: "Electricity bills",
-            link: "/bills/bill",
-          },
-          // {
-          //   key: "electricity",
-          //   name: "Electricity bills",
-          //   link: "/bills/bill",
-          // },
-          // {
-          //   key: "electricity",
-          //   name: "Electricity bills",
-          //   link: "/bills/bill",
-          // },
-        ],
-      },
       {
         key: "services",
         name: "Services contracts",
@@ -390,47 +297,6 @@ export const menuData = [
       },
     ],
   },
-
-  // {
-  //   key: "tools",
-  //   name: "Tools",
-  //   link: "",
-  //   icon: <ToolsIcon />,
-  //   children: [
-  //     {
-  //       key: "tool 1",
-  //       name: "tool 1",
-  //       link: "/tools",
-  //     },
-  //     {
-  //       key: "patterns",
-  //       name: "Patterns",
-  //       link: "",
-  //       children: [
-  //         {
-  //           key: "contract patterns",
-  //           name: "Contract patterns",
-  //           link: "/patterns/contract_pattern",
-  //         },
-  //         {
-  //           key: "bills patterns",
-  //           name: "Bill patterns",
-  //           link: "/patterns/bill_pattern",
-  //         },
-  //         {
-  //           key: "voucher patterns",
-  //           name: "Voucher patterns",
-  //           link: "/patterns/voucher_pattern",
-  //         },
-  //         {
-  //           key: "accounting voucher patterns",
-  //           name: "Accounting voucher patterns",
-  //           link: "/patterns/accounting_voucher_pattern",
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // },
   {
     key: "patterns",
     name: "Patterns",
@@ -445,7 +311,7 @@ export const menuData = [
       {
         key: "bills patterns",
         name: "Bill patterns",
-        link: "/patterns/bill_patterns",
+        link: "/patterns/bill_pattern",
       },
       {
         key: "voucher patterns",
@@ -466,16 +332,6 @@ export const menuData = [
     icon: <ToolsIcon />,
     children: [
       {
-        key: "Receipt Voucher",
-        name: "Receipt Voucher",
-        link: "/vouchers/1/receipt-voucher/1",
-      },
-      {
-        key: "Payment Voucher",
-        name: "Payment Voucher",
-        link: "/vouchers/2/payment-voucher/1",
-      },
-      {
         key: "voucher Entry",
         name: "Voucher Entry",
         link: "/vouchers/entries/1",
@@ -491,7 +347,7 @@ export const menuData = [
       {
         key: "Reports contracts",
         name: "Reports contracts",
-        link: "/reports/contracts",
+        link: "/reports/contract",
       },
       {
         key: "Reports bills",
@@ -517,16 +373,226 @@ export const menuData = [
   },
 ];
 
+// Generate dynamic Contract menu from contract pattern
+async function getContractMenus() {
+  const res = await ApiActions.read("contract_pattern");
+  let hash = {};
+
+  for (const item of res?.result) {
+    if (item.list_name) {
+      if (hash[item.list_name]) {
+        hash[item.list_name].push(item);
+      } else {
+        hash[item.list_name] = [item];
+      }
+    } else {
+      hash[item.name] = { direct: true, ...item };
+    }
+  }
+
+  let menus = [];
+
+  for (const menu in hash) {
+    let theItem = hash[menu];
+
+    if (theItem.direct) {
+      let assetsType = SELECT_LISTS("contact_pattern_assets_type")?.find(
+        (c) => c.id === +theItem?.assets_type
+      );
+      let name = theItem.name;
+      let contractType = SELECT_LISTS("contact_pattern_contract_type")?.find(
+        (c) => c.id === theItem.contract_type
+      );
+
+      let link = `/contracts/add/${contractType?.toLowerCase()}/${
+        theItem.name
+      }_${contractType}_contract?flat_type=${assetsType?.name}`;
+      menus.push({
+        key: theItem.name,
+        name,
+        link,
+      });
+    } else {
+      let subMenu = [];
+      for (const subItem of theItem) {
+        let contractType = SELECT_LISTS("contact_pattern_contract_type")?.find(
+          (c) => c.id === subItem.contract_type
+        )?.name;
+        let assetsType = SELECT_LISTS("contact_pattern_assets_type")?.find(
+          (c) => c.id === +subItem?.assets_type
+        );
+
+        let name = `${subItem.name}_${contractType?.toLowerCase()}_contract`;
+        let link = `/contracts/add/${contractType?.toLowerCase()}/${
+          subItem.name
+        }_${contractType?.toLowerCase()}_contract?flat_type=${
+          assetsType?.name
+        }`;
+
+        subMenu.push({
+          key: subItem.name,
+          name,
+          link,
+        });
+      }
+      menus.push({
+        key: 2,
+        name: menu,
+        subChild: subMenu,
+      });
+    }
+  }
+
+  return menus;
+}
+// Generate dynamic Vouchers menu from Vouchers pattern
+async function getVouchersMenus() {
+  const res = await ApiActions.read("voucher_pattern");
+
+  let hash = {};
+
+  for (const item of res?.result) {
+    if (item.list_name) {
+      if (hash[item.list_name]) {
+        hash[item.list_name].push(item);
+      } else {
+        hash[item.list_name] = [item];
+      }
+    } else {
+      hash[item.name] = { direct: true, ...item };
+    }
+  }
+
+  let menus = [];
+
+  for (const menu in hash) {
+    let theItem = hash[menu];
+
+    if (theItem.direct) {
+      let name = theItem.name;
+      menus.push({
+        key: theItem.name,
+        name,
+        link: `/vouchers/${theItem.code}/${name}/1`,
+      });
+    } else {
+      let subMenu = [];
+      for (const subItem of theItem) {
+        subMenu.push({
+          key: subItem.name,
+          name: subItem.name,
+          link: `/vouchers/${subItem.code}/${subItem.name}/1`,
+        });
+      }
+      menus.push({
+        key: 3,
+        name: menu,
+        subChild: subMenu,
+      });
+    }
+  }
+
+  return menus;
+}
+
+// Generate dynamic Bills menu from Bills pattern
+async function getBillsMenus() {
+  // const res = await ApiActions.read("bill_pattern");
+
+  let res = [
+    {
+      auto_gen_entries: true,
+      auto_transfer_entry: true,
+      collection_default_date: 0,
+      commission_type: 0,
+      deportable_default_date: 0,
+      endorsement_default_date: 0,
+      gen_entries: true,
+      name: "Paid Check",
+      paper_type: 1,
+      returnable_default_date: 0,
+      code: 1,
+    },
+    {
+      auto_gen_entries: true,
+      auto_transfer_entry: true,
+      collection_default_date: 0,
+      commission_type: 0,
+      deportable_default_date: 0,
+      endorsement_default_date: 0,
+      gen_entries: true,
+      name: "Received Check",
+      paper_type: 2,
+      returnable_default_date: 0,
+      code: 2,
+    },
+  ];
+
+  let hash = {};
+
+  for (const item of res) {
+    if (item.list_name) {
+      if (hash[item.list_name]) {
+        hash[item.list_name].push(item);
+      } else {
+        hash[item.list_name] = [item];
+      }
+    } else {
+      hash[item.name] = { direct: true, ...item };
+    }
+  }
+
+  let menus = [];
+
+  for (const menu in hash) {
+    let theItem = hash[menu];
+
+    if (theItem.direct) {
+      let name = theItem.name;
+      menus.push({
+        key: theItem.name,
+        name,
+        link: `/bills/add/${name}/${theItem?.code}`,
+      });
+    } else {
+      let subMenu = [];
+      for (const subItem of theItem) {
+        subMenu.push({
+          key: subItem.name,
+          name: subItem.name,
+          link: `/bills/add/${subItem?.name}/${subItem?.code}`,
+        });
+      }
+      menus.push({
+        key: 3,
+        name: menu,
+        subChild: subMenu,
+      });
+    }
+  }
+
+  return menus;
+}
+
 const getMenu = async () => {
-  const res = await getContractMenus();
-  console.log("🚀 ~ getMenu ~ res:", res)
+  const contractMenu = await getContractMenus();
   menuData[4].children.push({
-    key: 'Contracts 2',
-    name: 'Contracts',
-    subChild: res
-  })
-  return menuData
+    key: "Contracts 2",
+    name: "Contracts",
+    subChild: contractMenu,
+  });
+
+  const billsMenus = await getBillsMenus();
+  menuData[4].children.push({
+    key: "Bills",
+    name: "Bills",
+    link: "",
+    subChild: billsMenus,
+  });
+
+  const voucherMenu = await getVouchersMenus();
+  menuData[8].children.push(...voucherMenu);
+  return menuData;
 };
-  console.log("🚀 ~ getMenu ~ menuData:", menuData)
 
 export default getMenu;

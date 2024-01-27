@@ -1,4 +1,3 @@
-
 import Chart from "Pages/Chart/Chart";
 import Home from "Pages/Home/Home";
 import List from "Pages/List/List";
@@ -34,24 +33,32 @@ const authProtectedRoutes = [
   { path: "/reports/vouchers/:type", component: <Vouchers /> },
   { path: "/reports/bills", component: <Bills /> },
   { path: "/reports/contracts", component: <Contracts /> },
-  
+
   { path: "/contracts/:id", component: <SingleContract /> },
   { path: "/contracts/add/:type/:name", component: <ContractForm /> },
-  { path: "/contracts/update/:type/:name", component: <ContractForm layout="update" /> },
- 
-  // Vouchers 
+  {
+    path: "/contracts/update/:type/:name",
+    component: <ContractForm layout="update" />,
+  },
+
+  // Vouchers
   { path: "/vouchers/:type/:name/:number", component: <VoucherForm /> },
   { path: "/vouchers/entries/:number", component: <EntryForm /> },
 
-    {
+  {
     path: "/patterns/:name",
-    component: <List addPageHref={{ allowName: true, href: "/patterns/add/" }} />,
+    component: (
+      <List addPageHref={{ allowName: true, href: "/patterns/add/" }} />
+    ),
   },
   { path: "/patterns/add/:pattern", component: <PatternsForm /> },
-  { path: "/patterns/update/:pattern/:name/:id", component: <PatternsForm layout="update" /> },
+  {
+    path: "/patterns/update/:pattern/:name/:id",
+    component: <PatternsForm layout="update" />,
+  },
 
-  { path: "/bills/:name", component: <Bill /> },
-  { path: "/update/bills/:name/:id", component: <Bill layout="update" /> },
+  { path: "/bills/add/:name/:type", component: <Bill /> },
+  { path: "/bills/update/:name/:type/:id", component: <Bill layout="update" /> },
 
   { path: "/list/:name", component: <List /> },
   { path: "/update/:name/:id", component: <Update /> },

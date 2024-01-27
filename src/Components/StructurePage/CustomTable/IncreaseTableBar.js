@@ -4,9 +4,9 @@ import React from "react";
 
 export const IncreaseTableBar = ({ increaseCount, setIncreaseCount }) => {
   return (
-    <div className="flex items-center justify-between shadow bg-gray-100">
+    <div className="flex items-center justify-between shadow bg-gray-100 dark:bg-dark-border">
       <button
-        className="bg-gray-200 p-1 active:bg-primary active:text-white disabled:bg-gray-100 disabled:text-gray-400 disabled:border disabled:cursor-not-allowed"
+        className="bg-blue-500 text-white p-1 active:bg-primary active:text-white disabled:bg-gray-100 disabled:text-gray-400 disabled:border disabled:cursor-not-allowed"
         disabled={increaseCount === 1}
         onClick={() =>
           increaseCount > 1 && setIncreaseCount((prev) => prev - 1)
@@ -15,7 +15,7 @@ export const IncreaseTableBar = ({ increaseCount, setIncreaseCount }) => {
         <MinusIcon circle className="h-5 w-5" />
       </button>
       <button
-        className="bg-gray-200 p-1 active:bg-primary active:text-white disabled:bg-gray-100 disabled:text-gray-400 disabled:border disabled:cursor-not-allowed"
+        className="bg-blue-500 text-white p-1 active:bg-primary active:text-white disabled:bg-gray-100 disabled:text-gray-400 disabled:border disabled:cursor-not-allowed"
         onClick={() => setIncreaseCount((prev) => prev + 1)}
       >
         <PlusIcon circle className="h-5 w-5" />

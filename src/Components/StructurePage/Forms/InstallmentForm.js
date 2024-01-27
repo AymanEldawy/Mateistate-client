@@ -67,7 +67,7 @@ const generatePaymentBatches = (watch, setValue) => {
   // statement2
 };
 
-const InstallmentForm = ({ errors, getCachedList, onClose, contract_id }) => {
+const InstallmentForm = ({ errors, CACHE_LIST, onClose, contract_id }) => {
   const { watch, setValue } = useFormContext();
   const [canGenerate, setCanGenerate] = useState(true);
   const fields_form = useMemo(() => getFormByTableName("installment"), []);
@@ -107,7 +107,7 @@ const InstallmentForm = ({ errors, getCachedList, onClose, contract_id }) => {
         fields={fields_form}
         tab="installment"
         errors={errors}
-        getCachedList={getCachedList}
+        CACHE_LIST={CACHE_LIST}
       />
       {contract_id ? (
         <p className="bg-red-100 text-red-500 text-xs my-2 py-1 rounded-md px-4">
@@ -129,7 +129,7 @@ const InstallmentForm = ({ errors, getCachedList, onClose, contract_id }) => {
         <TableFields
           fields={fields_grid}
           tab="installment_grid"
-          getCachedList={getCachedList}
+          CACHE_LIST={CACHE_LIST}
           rowsCount={watch("installment_grid")?.length}
         />
       ) : null}

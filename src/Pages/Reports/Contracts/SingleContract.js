@@ -23,14 +23,12 @@ const SingleContract = () => {
 
   const getContractData = async () => {
     const response = await GET_UPDATE_DATE("apartment_rent_contract", id);
-    console.log("🚀 ~ getContractData ~ response:", response);
     if (response?.contract) setData(response);
   };
 
   useEffect(() => {
     getContractData();
   }, [id]);
-  console.log(data);
 
   return (
     <BlockPaper title={`contract ${id}`}>

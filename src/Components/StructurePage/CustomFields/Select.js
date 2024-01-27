@@ -55,7 +55,7 @@ const CustomSelect = ({
             <Select
               className={`border rounded-md bg-none bg-transparent ${selectClassName}`}
               classNames={{
-                control: (state) => "dark:!bg-[#2c2c2c]",
+                control: (state) => "bg-transparent !border-none",
                 container: (state) =>
                   "!bg-none !bg-transparent dark:!border-dark-border",
                 singleValue: () => "dark:text-gray-200 unique-valid",

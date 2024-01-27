@@ -16,7 +16,7 @@ export const Fields = ({
   fields,
   values,
   errors,
-  getCachedList,
+  CACHE_LIST,
   tab,
   globalButtonsActions,
 }) => {
@@ -66,8 +66,8 @@ export const Fields = ({
               key={`${field?.name}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               table={field?.ref_table}
-              getCachedList={getCachedList}
-              list={!!getCachedList ? getCachedList(field?.ref_table) : []}
+              CACHE_LIST={CACHE_LIST}
+              list={!!CACHE_LIST ? CACHE_LIST[field?.ref_table] : []}
               values={values}
               error={
                 tab
@@ -110,14 +110,12 @@ export const Fields = ({
             />
           );
         } else if (field?.key === "image") {
-          // console.log('image', field);
           return (
             <UploadFile
               {...field}
               key={`${field?.name}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               containerClassName="col-span-2"
-              // src={values?.[field?.name]}
               index={i}
               readonly={field?.readonly}
               label={field?.name?.replace(/_/g, " ")}

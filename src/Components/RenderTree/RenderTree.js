@@ -91,8 +91,7 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit, refetchData }) => {
         <DynamicForm
           oldValues={{
             parent_id: selectedItem?.id || null,
-            final_id: selectedItem?.final_id || null,
-            
+            final_id: selectedItem?.final_id || selectedItem?.parent_id || null,
           }}
           onSubmit={submit}
           name={name}

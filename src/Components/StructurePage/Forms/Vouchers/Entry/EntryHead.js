@@ -10,7 +10,6 @@ export const EntryHead = ({
   fields,
   errors,
   values,
-  getCachedList,
   CACHE_LIST,
 }) => {
   return (
@@ -31,7 +30,7 @@ export const EntryHead = ({
         <UniqueField
           {...fields["currency_id"]}
           className="min-w-[170px] border-0 !rounded-none !h-full"
-          getCachedList={getCachedList}
+          CACHE_LIST={CACHE_LIST}
           error={errors?.currency_id ? "Field is required" : ""}
           list={CACHE_LIST?.currency}
           value={values?.currency_id || ""}
