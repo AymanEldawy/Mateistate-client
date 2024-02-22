@@ -125,7 +125,7 @@ const InstallmentForm = ({
     }
   }, [openInstallmentForm]);
 
-  const onSubmitInstallment = async () => {
+    const onSubmitInstallment = async () => {
     if (!installmentValidation(watch)) return;
     setIsLoading(true);
 
@@ -138,7 +138,6 @@ const InstallmentForm = ({
       (c) => c.id === watch(`installment.bank_id`)
     )?.name;
 
-    console.log(watch(firstTab), CACHE_LIST, bankName, clientName);
 
     // conditions before submitting
 

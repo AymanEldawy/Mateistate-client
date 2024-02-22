@@ -33,7 +33,8 @@ const CustomSelect = ({
         label: isArray ? item : item?.[keyLabel],
       }))
     );
-    if (field?.selectFirstAsDefault) {
+    if (field?.selectFirstAsDefault && !watch(updatedName || field?.name)) {
+      console.log(watch(), '----');
       setValue(updatedName || field?.name, field?.list?.at(0)?.id);
     }
   }, [field?.list?.length]);
