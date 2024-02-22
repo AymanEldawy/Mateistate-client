@@ -66,7 +66,7 @@ const TableForm = ({ fields, CACHE_LIST, activeStage, values, errors }) => {
                           updatedName={`${activeStage}.${field?.name}`}
                           // values={watch}
                           table={field.ref_table}
-                          label={""}
+                          hideLabel
                           containerClassName="!min-w-[190px] border-0 !rounded-none !h-full"
                           className="!min-w-[190px] border-0 !rounded-none !h-full"
                           error={errors?.account_id ? "Field is required" : ""}
@@ -83,7 +83,7 @@ const TableForm = ({ fields, CACHE_LIST, activeStage, values, errors }) => {
                           {...field}
                           updatedName={`${activeStage}.${field?.name}`}
                           key={`${field?.name}`}
-                          label={""}
+                          hideLabel
                           error={errors?.[field?.name]?.message}
                           inputClassName="border-0 !rounded-none !h-full"
                         />

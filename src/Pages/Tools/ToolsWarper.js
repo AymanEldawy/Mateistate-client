@@ -11,8 +11,9 @@ import useFlatColoring from "Hooks/useFlatColoring";
 import { useForm, useFormContext } from "react-hook-form";
 import { ToolsTabsTable } from "./ToolsTabsTable";
 import { generateApartments } from "Helpers/Lib/operations/global-insert";
+import Loading from "Components/Global/Loading";
 
-const findList = async (type, id, setFlatsDetails) => {
+const findList = async (type, id, setFlatsDetails, COLLECTION_COUNTS) => {
   let name = FLAT_PROPERTY_TABS_SETTINGS[type]?.no;
   const response = await ApiActions.read(type, {
     conditions: [{ type: "and", conditions: [["building_id", "=", id]] }],
@@ -33,6 +34,7 @@ const findList = async (type, id, setFlatsDetails) => {
         ...hashApartmentTypes?.[newType],
         [row?.[name]]: row,
       };
+      COLLECTION_COUNTS[row?.[name]] = row?.hex;
     }
 
     setFlatsDetails((prev) => ({
@@ -42,26 +44,26 @@ const findList = async (type, id, setFlatsDetails) => {
   }
 };
 
-const refetchBuildingAssets = (id, setFlatsDetails) => {
+const refetchBuildingAssets = (id, setFlatsDetails, COLLECTION_COUNTS) => {
   for (const asset of ["apartment", "villa", "shop", "parking"]) {
-    findList(asset, id, setFlatsDetails);
+    findList(asset, id, setFlatsDetails, COLLECTION_COUNTS);
   }
 };
 
-const UPDATES_ROW = {};
-
 const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
-  const { flatsDetails, setFlatsDetails } = useFlatColoring();
+  const { flatsDetails, setFlatsDetails, COLLECTION_COUNTS, UPDATES_ROWS } =
+    useFlatColoring();
   const {
     handleSubmit,
     formState: { errors },
   } = useForm();
   const { watch } = useFormContext();
   const [selectedTab, setSelectedTab] = useState(FLAT_PROPERTY_TABS[0]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!row?.id) return;
-    refetchBuildingAssets(row?.id, setFlatsDetails);
+    refetchBuildingAssets(row?.id, setFlatsDetails, COLLECTION_COUNTS);
   }, [row?.id]);
 
   useEffect(() => {
@@ -71,13 +73,22 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
 
   const onSubmit = async (value) => {
     let grid = watch("grid");
-    const response = await generateApartments(grid, flatsDetails, row?.id);
+    setIsLoading(true);
+    const response = await generateApartments(
+      grid,
+      flatsDetails,
+      row,
+      UPDATES_ROWS
+    );
     if (response?.isCompleted) {
       refetchPropertyValuesData();
     }
+    setIsLoading(false);
   };
 
   return (
+    <>
+    {isLoading ? <Loading withBackdrop />: null}
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="overflow-auto max-h-96">
         <ToolsTabsTableForm errors={errors} />
@@ -113,6 +124,8 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
         <Button title="Submit" />
       </div>
     </form>
+    </>
+
   );
 };
 

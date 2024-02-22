@@ -1,5 +1,7 @@
 import React from "react";
 import {
+  ColorField,
+  CurrencyFieldGroup,
   Input,
   Radio,
   Select,
@@ -11,6 +13,7 @@ import {
 import { IGNORED_Fields } from "Helpers/constants";
 import { ButtonField } from "Components/StructurePage/CustomFields/ButtonField";
 import { useFormContext } from "react-hook-form";
+import UniqueFieldGroup from "Components/StructurePage/CustomFields/UniqueFieldGroup";
 
 export const Fields = ({
   fields,
@@ -19,11 +22,19 @@ export const Fields = ({
   CACHE_LIST,
   tab,
   globalButtonsActions,
+  containerClassName,
+  customGrid,
 }) => {
   const { watch } = useFormContext();
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
+    <div
+      className={`grid ${
+        customGrid
+          ? customGrid
+          : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+      } gap-4 mb-8 w-full ${containerClassName}`}
+    >
       {fields?.map((field, i) => {
         if (
           IGNORED_Fields?.includes(field.name) ||
@@ -32,15 +43,14 @@ export const Fields = ({
           field?.name === "created_at"
         )
           return;
-        if (field?.name.indexOf("terms") !== -1 || field?.type === "long") {
+        if (field?.name?.indexOf("terms") !== -1 || field?.type === "long") {
           return (
             <Textarea
               {...field}
-              key={`${field?.name}`}
+              key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               containerClassName="col-span-full"
               textareaClassName="min-h-[250px]"
-              label={field?.name?.replace(/_/g, " ")}
               values={values}
               error={
                 tab
@@ -58,12 +68,32 @@ export const Fields = ({
               globalButtonsActions={globalButtonsActions}
             />
           );
+        } else if (field?.name === "currency_id") {
+          return (
+            <CurrencyFieldGroup
+              {...field}
+              key={`${field?.name}-${i}`}
+              tab={tab}
+              values={values}
+              CACHE_LIST={CACHE_LIST}
+              list={!!CACHE_LIST ? CACHE_LIST[field?.ref_table] : []}
+              errors={errors}
+            />
+          );
+        } else if (field?.name === "connect_with") {
+          return (
+            <UniqueFieldGroup
+              key={`${field?.name}-${i}`}
+              tab={tab}
+              values={values}
+              errors={errors}
+            />
+          );
         } else if (field?.is_ref) {
           return (
             <UniqueField
               {...field}
-              label={field?.name?.replace(/_/g, " ")}
-              key={`${field?.name}`}
+              key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               table={field?.ref_table}
               CACHE_LIST={CACHE_LIST}
@@ -77,13 +107,11 @@ export const Fields = ({
             />
           );
         } else if (field?.key === "radio") {
-          // console.log('radio', field);
           return (
             <Radio
               {...field}
-              key={`${field?.name}`}
+              key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
-              label={field?.name?.replace(/_/g, " ")}
               values={values}
               error={
                 tab
@@ -93,13 +121,11 @@ export const Fields = ({
             />
           );
         } else if (field?.key === "select") {
-          // console.log('select', field);
           return (
             <Select
               {...field}
-              key={`${field?.name}`}
+              key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
-              label={field?.name?.replace(/_/g, " ")}
               values={values}
               value={watch(tab ? `${tab}.${field?.name}` : field?.name)}
               error={
@@ -113,12 +139,11 @@ export const Fields = ({
           return (
             <UploadFile
               {...field}
-              key={`${field?.name}`}
+              key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               containerClassName="col-span-2"
               index={i}
               readonly={field?.readonly}
-              label={field?.name?.replace(/_/g, " ")}
               values={values}
               error={
                 tab
@@ -128,27 +153,23 @@ export const Fields = ({
             />
           );
         } else if (field?.key === "switch") {
-          // console.log('switch', field);
           return (
             <Switch
               {...field}
               defaultChecked={values?.[field?.name]}
-              key={`${field?.name}`}
+              key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
-              label={field?.name?.replace(/_/g, " ")}
               values={values}
               error={errors?.[field?.name] ? "Field is required" : ""}
             />
             // <></>
           );
         } else if (field?.type === "checkbox" || field.key === "choose") {
-          // console.log('checkbox', 'choose', field);
           return (
             <Radio
               {...field}
-              key={`${field?.name}`}
+              key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
-              label={field?.name?.replace(/_/g, " ")}
               type={field.key === "choose" ? "checkbox" : ""}
               list={field?.list}
               values={values}
@@ -159,14 +180,27 @@ export const Fields = ({
               }
             />
           );
+        } else if (field?.type === "color") {
+          return (
+            <ColorField
+              {...field}
+              key={`${field?.name}-${i}`}
+              updatedName={tab ? `${tab}.${field?.name}` : ""}
+              values={values}
+              tab={tab}
+              error={
+                tab
+                  ? errors?.[tab]?.[field?.name]?.type
+                  : errors?.[field?.name]?.type
+              }
+            />
+          );
         } else {
-          // console.log('normal', field?.type , field);
           return (
             <Input
               {...field}
-              key={`${field?.name}`}
+              key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
-              label={field?.name?.replace(/_/g, " ")}
               values={values}
               tab={tab}
               error={

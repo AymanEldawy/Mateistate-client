@@ -13,53 +13,6 @@ import { SELECT_LISTS } from "./constants";
 
 export const menuData = [
   {
-    key: "account",
-    name: "Account",
-    link: "account",
-    icon: <UserIcon />,
-    children: [
-      {
-        key: "Customer",
-        name: "Customer/Supplier Card",
-        link: "/list/user",
-      },
-      { key: "owner-card", name: "owner card", link: "/list/owner" },
-      { key: "seller-card", name: "seller card", link: "/list/seller" },
-      { key: "lessor-card", name: "lessor card", link: "/list/lessor" },
-      { key: "bank-card", name: "bank card", link: "/list/bank" },
-      { key: "Currency card", name: "Currency card", link: "/list/currency" },
-      {
-        key: "accounts",
-        name: "Accounts",
-        subChild: [
-          { key: "account-card", name: "account card", link: "/list/account" },
-
-          {
-            key: "Chart of Account",
-            name: "Chart of Account",
-            link: "/chart/account",
-          },
-        ],
-      },
-      {
-        key: "cost-centers",
-        name: "Cost centers",
-        subChild: [
-          {
-            key: "cost-center-card",
-            name: "cost center card",
-            link: "/list/cost_center",
-          },
-          {
-            key: "Chart of cost center",
-            name: "Chart of cost center",
-            link: "/chart/cost_center",
-          },
-        ],
-      },
-    ],
-  },
-  {
     key: "cards",
     name: "Cards",
     link: "cards",
@@ -68,7 +21,7 @@ export const menuData = [
       {
         key: "Building",
         name: "Building Card",
-        link: "/list/building",
+        link: "/buildings",
       },
       {
         key: "Flat",
@@ -123,67 +76,122 @@ export const menuData = [
     ],
   },
   {
-    key: "materials",
-    name: "Materials",
-    link: "",
-    icon: <PuzzleIcon />,
+    key: "accounts",
+    name: "Accounts",
+    link: "accounts",
+    icon: <UserIcon />,
     children: [
       {
-        key: "Material",
-        name: "Material Card",
-        link: "/list/materials",
+        key: "accounts",
+        name: "Accounts",
+        subChild: [
+          { key: "account-card", name: "account card", link: "/list/account" },
+
+          {
+            key: "Chart of Account",
+            name: "Chart of Account",
+            link: "/chart/account",
+          },
+        ],
       },
       {
-        key: "Group",
-        name: "materials Group Card",
-        link: "/list/material_group",
+        key: "cost-centers",
+        name: "Cost centers",
+        subChild: [
+          {
+            key: "cost-center-card",
+            name: "cost center card",
+            link: "/list/cost_center",
+          },
+          {
+            key: "Chart of cost center",
+            name: "Chart of cost center",
+            link: "/chart/cost_center",
+          },
+        ],
       },
       {
-        key: "chartMaterial",
-        name: "Chart of Materials",
-        link: "/chart/materials",
+        key: "Customer",
+        name: "Customer/Supplier Card",
+        link: "/list/user",
       },
-      {
-        key: "Store",
-        name: "Store Card",
-        link: "/list/store",
-      },
-      {
-        key: "Chart of Stores",
-        name: "Chart of Stores",
-        link: "/chart/store",
-      },
-      {
-        key: "Activity reports",
-        name: "Activity reports",
-        link: "/report/materials",
-      },
+      { key: "owner-card", name: "owner card", link: "/list/owner" },
+      { key: "seller-card", name: "seller card", link: "/list/seller" },
+      { key: "lessor-card", name: "lessor card", link: "/list/lessor" },
+      { key: "bank-card", name: "bank card", link: "/list/bank" },
+      { key: "Currency card", name: "Currency card", link: "/list/currency" },
+     
     ],
   },
   {
-    key: "assets",
-    name: "Assets",
+    key: "Accounting Transactions",
+    name: "Accounting Transactions",
     link: "",
-    icon: <BuildingIcon />,
-    children: [
-      {
-        key: "Asset Category",
-        name: "Asset Category",
-        link: "/list/assets_group",
-      },
-      {
-        key: "Asset Card",
-        name: "Asset Card",
-        link: "/list/assets",
-      },
+    icon: <ToolsIcon />,
 
-      {
-        key: "Chart of Assets",
-        name: "Chart of Assets",
-        link: "/chart/assets",
-      },
-    ],
   },
+  // {
+  //   key: "materials",
+  //   name: "Materials",
+  //   link: "",
+  //   icon: <PuzzleIcon />,
+  //   children: [
+  //     {
+  //       key: "Material",
+  //       name: "Material Card",
+  //       link: "/list/materials",
+  //     },
+  //     {
+  //       key: "Group",
+  //       name: "materials Group Card",
+  //       link: "/list/material_group",
+  //     },
+  //     {
+  //       key: "chartMaterial",
+  //       name: "Chart of Materials",
+  //       link: "/chart/materials",
+  //     },
+  //     {
+  //       key: "Store",
+  //       name: "Store Card",
+  //       link: "/list/store",
+  //     },
+  //     {
+  //       key: "Chart of Stores",
+  //       name: "Chart of Stores",
+  //       link: "/chart/store",
+  //     },
+  //     {
+  //       key: "Activity reports",
+  //       name: "Activity reports",
+  //       link: "/report/materials",
+  //     },
+  //   ],
+  // },
+  // {
+  //   key: "assets",
+  //   name: "Assets",
+  //   link: "",
+  //   icon: <BuildingIcon />,
+  //   children: [
+  //     {
+  //       key: "Asset Category",
+  //       name: "Asset Category",
+  //       link: "/list/assets_group",
+  //     },
+  //     {
+  //       key: "Asset Card",
+  //       name: "Asset Card",
+  //       link: "/list/assets",
+  //     },
+
+  //     {
+  //       key: "Chart of Assets",
+  //       name: "Chart of Assets",
+  //       link: "/chart/assets",
+  //     },
+  //   ],
+  // },
   {
     key: "realty",
     name: "Realty Transactions",
@@ -311,7 +319,7 @@ export const menuData = [
       {
         key: "bills patterns",
         name: "Bill patterns",
-        link: "/patterns/bill_pattern",
+        link: "/patterns/cheque_pattern",
       },
       {
         key: "voucher patterns",
@@ -325,19 +333,7 @@ export const menuData = [
       },
     ],
   },
-  {
-    key: "vouchers",
-    name: "Vouchers",
-    link: "",
-    icon: <ToolsIcon />,
-    children: [
-      {
-        key: "voucher Entry",
-        name: "Voucher Entry",
-        link: "/vouchers/entries/1",
-      },
-    ],
-  },
+
   {
     key: "Reports",
     name: "Reports",
@@ -347,12 +343,12 @@ export const menuData = [
       {
         key: "Reports contracts",
         name: "Reports contracts",
-        link: "/reports/contract",
+        link: "/reports/contracts",
       },
       {
-        key: "Reports bills",
-        name: "Reports bills",
-        link: "/reports/bills",
+        key: "Reports cheques",
+        name: "Reports cheques",
+        link: "/reports/cheques",
       },
       {
         key: "Reports vouchers receipts",
@@ -404,9 +400,9 @@ async function getContractMenus() {
         (c) => c.id === theItem.contract_type
       );
 
-      let link = `/contracts/add/${contractType?.toLowerCase()}/${
+      let link = `/contracts/${contractType?.toLowerCase()}/${
         theItem.name
-      }_${contractType}_contract?flat_type=${assetsType?.name}`;
+      }?flat_type=${assetsType?.name}&code=${theItem?.code}&number=1`;
       menus.push({
         key: theItem.name,
         name,
@@ -423,11 +419,11 @@ async function getContractMenus() {
         );
 
         let name = `${subItem.name}_${contractType?.toLowerCase()}_contract`;
-        let link = `/contracts/add/${contractType?.toLowerCase()}/${
+        let link = `/contracts/${contractType?.toLowerCase()}/${
           subItem.name
-        }_${contractType?.toLowerCase()}_contract?flat_type=${
+        }?flat_type=${
           assetsType?.name
-        }`;
+        }&code=${subItem?.code}&number=1`;
 
         subMenu.push({
           key: subItem.name,
@@ -497,40 +493,10 @@ async function getVouchersMenus() {
 
 // Generate dynamic Bills menu from Bills pattern
 async function getBillsMenus() {
-  // const res = await ApiActions.read("bill_pattern");
-
-  let res = [
-    {
-      auto_gen_entries: true,
-      auto_transfer_entry: true,
-      collection_default_date: 0,
-      commission_type: 0,
-      deportable_default_date: 0,
-      endorsement_default_date: 0,
-      gen_entries: true,
-      name: "Paid Check",
-      paper_type: 1,
-      returnable_default_date: 0,
-      code: 1,
-    },
-    {
-      auto_gen_entries: true,
-      auto_transfer_entry: true,
-      collection_default_date: 0,
-      commission_type: 0,
-      deportable_default_date: 0,
-      endorsement_default_date: 0,
-      gen_entries: true,
-      name: "Received Check",
-      paper_type: 2,
-      returnable_default_date: 0,
-      code: 2,
-    },
-  ];
-
+  const res = await ApiActions.read("bill_pattern");
   let hash = {};
 
-  for (const item of res) {
+  for (const item of res?.result) {
     if (item.list_name) {
       if (hash[item.list_name]) {
         hash[item.list_name].push(item);
@@ -552,7 +518,7 @@ async function getBillsMenus() {
       menus.push({
         key: theItem.name,
         name,
-        link: `/bills/add/${name}/${theItem?.code}`,
+        link: `/cheques/${theItem?.code}/${name}/1`,
       });
     } else {
       let subMenu = [];
@@ -560,7 +526,7 @@ async function getBillsMenus() {
         subMenu.push({
           key: subItem.name,
           name: subItem.name,
-          link: `/bills/add/${subItem?.name}/${subItem?.code}`,
+          link: `/cheques/${subItem?.code}/${subItem?.name}/1`,
         });
       }
       menus.push({
@@ -576,22 +542,39 @@ async function getBillsMenus() {
 
 const getMenu = async () => {
   const contractMenu = await getContractMenus();
-  menuData[4].children.push({
+  menuData[3].children.unshift({
     key: "Contracts 2",
     name: "Contracts",
     subChild: contractMenu,
   });
+  
 
   const billsMenus = await getBillsMenus();
-  menuData[4].children.push({
-    key: "Bills",
-    name: "Bills",
-    link: "",
-    subChild: billsMenus,
-  });
-
   const voucherMenu = await getVouchersMenus();
-  menuData[8].children.push(...voucherMenu);
+  
+
+  menuData[2].children = [
+    {
+      key: "Journal Entry",
+      name: "Journal Entry",
+      link: "/vouchers/entries/1",
+    },
+    {
+      key: "Vouchers",
+      name: "Vouchers",
+      link: "",
+      subChild: voucherMenu
+    },
+    {
+      key: "Cheques",
+      name: "Cheques",
+      link: "",
+      subChild: billsMenus,
+    }
+  ];
+  // menuData[2].children.unshift(,)
+
+
   return menuData;
 };
 

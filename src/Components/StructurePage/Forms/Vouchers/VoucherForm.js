@@ -3,7 +3,7 @@ import { VoucherHead } from "./VoucherHead";
 import { VoucherFooter } from "./VoucherFooter";
 import BlockPaper from "Components/Global/BlockPaper";
 import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FormProvider, useForm } from "react-hook-form";
 import { ApiActions } from "Helpers/Lib/api";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
@@ -16,14 +16,13 @@ import { GET_NEW_VOUCHER_ENTRY_GRID } from "Helpers/constants";
 import { usePopupForm } from "Hooks/usePopupForm";
 import {
   generateEntryFromVoucher,
-  insertIntoGrid
+  insertIntoGrid,
 } from "Helpers/Lib/operations/vouchers-insert";
+import { getAccountList } from "Helpers/Lib/operations/global-read";
 
-let CACHE_LIST = {};
 let CACHE_ROW_VALUE = {};
 
 const VoucherForm = () => {
-  const { refTable } = usePopupForm();
   const params = useParams();
   const { name, type } = params;
   const methods = useForm();
@@ -32,10 +31,13 @@ const VoucherForm = () => {
     limit: 1,
     sorts: [{ column: "number", order: "DESC", nulls: "last" }],
   });
-  const [refresh, setRefresh] = useState(false);
+
+  const [CACHE_LIST, setCACHE_LIST] = useState({});
   const [number, setNumber] = useState(params?.number);
-  const [isNewOne, setIsNewOne] = useState(false);
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
+  const navigate = useNavigate();
+  const [refresh, setRefresh] = useState(false);
+  const [maxLength, setMaxLength] = useState(0);
   const [gridFields, setGridFields] = useState([]);
 
   const {
@@ -99,6 +101,7 @@ const VoucherForm = () => {
     const col = {
       number,
       voucher_type: +type,
+      note: "",
       grid: GET_NEW_VOUCHER_ENTRY_GRID(),
     };
 
@@ -120,10 +123,8 @@ const VoucherForm = () => {
 
   useEffect(() => {
     if (loading) return;
-    if (number > (data?.at(0)?.number || 0)) {
-      setIsNewOne(true);
-    }
-  }, [loading, number, data]);
+    setMaxLength(+data?.at(0)?.number || 0);
+  }, [loading]);
 
   useEffect(() => {
     const getVoucherPattern = async () => {
@@ -136,46 +137,33 @@ const VoucherForm = () => {
   }, [type]);
 
   useEffect(() => {
-    if (refTable?.isClosed) {
-      reFetchRefTable(refTable?.table);
-    }
-  }, [refTable?.isClosed]);
-
-  const reFetchRefTable = async (table) => {
-    const response = await ApiActions.read(table);
-    if (response?.result?.length) {
-      CACHE_LIST[table] = response?.result;
-      setRefresh((p) => !p);
-    }
-  };
-
-  useEffect(() => {
     getRefTables();
-  }, [name, type]);
+  }, []);
 
   const getRefTables = async () => {
-    for (const field of [...gridFields, fields.seller_id]) {
-      if (field.is_ref) {
-        const response = await ApiActions.read(field?.ref_table, {
-          columns: ["id", field?.ref_name || "name"],
-        });
-        CACHE_LIST[field?.ref_table] = response?.result;
-
-        for (const item of response?.result) {
-          CACHE_LIST[item.id] = item.name || item.number || item.id;
-        }
-      }
+    let hash = {};
+    for (const field of ["cost_center", "currency", "seller"]) {
+      const response = await ApiActions.read(field);
+      hash[field] = response?.result;
     }
+    hash.account = await getAccountList();
+    setCACHE_LIST(hash);
   };
 
   const goTo = (num) => {
-    if (num > (data?.at(0)?.number || 0)) {
-      setIsNewOne(true);
-      reset();
-    } else {
-      setIsNewOne(false);
+    if (num > maxLength) {
+      setRefresh((p) => !p);
     }
     setNumber(num);
+  };
+
+  const onClickAddNew = () => {
+    navigate(
+      `/vouchers/${PATTERN_SETTINGS?.code}/${PATTERN_SETTINGS?.name}/${
+        +maxLength + 1
+      }`
+    );
+    setNumber(+maxLength + 1);
   };
 
   const calculateAmount = useCallback((row, val, column) => {
@@ -211,52 +199,52 @@ const VoucherForm = () => {
     return () => subscription.unsubscribe();
   }, [watch]);
 
-  const onSubmit = async (value) => {
+  const onSubmit = async () => {
+    let value = watch();
     let grid = watch("grid");
     delete value.grid;
     let values = {};
-
     let res = null;
 
-    delete value.gen_entries;
-
-    if (!isNewOne) {
+    let itemId = value.id;
+    if (maxLength >= number && value?.id) {
       res = await ApiActions.update("voucher_main_data", {
-        conditions: [{ type: "and", conditions: [["id", "=", params?.id]] }],
+        conditions: [{ type: "and", conditions: [["id", "=", value?.id]] }],
         updates: value,
       });
     } else {
       res = await ApiActions.insert("voucher_main_data", {
         data: value,
       });
+      itemId = res?.record.id;
+      setMaxLength((p) => p + 1);
+    }
+    if (res?.success) {
+      insertIntoGrid({
+        grid,
+        itemId,
+        tableName: "voucher_main_data",
+        gridTableName: "voucher_grid_data",
+        itemSearchName: "voucher_main_data_id",
+        should_update: maxLength < number,
+      });
 
-      if (res?.status) {
-        let itemId = res?.result?.at(0)?.id;
-        insertIntoGrid({
+      if (PATTERN_SETTINGS?.auto_gen_entries) {
+        // Generate A Constraint
+        console.log(values,'values');
+        generateEntryFromVoucher({
+          values: value,
+          created_from: `voucher-${name}`,
           grid,
-          itemId,
-          tableName: "voucher_main_data",
-          gridTableName: "voucher_grid_data",
-          itemSearchName: "voucher_main_data_id",
-          should_update: !isNewOne,
+          created_from_id: itemId,
+          should_update: !maxLength < number,
         });
-
-        if (PATTERN_SETTINGS?.auto_gen_entries) {
-          // Generate A Constraint
-          generateEntryFromVoucher({
-            values,
-            created_from: `voucher-${name}`,
-            grid,
-            created_from_id: itemId,
-            should_update: !isNewOne,
-          });
-        }
       }
     }
 
     if (res?.success) {
       toast.success(
-        !isNewOne
+        maxLength >= number
           ? `Successfully update row: ${values?.name} in ${name}`
           : "Successfully added item in " + name
       );
@@ -270,16 +258,16 @@ const VoucherForm = () => {
       <BlockPaper
         customTitle={
           <span className="capitalize">
-            {isNewOne ? (
+            {maxLength < number ? (
               <span className="text-red-500 ltr:mr-2 rtl:ml-2 bg-red-100 px-2 py-1 rounded-md">
-                {isNewOne ? "New" : ""}
+                {maxLength < number ? "New" : ""}
               </span>
             ) : null}
             {name?.replace("-", " ")} {number}
           </span>
         }
       >
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <VoucherHead
             fields={fields}
             name={name}
@@ -291,7 +279,7 @@ const VoucherForm = () => {
             fields={gridFields}
             tab="grid"
             errors={errors}
-            rowsCount={10}
+            rowsCount={watch("grid")?.length || 1}
             CACHE_LIST={CACHE_LIST}
             rowStyles={(index) => {
               if (PATTERN_SETTINGS?.even_table_color && index % 2 === 0) {
@@ -306,17 +294,20 @@ const VoucherForm = () => {
             name={name}
             errors={errors}
             CACHE_LIST={CACHE_LIST}
-            isNewOne={isNewOne}
+            isNewOne={maxLength < number}
             PATTERN_SETTINGS={PATTERN_SETTINGS}
           />
-          <div className="flex items-center mt-4 border-t dark:border-dark-border pt-2 justify-between">
-            <VoucherStepsButton
-              number={number}
-              goTo={goTo}
-              maxLength={data?.at(0)?.number || 0}
-              isNewOne={isNewOne}
-            />
-            <Button title="Submit" />
+          <div className="flex items-center mt-4 border-t dark:border-dark-border pt-2 justify-between gap-4">
+            {maxLength < number ? null : (
+              <VoucherStepsButton
+                number={number}
+                goTo={goTo}
+                maxLength={data?.at(0)?.number || 0}
+                isNewOne={maxLength < number}
+                onClickAddNew={onClickAddNew}
+              />
+            )}
+            <Button title="Submit" onClick={onSubmit} />
           </div>
         </form>
       </BlockPaper>

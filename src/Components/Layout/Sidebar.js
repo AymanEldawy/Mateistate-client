@@ -7,7 +7,7 @@ import { ChevronIcon, PowerIcon } from 'Components/Icons';
 import { IconsBar } from './IconsBar';
 import { useTranslation } from 'react-i18next';
 
-const Sidebar = ({ open }) => {
+const Sidebar = ({ open, menu }) => {
   const [dropdown, setDropdown] = React.useState(false);
   const { t } = useTranslation();
 
@@ -121,7 +121,7 @@ const Sidebar = ({ open }) => {
   };
   return (
     <aside
-      className={`lg:hidden fixed w-72 flex flex-col h-screen shadow z-50 transition-transform duration-300 bg-white dark:bg-dark-bg ${
+      className={`lg:hidden fixed w-72 flex flex-col h-screen shadow z-[101] transition-transform duration-300 bg-white dark:bg-dark-bg ${
         open ? 'left-0' : '-left-72'
       }`}
     >
@@ -136,7 +136,7 @@ const Sidebar = ({ open }) => {
         <IconsBar />
       </div>
       <ul className="flex-col flex-1 overflow-auto max-h-screen text-gray-500 dark:text-gray-400 text-sm font-medium min-h-[40px] flex items-start justify-between capitalize">
-        {list(menuData)}
+        {list(menu)}
         <li className="relative w-full">
           <button
             className={`whitespace-nowrap gap-3 flex items-center text-red-500 ltr:hover:pl-6 rtl:hover:pr-6 hover:bg-red-500 hover:text-white duration-300 py-2 w-full `}

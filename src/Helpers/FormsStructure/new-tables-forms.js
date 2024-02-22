@@ -1,6 +1,5 @@
 import {
   ACCOUNTING_VOUCHER_PATTERN_STEPS,
-  ACTIONS,
   APARTMENT_STEPS,
   ASSETS_STEPS,
   BILL_PATTERN_STEPS,
@@ -13,17 +12,25 @@ import {
   VOUCHER_PATTERN_STEPS,
 } from "Helpers/constants";
 import { CONTRACTS_FORM } from "./contract";
+import FIELDS_STRUCTURE from "./fields-structure";
 
 const land = [
-  { name: "id", type: "uuid", required: false },
-  { name: "created_at", type: "date", required: false },
-  { name: "number", type: "text", required: true },
-  { name: "type", type: "number", required: false },
-  { name: "ban", type: "boolean", key: "switch", required: false },
-  { name: "land_no", type: "text", required: false },
-  { name: "name", type: "text", required: false },
-  { name: "last_name", type: "text", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
+  FIELDS_STRUCTURE.number(),
+  FIELDS_STRUCTURE.name(),
+  { label: "type", name: "type", type: "number", required: false },
   {
+    label: "ban",
+    name: "ban",
+    type: "boolean",
+    key: "switch",
+    required: false,
+  },
+  { label: "land_no", name: "land_no", type: "text", required: false },
+  { label: "last_name", name: "last_name", type: "text", required: false },
+  {
+    label: "customer_id",
     name: "customer_id",
     type: "uuid",
     required: false,
@@ -31,60 +38,86 @@ const land = [
     ref_table: "account",
     ref_col: "id",
   },
-  { name: "date", type: "date", required: false },
-  { name: "city", type: "text", required: false },
-  { name: "region", type: "text", required: false },
-  { name: "space", type: "text", required: false },
-  { name: "area", type: "number", required: false },
-  { name: "area_unit", type: "text", required: false },
-  { name: "price", type: "number", required: false },
-  { name: "license_no", type: "text", required: false },
-  { name: "license", type: "text", required: false },
-  { name: "license_date", type: "date", required: false },
-  { name: "details", type: "text", required: false },
-  { name: "land_type", type: "number", required: false },
-  { name: "side", type: "text", required: false },
-  { name: "street_name", type: "text", required: false },
-  { name: "street_count", type: "number", required: false },
-  { name: "buildble", type: "boolean", key: "switch", required: false },
-  { name: "landowner", type: "number", required: false },
-  { name: "begin_land_value", type: "number", required: false },
+  { label: "date", name: "date", type: "date", required: false },
+  { label: "city", name: "city", type: "text", required: false },
+  { label: "region", name: "region", type: "text", required: false },
+  { label: "space", name: "space", type: "text", required: false },
+  { label: "area", name: "area", type: "number", required: false },
+  { label: "area_unit", name: "area_unit", type: "text", required: false },
+  { label: "price", name: "price", type: "number", required: false },
+  { label: "license_no", name: "license_no", type: "text", required: false },
+  { label: "license", name: "license", type: "text", required: false },
   {
+    label: "license_date",
+    name: "license_date",
+    type: "date",
+    required: false,
+  },
+  { label: "details", name: "details", type: "text", required: false },
+  { label: "land_type", name: "land_type", type: "number", required: false },
+  { label: "side", name: "side", type: "text", required: false },
+  { label: "street_name", name: "street_name", type: "text", required: false },
+  {
+    label: "street_count",
+    name: "street_count",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "buildble",
+    name: "buildble",
+    type: "boolean",
+    key: "switch",
+    required: false,
+  },
+  { label: "landowner", name: "landowner", type: "number", required: false },
+  {
+    label: "begin_land_value",
+    name: "begin_land_value",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "currency_begin_land_id",
     name: "currency_begin_land_id",
     type: "uuid",
     required: false,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
-  { name: "currency_val_begin_land", type: "number", required: false },
   {
+    label: "currency_val_begin_land",
+    name: "currency_val_begin_land",
+    type: "number",
+    required: false,
+  },
+
+  FIELDS_STRUCTURE.cost_center({
+    label: "begin_land_cost_center_id",
     name: "begin_land_cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
-  {
+  }),
+
+  FIELDS_STRUCTURE.currency({
+    label: "currency_purchase_id",
     name: "currency_purchase_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
-  { name: "currency_val_purchase", type: "number", required: false },
-  { name: "purchase_note", type: "text", required: false },
+  }),
   {
-    name: "account_id",
-    type: "uuid",
+    label: "currency_val_purchase",
+    name: "currency_val_purchase",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
   },
   {
+    label: "purchase_note",
+    name: "purchase_note",
+    type: "text",
+    required: false,
+  },
+  FIELDS_STRUCTURE.account(),
+  {
+    label: "cuowner_id",
     name: "cuowner_id",
     type: "uuid",
     required: false,
@@ -93,15 +126,9 @@ const land = [
     ref_col: "id",
     ref_name: "full_name",
   },
+  FIELDS_STRUCTURE.cost_center(),
   {
-    name: "cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
-  {
+    label: "bank_account_id",
     name: "bank_account_id",
     type: "uuid",
     required: false,
@@ -109,8 +136,14 @@ const land = [
     ref_table: "bank", // unknown table
     ref_col: "id",
   },
-  { name: "commission_percent", type: "number", required: false },
   {
+    label: "commission_percent",
+    name: "commission_percent",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "account_comm_income_id",
     name: "account_comm_income_id",
     type: "uuid",
     required: false,
@@ -118,8 +151,14 @@ const land = [
     ref_table: "account",
     ref_col: "id",
   },
-  { name: "used_end_date", type: "date", required: false },
   {
+    label: "used_end_date",
+    name: "used_end_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "customer_owner_id",
     name: "customer_owner_id",
     type: "uuid",
     required: false,
@@ -129,6 +168,7 @@ const land = [
     ref_name: "full_name",
   },
   {
+    label: "owner_account_id",
     name: "owner_account_id",
     type: "uuid",
     required: false,
@@ -137,25 +177,49 @@ const land = [
     ref_col: "id",
     ref_name: "full_name",
   },
-  { name: "identity_value", type: "number", required: false },
   {
+    label: "identity_value",
+    name: "identity_value",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "currency_identity_id",
     name: "currency_identity_id",
     type: "uuid",
     required: false,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
-  { name: "currency_valid_entity", type: "number", required: false },
-  { name: "identity_begin_date", type: "date", required: false },
-  { name: "identity_end_date", type: "date", required: false },
   {
+    label: "currency_valid_entity",
+    name: "currency_valid_entity",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "identity_begin_date",
+    name: "identity_begin_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "identity_end_date",
+    name: "identity_end_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "create_entry_investment",
     name: "create_entry_investment",
     type: "boolean",
     key: "switch",
     required: false,
   },
   {
+    label: "identity_entry_id",
     name: "identity_entry_id",
     type: "uuid",
     required: false,
@@ -163,30 +227,42 @@ const land = [
     ref_table: "identity_entry", // unknown table
     ref_col: "id",
   },
-  { name: "identity_note", type: "text", required: false },
-  { name: "ltn_land_type", type: "text", required: false },
-  { name: "ltn_city", type: "text", required: false },
-  { name: "ltn_region", type: "text", required: false },
-  { name: "ltn_space", type: "text", required: false },
-  { name: "ltn_license", type: "text", required: false },
-  { name: "ltn_side", type: "text", required: false },
-  { name: "rent", type: "number", required: false },
   {
+    label: "identity_note",
+    name: "identity_note",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "ltn_land_type",
+    name: "ltn_land_type",
+    type: "text",
+    required: false,
+  },
+  { label: "ltn_city", name: "ltn_city", type: "text", required: false },
+  { label: "ltn_region", name: "ltn_region", type: "text", required: false },
+  { label: "ltn_space", name: "ltn_space", type: "text", required: false },
+  { label: "ltn_license", name: "ltn_license", type: "text", required: false },
+  { label: "ltn_side", name: "ltn_side", type: "text", required: false },
+  { label: "rent", name: "rent", type: "number", required: false },
+  {
+    label: "rent_currency_id",
     name: "rent_currency_id",
     type: "uuid",
     required: false,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
 ];
 
 // voucher
 /*
-  { name: "mulct_price", type: "number", required: false },
+  { label: 'mulct_price', name: "mulct_price", type: "number", required: false },
 
 {
-  name: "mulct_debit_id",
+  label: 'mulct_debit_id', name: "mulct_debit_id",
   type: "uuid",
   required: false,
   is_ref: true,
@@ -194,45 +270,34 @@ const land = [
   ref_col: "id",
 },
 {
-  name: "mulct_credit_id",
+  label: 'mulct_credit_id', name: "mulct_credit_id",
   type: "uuid",
   required: false,
   is_ref: true,
   ref_table: "account",
   ref_col: "id",
 },
-{ name: "mulct_note", type: "text", required: false },
+{ label: 'mulct_note', name: "mulct_note", type: "text", required: false },
 */
 
 // ==== Start Cards
 const account = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  {
-    label: "number",
-    name: "number",
-    type: "number",
-    required: true,
-    // hide_in_form: true,
-  },
-  { label: "name", name: "name", type: "text", required: true },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
+  FIELDS_STRUCTURE.number(),
+  FIELDS_STRUCTURE.name(),
   {
     label: "type",
     name: "type",
     key: "select",
     intValue: true,
+    selectFirstAsDefault: true,
     list: SELECT_LISTS("account_type"),
     required: true,
   },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
+  FIELDS_STRUCTURE.currency({
+    hideValue: true,
+  }),
   {
     label: "parent_id",
     name: "parent_id",
@@ -251,11 +316,11 @@ const account = [
     ref_table: "account",
     ref_col: "id",
   },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.note(),
 ];
 
 const lessor = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   { label: "full_name", name: "full_name", type: "text", required: true },
   { label: "passport", name: "passport", type: "number", required: false },
   {
@@ -271,27 +336,36 @@ const lessor = [
     type: "number",
     required: false,
   },
-  { label: "cell_phone", name: "cell_phone", type: "number", required: false },
-  { label: "number", name: "number", type: "number", required: false },
-  { label: "address", name: "address", type: "text", required: false },
   {
-    label: "nationality",
-    name: "nationality",
+    label: "cell_phone",
+    name: "cell_phone",
+    type: "number",
     required: false,
-    key: "select",
-    intValue: true,
-    list: SELECT_LISTS("nationality_list"),
   },
+  {
+    label: "number",
+    name: "number",
+    type: "number",
+    required: false,
+    hide_in_form: true,
+  },
+  {
+    label: "address",
+    name: "address",
+    type: "text",
+    required: false,
+  },
+  FIELDS_STRUCTURE.nationality(),
   { label: "mobile", name: "mobile", type: "text", required: false },
   { label: "fax", name: "fax", type: "text", required: false },
   { label: "mailbox", name: "mailbox", type: "text", required: false },
   { label: "email", name: "email", type: "text", required: false },
-  { label: "Note", name: "note", type: "text", required: false },
+  { label: "note", name: "note", type: "text", required: false },
   { label: "role", name: "role", type: "text", required: false },
 ];
 
 const owner = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   { label: "full_name", name: "full_name", type: "text", required: true },
   { label: "id_card", name: "id_card", type: "text", required: false },
   { label: "phone", name: "phone", type: "text", required: false },
@@ -300,28 +374,14 @@ const owner = [
   { label: "mailbox", name: "mailbox", type: "text", required: false },
   { label: "email", name: "email", type: "text", required: false },
   { label: "address", name: "address", type: "text", required: false },
-  {
-    label: "nationality",
-    name: "nationality",
-    required: false,
-    key: "select",
-    intValue: true,
-    list: SELECT_LISTS("nationality_list"),
-  },
+  FIELDS_STRUCTURE.nationality(),
 ];
 
 const seller = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   { label: "full_name", name: "full_name", type: "text", required: true },
-  {
-    label: "nationality",
-    name: "nationality",
-    required: false,
-    key: "select",
-    intValue: true,
-    list: SELECT_LISTS("nationality_list"),
-  },
+  FIELDS_STRUCTURE.nationality(),
   { label: "id_card", name: "id_card", type: "number", required: false },
   { label: "passport", name: "passport", type: "number", required: false },
   {
@@ -348,13 +408,25 @@ const seller = [
     type: "number",
     required: true,
   },
-  { label: "statement", name: "statement", type: "text", required: false },
+  {
+    label: "statement",
+    name: "statement",
+    type: "text",
+    required: false,
+  },
 ];
 
 const user = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "number", name: "number", type: "number", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  {
+    label: "number",
+    name: "number",
+    type: "number",
+    required: false,
+    hide_in_form: true,
+  },
+  FIELDS_STRUCTURE.name(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "card_type",
     name: "card_type",
@@ -362,6 +434,7 @@ const user = [
     key: "select",
     intValue: true,
     list: SELECT_LISTS("user_type"),
+    selectFirstAsDefault: true,
   },
   {
     label: "account_id",
@@ -371,12 +444,13 @@ const user = [
     is_ref: true,
     ref_table: "account",
     ref_col: "id",
+    hide_in_form: true,
   },
   {
     label: "date_of_birth",
     name: "date_of_birth",
     type: "date",
-    required: true,
+    required: false,
   },
   {
     label: "passport_number",
@@ -400,34 +474,84 @@ const user = [
     name: "national_id_expiry",
     type: "date",
   },
-  { label: "address", name: "address", type: "text", required: false },
-  { label: "user_type", name: "user_type", type: "number", required: false },
+  {
+    label: "address",
+    name: "address",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "user_type",
+    name: "user_type",
+    type: "number",
+    required: false,
+  },
   {
     label: "commercial_register",
     name: "commercial_register",
     type: "text",
     required: false,
   },
-  { label: "barcode", name: "barcode", type: "number", required: false },
-  { label: "profession", name: "profession", type: "number", required: false },
-  { label: "work_phone", name: "work_phone", type: "text", required: false },
+  {
+    label: "barcode",
+    name: "barcode",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "profession",
+    name: "profession",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "work_phone",
+    name: "work_phone",
+    type: "text",
+    required: false,
+  },
   {
     label: "personal_phone",
     name: "personal_phone",
     type: "text",
     required: false,
   },
-  { label: "fax", name: "fax", type: "text", required: false },
-  { label: "mailbox", name: "mailbox", type: "text", required: false },
-  { label: "email", name: "email", type: "text", required: false },
-  { label: "sponsor", name: "sponsor", type: "number", required: false },
+  {
+    label: "fax",
+    name: "fax",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "mailbox",
+    name: "mailbox",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "email",
+    name: "email",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "sponsor",
+    name: "sponsor",
+    type: "number",
+    required: false,
+  },
   {
     label: "sponsor_data",
     name: "sponsor_data",
     type: "text",
     required: false,
   },
-  { label: "statement", name: "statement", type: "text", required: false },
+  {
+    label: "statement",
+    name: "statement",
+    type: "text",
+    required: false,
+  },
 
   {
     label: "insurance_account_id",
@@ -453,28 +577,37 @@ const user = [
     type: "text",
     required: false,
   },
-  { label: "files", name: "files", key: "image" },
+  FIELDS_STRUCTURE.nationality(),
   {
-    label: "nationality",
-    name: "nationality",
-    required: false,
-    key: "select",
-    intValue: true,
-    list: SELECT_LISTS("nationality_list"),
+    label: "files",
+    name: "files",
+    key: "image",
   },
 ];
+
 const bank = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "address", name: "address", type: "text", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
+  FIELDS_STRUCTURE.name(),
+  {
+    label: "address",
+    name: "address",
+    type: "text",
+    required: false,
+  },
 ];
 
 const cost_center = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "number", name: "number", type: "number", required: false },
-  { label: "name", name: "name", type: "text", required: true },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
+  {
+    label: "number",
+    name: "number",
+    type: "number",
+    required: false,
+    hide_in_form: true,
+  },
+  FIELDS_STRUCTURE.name(),
   {
     label: "parent_id",
     name: "parent_id",
@@ -484,28 +617,42 @@ const cost_center = [
     ref_table: "cost_center",
     ref_col: "id",
   },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.note(),
 ];
 
 const country = [
   { label: "id", name: "id", type: "number", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "code", name: "code", type: "text", required: false },
-];
-const currency = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "code", name: "code", type: "text", required: false },
-  { label: "rate", name: "rate", type: "number", required: false },
+  FIELDS_STRUCTURE.created_at(),
+  FIELDS_STRUCTURE.name(),
+  {
+    label: "code",
+    name: "code",
+    type: "text",
+    required: false,
+  },
 ];
 
-//  === building card
+const currency = [
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.name(),
+  {
+    label: "code",
+    name: "code",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "rate",
+    name: "rate",
+    type: "number",
+    required: false,
+  },
+];
 
 const building = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  // { label: "number", name: "number", type: "text", required: true },
-  { label: "name", name: "name", type: "text", required: true },
+  FIELDS_STRUCTURE.id(),
+  // {  label: 'number', name: "number", type: "text", required: true },
+  FIELDS_STRUCTURE.name(),
   { label: "emirate", name: "emirate", type: "text", required: false },
   { label: "suburb", name: "suburb", type: "text", required: false },
   { label: "area", name: "area", type: "text", required: false },
@@ -517,16 +664,36 @@ const building = [
     required: false,
     hide_in_form: true,
   },
-  { label: "part_number", name: "part_number", type: "text", required: false },
+  {
+    label: "part_number",
+    name: "part_number",
+    type: "text",
+    required: false,
+  },
   {
     label: "basin_number",
     name: "basin_number",
     type: "text",
     required: false,
   },
-  { label: "bond_number", name: "bond_number", type: "text", required: false },
-  { label: "bond_type", name: "bond_type", type: "text", required: false },
-  { label: "bond_date", name: "bond_date", type: "date", required: false },
+  {
+    label: "bond_number",
+    name: "bond_number",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "bond_type",
+    name: "bond_type",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "bond_date",
+    name: "bond_date",
+    type: "date",
+    required: false,
+  },
   {
     label: "owner_id",
     name: "owner_id",
@@ -544,33 +711,11 @@ const building = [
     key: "switch",
     required: false,
   },
-  { label: "statement", name: "statement", type: "text", required: false },
   {
-    label: "construction_account_id",
-    name: "construction_account_id",
-    type: "uuid",
+    label: "statement",
+    name: "statement",
+    type: "text",
     required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  {
-    label: "main_cost_center_id",
-    name: "main_cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
-  {
-    label: "building_bank_account_id",
-    name: "building_bank_account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account", // unknown table
-    ref_col: "id",
   },
   {
     label: "lessor_id",
@@ -589,8 +734,43 @@ const building = [
     required: false,
   },
   {
+    label: "purchase_date",
+    name: "purchase_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "amount",
+    name: "amount",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.currency(),
+  // {
+  //   label: "currency_val",
+  //   name: "currency_val",
+  //   defaultValue: 1,
+  //   type: "number",
+  //   required: false,
+  // },
+  // {
+  //   label: "gen_entries",
+  //   name: "gen_entries",
+  //   type: "checkbox",
+  //   key: "switch",
+  //   required: false,
+  // },
+];
+const building_apartments = [
+  {
     label: "apartment_count",
     name: "apartment_count",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "apartment_floor",
+    name: "apartment_floor",
     type: "number",
     required: false,
   },
@@ -601,87 +781,14 @@ const building = [
     required: false,
   },
   {
-    label: "parking_count",
-    name: "parking_count",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "mezzanine_count",
-    name: "mezzanine_count",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "office_count",
-    name: "office_count",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "warehouse_count",
-    name: "warehouse_count",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "service_apartments",
-    name: "service_apartments",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "drivers_apartments",
-    name: "drivers_apartments",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "stores_count",
-    name: "stores_count",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "purchase_date",
-    name: "purchase_date",
-    type: "date",
-    required: false,
-  },
-  { label: "amount", name: "amount", type: "number", required: false },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
-  {
-    label: "Currency Value",
-    name: "currency_val",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "account_id",
-    name: "account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  {
-    label: "apartment_floor",
-    name: "apartment_floor",
-    type: "number",
-    required: false,
-  },
-  {
     label: "penthouse_floor",
     name: "penthouse_floor",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "parking_count",
+    name: "parking_count",
     type: "number",
     required: false,
   },
@@ -692,8 +799,20 @@ const building = [
     required: false,
   },
   {
+    label: "mezzanine_count",
+    name: "mezzanine_count",
+    type: "number",
+    required: false,
+  },
+  {
     label: "mezzanine_floor",
     name: "mezzanine_floor",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "office_count",
+    name: "office_count",
     type: "number",
     required: false,
   },
@@ -704,59 +823,45 @@ const building = [
     required: false,
   },
   {
+    label: "stores_count",
+    name: "stores_count",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "warehouse_count",
+    name: "warehouse_count",
+    type: "number",
+    required: false,
+  },
+  // {
+  //   label: "service_apartments",
+  //   name: "service_apartments",
+  //   type: "number",
+  //   required: false,
+  // },
+  // {
+  //   label: "drivers_apartments",
+  //   name: "drivers_apartments",
+  //   type: "number",
+  //   required: false,
+  // },
+  {
     label: "underground_parking",
     name: "underground_parking",
     type: "number",
     required: false,
   },
-  {
-    label: "bank_id",
-    name: "bank_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "bank",
-    ref_col: "id",
-  },
-  {
-    label: "gen_entries",
-    name: "gen_entries",
-    type: "checkbox",
-    key: "switch",
-    required: false,
-  },
 ];
 
 const building_buying = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "amount", name: "amount", type: "number", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
-    label: "gen_entries",
-    name: "gen_entries",
-    type: "checkbox",
-    key: "switch",
+    label: "amount",
+    name: "amount",
+    type: "number",
     required: false,
-  },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-    nested: "buying",
-  },
-  {
-    label: "building_id",
-    name: "building_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "building",
-    ref_col: "id",
-    hide_in_form_add: true,
   },
   {
     label: "supplier_account_id",
@@ -767,11 +872,37 @@ const building_buying = [
     ref_table: "account",
     ref_col: "id",
   },
-  { label: "statement", name: "statement", type: "text", required: false },
+  {
+    label: "currency_id",
+    name: "currency_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "currency",
+    ref_name: "code",
+    ref_col: "id",
+    nested: "buying",
+    hideValue: true,
+  },
+
+  {
+    label: "statement",
+    name: "statement",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "gen_entries",
+    name: "gen_entries",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
 ];
+
 const building_editorial_entry = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "building_id",
     name: "building_id",
@@ -789,8 +920,9 @@ const building_editorial_entry = [
     required: false,
   },
 ];
+
 const building_investment = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   {
     label: "building_id",
     name: "building_id",
@@ -802,15 +934,19 @@ const building_investment = [
     hide_in_form_add: true,
   },
   {
-    label: "owner_id",
+    label: "owner_account_id",
     name: "owner_id",
     type: "uuid",
     required: false,
     is_ref: true,
-    // ref_table: "owner",
     ref_table: "account",
     ref_col: "id",
-    // ref_name: "full_name",
+  },
+  {
+    label: "investment_value",
+    name: "investment_value",
+    type: "number",
+    required: false,
   },
   {
     label: "investment_start_date",
@@ -824,41 +960,15 @@ const building_investment = [
     type: "date",
     required: false,
   },
-  {
-    label: "terminating_tenancies",
-    name: "terminating_tenancies",
-    type: "checkbox",
-    key: "switch",
-    required: false,
-  },
-  {
-    label: "investment_value",
-    name: "investment_value",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "gen_entries",
-    name: "gen_entries",
-    type: "checkbox",
-    key: "switch",
-    required: false,
-  },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
-  {
-    label: "Currency Value",
-    name: "currency_val",
-    type: "number",
-    required: false,
-  },
+
+  FIELDS_STRUCTURE.currency(),
+  // {
+  //   label: "currency_val",
+  //   name: "currency_val",
+  //   defaultValue: 1,
+  //   type: "number",
+  //   required: false,
+  // },
   {
     label: "tenants",
     name: "tenants",
@@ -877,10 +987,26 @@ const building_investment = [
     ref_table: "account",
     ref_col: "id",
   },
+  {
+    label: "terminating_tenancies",
+    name: "terminating_tenancies",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+
+  {
+    label: "gen_entries",
+    name: "gen_entries",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
 ];
+
 const building_pictures = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "picture",
     name: "picture",
@@ -902,46 +1028,32 @@ const building_pictures = [
 ];
 
 const building_real_estate_development = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.account(),
   {
-    label: "account_id",
-    name: "account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  {
-    label: "building_receipt",
-    name: "building_receipt",
-    type: "checkbox",
-    key: "switch",
+    label: "amount",
+    name: "amount",
+    type: "number",
     required: false,
   },
+
+  FIELDS_STRUCTURE.currency(),
+  // {
+  //   label: "currency_val",
+  //   name: "currency_val",
+  //   defaultValue: 1,
+  //   type: "number",
+  //   required: false,
+  // },
+
   {
     label: "received_date",
     name: "received_date",
     type: "date",
     required: false,
   },
-  { label: "amount", name: "amount", type: "number", required: false },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
-  {
-    label: "Currency Value",
-    name: "currency_val",
-    type: "number",
-    required: false,
-  },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.note(),
+
   {
     label: "building_id",
     name: "building_id",
@@ -952,9 +1064,17 @@ const building_real_estate_development = [
     ref_col: "id",
     hide_in_form_add: true,
   },
+  {
+    label: "building_receipt",
+    name: "building_receipt",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
 ];
+
 const building_real_estate_management = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   {
     label: "owner_id",
     name: "owner_id",
@@ -992,158 +1112,127 @@ const building_real_estate_management = [
   },
 ];
 
+const building_default_accounts = [
+  {
+    label: "building_id",
+    name: "building_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "building",
+    ref_col: "id",
+    hide_in_form_add: true,
+  },
+  // FIELDS_STRUCTURE.account({
+  //   label: "building_account_id",
+  //   name: "building_account_id",
+  //   disabledCondition: "building.create_into_account",
+  // }),
+  // {
+  //   label: "create_into_account",
+  //   name: "create_into_account",
+  //   type: "checkbox",
+  //   required: false,
+  //   key: "switch",
+  //   readOnlyValue: "building.name",
+  // },
+  // FIELDS_STRUCTURE.account({
+  //   label: "create_into_account_id",
+  //   name: "create_into_account_id",
+  // }),
+  // FIELDS_STRUCTURE.cost_center({
+  //   label: "main_cost_center_id",
+  //   name: "main_cost_center_id",
+  //   disabledCondition: "building.create_into_cost_center",
+  // }),
+  // {
+  //   label: "create_into_cost_center",
+  //   name: "create_into_cost_center",
+  //   type: "checkbox",
+  //   required: false,
+  //   key: "switch",
+  //   readOnlyValue: "building.name",
+  // },
+  // {
+  //   label: "create_into_cost_center_id",
+  //   name: "create_into_cost_center_id",
+  //   type: "uuid",
+  //   required: false,
+  //   is_ref: true,
+  //   ref_table: "create_into_cost_center",
+  //   ref_col: "id",
+  // },
+  FIELDS_STRUCTURE.account({
+    label: "building_bank_account_id",
+    name: "building_bank_account_id",
+  }),
+
+  FIELDS_STRUCTURE.account({
+    label: "building_cash_account_id",
+    name: "building_cash_account_id",
+  }),
+  FIELDS_STRUCTURE.account({
+    label: "building_deposit_account_id",
+    name: "building_deposit_account_id",
+  }),
+
+  FIELDS_STRUCTURE.account({
+    label: "building_cheque_account_id",
+    name: "building_cheque_account_id",
+  }),
+
+  FIELDS_STRUCTURE.account({ label: "vat_account_id", name: "vat_account_id" }),
+
+  FIELDS_STRUCTURE.account({
+    label: "deferred_vat_account_id",
+    name: "deferred_vat_account_id",
+  }),
+  FIELDS_STRUCTURE.account({
+    label: "owner_balance",
+    name: "owner_balance",
+  }),
+
+  FIELDS_STRUCTURE.account({
+    label: "owner_tax_account_id",
+    name: "owner_tax_account_id",
+  }),
+
+  FIELDS_STRUCTURE.account({
+    label: "commission_expense_account_id",
+    name: "commission_expense_account_id",
+  }),
+
+  FIELDS_STRUCTURE.account({
+    label: "realestate_company_account_id",
+    name: "realestate_company_account_id",
+  }),
+
+  FIELDS_STRUCTURE.account({
+    label: "customers_main_account_id",
+    name: "customers_main_account_id",
+  }),
+];
+
 // ==== End Cards
 
 // ==== Start accounting_voucher
 
-const accounting_voucher_grid_data = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  {
-    label: "account_id",
-    name: "account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  { label: "debit", name: "debit", type: "number", required: false },
-  { label: "credit", name: "credit", type: "number", required: false },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
-  {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
-  {
-    label: "obverse_account_id",
-    name: "obverse_account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  {
-    label: "voucher_main_data_id",
-    name: "voucher_main_data_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "accounting_voucher_main_data", // unknown table
-    ref_col: "id",
-  },
-  { label: "Note", name: "note", type: "text", required: false },
-];
-
-const accounting_voucher_main_data = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { name: "number", type: "text", required: true },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
-  {
-    label: "Currency Value",
-    name: "currency_val",
-    type: "number",
-    required: false,
-  },
-  { label: "Note", name: "note", type: "text", required: false },
-  { label: "debit", name: "debit", type: "number", required: false },
-  { label: "credit", name: "credit", type: "number", required: false },
-  {
-    label: "feedback",
-    name: "feedback",
-    type: "checkbox",
-    required: false,
-    key: "switch",
-  },
-  {
-    label: "seller_id",
-    name: "seller_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "seller",
-    ref_col: "id",
-    ref_name: "full_name",
-  },
-  {
-    label: "connect_with",
-    name: "connect_with",
-    key: "select",
-    required: false,
-    list: SELECT_LISTS("contract_connect_with"),
-  },
-  {
-    label: "debit_amount",
-    name: "debit_amount",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "debit_total",
-    name: "debit_total",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "credit_total",
-    name: "credit_total",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "credit_amount",
-    name: "credit_amount",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "account_id",
-    name: "account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  { label: "sms", name: "sms", type: "text", required: false },
-  {
-    label: "gen_entries",
-    name: "gen_entries",
-    type: "checkbox",
-    key: "switch",
-    required: false,
-  },
-];
-
 const accounting_voucher_pattern_general = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "code", name: "code", type: "number", required: false },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "list_name", name: "list_name", type: "text", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
+  {
+    label: "code",
+    name: "code",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.name(),
+  {
+    label: "list_name",
+    name: "list_name",
+    type: "text",
+    required: false,
+  },
   {
     label: "default_account_id",
     name: "default_account_id",
@@ -1194,6 +1283,7 @@ const accounting_voucher_pattern_general = [
     key: "switch",
   },
 ];
+
 const accounting_voucher_pattern_fields = [
   {
     label: "show_debit_field",
@@ -1255,8 +1345,14 @@ const accounting_voucher_pattern_fields = [
     required: false,
   },
 ];
+
 const accounting_voucher_pattern_sms = [
-  { label: "sms", name: "sms", type: "text", required: false },
+  {
+    label: "sms",
+    name: "sms",
+    type: "text",
+    required: false,
+  },
 ];
 
 const accounting_voucher_pattern_group = {
@@ -1277,8 +1373,8 @@ const accounting_voucher_pattern_group = {
 };
 
 const accounting_voucher_pictures = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "picture",
     name: "picture",
@@ -1302,7 +1398,7 @@ const accounting_voucher_pictures = [
 // ==== Start apartment
 
 const apartment = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   {
     label: "building_id",
     name: "building_id",
@@ -1318,7 +1414,12 @@ const apartment = [
     type: "text",
     required: true,
   },
-  { label: "floor_no", name: "floor_no", type: "number", required: false },
+  {
+    label: "floor_no",
+    name: "floor_no",
+    type: "number",
+    required: false,
+  },
   {
     label: "flat_type",
     name: "flat_type",
@@ -1327,11 +1428,36 @@ const apartment = [
     list: SELECT_LISTS("apartment_flat_type"),
     required: true,
   },
-  { label: "description", name: "description", type: "text", required: false },
-  { label: "category", name: "category", type: "text", required: false },
-  { label: "area", name: "area", type: "number", required: false },
-  { label: "area_unit", name: "area_unit", type: "text", required: false },
-  { label: "view", name: "view", type: "text", required: false },
+  {
+    label: "description",
+    name: "description",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "category",
+    name: "category",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "area",
+    name: "area",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "area_unit",
+    name: "area_unit",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "view",
+    name: "view",
+    type: "text",
+    required: false,
+  },
   {
     label: "bathroom_count",
     name: "bathroom_count",
@@ -1351,24 +1477,11 @@ const apartment = [
     required: false,
     key: "switch",
   },
-  {
+  FIELDS_STRUCTURE.cost_center({
     label: "main_cost_center_id",
     name: "main_cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
-  {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
+  }),
+  FIELDS_STRUCTURE.cost_center(),
   {
     label: "property_type",
     name: "property_type",
@@ -1389,10 +1502,30 @@ const apartment = [
     type: "number",
     required: false,
   },
-  { label: "statement", name: "statement", type: "text", required: false },
-  { label: "x_index", name: "x_index", type: "number", required: true },
-  { label: "y_index", name: "y_index", type: "number", required: true },
-  { label: "room_count", name: "room_count", type: "number", required: false },
+  {
+    label: "statement",
+    name: "statement",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "x_index",
+    name: "x_index",
+    type: "number",
+    required: true,
+  },
+  {
+    label: "y_index",
+    name: "y_index",
+    type: "number",
+    required: true,
+  },
+  {
+    label: "room_count",
+    name: "room_count",
+    type: "number",
+    required: false,
+  },
   {
     label: "property_values_id",
     name: "property_values_id",
@@ -1403,8 +1536,19 @@ const apartment = [
     ref_col: "id",
     ref_name: "row_index",
   },
-  { label: "hex", name: "hex", type: "text", required: false, readOnly: true },
-  { label: "cost_price", name: "cost_price", type: "number", required: false },
+  {
+    label: "hex",
+    name: "hex",
+    type: "text",
+    required: false,
+    readOnly: true,
+  },
+  {
+    label: "cost_price",
+    name: "cost_price",
+    type: "number",
+    required: false,
+  },
   {
     label: "amount_paid",
     name: "amount_paid",
@@ -1418,13 +1562,14 @@ const apartment = [
     required: false,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.note(),
 ];
 
 const apartment_pictures = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   {
     label: "apartment_id",
     name: "apartment_id",
@@ -1433,7 +1578,7 @@ const apartment_pictures = [
     is_ref: true,
     ref_table: "apartment",
     ref_col: "id",
-    hide_in_form: true
+    hide_in_form: true,
   },
   {
     label: "picture",
@@ -1444,8 +1589,9 @@ const apartment_pictures = [
     key: "image",
   },
 ];
+
 const property_values = [
-  // { label: "id", name: "id", type: "uuid", required: false, hide_in_form: true },
+  // {  label: 'id', name: "id", type: "uuid", required: false, hide_in_form: true },
   {
     label: "row_index",
     name: "row_index",
@@ -1453,7 +1599,12 @@ const property_values = [
     required: false,
     hide_in_form: true,
   },
-  { label: "hex", name: "hex", type: "color", required: false },
+  {
+    label: "hex",
+    name: "hex",
+    type: "color",
+    required: false,
+  },
   {
     label: "room_count",
     name: "room_count",
@@ -1461,32 +1612,44 @@ const property_values = [
     required: false,
     readOnly: true,
   },
-  { label: "Note", name: "note", type: "text", required: false },
-  { label: "area", name: "area", type: "number", required: false },
-  { label: "area_unit", name: "area_unit", type: "text", required: false },
-  { label: "view", name: "view", type: "text", required: false },
+  {
+    label: "description",
+    name: "description",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "area",
+    name: "area",
+    type: "number",
+    required: false,
+    key: "area",
+  },
   // {
-  //   label: "bathroom_count",
-  //   name: "bathroom_count",
-  //   type: "number",
+  //   label: "area_unit",
+  //   name: "area_unit",
+  //   type: "text",
   //   required: false,
   // },
-  // {
-  //   label: "balcony_count",
-  //   name: "balcony_count",
-  //   type: "number",
-  //   required: false,
-  // },
+  {
+    label: "view",
+    name: "view",
+    type: "text",
+    required: false,
+  },
   {
     label: "property_type",
     name: "property_type",
     key: "select",
     required: false,
+    intValue: true,
     list: SELECT_LISTS("flat_property_type"),
+    selectFirstAsDefault: true,
   },
 ];
+
 const apartment_rental_price = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   {
     label: "apartment_id",
     name: "apartment_id",
@@ -1496,20 +1659,23 @@ const apartment_rental_price = [
     ref_table: "apartment",
     ref_col: "id",
   },
-  { label: "date", name: "date", type: "date", required: false },
-  { label: "price", name: "price", type: "number", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
+    label: "date",
+    name: "date",
+    type: "date",
     required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
+  {
+    label: "price",
+    name: "price",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
 ];
+
 const apartment_selling_price = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   {
     label: "apartment_id",
     name: "apartment_id",
@@ -1519,23 +1685,25 @@ const apartment_selling_price = [
     ref_table: "apartment",
     ref_col: "id",
   },
-  { label: "date", name: "date", type: "date", required: false },
-  { label: "price", name: "price", type: "number", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
+    label: "date",
+    name: "date",
+    type: "date",
     required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
+  {
+    label: "price",
+    name: "price",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
 ];
 // ==== End apartment
 
 const contract_pattern_general = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "contract_type",
     name: "contract_type",
@@ -1552,9 +1720,19 @@ const contract_pattern_general = [
     intValue: true,
     list: SELECT_LISTS("contact_pattern_assets_type"),
   },
-  { label: "code", name: "code", type: "number", required: false },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "list_name", name: "list_name", type: "text", required: false },
+  {
+    label: "code",
+    name: "code",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.name(),
+  {
+    label: "list_name",
+    name: "list_name",
+    type: "text",
+    required: false,
+  },
   {
     label: "shortcut_key",
     name: "shortcut_key",
@@ -1607,6 +1785,7 @@ const contract_pattern_general = [
     required: false,
   },
 ];
+
 const contract_pattern_default_accounts = [
   {
     label: "default_revenue_account_id",
@@ -1690,6 +1869,98 @@ const contract_pattern_default_accounts = [
   {
     label: "default_insurance_account_id",
     name: "default_insurance_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+];
+const contract_pattern_default_fees_accounts = [
+  {
+    label: "default_fees_account_1",
+    name: "default_fees_account_1",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "default_fees_account_2",
+    name: "default_fees_account_2",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "default_fees_account_3",
+    name: "default_fees_account_3",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "default_fees_account_4",
+    name: "default_fees_account_4",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "default_fees_account_5",
+    name: "default_fees_account_5",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "default_fees_account_6",
+    name: "default_fees_account_6",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "default_fees_account_7",
+    name: "default_fees_account_7",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "default_fees_account_8",
+    name: "default_fees_account_8",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "default_fees_account_9",
+    name: "default_fees_account_9",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "default_fees_account_10",
+    name: "default_fees_account_10",
     type: "uuid",
     required: false,
     is_ref: true,
@@ -1787,6 +2058,7 @@ const contract_pattern_moving_cost_center = [
     required: false,
   },
 ];
+
 const contract_pattern_contract_terms = [
   {
     label: "contract_terms",
@@ -1795,28 +2067,14 @@ const contract_pattern_contract_terms = [
     required: false,
   },
 ];
-// const contract_pattern_default_folder_print = [
-//   {
-//     label: "folder_default_printing",
-//     name: "folder_default_printing",
-//     type: "file",
-//     required: false,
-//   },
-//   {
-//     label: "folder_print_communications",
-//     name: "folder_print_communications",
-//     type: "file",
-//     required: false,
-//   },
-//   {
-//     label: "folder_print_clearance",
-//     name: "folder_print_clearance",
-//     type: "file",
-//     required: false,
-//   },
-// ];
+
 const contract_pattern_sms = [
-  { label: "sms", name: "sms", type: "text", required: false },
+  {
+    label: "sms",
+    name: "sms",
+    type: "text",
+    required: false,
+  },
 ];
 
 const contract_pattern_group = {
@@ -1828,6 +2086,10 @@ const contract_pattern_group = {
     [CONTRACTS_PATTERN_STEPS.contract_default_accounts]: {
       fields: contract_pattern_default_accounts,
       tab_name: "contract_pattern_default_accounts",
+    },
+    [CONTRACTS_PATTERN_STEPS.contract_pattern_default_fees_accounts]: {
+      fields: contract_pattern_default_fees_accounts,
+      tab_name: "contract_pattern_default_fees_accounts",
     },
     [CONTRACTS_PATTERN_STEPS.contract_moving_cost_center]: {
       fields: contract_pattern_moving_cost_center,
@@ -1849,10 +2111,23 @@ const contract_pattern_group = {
 };
 
 // ==== Start bills
-const bill = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "number", name: "number", type: "number", required: false },
+const cheque = [
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
+  {
+    label: "internal_number",
+    name: "internal_number",
+    type: "number",
+    required: false,
+    readOnly: true,
+  },
+  {
+    label: "number",
+    name: "number",
+    type: "number",
+    required: false,
+    readOnly: true,
+  },
   {
     label: "feedback",
     name: "feedback",
@@ -1868,17 +2143,18 @@ const bill = [
     list: SELECT_LISTS("bill_connect_with"),
   },
   {
-    label: "connect_with_id",
-    name: "connect_with_id",
-  },
-  { label: "type", name: "type", type: "number", required: true, hide_in_form: true },
-  {
-    label: "internal_number",
-    name: "internal_number",
+    label: "type",
+    name: "type",
     type: "number",
-    required: false,
+    required: true,
+    hide_in_form: true,
   },
-  { label: "amount", name: "amount", type: "number", required: true },
+  {
+    label: "amount",
+    name: "amount",
+    type: "number",
+    required: true,
+  },
   {
     label: "currency_id",
     name: "currency_id",
@@ -1886,47 +2162,49 @@ const bill = [
     required: true,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
-  {
-    label: "Currency Value",
-    name: "currency_val",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "seller_id",
-    name: "seller_id",
-    type: "uuid",
+  // {
+  //   label: "currency_val",
+  //   name: "currency_val",
+  //   defaultValue: 1,
+  //   type: "number",
+  //   required: false,
+  // },
+  // {
+  //   label: "seller_id",
+  //   name: "seller_id",
+  //   type: "uuid",
+  //   required: true,
+  //   is_ref: true,
+  //   ref_table: "seller",
+  //   ref_col: "id",
+  //   ref_name: "full_name",
+  // },
+  FIELDS_STRUCTURE.account({ required: true }),
+  FIELDS_STRUCTURE.cost_center({ required: true }),
+  FIELDS_STRUCTURE.note(),
+  FIELDS_STRUCTURE.account({
+    label: "observe_account_id",
+    name: "observe_account_id",
     required: true,
-    is_ref: true,
-    ref_table: "seller",
-    ref_col: "id",
-    ref_name: "full_name",
-  },
-  {
-    label: "received_from",
-    name: "received_from",
-    type: "uuid",
+  }),
+  FIELDS_STRUCTURE.cost_center({
+    label: "observe_cost_center_id",
+    name: "observe_cost_center_id",
     required: true,
-  },
+  }),
+  // FIELDS_STRUCTURE.note({
+  //   label: "observe_account_note",
+  //   name: "observe_account_note",
+  // }),
   {
     label: "beneficiary_name",
     name: "beneficiary_name",
     type: "text",
     required: false,
   },
-  {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
-  { label: "Note", name: "note", type: "text", required: false },
-  { label: "date", name: "date", type: "date", required: false },
   {
     label: "due_date",
     name: "due_date",
@@ -1935,8 +2213,8 @@ const bill = [
     disabledCondition: "without_due_date",
   },
   {
-    label: "due_end_date",
-    name: "due_end_date",
+    label: "end_due_date",
+    name: "end_due_date",
     type: "date",
     required: false,
     disabledCondition: "without_due_date",
@@ -1957,32 +2235,9 @@ const bill = [
     ref_table: "bank",
     ref_col: "id",
   },
-  {
-    label: "obverse_account_id",
-    name: "obverse_account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  {
-    label: "obverse_account_note",
-    name: "obverse_account_note",
-    type: "uuid",
-    required: false,
-  },
-  {
-    label: "observe_cost_center_id",
-    name: "observe_cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
-  { label: "note1", name: "note1", type: "text", required: false },
-  { label: "note2", name: "note2", type: "text", required: false },
+  FIELDS_STRUCTURE.note({ label: "note1", name: "note1" }),
+  FIELDS_STRUCTURE.note({ label: "note2", name: "note2" }),
+
   {
     label: "deport_status",
     name: "deport_status",
@@ -2026,30 +2281,6 @@ const bill = [
     required: false,
   },
   {
-    label: "clipboard_number",
-    name: "clipboard_number",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "clipboard_date",
-    name: "clipboard_date",
-    type: "date",
-    required: false,
-  },
-  {
-    label: "clipboard_receipt_number",
-    name: "clipboard_receipt_number",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "clipboard_internal_number",
-    name: "clipboard_internal_number",
-    type: "number",
-    required: false,
-  },
-  {
     label: "gen_entries",
     name: "gen_entries",
     type: "checkbox",
@@ -2057,10 +2288,85 @@ const bill = [
     required: false,
   },
 ];
+const cheque_grid = [
+  {
+    label: "number",
+    name: "number",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "amount",
+    name: "amount",
+    type: "number",
+    required: true,
+  },
+  {
+    label: "due_date",
+    name: "due_date",
+    type: "date",
+    required: false,
+    disabledCondition: "without_due_date",
+  },
+  // FIELDS_STRUCTURE.note(),
+  {
+    label: "end_due_date",
+    name: "end_due_date",
+    type: "date",
+    required: false,
+    disabledCondition: "without_due_date",
+  },
+  {
+    label: "note1",
+    name: "note1",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "note2",
+    name: "note2",
+    type: "text",
+    required: false,
+  },
+];
+
+const cheque_short = [
+  {
+    label: "number",
+    name: "number",
+    type: "number",
+    required: false,
+    hide_in_form: true,
+  },
+  {
+    label: "amount",
+    name: "amount",
+    type: "number",
+    required: true,
+  },
+  {
+    label: "due_date",
+    name: "due_date",
+    type: "date",
+    required: false,
+    disabledCondition: "without_due_date",
+  },
+  FIELDS_STRUCTURE.note(),
+
+  {
+    label: "bank_id",
+    name: "bank_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "bank",
+    ref_col: "id",
+  },
+];
 
 const bill_general = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "paper_type",
     name: "paper_type",
@@ -2068,9 +2374,14 @@ const bill_general = [
     list: SELECT_LISTS("bill_pattern_paper_type"),
     required: true,
   },
-  // { label: "code", name: "code", type: "number", required: false },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "list_name", name: "list_name", type: "text", required: false },
+  // {  label: 'code', name: "code", type: "number", required: false },
+  FIELDS_STRUCTURE.name(),
+  {
+    label: "list_name",
+    name: "list_name",
+    type: "text",
+    required: false,
+  },
   {
     label: "default_account_id",
     name: "default_account_id",
@@ -2202,6 +2513,7 @@ const bill_deportable = [
     ref_col: "id",
   },
 ];
+
 const bill_collection = [
   {
     label: "collection",
@@ -2288,6 +2600,7 @@ const bill_collection = [
     ref_col: "id",
   },
 ];
+
 const bill_commission = [
   {
     label: "commission_type",
@@ -2350,6 +2663,7 @@ const bill_commission = [
     ref_col: "id",
   },
 ];
+
 const bill_partial_collection = [
   {
     label: "partial_collection",
@@ -2428,6 +2742,7 @@ const bill_partial_collection = [
     ref_col: "id",
   },
 ];
+
 const bill_endorsement = [
   {
     label: "endorsable",
@@ -2499,6 +2814,7 @@ const bill_endorsement = [
     ref_col: "id",
   },
 ];
+
 const bill_return = [
   {
     label: "returnable",
@@ -2661,6 +2977,7 @@ const bill_default_statement = [
     required: false,
   },
 ];
+
 const bill_sms = [{ label: "sms", name: "sms", type: "text", required: false }];
 
 const bill_group = {
@@ -2708,7 +3025,7 @@ const bill_group = {
 
 // ==== Start Installment
 const installment = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   {
     label: "contract_id",
     name: "contract_id",
@@ -2731,45 +3048,38 @@ const installment = [
     key: "select",
     list: SELECT_LISTS("installment_voucher_type"),
     required: false,
-    defaultValue: 1,
+    // defaultValue: 1,
+    selectFirstAsDefault: true,
   },
   {
     label: "first_batch",
     name: "first_batch",
     type: "number",
     required: false,
+    watch: "gen_entries_type",
+    condition: 3,
   },
   {
     label: "payment_date",
     name: "payment_date",
     type: "date",
     required: false,
-  },
-  {
-    label: "voucher_pattern_id",
-    name: "voucher_pattern_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "voucher_pattern",
-    ref_col: "id",
+    watch: "gen_entries_type",
+    condition: 3,
   },
 
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
-  {
-    label: "Currency Value",
-    name: "currency_val",
-    type: "number",
-    required: false,
-  },
+  FIELDS_STRUCTURE.currency({
+    disabledCondition: "installment.currency_id",
+    // hide_in_form: true,
+  }),
+  // {
+  //   label: "currency_val",
+  //   name: "currency_val",
+  //   defaultValue: 1,
+  //   type: '"number"',
+  //   required: false,
+  //   // hide_in_form: true,
+  // },
   {
     label: "rest_amount",
     name: "rest_amount",
@@ -2777,42 +3087,6 @@ const installment = [
     required: false,
     readOnly: true,
   },
-  {
-    label: "client_id",
-    name: "client_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
-  {
-    label: "observe_account_id",
-    name: "observe_account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  // {
-  //   label: "voucher_pattern_id",
-  //   name: "voucher_pattern_id",
-  //   type: "uuid",
-  //   required: true,
-  //   is_ref: true,
-  //   ref_table: "bill",
-  //   ref_col: "id",
-  // },
   {
     label: "installments_numbers",
     name: "installments_numbers",
@@ -2830,6 +3104,7 @@ const installment = [
     name: "each_duration",
     key: "select",
     list: SELECT_LISTS("installment_each_duration"),
+    selectFirstAsDefault: true,
   },
   {
     label: "first_installment_date",
@@ -2844,109 +3119,40 @@ const installment = [
     required: false,
   },
   {
-    label: "final_payment",
-    name: "final_payment",
-    type: "number",
-    required: false,
-  },
-  {
     label: "begin_number",
     name: "begin_number",
     type: "number",
     required: false,
   },
-  {
-    label: "installment_date",
-    name: "installment_date",
-    type: "date",
-    required: false,
-  },
-  {
-    label: "installment_statement",
-    name: "installment_statement",
-    type: "text",
-    required: false,
-  },
-  {
-    label: "beneficiary_name",
-    name: "beneficiary_name",
-    type: "text",
-    required: false,
-  },
-
-  {
-    label: "bank_id",
-    name: "bank_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "bank",
-    ref_col: "id",
-  },
-];
-const installment_data = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "due_date", name: "due_date", type: "date", required: false },
-  { label: "number", name: "number", type: "number", required: false },
-  { label: "amount", name: "amount", type: "number", required: false },
-  {
-    label: "bank_id",
-    name: "bank_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "bank",
-    ref_col: "id",
-  },
-  {
-    label: "client_id",
-    name: "client_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  {
-    label: "observe_account_id",
-    name: "observe_account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  { label: "statement", name: "statement", type: "text", required: false },
-  {
-    label: "end_due_date",
-    name: "end_due_date",
-    type: "date",
-    required: false,
-  },
-  {
-    label: "beneficiary_name",
-    name: "beneficiary_name",
-    type: "text",
-    required: false,
-  },
-  { label: "statement2", name: "statement2", type: "text", required: false },
-
   // {
-  //   label: "installment_id",
-  //   name: "installment_id",
-  //   type: "uuid",
+  //   label: "installment_date",
+  //   name: "installment_date",
+  //   type: "date",
   //   required: false,
-  //   is_ref: true,
-  //   ref_table: "installment",
-  //   ref_col: "id",
   // },
+  // {
+  //   label: 'beneficiary_name', name: "beneficiary_name",
+  //   type: "text",
+  //   required: false,
+  // },
+
+  {
+    label: "customer_bank_id",
+    name: "bank_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "bank",
+    ref_col: "id",
+  },
 ];
+
 // ==== End Installment
 
 // ==== Start Operations
 const op_collection = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "feedback",
     name: "feedback",
@@ -2954,16 +3160,13 @@ const op_collection = [
     key: "switch",
     required: false,
   },
-  { label: "amount", name: "amount", type: "number", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
+    label: "amount",
+    name: "amount",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
   {
     label: "debit_account_id",
     name: "debit_account_id",
@@ -2982,16 +3185,8 @@ const op_collection = [
     ref_table: "account",
     ref_col: "id",
   },
-  {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.note(),
   {
     label: "commission_value",
     name: "commission_value",
@@ -3047,9 +3242,10 @@ const op_collection = [
     ref_col: "id",
   },
 ];
+
 const op_partial_collection = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "feedback",
     name: "feedback",
@@ -3057,16 +3253,13 @@ const op_partial_collection = [
     key: "switch",
     required: false,
   },
-  { label: "amount_obtained", name: "amount_obtained", type: "number", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
+    label: "amount_obtained",
+    name: "amount_obtained",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
   {
     label: "debit_account_id",
     name: "debit_account_id",
@@ -3085,21 +3278,37 @@ const op_partial_collection = [
     ref_table: "account",
     ref_col: "id",
   },
+  FIELDS_STRUCTURE.cost_center(),
   {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
+    label: "total_value",
+    name: "total_value",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
+    readOnly: true,
   },
-  { label: "total_value", name: "total_value", type: "number", required: false, readOnly: true },
-  { label: "total_sum", name: "total_sum", type: "number", required: false, readOnly: true },
-  { label: "total_sum_prev", name: "total_sum_prev", type: "number", required: false, readOnly: true },
-  { label: "rest", name: "rest", type: "number", required: false, readOnly: true },
+  {
+    label: "total_sum",
+    name: "total_sum",
+    type: "number",
+    required: false,
+    readOnly: true,
+  },
+  {
+    label: "total_sum_prev",
+    name: "total_sum_prev",
+    type: "number",
+    required: false,
+    readOnly: true,
+  },
+  {
+    label: "rest",
+    name: "rest",
+    type: "number",
+    required: false,
+    readOnly: true,
+  },
 
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.note(),
   {
     label: "commission_value",
     name: "commission_value",
@@ -3157,8 +3366,8 @@ const op_partial_collection = [
 ];
 
 const op_deportation = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "feedback",
     name: "feedback",
@@ -3166,16 +3375,13 @@ const op_deportation = [
     key: "switch",
     required: false,
   },
-  { label: "amount", name: "amount", type: "number", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
+    label: "amount",
+    name: "amount",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
   {
     label: "debit_account_id",
     name: "debit_account_id",
@@ -3194,16 +3400,8 @@ const op_deportation = [
     ref_table: "account",
     ref_col: "id",
   },
-  {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.note(),
   {
     label: "accounting_voucher_main_data_id",
     name: "accounting_voucher_main_data_id",
@@ -3214,9 +3412,10 @@ const op_deportation = [
     ref_col: "id",
   },
 ];
+
 const op_return = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "feedback",
     name: "feedback",
@@ -3224,16 +3423,13 @@ const op_return = [
     key: "switch",
     required: false,
   },
-  { label: "amount", name: "amount", type: "number", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
+    label: "amount",
+    name: "amount",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
   {
     label: "debit_account_id",
     name: "debit_account_id",
@@ -3252,17 +3448,14 @@ const op_return = [
     ref_table: "account",
     ref_col: "id",
   },
+  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.note(),
   {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
+    label: "reason",
+    name: "reason",
+    type: "text",
     required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
   },
-  { label: "Note", name: "note", type: "text", required: false },
-  { label: "reason", name: "reason", type: "text", required: false },
   {
     label: "accounting_voucher_main_data_id",
     name: "accounting_voucher_main_data_id",
@@ -3279,8 +3472,8 @@ const op_endorsement = op_deportation;
 
 // ==== Start Voucher
 const voucher_main_data = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { name: "number", type: "text", required: true },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.number(),
   {
     label: "created_at",
     name: "created_at",
@@ -3294,25 +3487,30 @@ const voucher_main_data = [
     required: true,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
+  // {
+  //   label: "currency_val",
+  //   name: "currency_val",
+  //   defaultValue: 1,
+  //   type: "number",
+  //   required: false,
+  // },
+
+  FIELDS_STRUCTURE.note(),
   {
-    label: "Currency Value",
-    name: "currency_val",
+    label: "debit",
+    name: "debit",
     type: "number",
     required: false,
   },
   {
-    label: "connect_with_id",
-    name: "connect_with_id",
-    type: "uuid",
+    label: "credit",
+    name: "credit",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_col: "id",
   },
-  { label: "Note", name: "note", type: "text", required: false },
-  { label: "debit", name: "debit", type: "number", required: false },
-  { label: "credit", name: "credit", type: "number", required: false },
   {
     label: "feedback",
     name: "feedback",
@@ -3361,15 +3559,7 @@ const voucher_main_data = [
     type: "number",
     required: false,
   },
-  {
-    label: "account_id",
-    name: "account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
+  FIELDS_STRUCTURE.account(),
   {
     label: "gen_entries",
     name: "gen_entries",
@@ -3380,42 +3570,28 @@ const voucher_main_data = [
 ];
 
 const voucher_grid_data = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   {
     label: "created_at",
     name: "created_at",
     type: "date",
     required: false,
   },
+  FIELDS_STRUCTURE.account(),
   {
-    label: "account_id",
-    name: "account_id",
-    type: "uuid",
+    label: "debit",
+    name: "debit",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  { label: "debit", name: "debit", type: "number", required: false },
-  { label: "credit", name: "credit", type: "number", required: false },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
   {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
+    label: "credit",
+    name: "credit",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
   },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
+  FIELDS_STRUCTURE.cost_center(),
   {
     label: "voucher_main_data_id",
     name: "voucher_main_data_id",
@@ -3424,16 +3600,27 @@ const voucher_grid_data = [
     is_ref: true,
     ref_table: "voucher_main_data",
     ref_col: "id",
+    hide_in_form: true,
   },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.note(),
 ];
 
 const voucher_pattern_general = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "code", name: "code", type: "number", required: false },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "list_name", name: "list_name", type: "text", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
+  {
+    label: "code",
+    name: "code",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.name(),
+  {
+    label: "list_name",
+    name: "list_name",
+    type: "text",
+    required: false,
+  },
   {
     label: "default_account_id",
     name: "default_account_id",
@@ -3576,9 +3763,16 @@ const voucher_pattern_fields = [
     required: false,
   },
 ];
+
 const voucher_pattern_sms = [
-  { label: "sms", name: "sms", type: "text", required: false },
+  {
+    label: "sms",
+    name: "sms",
+    type: "text",
+    required: false,
+  },
 ];
+
 const voucher_pattern_group = {
   forms: {
     [VOUCHER_PATTERN_STEPS.voucher_general]: {
@@ -3599,8 +3793,8 @@ const voucher_pattern_group = {
 
 // ==== Start Assets
 const assets_group = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "number",
     name: "number",
@@ -3608,10 +3802,20 @@ const assets_group = [
     required: true,
     hide_in_form: true,
   },
-  { label: "type", name: "type", type: "number", required: true },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "last_name", name: "last_name", type: "text", required: false },
-  { label: "Note", name: "note", type: "text", required: false },
+  {
+    label: "type",
+    name: "type",
+    type: "number",
+    required: true,
+  },
+  FIELDS_STRUCTURE.name(),
+  {
+    label: "last_name",
+    name: "last_name",
+    type: "text",
+    required: false,
+  },
+  FIELDS_STRUCTURE.note(),
   {
     label: "parent_id",
     name: "parent_id",
@@ -3624,9 +3828,9 @@ const assets_group = [
 ];
 
 const assets = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "number", name: "number", type: "text", required: true },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
+  FIELDS_STRUCTURE.number(),
   {
     label: "assets_group_id",
     name: "assets_group_id",
@@ -3636,7 +3840,7 @@ const assets = [
     ref_table: "assets_group",
     ref_col: "id",
   },
-  { label: "name", name: "name", type: "text", required: true },
+  FIELDS_STRUCTURE.name(),
   {
     label: "code",
     name: "code",
@@ -3644,8 +3848,13 @@ const assets = [
     required: false,
     hide_in_form: true,
   },
-  { label: "barcode", name: "barcode", type: "text", required: false },
-  { label: "Note", name: "note", type: "text", required: false },
+  {
+    label: "barcode",
+    name: "barcode",
+    type: "text",
+    required: false,
+  },
+  FIELDS_STRUCTURE.note(),
   {
     label: "is_active",
     name: "is_active",
@@ -3671,13 +3880,23 @@ const assets = [
     ref_table: "current_assets_area", // unknown table
     ref_col: "id",
   },
-  { label: "state", name: "state", type: "text", required: false },
-  { label: "origin", name: "origin", type: "text", required: false },
+  {
+    label: "state",
+    name: "state",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "origin",
+    name: "origin",
+    type: "text",
+    required: false,
+  },
 ];
 
 const assets_accounts = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "assets_id",
     name: "assets_id",
@@ -3751,9 +3970,10 @@ const assets_accounts = [
     ref_col: "id",
   },
 ];
+
 const assets_depreciation = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "assets_id",
     name: "assets_id",
@@ -3782,14 +4002,24 @@ const assets_depreciation = [
     type: "date",
     required: false,
   },
-  { label: "age", name: "age", type: "number", required: false },
+  {
+    label: "age",
+    name: "age",
+    type: "number",
+    required: false,
+  },
   {
     label: "depreciation_avg",
     name: "depreciation_avg",
     type: "text",
     required: false,
   },
-  { label: "scrap_value", name: "scrap_value", type: "text", required: false },
+  {
+    label: "scrap_value",
+    name: "scrap_value",
+    type: "text",
+    required: false,
+  },
   {
     label: "old_year_extra",
     name: "old_year_extra",
@@ -3815,9 +4045,10 @@ const assets_depreciation = [
     required: false,
   },
 ];
+
 const assets_input = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "assets_id",
     name: "assets_id",
@@ -3827,7 +4058,12 @@ const assets_input = [
     ref_table: "assets",
     ref_col: "id",
   },
-  { label: "importer", name: "importer", type: "text", required: false },
+  {
+    label: "importer",
+    name: "importer",
+    type: "text",
+    required: false,
+  },
   {
     label: "enter_account_id",
     name: "enter_account_id",
@@ -3837,22 +4073,19 @@ const assets_input = [
     ref_table: "account",
     ref_col: "id",
   },
-  { label: "enter_date", name: "enter_date", type: "date", required: false },
+  {
+    label: "enter_date",
+    name: "enter_date",
+    type: "date",
+    required: false,
+  },
   {
     label: "enter_value",
     name: "enter_value",
     type: "number",
     required: false,
   },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
   {
     label: "enter_cost_center_id",
     name: "enter_cost_center_id",
@@ -3871,11 +4104,17 @@ const assets_input = [
     ref_table: "cost_center",
     ref_col: "id",
   },
-  { label: "enter_note", name: "enter_note", type: "text", required: false },
+  {
+    label: "enter_note",
+    name: "enter_note",
+    type: "text",
+    required: false,
+  },
 ];
+
 const assets_maintenance = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "assets_id",
     name: "assets_id",
@@ -3903,7 +4142,12 @@ const assets_maintenance = [
     type: "date",
     required: false,
   },
-  { label: "guaranty", name: "guaranty", type: "text", required: false },
+  {
+    label: "guaranty",
+    name: "guaranty",
+    type: "text",
+    required: false,
+  },
   {
     label: "guaranty_begin_date",
     name: "guaranty_begin_date",
@@ -3917,9 +4161,10 @@ const assets_maintenance = [
     required: false,
   },
 ];
+
 const assets_sale = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "assets_id",
     name: "assets_id",
@@ -3936,7 +4181,12 @@ const assets_sale = [
     key: "switch",
     required: false,
   },
-  { label: "sale_date", name: "sale_date", type: "date", required: false },
+  {
+    label: "sale_date",
+    name: "sale_date",
+    type: "date",
+    required: false,
+  },
   {
     label: "sale_customer",
     name: "sale_customer",
@@ -3952,7 +4202,12 @@ const assets_sale = [
     ref_table: "account",
     ref_col: "id",
   },
-  { label: "sale_value", name: "sale_value", type: "number", required: false },
+  {
+    label: "sale_value",
+    name: "sale_value",
+    type: "number",
+    required: false,
+  },
   {
     label: "currency_sale_id",
     name: "currency_sale_id",
@@ -3960,6 +4215,7 @@ const assets_sale = [
     required: false,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
   {
@@ -3968,11 +4224,17 @@ const assets_sale = [
     type: "number",
     required: false,
   },
-  { label: "sale_note", name: "sale_note", type: "text", required: false },
+  {
+    label: "sale_note",
+    name: "sale_note",
+    type: "text",
+    required: false,
+  },
 ];
+
 const assets_shipping = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "assets_id",
     name: "assets_id",
@@ -3982,15 +4244,30 @@ const assets_shipping = [
     ref_table: "assets",
     ref_col: "id",
   },
-  { label: "shipping", name: "shipping", type: "text", required: false },
-  { label: "shipping_no", name: "shipping_no", type: "text", required: false },
+  {
+    label: "shipping",
+    name: "shipping",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "shipping_no",
+    name: "shipping_no",
+    type: "text",
+    required: false,
+  },
   {
     label: "shipping_date",
     name: "shipping_date",
     type: "date",
     required: false,
   },
-  { label: "arrive_date", name: "arrive_date", type: "date", required: false },
+  {
+    label: "arrive_date",
+    name: "arrive_date",
+    type: "date",
+    required: false,
+  },
   {
     label: "arrive_place",
     name: "arrive_place",
@@ -4003,8 +4280,18 @@ const assets_shipping = [
     type: "text",
     required: false,
   },
-  { label: "custom_note", name: "custom_note", type: "text", required: false },
-  { label: "custom_date", name: "custom_date", type: "date", required: false },
+  {
+    label: "custom_note",
+    name: "custom_note",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "custom_date",
+    name: "custom_date",
+    type: "date",
+    required: false,
+  },
   {
     label: "custom_expense",
     name: "custom_expense",
@@ -4022,10 +4309,21 @@ const assets_shipping = [
 // ==== End Assets
 // ==== Start lawsuit
 const lawsuit = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
-  { label: "number", name: "number", type: "number", required: false },
-  { label: "type", name: "type", type: "number", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
+  {
+    label: "number",
+    name: "number",
+    type: "number",
+    required: false,
+    hide_in_form: true,
+  },
+  {
+    label: "type",
+    name: "type",
+    type: "number",
+    required: false,
+  },
   {
     label: "contract_id",
     name: "contract_id",
@@ -4035,10 +4333,30 @@ const lawsuit = [
     ref_table: "contract",
     ref_col: "id",
   },
-  { label: "start_date", name: "start_date", type: "date", required: false },
-  { label: "lawsuit_no", name: "lawsuit_no", type: "text", required: false },
-  { label: "open_date", name: "open_date", type: "date", required: false },
-  { label: "exec_date", name: "exec_date", type: "date", required: false },
+  {
+    label: "start_date",
+    name: "start_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "lawsuit_no",
+    name: "lawsuit_no",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "open_date",
+    name: "open_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "exec_date",
+    name: "exec_date",
+    type: "date",
+    required: false,
+  },
   {
     label: "stop_exec",
     name: "stop_exec",
@@ -4076,7 +4394,12 @@ const lawsuit = [
     type: "date",
     required: false,
   },
-  { label: "rent", name: "rent", type: "number", required: false },
+  {
+    label: "rent",
+    name: "rent",
+    type: "number",
+    required: false,
+  },
   {
     label: "is_ended",
     name: "is_ended",
@@ -4084,23 +4407,26 @@ const lawsuit = [
     key: "switch",
     required: false,
   },
-  { label: "end_date", name: "end_date", type: "date", required: false },
-  { label: "exe_no", name: "exe_no", type: "text", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
-  {
-    label: "Currency Value",
-    name: "currency_val",
-    type: "number",
+    label: "end_date",
+    name: "end_date",
+    type: "date",
     required: false,
   },
+  {
+    label: "exe_no",
+    name: "exe_no",
+    type: "text",
+    required: false,
+  },
+  FIELDS_STRUCTURE.currency(),
+  // {
+  //   label: "currency_val",
+  //   name: "currency_val",
+  //   defaultValue: 1,
+  //   type: "number",
+  //   required: false,
+  // },
   {
     label: "lawyer_rent",
     name: "lawyer_rent",
@@ -4138,7 +4464,12 @@ const lawsuit = [
     ref_table: "account",
     ref_col: "id",
   },
-  { label: "lawyer_note", name: "lawyer_note", type: "text", required: false },
+  {
+    label: "lawyer_note",
+    name: "lawyer_note",
+    type: "text",
+    required: false,
+  },
   {
     label: "maintenance_rent",
     name: "maintenance_rent",
@@ -4182,7 +4513,12 @@ const lawsuit = [
     type: "text",
     required: false,
   },
-  { label: "furniture", name: "furniture", type: "number", required: false },
+  {
+    label: "furniture",
+    name: "furniture",
+    type: "number",
+    required: false,
+  },
   {
     label: "furniture_date",
     name: "furniture_date",
@@ -4220,7 +4556,7 @@ const lawsuit = [
     type: "text",
     required: false,
   },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.note(),
   {
     label: "entry_id1",
     name: "entry_id1",
@@ -4253,8 +4589,8 @@ const lawsuit = [
 
 // ==== Start maintenance_order
 const maintenance_order = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "number",
     name: "number",
@@ -4262,7 +4598,12 @@ const maintenance_order = [
     required: false,
     hide_in_form: true,
   },
-  { label: "type", name: "type", type: "number", required: false },
+  {
+    label: "type",
+    name: "type",
+    type: "number",
+    required: false,
+  },
   {
     label: "maintenance_order_no",
     name: "maintenance_order_no",
@@ -4287,15 +4628,30 @@ const maintenance_order = [
     ref_table: "maintenance_worker", // unknown table
     ref_col: "id",
   },
-  { label: "work_kind", name: "work_kind", type: "text", required: false },
-  { label: "start_date", name: "start_date", type: "date", required: false },
+  {
+    label: "work_kind",
+    name: "work_kind",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "start_date",
+    name: "start_date",
+    type: "date",
+    required: false,
+  },
   {
     label: "end_expected_date",
     name: "end_expected_date",
     type: "date",
     required: false,
   },
-  { label: "close_date", name: "close_date", type: "date", required: false },
+  {
+    label: "close_date",
+    name: "close_date",
+    type: "date",
+    required: false,
+  },
   {
     label: "order_state",
     name: "order_state",
@@ -4308,7 +4664,12 @@ const maintenance_order = [
     type: "text",
     required: false,
   },
-  { label: "convert_to", name: "convert_to", type: "text", required: false },
+  {
+    label: "convert_to",
+    name: "convert_to",
+    type: "text",
+    required: false,
+  },
   {
     label: "convert_note",
     name: "convert_note",
@@ -4322,10 +4683,30 @@ const maintenance_order = [
     key: "switch",
     required: false,
   },
-  { label: "mat", name: "mat", type: "text", required: false },
-  { label: "reason", name: "reason", type: "text", required: false },
-  { label: "repetition", name: "repetition", type: "number", required: false },
-  { label: "delay", name: "delay", type: "number", required: false },
+  {
+    label: "mat",
+    name: "mat",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "reason",
+    name: "reason",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "repetition",
+    name: "repetition",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "delay",
+    name: "delay",
+    type: "number",
+    required: false,
+  },
   {
     label: "delay_reason",
     name: "delay_reason",
@@ -4339,7 +4720,12 @@ const maintenance_order = [
     key: "switch",
     required: false,
   },
-  { label: "entry_date", name: "entry_date", type: "date", required: false },
+  {
+    label: "entry_date",
+    name: "entry_date",
+    type: "date",
+    required: false,
+  },
   {
     label: "entry_value",
     name: "entry_value",
@@ -4353,6 +4739,7 @@ const maintenance_order = [
     required: false,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
   {
@@ -4397,16 +4784,26 @@ const maintenance_order = [
     ref_table: "cost_center",
     ref_col: "id",
   },
-  { label: "entry_note", name: "entry_note", type: "text", required: false },
-  { label: "note2", name: "note2", type: "text", required: false },
+  {
+    label: "entry_note",
+    name: "entry_note",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "note2",
+    name: "note2",
+    type: "text",
+    required: false,
+  },
 ];
 
 // ==== End maintenance_order
 
 // ==== Start material
 const material_group = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "number",
     name: "number",
@@ -4414,11 +4811,26 @@ const material_group = [
     required: false,
     hide_in_form: true,
   },
-  { label: "type", name: "type", type: "number", required: false },
-  { label: "code", name: "code", type: "number", required: false },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "last_name", name: "last_name", type: "text", required: false },
-  { label: "Note", name: "note", type: "text", required: false },
+  {
+    label: "type",
+    name: "type",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "code",
+    name: "code",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.name(),
+  {
+    label: "last_name",
+    name: "last_name",
+    type: "text",
+    required: false,
+  },
+  FIELDS_STRUCTURE.note(),
   {
     label: "parent_id",
     name: "parent_id",
@@ -4431,8 +4843,8 @@ const material_group = [
 ];
 
 const materials = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "number",
     name: "number",
@@ -4440,17 +4852,67 @@ const materials = [
     required: false,
     hide_in_form: true,
   },
-  { label: "type", name: "type", type: "number", required: false },
-  { label: "code", name: "code", type: "number", required: false },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "last_name", name: "last_name", type: "text", required: false },
-  { label: "unity1", name: "unity1", type: "text", required: false },
-  { label: "unity2", name: "unity2", type: "text", required: false },
-  { label: "unity3", name: "unity3", type: "text", required: false },
-  { label: "barcode1", name: "barcode1", type: "text", required: false },
-  { label: "barcode2", name: "barcode2", type: "text", required: false },
-  { label: "barcode3", name: "barcode3", type: "text", required: false },
-  { label: "def_unity", name: "def_unity", type: "number", required: false },
+  {
+    label: "type",
+    name: "type",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "code",
+    name: "code",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.name(),
+  {
+    label: "last_name",
+    name: "last_name",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "unity1",
+    name: "unity1",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "unity2",
+    name: "unity2",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "unity3",
+    name: "unity3",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "barcode1",
+    name: "barcode1",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "barcode2",
+    name: "barcode2",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "barcode3",
+    name: "barcode3",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "def_unity",
+    name: "def_unity",
+    type: "number",
+    required: false,
+  },
   {
     label: "unity_fact2",
     name: "unity_fact2",
@@ -4477,7 +4939,7 @@ const materials = [
     key: "switch",
     required: false,
   },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.note(),
   {
     label: "materials_group_guid",
     name: "materials_group_guid",
@@ -4486,31 +4948,44 @@ const materials = [
     is_ref: true,
     ref_table: "material_group",
   },
-  { label: "mat_type", name: "mat_type", type: "number", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
-  {
-    label: "Currency Value",
-    name: "currency_val",
+    label: "mat_type",
+    name: "mat_type",
     type: "number",
     required: false,
   },
-  { label: "avg_price", name: "avg_price", type: "number", required: false },
+  FIELDS_STRUCTURE.currency(),
+  // {
+  //   label: "currency_val",
+  //   name: "currency_val",
+  //   defaultValue: 1,
+  //   type: "number",
+  //   required: false,
+  // },
+  {
+    label: "avg_price",
+    name: "avg_price",
+    type: "number",
+    required: false,
+  },
   {
     label: "last_price_date",
     name: "last_price_date",
     type: "date",
     required: false,
   },
-  { label: "last_price", name: "last_price", type: "number", required: false },
-  { label: "max_price", name: "max_price", type: "number", required: false },
+  {
+    label: "last_price",
+    name: "last_price",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "max_price",
+    name: "max_price",
+    type: "number",
+    required: false,
+  },
   {
     label: "sale_avg_price",
     name: "sale_avg_price",
@@ -4541,8 +5016,8 @@ const materials = [
 
 // ==== Start Parking
 const parking = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "building_id",
     name: "building_id",
@@ -4552,10 +5027,30 @@ const parking = [
     ref_table: "building",
     ref_col: "id",
   },
-  { label: "parking_no", name: "parking_no", type: "text", required: false },
-  { label: "floor_no", name: "floor_no", type: "number", required: false },
-  { label: "area", name: "area", type: "text", required: false },
-  { label: "area_unit", name: "area_unit", type: "text", required: false },
+  {
+    label: "parking_no",
+    name: "parking_no",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "floor_no",
+    name: "floor_no",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "area",
+    name: "area",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "area_unit",
+    name: "area_unit",
+    type: "text",
+    required: false,
+  },
   {
     label: "parking_kind",
     name: "parking_kind",
@@ -4564,8 +5059,18 @@ const parking = [
     list: SELECT_LISTS("parking_kind_type"),
     required: true,
   },
-  { label: "description", name: "description", type: "text", required: false },
-  { label: "view", name: "view", type: "text", required: false },
+  {
+    label: "description",
+    name: "description",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "view",
+    name: "view",
+    type: "text",
+    required: false,
+  },
   {
     label: "customer_id",
     name: "customer_id",
@@ -4582,15 +5087,11 @@ const parking = [
     key: "switch",
     required: false,
   },
-  {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
+  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.cost_center({
+    label: "main_cost_center_id",
+    name: "main_cost_center_id",
+  }),
   {
     label: "purchase_date",
     name: "purchase_date",
@@ -4623,14 +5124,31 @@ const parking = [
     ref_col: "id",
     ref_name: "row_index",
   },
-  { label: "hex", name: "hex", type: "text", required: false, readOnly: true },
-  { label: "x_index", name: "x_index", type: "number", required: false },
-  { label: "y_index", name: "y_index", type: "number", required: false },
-  { label: "Note", name: "note", type: "text", required: false },
+  {
+    label: "hex",
+    name: "hex",
+    type: "text",
+    required: false,
+    readOnly: true,
+  },
+  {
+    label: "x_index",
+    name: "x_index",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "y_index",
+    name: "y_index",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.note(),
 ];
+
 const parking_pictures = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "parking_id",
     name: "parking_id",
@@ -4639,21 +5157,21 @@ const parking_pictures = [
     is_ref: true,
     ref_table: "parking",
     ref_col: "id",
-    hide_in_form: true
-
+    hide_in_form: true,
   },
   {
-    label: "picture",
     multiple: true,
+    label: "picture",
     name: "picture",
     type: "file",
     required: false,
     key: "image",
   },
 ];
+
 const parking_price = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "parking_id",
     name: "parking_id",
@@ -4663,8 +5181,18 @@ const parking_price = [
     ref_table: "parking",
     ref_col: "id",
   },
-  { label: "date1", name: "date1", type: "date", required: false },
-  { label: "print1", name: "print1", type: "number", required: false },
+  {
+    label: "date1",
+    name: "date1",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "print1",
+    name: "print1",
+    type: "number",
+    required: false,
+  },
   {
     label: "currency1_id",
     name: "currency1_id",
@@ -4672,10 +5200,21 @@ const parking_price = [
     required: false,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
-  { label: "date2", name: "date2", type: "date", required: false },
-  { label: "prnumber", name: "prnumber", type: "number", required: false },
+  {
+    label: "date2",
+    name: "date2",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "prnumber",
+    name: "prnumber",
+    type: "number",
+    required: false,
+  },
   {
     label: "currency2_id",
     name: "currency2_id",
@@ -4683,18 +5222,29 @@ const parking_price = [
     required: false,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
-  { label: "cost_price", name: "cost_price", type: "number", required: false },
-  { label: "sale", name: "sale", type: "number", required: false },
+  {
+    label: "cost_price",
+    name: "cost_price",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "sale",
+    name: "sale",
+    type: "number",
+    required: false,
+  },
 ];
 
 // ==== End Parking
 
 // ==== Start Shop
 const shop = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "building_id",
     name: "building_id",
@@ -4704,8 +5254,18 @@ const shop = [
     ref_table: "building",
     ref_col: "id",
   },
-  { label: "floor_no", name: "floor_no", type: "number", required: false },
-  { label: "shop_no", name: "shop_no", type: "text", required: false },
+  {
+    label: "floor_no",
+    name: "floor_no",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "shop_no",
+    name: "shop_no",
+    type: "text",
+    required: false,
+  },
   {
     label: "property_type",
     name: "property_type",
@@ -4715,37 +5275,71 @@ const shop = [
     list: SELECT_LISTS("flat_property_type"),
   },
 
-  { label: "description", name: "description", type: "text", required: false },
-  { label: "x_index", name: "x_index", type: "number", required: false },
-  { label: "y_index", name: "y_index", type: "number", required: false },
   {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
+    label: "description",
+    name: "description",
+    type: "text",
     required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
   },
-  { label: "class", name: "class", type: "text", required: false },
-  { label: "area", name: "area", type: "number", required: false },
-  { label: "area_unit", name: "area_unit", type: "text", required: false },
-  { label: "view", name: "view", type: "text", required: false },
-  { label: "license1", name: "license1", type: "text", required: false },
-  { label: "license2", name: "license2", type: "text", required: false },
-  { label: "unified_num", name: "unified_num", type: "text", required: false },
-  // {
-  //   label: "manservant_room",
-  //   name: "manservant_room",
-  //   type: "number",
-  //   required: false,
-  // },
-  // {
-  //   label: "driver_room",
-  //   name: "driver_room",
-  //   type: "number",
-  //   required: false,
-  // },
+  {
+    label: "x_index",
+    name: "x_index",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "y_index",
+    name: "y_index",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.cost_center({
+    label: "main_cost_center_id",
+    name: "main_cost_center_id",
+  }),
+  {
+    label: "class",
+    name: "class",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "area",
+    name: "area",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "area_unit",
+    name: "area_unit",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "view",
+    name: "view",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "license1",
+    name: "license1",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "license2",
+    name: "license2",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "unified_num",
+    name: "unified_num",
+    type: "text",
+    required: false,
+  },
   {
     label: "property_values_id",
     name: "property_values_id",
@@ -4756,7 +5350,13 @@ const shop = [
     ref_col: "id",
     ref_name: "row_index",
   },
-  { label: "hex", name: "hex", type: "text", required: false, readOnly: true },
+  {
+    label: "hex",
+    name: "hex",
+    type: "text",
+    required: false,
+    readOnly: true,
+  },
   {
     label: "has_lawsuit",
     name: "has_lawsuit",
@@ -4803,15 +5403,30 @@ const shop = [
     type: "number",
     required: false,
   },
-  { label: "bond_type", name: "bond_type", type: "text", required: false },
-  { label: "bond_no", name: "bond_no", type: "text", required: false },
-  { label: "bond_date", name: "bond_date", type: "date", required: false },
-  // { label: "type", name: "type", type: "number", required: false },
-  { label: "Note", name: "note", type: "text", required: false },
+  {
+    label: "bond_type",
+    name: "bond_type",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "bond_no",
+    name: "bond_no",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "bond_date",
+    name: "bond_date",
+    type: "date",
+    required: false,
+  },
+  FIELDS_STRUCTURE.note(),
 ];
+
 const shop_fixed_assets = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "shop_id",
     name: "shop_id",
@@ -4830,12 +5445,18 @@ const shop_fixed_assets = [
     ref_table: "assets",
     ref_col: "id",
   },
-  { label: "value", name: "value", type: "number", required: false },
-  { label: "Note", name: "note", type: "text", required: false },
+  {
+    label: "value",
+    name: "value",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.note(),
 ];
+
 const shop_pictures = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "shop_id",
     name: "shop_id",
@@ -4844,7 +5465,7 @@ const shop_pictures = [
     is_ref: true,
     ref_table: "shop",
     ref_col: "id",
-    hide_in_form: true
+    hide_in_form: true,
   },
   {
     label: "picture",
@@ -4855,9 +5476,10 @@ const shop_pictures = [
     key: "image",
   },
 ];
+
 const shop_rent_price = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "shop_id",
     name: "shop_id",
@@ -4867,31 +5489,40 @@ const shop_rent_price = [
     ref_table: "shop",
     ref_col: "id",
   },
-  { label: "price", name: "price", type: "number", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
+    label: "price",
+    name: "price",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
-  { label: "cost_price", name: "cost_price", type: "number", required: false },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
+  {
+    label: "cost_price",
+    name: "cost_price",
+    type: "number",
+    required: false,
+  },
   {
     label: "cost_currency_id",
     name: "cost_currency_id",
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "currency", // unknown table
+    ref_table: "currency",
+    ref_name: "code", // unknown table
     ref_col: "id",
   },
-  { label: "rent", name: "rent", type: "number", required: false },
+  {
+    label: "rent",
+    name: "rent",
+    type: "number",
+    required: false,
+  },
 ];
+
 const shop_selling_price = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "shop_id",
     name: "shop_id",
@@ -4901,17 +5532,19 @@ const shop_selling_price = [
     ref_table: "shop",
     ref_col: "id",
   },
-  { label: "price", name: "price", type: "number", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
+    label: "price",
+    name: "price",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
-  { label: "sale", name: "sale", type: "number", required: false },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
+  {
+    label: "sale",
+    name: "sale",
+    type: "number",
+    required: false,
+  },
   {
     label: "sale_currency_id",
     name: "sale_currency_id",
@@ -4919,6 +5552,7 @@ const shop_selling_price = [
     required: false,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
 ];
@@ -4926,24 +5560,74 @@ const shop_selling_price = [
 // ==== End Shop
 // ==== Start Villa
 const villa = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "complex_name",
     name: "complex_name",
     type: "text",
     required: true,
   },
-  { label: "villa_no", name: "villa_no", type: "text", required: true },
-  { label: "emirate", name: "emirate", type: "text", required: false },
-  { label: "area", name: "area", type: "text", required: false },
-  { label: "suburb", name: "suburb", type: "text", required: false },
-  { label: "street", name: "street", type: "text", required: false },
-  { label: "doc_type", name: "doc_type", type: "text", required: false },
-  { label: "doc_no", name: "doc_no", type: "text", required: false },
-  { label: "doc_date", name: "doc_date", type: "date", required: false },
-  { label: "piece_no", name: "piece_no", type: "text", required: false },
-  { label: "basin_no", name: "basin_no", type: "text", required: false },
+  {
+    label: "villa_no",
+    name: "villa_no",
+    type: "text",
+    required: true,
+  },
+  {
+    label: "emirate",
+    name: "emirate",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "area",
+    name: "area",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "suburb",
+    name: "suburb",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "street",
+    name: "street",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "doc_type",
+    name: "doc_type",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "doc_no",
+    name: "doc_no",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "doc_date",
+    name: "doc_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "piece_no",
+    name: "piece_no",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "basin_no",
+    name: "basin_no",
+    type: "text",
+    required: false,
+  },
   {
     label: "water_meter",
     name: "water_meter",
@@ -4966,11 +5650,12 @@ const villa = [
     ref_col: "id",
     ref_name: "full_name",
   },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.note(),
 ];
+
 const villa_accounts = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "villa_id",
     name: "villa_id",
@@ -4989,15 +5674,7 @@ const villa_accounts = [
     ref_table: "account",
     ref_col: "id",
   },
-  {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
-  },
+  FIELDS_STRUCTURE.cost_center(),
   {
     label: "account_bank_villa_id",
     name: "account_bank_villa_id",
@@ -5038,8 +5715,8 @@ const villa_accounts = [
 ];
 
 const villa_assets = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "villa_id",
     name: "villa_id",
@@ -5058,12 +5735,18 @@ const villa_assets = [
     ref_table: "assets",
     ref_col: "id",
   },
-  { label: "value", name: "value", type: "number", required: false },
-  { label: "Note", name: "note", type: "text", required: false },
+  {
+    label: "value",
+    name: "value",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.note(),
 ];
+
 const villa_exterior_details = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "villa_id",
     name: "villa_id",
@@ -5073,8 +5756,18 @@ const villa_exterior_details = [
     ref_table: "villa",
     ref_col: "id",
   },
-  { label: "wall", name: "wall", type: "text", required: false },
-  { label: "wall_state", name: "wall_state", type: "text", required: false },
+  {
+    label: "wall",
+    name: "wall",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "wall_state",
+    name: "wall_state",
+    type: "text",
+    required: false,
+  },
   {
     label: "lighting_count",
     name: "lighting_count",
@@ -5099,9 +5792,24 @@ const villa_exterior_details = [
     type: "text",
     required: false,
   },
-  { label: "pool_count", name: "pool_count", type: "number", required: false },
-  { label: "pool_state", name: "pool_state", type: "text", required: false },
-  { label: "pool_system", name: "pool_system", type: "text", required: false },
+  {
+    label: "pool_count",
+    name: "pool_count",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "pool_state",
+    name: "pool_state",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "pool_system",
+    name: "pool_system",
+    type: "text",
+    required: false,
+  },
   {
     label: "play_ground_count",
     name: "play_ground_count",
@@ -5120,7 +5828,12 @@ const villa_exterior_details = [
     type: "number",
     required: false,
   },
-  { label: "garden_area", name: "garden_area", type: "text", required: false },
+  {
+    label: "garden_area",
+    name: "garden_area",
+    type: "text",
+    required: false,
+  },
   {
     label: "garden_state",
     name: "garden_state",
@@ -5128,9 +5841,10 @@ const villa_exterior_details = [
     required: false,
   },
 ];
+
 const villa_interior_details = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "villa_id",
     name: "villa_id",
@@ -5152,7 +5866,12 @@ const villa_interior_details = [
     type: "number",
     required: false,
   },
-  { label: "room_count", name: "room_count", type: "number", required: false },
+  {
+    label: "room_count",
+    name: "room_count",
+    type: "number",
+    required: false,
+  },
   {
     label: "service_room_count",
     name: "service_room_count",
@@ -5177,15 +5896,30 @@ const villa_interior_details = [
     type: "text",
     required: false,
   },
-  { label: "room_state", name: "room_state", type: "text", required: false },
-  { label: "land_area", name: "land_area", type: "text", required: false },
+  {
+    label: "room_state",
+    name: "room_state",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "land_area",
+    name: "land_area",
+    type: "text",
+    required: false,
+  },
   {
     label: "land_area_building",
     name: "land_area_building",
     type: "text",
     required: false,
   },
-  { label: "area_unit", name: "area_unit", type: "text", required: false },
+  {
+    label: "area_unit",
+    name: "area_unit",
+    type: "text",
+    required: false,
+  },
   {
     label: "finishing_state",
     name: "finishing_state",
@@ -5205,9 +5939,10 @@ const villa_interior_details = [
     required: false,
   },
 ];
+
 const villa_pictures = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "villa_id",
     name: "villa_id",
@@ -5226,9 +5961,10 @@ const villa_pictures = [
     key: "image",
   },
 ];
+
 const villa_rent_price = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "villa_id",
     name: "villa_id",
@@ -5238,20 +5974,23 @@ const villa_rent_price = [
     ref_table: "villa",
     ref_col: "id",
   },
-  { label: "date", name: "date", type: "date", required: false },
-  { label: "price", name: "price", type: "number", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
+    label: "date",
+    name: "date",
+    type: "date",
     required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
+  {
+    label: "price",
+    name: "price",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
 ];
+
 const villa_selling_price = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   {
     label: "villa_id",
     name: "villa_id",
@@ -5261,17 +6000,19 @@ const villa_selling_price = [
     ref_table: "villa",
     ref_col: "id",
   },
-  { label: "date", name: "date", type: "date", required: false },
-  { label: "price", name: "price", type: "number", required: false },
   {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
+    label: "date",
+    name: "date",
+    type: "date",
     required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
+  {
+    label: "price",
+    name: "price",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
 ];
 
 // ==== End Villa
@@ -5281,8 +6022,8 @@ const villa_selling_price = [
 // ==== Start Store
 
 export const store = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.created_at(),
   {
     label: "number",
     name: "number",
@@ -5290,18 +6031,38 @@ export const store = [
     required: false,
     hide_in_form: true,
   },
-  { label: "type", name: "type", type: "number", required: true },
-  { label: "code", name: "code", type: "number", required: false },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "last_name", name: "last_name", type: "text", required: false },
-  { label: "address", name: "address", type: "text", required: false },
+  {
+    label: "type",
+    name: "type",
+    type: "number",
+    required: true,
+  },
+  {
+    label: "code",
+    name: "code",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.name(),
+  {
+    label: "last_name",
+    name: "last_name",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "address",
+    name: "address",
+    type: "text",
+    required: false,
+  },
   {
     label: "warehouseman",
     name: "warehouseman",
     type: "text",
     required: false,
   },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.note(),
   {
     label: "parent_id",
     name: "parent_id",
@@ -5324,7 +6085,7 @@ export const store = [
 // ==== End Store
 // ==== End entry
 const entry_main_data = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   {
     label: "number",
     name: "number",
@@ -5346,18 +6107,40 @@ const entry_main_data = [
     required: true,
     is_ref: true,
     ref_table: "currency",
+    ref_name: "code",
     ref_col: "id",
   },
-  { label: "Note", name: "note", type: "text", required: true },
-  { label: "debit", name: "debit", type: "number", required: true },
-  { label: "credit", name: "credit", type: "number", required: true },
-  { label: "difference", name: "difference", type: "number", required: true },
   {
-    label: "Currency Value",
-    name: "currency_val",
+    label: "note",
+    name: "note",
+    type: "text",
+    required: true,
+  },
+  {
+    label: "debit",
+    name: "debit",
     type: "number",
     required: true,
   },
+  {
+    label: "credit",
+    name: "credit",
+    type: "number",
+    required: true,
+  },
+  {
+    label: "difference",
+    name: "difference",
+    type: "number",
+    required: true,
+  },
+  // {
+  //   label: "currency_val",
+  //   name: "currency_val",
+  //   defaultValue: 1,
+  //   type: "number",
+  //   required: true,
+  // },
   {
     label: "created_from",
     name: "created_from",
@@ -5369,8 +6152,9 @@ const entry_main_data = [
     name: "created_from_id",
   },
 ];
+
 const entry_grid_data = [
-  { label: "id", name: "id", type: "uuid", required: false },
+  FIELDS_STRUCTURE.id(),
   {
     label: "created_at",
     name: "created_at",
@@ -5378,36 +6162,21 @@ const entry_grid_data = [
     required: false,
     hide_in_form: true,
   },
+  FIELDS_STRUCTURE.account(),
   {
-    label: "account_id",
-    name: "account_id",
-    type: "uuid",
+    label: "debit",
+    name: "debit",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  { label: "debit", name: "debit", type: "number", required: false },
-  { label: "credit", name: "credit", type: "number", required: false },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
   },
   {
-    label: "cost_center_id",
-    name: "cost_center_id",
-    type: "uuid",
+    label: "credit",
+    name: "credit",
+    type: "number",
     required: false,
-    is_ref: true,
-    ref_table: "cost_center",
-    ref_col: "id",
   },
-  { label: "Note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.note(),
+  FIELDS_STRUCTURE.cost_center(),
   {
     label: "observe_account_id",
     name: "observe_account_id",
@@ -5417,6 +6186,7 @@ const entry_grid_data = [
     ref_table: "account",
     ref_col: "id",
   },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
   {
     label: "entry_main_data_id",
     name: "entry_main_data_id",
@@ -5434,6 +6204,10 @@ const building_group = {
   forms: {
     [BUILDING_STEPS.building_general]: {
       fields: building,
+      tab_name: "building",
+    },
+    [BUILDING_STEPS.building_apartments]: {
+      fields: building_apartments,
       tab_name: "building",
     },
     [BUILDING_STEPS.building_buying]: {
@@ -5459,6 +6233,28 @@ const building_group = {
     [BUILDING_STEPS.building_real_estate_management]: {
       fields: building_real_estate_management,
       tab_name: "building_real_estate_management",
+    },
+  },
+};
+
+const building_group_short = {
+  forms: {
+    [BUILDING_STEPS.building_general]: {
+      fields: building,
+      tab_name: "building",
+    },
+    [BUILDING_STEPS.building_apartments]: {
+      fields: building_apartments,
+      tab_name: "building",
+    },
+    [BUILDING_STEPS.building_owning_the_property]: {
+      fields: building_buying,
+      tab_name: "owning_the_property",
+      formType: "nested",
+    },
+    [BUILDING_STEPS.building_default_accounts]: {
+      fields: building_default_accounts,
+      tab_name: "building",
     },
   },
 };
@@ -5609,13 +6405,19 @@ const FORMS = {
   apartment: apartment_group,
   property_values,
   building: building_group,
+  building_group_short,
+  building_buying,
+  building_editorial_entry,
+  building_investment,
+  building_real_estate_development,
+  building_real_estate_management,
   parking: parking_group,
   shop: shop_group,
   villa: villa_group,
   maintenance_order,
   // Entries
-  accounting_voucher_grid_data,
-  accounting_voucher_main_data,
+  // accounting_voucher_grid_data,
+  // accounting_voucher_main_data,
   accounting_voucher_pictures,
   voucher_grid_data,
   voucher_main_data,
@@ -5628,10 +6430,9 @@ const FORMS = {
   voucher_pattern: voucher_pattern_group,
   accounting_voucher_pattern: accounting_voucher_pattern_group,
   contract_pattern: contract_pattern_group,
-  bill_pattern: bill_group,
+  cheque_pattern: bill_group,
   // installment
   installment,
-  installment_data,
   // operations
   op_collection,
   op_partial_collection,
@@ -5641,7 +6442,9 @@ const FORMS = {
 
   // Actions
   lawsuit,
-  bill,
+  cheque,
+  cheque_short,
+  cheque_grid,
   // contracts,
   ...CONTRACTS_FORM,
 };

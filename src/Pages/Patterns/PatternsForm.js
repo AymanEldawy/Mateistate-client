@@ -6,7 +6,7 @@ import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
 import { GalleryForm } from "Components/StructurePage/Forms/CustomForm/GalleryForm";
 import TableForm from "Components/StructurePage/Forms/CustomForm/TableForm";
-import Installment from "Components/StructurePage/Forms/InstallmentForm";
+import Installment from "Components/StructurePage/Forms/Contract/InstallmentForm";
 import { ApiActions } from "Helpers/Lib/api";
 import INSERT_FUNCTION from "Helpers/Lib/operations/global-insert";
 import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
@@ -18,14 +18,15 @@ import { toast } from "react-toastify";
 
 const PatternsForm = ({ layout }) => {
   const params = useParams();
-  const pattern = params?.pattern;
-
+  let pattern = params?.pattern;
   const [loading, setLoading] = useState(false);
+  let name = pattern === "cheque_pattern" ? "bill_pattern" : pattern;
+
 
   const methods = useForm({
     defaultValues:
       layout === "update"
-        ? async () => await GET_UPDATE_DATE(pattern, params?.id)
+        ? async () => await GET_UPDATE_DATE(name, params?.id)
         : {},
   });
 
@@ -35,6 +36,7 @@ const PatternsForm = ({ layout }) => {
     formState: { errors, isDirty },
     setValue,
   } = methods;
+
   const {
     next,
     back,
@@ -43,15 +45,14 @@ const PatternsForm = ({ layout }) => {
     currentIndex,
     tab,
     formSettings,
+    goTo,
     steps,
     fields,
     CACHE_LIST,
   } = useFormSteps({ name: pattern });
 
   const onSubmit = async (value) => {
-    next();
-    if (!isLast() || !isDirty) return;
-    console.log("called", isLast());
+    if (!isDirty) return;
 
     setLoading(true);
 
@@ -66,12 +67,12 @@ const PatternsForm = ({ layout }) => {
     let res = null;
 
     if (layout === "update") {
-      res = await ApiActions.update(pattern, {
+      res = await ApiActions.update(name, {
         conditions: [{ type: "and", conditions: [["id", "=", params?.id]] }],
         updates: values,
       });
     } else {
-      res = await ApiActions.insert(pattern, {
+      res = await ApiActions.insert(name, {
         data: values,
       });
     }
@@ -96,7 +97,7 @@ const PatternsForm = ({ layout }) => {
             <FormHeadingTitleSteps
               name={pattern}
               steps={steps}
-              // changeTab={goTo}
+              goTo={goTo}
               activeStage={currentIndex}
             />
             <div className="h-5" />
@@ -114,6 +115,7 @@ const PatternsForm = ({ layout }) => {
                 isFirst={isFirst}
                 loading={loading}
                 steps={steps}
+                next={next}
                 back={back}
               />
             </form>

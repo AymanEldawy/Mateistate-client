@@ -1,5 +1,6 @@
 import React from "react";
 import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 const Textarea = ({
   labelClassName,
@@ -7,15 +8,16 @@ const Textarea = ({
   containerClassName,
   textareaClassName,
   error,
-  updatedName,
+  updatedName, hideLabel,
   ...field
 }) => {
 
   const { register } = useFormContext();
+  const { t } = useTranslation();
 
   return (
     <div className={"flex flex-col " + containerClassName}>
-      {label ? (
+      {label && !hideLabel ? ( 
         <label
           title={label}
           className={

@@ -1,11 +1,11 @@
 import { ApiActions } from "Helpers/Lib/api";
-import { getAccount, getContracts } from "Helpers/Lib/operations/global-read";
+import { getAccount, getContracts, getCostCenter } from "Helpers/Lib/operations/global-read";
 import { useEffect, useState } from "react";
 
 const GLOBAL_READ_DATA = {
   account: getAccount,
-  contract: getContracts
-  // cost_center: getCostCenter
+  contract: getContracts,
+  cost_center: getCostCenter
 }
 
 const useFetch = (name, params) => {

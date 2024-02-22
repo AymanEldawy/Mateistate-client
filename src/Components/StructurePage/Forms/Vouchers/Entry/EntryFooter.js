@@ -5,6 +5,7 @@ import { VoucherStepsButton } from "../VoucherStepsButton";
 import { Button } from "Components/Global/Button";
 import { Link } from "react-router-dom";
 import { getCreatedFromUrl } from "Helpers/functions";
+import { useFormContext } from "react-hook-form";
 
 export const EntryFooter = ({
   fields,
@@ -15,8 +16,11 @@ export const EntryFooter = ({
   goTo,
   maxLength,
   onlyView,
+  hideSubmit,
+  onClickAddNew
 }) => {
   const { t } = useTranslation();
+  const { watch } = useFormContext();
 
   return (
     <div>
@@ -43,20 +47,34 @@ export const EntryFooter = ({
           error={errors?.debit ? "Field is required" : ""}
         />
         {values?.created_from_id ? (
-          <Link to={getCreatedFromUrl(values?.created_from, values?.created_from_id)?.href} className={`bg-teal-500 text-white ${getCreatedFromUrl(values?.created_from, values?.created_from_id)?.classes} py-1 px-2 text-sm ltr:ml-auto rtl:mr-auto rounded-md `}>Original</Link>
+          <Link
+            to={
+              getCreatedFromUrl(values?.created_from, values?.created_from_id)
+                ?.href
+            }
+            className={`bg-teal-500 text-white ${
+              getCreatedFromUrl(values?.created_from, values?.created_from_id)
+                ?.classes
+            } py-1 px-2 text-sm ltr:ml-auto rtl:mr-auto rounded-md `}
+          >
+            Original
+          </Link>
         ) : null}
       </div>
-      {onlyView ? null : (
-        <div className="flex items-center mt-4 border-t pt-2 justify-between">
+      <div className="flex items-center mt-4 border-t pt-2 justify-between gap-4">
+        {onlyView || isNewOne ? null : (
           <VoucherStepsButton
             number={number}
             goTo={goTo}
             maxLength={maxLength}
             isNewOne={isNewOne}
+            onClickAddNew={onClickAddNew}
           />
-          <Button title="Submit" />
-        </div>
-      )}
+        )}
+        {hideSubmit || onlyView ? null : (
+          <Button title="Submit" disabled={watch("difference") !== 0} />
+        )}
+      </div>
     </div>
   );
 };

@@ -10,10 +10,34 @@ import {
 import Modal from "Components/Global/Modal/Modal";
 import TreeViewItem from "./TreeViewItem";
 import { DynamicForm } from "Components/StructurePage/Forms/CustomForm/DynamicForm";
+import { ApiActions } from "Helpers/Lib/api";
 
 const RenderTree = ({ chartTree, name, deleteItem, onSubmit, refetchData }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [open, setOpen] = useState({});
+
+  const onSelectItemHandler = async (item) => {
+    const response = await ApiActions.read(name, {
+      conditions: [{ type: "and", conditions: [["parent_id", "=", item?.id]] }],
+      limit: 1,
+      sorts: [{ column: "number", order: "DESC", nulls: "last" }],
+    });
+
+    let defaultValues = {
+      number:  parseInt(`${item?.number}01`),
+      parent_id: item?.id || null,
+      final_id: item?.final_id || item?.parent_id || null,
+    };
+    
+    let responseItem = response?.result?.at(0);
+        
+    if (responseItem) {
+      defaultValues.number = +responseItem?.number + 1;
+    } 
+
+
+    setSelectedItem(defaultValues);
+  };
 
   const toggleOpen = (itemId, level) => {
     if (open[level] === itemId) {
@@ -44,7 +68,7 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit, refetchData }) => {
               toggleOpen={() => {
                 if (item?.children?.length) toggleOpen(item?.id, level);
               }}
-              onSelectedItem={() => setSelectedItem(item)}
+              onSelectedItem={() => onSelectItemHandler(item)}
               open={open}
               icon={
                 !item?.children?.length ? (
@@ -87,12 +111,9 @@ const RenderTree = ({ chartTree, name, deleteItem, onSubmit, refetchData }) => {
 
   return (
     <>
-      <Modal open={!!selectedItem} onClose={() => setSelectedItem(null)}>
+      <Modal outerClose open={!!selectedItem} onClose={() => setSelectedItem(null)}>
         <DynamicForm
-          oldValues={{
-            parent_id: selectedItem?.id || null,
-            final_id: selectedItem?.final_id || selectedItem?.parent_id || null,
-          }}
+          oldValues={selectedItem}
           onSubmit={submit}
           name={name}
           onClose={() => setSelectedItem(null)}

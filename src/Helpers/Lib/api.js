@@ -80,9 +80,11 @@ function CURD() {
     }
   };
 
-  const getById = async (tableName, id) => {
+  const getById = async (tableName, id, conditions) => {
     return await read(tableName, {
-      conditions: [{ type: "and", conditions: [["id", "=", id]] }],
+      conditions: conditions
+        ? conditions
+        : [{ type: "and", conditions: [["id", "=", id]] }],
     });
   };
 

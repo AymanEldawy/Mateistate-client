@@ -35,6 +35,12 @@ export const DynamicTable = ({
   refetchData,
   loading,
   onClickAdd,
+  hideAddNew,
+  extraContent,
+  columns: outerColumns,
+  allowPrint,
+  onClickPrint,
+  defaultName,
 }) => {
   const { t } = useTranslation();
   const { getTable, setTable } = useLocalStorage();
@@ -44,7 +50,10 @@ export const DynamicTable = ({
   const [columnOrder, setColumnOrder] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [openConfirmation, setOpenConfirmation] = useState(false);
-  const columns = useMemo(() => getTableColumns(tableName), [tableName]);
+  const columns = useMemo(
+    () => (outerColumns ? outerColumns : getTableColumns(tableName)),
+    [tableName, outerColumns]
+  );
 
   useEffect(() => {
     const storageTable = getTable(tableName);
@@ -101,7 +110,7 @@ export const DynamicTable = ({
       list.push(row.original.id);
     }
 
-    const res = await ApiActions.remove(tableName, {
+    const res = await ApiActions.remove(defaultName || tableName, {
       conditions: [
         {
           type: "and",
@@ -144,6 +153,11 @@ export const DynamicTable = ({
           tableName={tableName}
           onAddClick={onClickAdd ? onClickAdd : () => setOpen(true)}
           onDeleteClick={() => setOpenConfirmation(true)}
+          hideAddNew={hideAddNew}
+          extraContent={extraContent}
+          allowPrint={allowPrint}
+          onClickPrint={onClickPrint}
+          rowSelection={rowSelection}
         />
 
         <div
@@ -173,7 +187,7 @@ export const DynamicTable = ({
                         }}
                         onDrop={onDrop}
                         style={{ width: header.getSize() }}
-                        className={`w-[${header.getSize()}] text-gray-700 dark:text-gray-300 font-medium capitalize relative whitespace-normal group border-b border-gray-200 dark:border-dark-border px-4 py-2 cursor-move ${thClassName}
+                        className={`w-[${header.getSize()}] text-gray-700 whitespace-nowrap dark:text-gray-300 font-medium capitalize relative  group border-b border-gray-200 dark:border-dark-border px-4 py-2 cursor-move ${thClassName}
                       ${
                         header.column.getIsSorted()
                           ? "sorting-hover [&_span]:visible bg-gray-300 dark:bg-dark-bg "
@@ -181,8 +195,9 @@ export const DynamicTable = ({
                       }
                       `}
                         onClick={() => {
-                          if (header.column.getCanSort())
-                            header.column.getToggleSortingHandler();
+                          // if (header.column.getCanSort())
+                          header.column.getToggleSortingHandler();
+                          // header.column.getToggleSortingHandler();
                         }}
                       >
                         {/* {header.column.columnDef.header} */}

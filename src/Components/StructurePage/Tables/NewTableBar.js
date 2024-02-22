@@ -1,4 +1,4 @@
-import { EyeIcon, SearchIcon, TrashIcon } from "Components/Icons";
+import { EyeIcon, PlusIcon, PrintIcon, SearchIcon, TrashIcon } from "Components/Icons";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { DebouncedInput } from "../CustomFields";
@@ -12,13 +12,18 @@ export const NewTableBar = ({
   setGlobalFilter,
   table,
   columnVisibility,
+  hideAddNew,
+  extraContent,
+  allowPrint,
+  onClickPrint,
+  rowSelection
 }) => {
   const { t } = useTranslation();
   const [openColumnsSetting, setOpenColumnsSetting] = useState(false);
 
   return (
     <>
-      <div className="flex justify-between gap-2 border-b pb-4 dark:border-dark-border">
+      <div className="flex justify-between items-end gap-2 border-b pb-4 dark:border-dark-border">
         <div className="flex gap-2 items-center">
           <div className="relative">
             <div className="relative md:block ">
@@ -44,32 +49,39 @@ export const NewTableBar = ({
             </div>
           ) : null}
         </div>
+        {extraContent ? extraContent : null}
         <div className="flex gap-2">
+          {hideAddNew ? null : (
+            <button
+              className="flex items-center gap-2 bg-blue-500 text-sm text-white py-2 rounded px-2 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
+              onClick={onAddClick}
+            >
+              <PlusIcon className="w-6 h-6" circle />
+              {t("add_new")}
+            </button>
+          )}
           <button
-            className="bg-blue-500 text-sm text-white rounded px-2 py-1 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
-            onClick={onAddClick}
-          >
-            {t("add_new")}
-          </button>
-          <button
-            className="bg-red-500 text-sm text-white rounded px-2 py-1 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300 disabled:bg-red-200"
+            className="bg-red-500 text-sm text-white py-2 rounded px-2 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300 disabled:bg-red-200"
             onClick={onDeleteClick}
-            // disabled={!Object.keys(selectedList)?.length}
+            disabled={!Object.keys(rowSelection)?.length}
           >
             <TrashIcon />{" "}
           </button>
           <button
             onClick={() => setOpenColumnsSetting(true)}
-            className="bg-green-500 text-sm text-white rounded px-2 py-1 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
+            className="bg-green-500 text-sm text-white py-2 rounded px-2 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
           >
             <EyeIcon />
           </button>
-          {/* <button
-          className="bg-green-500 text-sm text-white rounded px-2 py-1 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
-          onClick={onFilterClick}
-        >
-          Filter
-        </button> */}
+          {allowPrint ? (
+            <button
+              onClick={onClickPrint}
+              className="flex items-center gap-2 bg-purple-500 rounded-md text-white px-4 py-2"
+            >
+              <PrintIcon className="w-5 h-5" />
+              {t('print')}
+            </button>
+          ) : null}
         </div>
       </div>
       {openColumnsSetting && (

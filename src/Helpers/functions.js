@@ -7,6 +7,7 @@ import {
   SELECT_LISTS,
 } from "./constants";
 import { toast } from "react-toastify";
+import { getLastNumberByColumn } from "./Lib/operations/global-insert";
 
 // export const SERVER_URL = `https://matiestate-server.vercel.app/`;
 export const SERVER_URL = `https://matiestate-server.vercel.app`;
@@ -115,51 +116,8 @@ export function getMonthsDiff(start_date, end_date, price) {
   return { monthlyPrice, remainingPrice, startDate, endDate, monthsDiff };
 }
 
-export function dividePrice(
-  start_date,
-  price,
-  numbers,
-  duration,
-  each_duration
-) {
-  const monthlyPrice = Math.floor(price / numbers);
-  const remainingPrice = price % numbers;
-
-  const result = [];
-
-  let currentDate = new Date(start_date);
-
-  for (let i = 0; i < numbers; i++) {
-    const formattedDate = currentDate.toISOString()?.substring(0, 10);
-
-    // increase weeks
-    if (duration === 1) {
-      currentDate.setDate(currentDate.getDate() + each_duration * 7);
-    }
-    // increase months
-    if (duration === 2) {
-      currentDate.setDate(currentDate.getMonth() + each_duration);
-    }
-    // increase year
-    if (duration === 3) {
-      currentDate.setDate(currentDate.getFullYear() + each_duration);
-    }
-
-    let end = new Date(currentDate.getTime() - 86400000)
-      .toISOString()
-      ?.substring(0, 10);
-    result.push({ month: formattedDate, price: monthlyPrice, end });
-    // currentDate.setMonth(currentDate.getMonth() + 1);
-  }
-
-  if (result[result.length - 1]?.price)
-    result[result.length - 1].price += remainingPrice;
-
-  return result;
-}
-
 export const getCreatedFromUrl = (name, id) => {
-  switch (name) {
+  switch (name?.toLowerCase()) {
     case "contract":
       return {
         href: `/contracts/${id}`,
@@ -168,4 +126,133 @@ export const getCreatedFromUrl = (name, id) => {
     default:
       return;
   }
+};
+
+export async function getInsertAccountTrigger(name, conditions) {
+  // get suppliers or customers id
+  const parentAccount = await ApiActions.read("account", {
+    conditions: name
+      ? [{ type: "and", conditions: [["name", "=", name]] }]
+      : conditions,
+  });
+
+  let parent_id = parentAccount?.result?.at(0)?.id;
+  let final_id = parentAccount?.result?.at(0)?.final_id;
+  if (!final_id) final_id = parentAccount?.result?.at(0)?.parent_id;
+  // get last child id of suppliers or customers
+  const lastNumber = await getLastNumberByColumn(
+    "account",
+    "parent_id",
+    parent_id,
+    "number"
+  );
+
+  // get default currency id
+  const currencyResponse = await ApiActions.read("currency", {
+    conditions: [{ type: "and", conditions: [["code", "=", "AED"]] }],
+  });
+
+  let account = {
+    number: +lastNumber + 1,
+    type: 1,
+    currency_id: currencyResponse?.result?.at(0)?.id,
+    parent_id,
+    final_id,
+  };
+
+  return account;
+}
+
+//
+export function removeNullValues(oldValues) {
+  if (Object.keys(oldValues).length < 1) return;
+
+  let values = {};
+  for (const key in oldValues) {
+    let val = oldValues[key];
+    if (val !== undefined && val !== null && val !== "") {
+      values[key] = val;
+    }
+  }
+  return values;
+}
+
+export function generateFlatHashName(tab, setting, yIndex, xIndex) {
+  switch (tab) {
+    case "apartment":
+      return `0${xIndex + 1}0${yIndex + 1}`;
+    case "parking":
+    case "mezzanine":
+      return `${setting.prefix} ${xIndex}${yIndex + 1}`;
+    case "office":
+    case "penthouse":
+      return `${setting.prefix} ${xIndex + 1}0${yIndex + 1}`;
+    case "driver flats":
+    case "servant flats":
+      return `${setting.prefix} ${yIndex + 1}0${xIndex + 1}`;
+    case "stores":
+      return;
+    case "warehouse":
+    case "shop":
+    case "underground parking":
+      return `${setting.prefix} ${yIndex}${xIndex + 1}`;
+    default:
+      return `${setting.prefix} ${xIndex + 1}0${yIndex + 1}`;
+  }
+}
+
+// const HASH_BILLS_TYPE = {};
+// export async function getBillType(type) {
+//   if (HASH_BILLS_TYPE[type]) return HASH_BILLS_TYPE[type];
+//   else {
+//     const response = await ApiActions.read("bill_pattern");
+//     if (response?.success) {
+//       for (const item of response?.result) {
+//         HASH_BILLS_TYPE[item?.code] = item?.name;
+//       }
+//     }
+//     return HASH_BILLS_TYPE[type];
+//   }
+// }
+
+export const changeRowStatus = async (name, id, col, value) => {
+  const response = await ApiActions.update(name, {
+    conditions: [{ type: "and", conditions: [["id", "=", id]] }],
+    updates: {
+      [col]: value,
+    },
+  });
+  return response;
+};
+
+export const getAlphabetSortingView = (index) => {
+  const alphabet = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+  ];
+  return alphabet[index -1];
 };

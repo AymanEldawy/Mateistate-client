@@ -8,7 +8,8 @@ import useFlatColoring from "Hooks/useFlatColoring";
 import React, { useMemo, useState } from "react";
 import ToolsColColor from "./ToolsColColor";
 import Table from "Components/StructurePage/CustomTable/Table";
-import { getPrefix } from "Helpers/functions";
+import { generateFlatHashName, getAlphabetSortingView, getPrefix } from "Helpers/functions";
+import { FLAT_PROPERTY_TABS_SETTINGS } from "Helpers/constants";
 
 export const ToolsTabsTable = ({
   row,
@@ -36,35 +37,43 @@ export const ToolsTabsTable = ({
     });
   };
 
-  const onSelectAllHorizontal = (e, y, x) => {
+  const onSelectAllHorizontal = (e, y, x, matrix) => {
+    const { tabName } = selectedTab;
+    let setting = FLAT_PROPERTY_TABS_SETTINGS[tabName];
+
     for (let i = 0; i < x; i++) {
-      let itemValue = `${prefix} ${y + 1}0${i+1}`;
+      let itemHash = matrix
+        ? generateFlatHashName(tabName, setting, i, y)
+        : generateFlatHashName(tabName, setting, y, i);
+        
       if (e.target.checked) {
         let additional = {
-          name: itemValue,
+          name: itemHash,
           x_index: i,
           y_index: y,
         };
-        onInsertColor(tabName, itemValue, additional);
+        onInsertColor(tabName, itemHash, additional);
       } else {
-        onRemoveFromColor(tabName, itemValue);
+        onRemoveFromColor(tabName, itemHash);
       }
     }
   };
 
   const onSelectAllVertical = (e, y, x) => {
     const { tabName } = selectedTab;
+    let setting = FLAT_PROPERTY_TABS_SETTINGS[tabName];
+
     for (let i = 0; i < x; i++) {
-      let itemValue = `${prefix} ${i + 1}0${y+1}`;
+      let itemHash = generateFlatHashName(tabName, setting, y, i);
       if (e.target.checked) {
         let additional = {
-          name: itemValue,
+          name: itemHash,
           x_index: y,
           y_index: i + 1,
         };
-        onInsertColor(tabName, itemValue, additional);
+        onInsertColor(tabName, itemHash, additional);
       } else {
-        onRemoveFromColor(tabName, itemValue);
+        onRemoveFromColor(tabName, itemHash);
       }
     }
   };
@@ -90,13 +99,15 @@ export const ToolsTabsTable = ({
                   {canInsertColor && selectedTab?.y !== "" ? (
                     <Checkbox
                       name={tabName}
-                      className="mr-2 !ml-0"
+                      className="mr-2 !ml-0 bg-gray-500 w-9"
                       onChange={(e) => {
-                        onSelectAllVertical(e, indexY, yCount);
+                        onSelectAllVertical(e, indexY, xCount);
+                        // onSelectAllVertical(e, indexY, yCount, tabName);
+                        // onSelectAllVertical(e, xCount, yCount, tabName);
                       }}
                     />
                   ) : null}
-                  0{indexY + 1}
+                  {getAlphabetSortingView(indexY + 1)}
                 </div>
               </TableHeadCol>
             ))}
@@ -111,8 +122,9 @@ export const ToolsTabsTable = ({
                     <TableCol classes="!p-0 !px-2  border border-gray-400">
                       <Checkbox
                         name={tabName}
-                        onChange={(e) =>
-                          onSelectAllHorizontal(e, indexX, yCount)
+                        onChange={
+                          (e) => onSelectAllHorizontal(e, indexX, yCount, true)
+                          // onSelectAllHorizontal(e, indexX, selectedTab?.y ? yCount : xCount, tabName)
                         }
                       />
                     </TableCol>

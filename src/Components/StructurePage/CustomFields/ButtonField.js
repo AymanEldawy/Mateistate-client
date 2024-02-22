@@ -7,7 +7,7 @@ export const ButtonField = ({
   globalButtonsActions,
   ...field
 }) => {
-  console.log("🚀 ~ field:", field);
+  // console.log(field?.condition , watch(fieldWatch));
   const { watch } = useFormContext();
 
   if (field?.condition && watch(fieldWatch) !== 4) return;

@@ -1,4 +1,6 @@
+import UniqueFieldGroup from "Components/StructurePage/CustomFields/UniqueFieldGroup";
 import {
+  CurrencyFieldGroup,
   Input,
   Select,
   Switch,
@@ -19,7 +21,7 @@ export const VoucherHead = ({
       <div className="w-2/3">
         <div
           className={`grid gap-4  ${
-            'grid-cols-3'
+            "grid-cols-3"
             // isPaymentVoucher ? "grid-cols-2" : "grid-cols-3"
           }`}
         >
@@ -39,14 +41,11 @@ export const VoucherHead = ({
             CACHE_LIST={CACHE_LIST}
             error={errors?.account_id ? "Field is required" : ""}
             list={CACHE_LIST?.account}
-            label={"account"}
             value={values?.account_id || ""}
           />
           {PATTERN_SETTINGS?.show_contract_field ? (
             <>
-              <Select
-                {...fields["connect_with"]}
-                label={"connect with"}
+              <UniqueFieldGroup
                 value={values?.connect_with}
                 error={errors?.connect_with ? "Field is required" : ""}
               />
@@ -55,7 +54,7 @@ export const VoucherHead = ({
           ) : null}
           {PATTERN_SETTINGS?.show_currency ? (
             <>
-              <UniqueField
+              <CurrencyFieldGroup
                 {...fields["currency_id"]}
                 className="min-w-[170px] border-0 !rounded-none !h-full"
                 table={"currency"}
@@ -63,23 +62,12 @@ export const VoucherHead = ({
                 CACHE_LIST={CACHE_LIST}
                 error={errors?.currency_id ? "Field is required" : ""}
                 list={CACHE_LIST?.currency}
-                label={"currency"}
                 value={values?.currency_id || ""}
-              />
-              <Input
-                {...fields["currency_val"]}
-                type="text"
-                label="Currency val"
-                value={values?.currency_val || ""}
-                className="border-0 !rounded-none !h-full"
-                name="currency_val"
-                error={errors?.currency_val ? "Field is required" : ""}
               />
             </>
           ) : null}
           <Textarea
             {...fields["note"]}
-            label="Note"
             containerClassName="col-span-full"
             value={values?.note || ""}
             labelClassName={"mb-2 h-6"}
@@ -96,7 +84,6 @@ export const VoucherHead = ({
             {...fields["number"]}
             type="text"
             readOnly
-            label="Number"
             value={values?.number || ""}
             className="border-0 !rounded-none !h-full"
             name="number"
@@ -120,7 +107,6 @@ export const VoucherHead = ({
           CACHE_LIST={CACHE_LIST}
           error={errors?.seller_id ? "Field is required" : ""}
           list={CACHE_LIST?.seller}
-          label={"seller"}
           value={values?.seller_id || ""}
         />
         <div className="grid grid-cols-2 gap-4">
@@ -141,7 +127,6 @@ export const VoucherHead = ({
           {/* <Input
             readOnly
             // {...fields["debit"]}
-            label="debit"
             labelClassName="hidden"
             type="number"
             // value={values?.debit || ""}
@@ -152,7 +137,6 @@ export const VoucherHead = ({
           <Input
             readOnly
             // {...fields["credit"]}
-            label="credit"
             labelClassName="hidden"
             type="number"
             // // value={values?.credit || ""}

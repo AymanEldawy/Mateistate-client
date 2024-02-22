@@ -18,11 +18,12 @@ export const ReportLatest = ({
   renderTitle,
   itemClassName,
   limit = 5,
+  colSearchName = "name",
 }) => {
   const { loading, data, error } = useFetch(name, {
-    columns: ["id", 'created_at', 'name'],
+    columns: ["id", 'created_at', colSearchName],
     limit: limit,
-    sorts: [{ column: "created_at", order: "DESC", nulls: "last" }],
+    sorts: [{ column: colSearchName, order: "DESC", nulls: "last" }],
   });
 
   return (
@@ -33,9 +34,12 @@ export const ReportLatest = ({
         >
           Latest {limit} {title || name}
         </h2>
-        <Link to={href} className="flex justify-center items-center rounded-full h-7 w-7 hover:bg-primary hover:text-white hover:border-primary">
+        {/* <Link
+          to={href}
+          className="flex justify-center items-center rounded-full h-7 w-7 hover:bg-primary hover:text-white hover:border-primary"
+        >
           <ChevronIcon className="w-4 h-4 ltr:-rotate-90 rtl:rotate-90" />
-        </Link>
+        </Link> */}
       </div>
       <div className={`${bodyClassName} flex-1 flex flex-col`}>
         {loading ? (
@@ -44,7 +48,7 @@ export const ReportLatest = ({
           <>
             {data?.length ? (
               <>
-                {data?.slice(0,4)?.map((item) => {
+                {data?.slice(0, 4)?.map((item) => {
                   if (renderItem) return renderItem(item);
                   else
                     return (

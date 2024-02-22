@@ -1,4 +1,5 @@
 import {
+  CurrencyFieldGroup,
   Input,
   Select,
   Switch,
@@ -6,15 +7,10 @@ import {
   UniqueField,
 } from "../../../CustomFields";
 
-export const EntryHead = ({
-  fields,
-  errors,
-  values,
-  CACHE_LIST,
-}) => {
+export const EntryHead = ({ fields, errors, values, CACHE_LIST }) => {
   return (
     <div className="">
-      <div className={`grid grid-cols-2 md:grid-cols-4 gap-4`}>
+      <div className={`grid grid-cols-2 md:grid-cols-3 gap-4`}>
         <Input
           readOnly
           {...fields["number"]}
@@ -27,19 +23,15 @@ export const EntryHead = ({
           className="border-0 !rounded-none !h-full"
           error={errors?.created_at ? "Field is required" : ""}
         />
-        <UniqueField
+        <CurrencyFieldGroup
           {...fields["currency_id"]}
           className="min-w-[170px] border-0 !rounded-none !h-full"
+          table={"currency"}
+          name="currency_id"
           CACHE_LIST={CACHE_LIST}
           error={errors?.currency_id ? "Field is required" : ""}
           list={CACHE_LIST?.currency}
           value={values?.currency_id || ""}
-        />
-        <Input
-          {...fields["currency_val"]}
-          value={values?.currency_val || ""}
-          className="border-0 !rounded-none !h-full"
-          error={errors?.currency_val ? "Field is required" : ""}
         />
       </div>
       <Textarea

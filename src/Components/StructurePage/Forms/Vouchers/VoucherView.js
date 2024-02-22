@@ -44,6 +44,7 @@ export const VoucherView = () => {
     }
   }, [voucherInfo?.id]);
 
+
   if (!voucherInfo?.id) return;
 
   return (

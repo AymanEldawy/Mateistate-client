@@ -1,5 +1,6 @@
 import React from "react";
 import { useFormContext, Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 const Radio = ({
   labelClassName,
@@ -10,13 +11,15 @@ const Radio = ({
   error,
   values,
   updatedName,
+  hideLabel,
   ...field
 }) => {
+  const { t } = useTranslation();
   const { register } = useFormContext();
 
   return (
     <div className={"flex flex-col " + containerClassName}>
-      {label ? (
+      {label && !hideLabel ? ( 
         <p
           title={label}
           className={
@@ -24,7 +27,7 @@ const Radio = ({
             labelClassName
           }
         >
-          {label}{" "}
+          {t(label)?.replace(/_/g, " ")}
           {field?.required ? (
             <span className="text-red-500 mx-1">*</span>
           ) : null}

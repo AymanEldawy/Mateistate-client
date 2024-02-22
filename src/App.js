@@ -14,18 +14,28 @@ import Footer from "Components/Layout/Footer";
 import PopupForm from "Components/StructurePage/Forms/CustomForm/PopupForm";
 import { VoucherEntriesViewProvider } from "Hooks/useVoucherEntriesView";
 import { VoucherView } from "Components/StructurePage/Forms/Vouchers/VoucherView";
-import { generateDataStarting } from "Helpers/test-data-starting";
-import { generateEntryFromContract } from "Helpers/Lib/operations/vouchers-insert";
-
+import { INSERT_DEFAULT_DATA } from "Helpers/GENERATE_STARTING_DATA";
+import getMenu from "Helpers/menu";
+// import { INSERT_DEFAULT_DATA } from "Helpers/GENERATE_STARTING_DATA";
+let called = true
 function App() {
   const [mode, setMode] = useState("dark");
   const [open, setOpen] = useState(false);
+  const [menu, setMenu] = useState([])
 
   let resize = () => {
     if (window.innerWidth > 1024 && open) {
       setOpen(false);
     }
   };
+
+  // useEffect(() => {
+  //   if(called) {
+  //     called = false
+  //     // INSERT_DEFAULT_DATA();
+  //   }
+
+  // }, [])
 
   useEffect(() => {
     window.addEventListener("resize", resize);
@@ -34,6 +44,14 @@ function App() {
     };
   }, []);
   
+  useEffect(() => {
+    const getMen = async () => {
+      const menu = await getMenu();
+      setMenu(menu);
+    };
+    getMen()
+  }, []);
+
 
   return (
     // h-[95vh] overflow-y-auto overflow-x-hidden
@@ -53,9 +71,9 @@ function App() {
                 />
                 <div id="layout-wrapper" className={"flex flex-col h-screen "}>
                   <Header setOpen={setOpen} mode={mode} setMode={setMode} />
-                  <Menu />
+                  <Menu menu={menu} />
                   <Backdrop open={open} onClose={() => setOpen(false)} />
-                  <Sidebar setOpen={setOpen} open={open} />
+                  <Sidebar menu={menu} setOpen={setOpen} open={open} />
                   <Routes />
                   <Footer />
                 </div>

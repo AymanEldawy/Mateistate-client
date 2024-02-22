@@ -1,5 +1,6 @@
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 const Input = ({
   labelClassName,
@@ -8,15 +9,17 @@ const Input = ({
   inputClassName,
   error,
   updatedName,
+  hideLabel,
   // register,
   ...field
 }) => {
   const { watch } = useFormContext();
+  const { t } = useTranslation();
   const { name } = field;
 
   return (
     <div className={"flex flex-col " + containerClassName}>
-      {label ? (
+      {label && !hideLabel ? (
         <label
           title={label}
           htmlFor={name}
@@ -25,7 +28,7 @@ const Input = ({
             labelClassName
           }
         >
-          {label}{" "}
+          {t(label)?.replace(/_/g, " ")}
           {field?.required ? (
             <span className="text-red-500 mx-1">*</span>
           ) : null}
@@ -34,7 +37,7 @@ const Input = ({
       <div className="flex gap-4 items-center">
         <label
           title={label}
-          className="relative flex gap-4 items-center cursor-pointer"
+          className="relative flex mt-2 gap-4 items-center cursor-pointer"
         >
           <Controller
             name={updatedName || field.name}
@@ -54,6 +57,13 @@ const Input = ({
           />
           <div className="w-11 h-6 after:left-[1px] bg-gray-200 rounded-full peer peer-disabled:bg-gray-800 peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
         </label>
+        {watch(updatedName || field?.name) && field?.readOnlyValue ? (
+          <input
+            readOnly
+            value={watch(field?.readOnlyValue)}
+            className={`border h-[39px] read-only:bg-blue-100 w-full dark:read-only:bg-[#444] rounded p-1  `}
+          />
+        ) : null}
       </div>
       {error ? (
         <p className="bg-red-200 mt-2 rounded text-sm text-red-500 px-2 py-1">

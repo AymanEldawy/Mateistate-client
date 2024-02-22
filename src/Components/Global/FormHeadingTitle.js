@@ -1,6 +1,7 @@
+import { CloseIcon } from "Components/Icons";
 import React from "react";
 
-const FormHeadingTitle = ({ title, extraContext, classes }) => {
+const FormHeadingTitle = ({ title, extraContext, onClose, classes }) => {
   return (
     <div className="flex items-center gap-4 justify-between mb-8 text-left ">
       <button
@@ -8,6 +9,14 @@ const FormHeadingTitle = ({ title, extraContext, classes }) => {
       >
         {title}
       </button>
+      {onClose ? (
+        <button
+          onClick={onClose}
+          className="h-9 w-9 rounded-full flex items-center justify-center bg-red-100 text-red-500"
+        >
+          <CloseIcon className="w-6 h-6" />
+        </button>
+      ) : null}
       {extraContext ? extraContext : null}
     </div>
   );

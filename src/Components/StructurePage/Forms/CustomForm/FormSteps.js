@@ -32,7 +32,7 @@ const FormSteps = ({
     steps,
     fields,
     CACHE_LIST,
-    tabNames
+    tabNames,
   } = useFormSteps({ name });
 
   const methods = useForm({
@@ -46,21 +46,21 @@ const FormSteps = ({
   const {
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
     reset,
     setValue,
   } = methods;
 
   useEffect(() => {
     if (layout !== "update" && oldValues) {
-      reset(oldValues);
+      reset({ ...watch(), ...oldValues });
     }
   }, [oldValues]);
-  
+
   // Handel Submit
   const onSubmit = async (value) => {
-    next();
-    if (!isLast()) return;
+    if (!isDirty) return;
+
     setLoading(true);
     const getTheFunInsert = INSERT_FUNCTION[name];
     const res = await getTheFunInsert({ data: value });
@@ -77,14 +77,13 @@ const FormSteps = ({
     setLoading(false);
   };
 
-  console.log(watch(), '-d');
-
   return (
     <FormProvider {...methods}>
       <FormHeadingTitleSteps
         name={name}
         steps={steps}
         activeStage={currentIndex}
+        goTo={goTo}
       />
       <div className="h-5" />
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -115,6 +114,7 @@ const FormSteps = ({
           isFirst={isFirst}
           loading={loading}
           steps={steps}
+          next={next}
           back={back}
         />
       </form>

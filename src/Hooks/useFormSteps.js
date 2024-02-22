@@ -2,6 +2,12 @@ import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
 import { ApiActions } from "Helpers/Lib/api";
 import { useEffect, useMemo, useState } from "react";
 import { usePopupForm } from "./usePopupForm";
+import {
+  getAccountList,
+  getAccountsChildrenByName,
+  getCustomers,
+} from "Helpers/Lib/operations/global-read";
+import { UNIQUE_REF_TABLES } from "Helpers/constants";
 
 const useFormSteps = ({ name }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -9,8 +15,6 @@ const useFormSteps = ({ name }) => {
   const [fields, setFields] = useState([]);
   const [formSettings, setFormSettings] = useState({});
   const [CACHE_LIST, setCACHE_LIST] = useState({});
-  const [refresh, setRefresh] = useState(false)
-  const { refTable } = usePopupForm();
 
   // Get data
   let formSchema = useMemo(() => {
@@ -50,28 +54,34 @@ const useFormSteps = ({ name }) => {
     getRefTables();
   }, [currentIndex, fields?.length]);
 
-  useEffect(() => {
-    if (refTable?.isClosed) {
-      reFetchRefTable(refTable?.table);
-    }
-  }, [refTable?.isClosed]);
-
-  const reFetchRefTable = async (table) => {
-    const response = await ApiActions.read(table);
-    if (response?.result?.length) {
-      setCACHE_LIST((prev) => ({
-        ...prev,
-        [table]: response?.result,
-      }));
-      setRefresh((p) => !p);
-    }
-  };
-
   const getRefTables = async () => {
     if (!fields?.length) return;
     let hash = {};
-    for (const field of fields) {
+    for (let i = 0; i < fields?.length; i++) {
+      let field = fields?.[i];
+
       if (hash[field?.ref_table] || CACHE_LIST?.[field?.ref_table]) continue;
+
+      if (field?.ref_table === "account") {
+        hash.account = await getAccountList();
+        continue;
+      }
+
+      if (field?.ref_table === UNIQUE_REF_TABLES.clients) {
+        hash[UNIQUE_REF_TABLES.clients] = await getAccountsChildrenByName(
+          "Customers"
+        );
+        hash.account = await getAccountList();
+        continue;
+      }
+
+      if (field?.ref_table === UNIQUE_REF_TABLES.suppliers) {
+        hash[UNIQUE_REF_TABLES.suppliers] = await getAccountsChildrenByName(
+          "Suppliers"
+        );
+        hash.account = await getAccountList();
+        continue;
+      }
 
       if (field.is_ref) {
         const response = await ApiActions.read(
@@ -109,6 +119,10 @@ const useFormSteps = ({ name }) => {
     formSchema,
     tabNames,
     CACHE_LIST,
+    setFields,
+    forms,
+    setCurrentIndex,
+    setCACHE_LIST,
   };
 };
 

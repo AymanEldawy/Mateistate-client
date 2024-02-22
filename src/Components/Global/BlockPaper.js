@@ -8,15 +8,18 @@ const BlockPaper = ({
   contentBar,
   children,
   fullWidth,
+  containerClassName,
+  bodyClassName,
+  boxClassName
 }) => {
 
   return (
     <Layout>
-      <div className="!mb-16">
+      <div className={`${containerClassName ? '' : 'mb-16'}`}>
         <div
-          className={`${fullWidth ? "container-full" : "container"} mx-auto `}
+          className={`${fullWidth ? "container-full" : "container"} mx-auto ${bodyClassName}`}
         >
-          <div className="p-4 shadow bg-white dark:bg-dark-bg rounded-md">
+          <div className={`p-4 shadow bg-white dark:bg-dark-bg rounded-md ${boxClassName}`}>
             {title || customTitle ? (
               <div className="border-b mb-4 pb-2 flex items-center justify-between">
                 <h2 className="capitalize text-lg font-medium text-gray-600 dark:border-[#333] dark:text-white">

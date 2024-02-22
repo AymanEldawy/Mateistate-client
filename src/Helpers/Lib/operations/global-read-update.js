@@ -1,3 +1,4 @@
+import { CONTRACTS_ASSETS_TYPE } from "Helpers/constants";
 import { ApiActions } from "../api";
 
 const fetchData = async (table, col, id) => {
@@ -137,7 +138,6 @@ export const getShopUpdate = async (id) => {
     shop_selling_price: shop_selling_price?.result?.at(0),
   };
 
-
   return groupData;
 };
 
@@ -170,8 +170,36 @@ export const getVillaUpdate = async (id) => {
     villa_selling_price: villa_selling_price?.result?.at(0),
   };
 
-
   return groupData;
+};
+
+export const getInstallmentData = async (contractId) => {
+  const installment = await fetchData("installment", "contract_id", contractId);
+  const installment_grid = await fetchData(
+    "bill",
+    "installment_id",
+    installment?.result?.at(0)?.id
+  );
+  const voucher_grid = await ApiActions.read("voucher_main_data", {
+    conditions: [
+      { type: "and", conditions: [["connect_with_id", "=", contractId]] },
+    ],
+    joins: [
+      {
+        type: "leftJoin",
+        table: "voucher_grid_data",
+        conditions: {
+          "voucher_main_data.id": "voucher_grid_data.voucher_main_data_id",
+        },
+      },
+    ],
+  });
+
+  return {
+    installment,
+    installment_grid,
+    voucher_grid,
+  };
 };
 
 export const getContractUpdate = async (id) => {
@@ -181,47 +209,47 @@ export const getContractUpdate = async (id) => {
     "contract_id",
     id
   );
+  
   const contract_terms = await fetchData("contract_terms", "contract_id", id);
   const contract_pictures = await fetchData(
     "contract_pictures",
     "contract_id",
     id
   );
+
   const contract_other_fees = await fetchData(
     "contract_other_fees",
     "contract_id",
     id
   );
+
   const contract_fixed_assets = await fetchData(
     "contract_fixed_assets",
     "contract_id",
     id
   );
+
   const contract_linked_parking = await fetchData(
     "contract_linked_parking",
     "contract_id",
     id
   );
+
   const contract_cycle = await fetchData("contract_cycle", "contract_id", id);
   const contract_termination = await fetchData(
     "contract_termination",
     "contract_id",
     id
   );
+  
   const contract_receipt_number = await fetchData(
     "contract_receipt_number",
     "contract_id",
     id
   );
 
-  const installment = await fetchData("installment", "contract_id", id);
-  const installment_grid = await fetchData(
-    "installment_data",
-    "installment_id",
-    installment?.result?.at(0)?.id
-  );
-
-  // apartment_rent_contract
+  const { installment, installment_grid, voucher_grid } =
+    await getInstallmentData(id);
 
   const groupData = {
     contract: contract?.result?.at(0),
@@ -235,7 +263,8 @@ export const getContractUpdate = async (id) => {
     contract_termination: contract_termination?.result?.at(0),
     contract_receipt_number: contract_receipt_number?.result,
     installment: installment?.result?.at(0),
-    installment_grid: installment_grid?.result,
+    installment_grid: installment_grid?.result, // cheques
+    voucher_grid: voucher_grid?.result, // cheques
   };
 
   return groupData;
@@ -249,16 +278,10 @@ const getApartmentRentContract = async (id) => {
     "contract_id",
     id
   );
-  const contract_rent_financial = await fetchData(
-    "contract_rent_financial",
-    "contract_id",
-    id
-  );
 
   const groupData = {
     ...contractGroup,
     apartment_rent_contract: apartment_rent_contract?.result?.at(0),
-    contract_rent_financial: contract_rent_financial?.result?.at(0),
   };
 
   return groupData;
@@ -272,16 +295,10 @@ const getShopRentContract = async (id) => {
     "contract_id",
     id
   );
-  const contract_rent_financial = await fetchData(
-    "contract_rent_financial",
-    "contract_id",
-    id
-  );
 
   const groupData = {
     ...contractGroup,
     shop_rent_contract: shop_rent_contract?.result?.at(0),
-    contract_rent_financial: contract_rent_financial?.result?.at(0),
   };
 
   return groupData;
@@ -291,16 +308,10 @@ const getParkingRentContract = async (id) => {
   // const contract = await fetchData("contract", "id", id);
   const contractGroup = await getContractUpdate(id);
   const parking = await fetchData("parking_rent_contract", "contract_id", id);
-  const contract_rent_financial_parking = await fetchData(
-    "contract_rent_financial_parking",
-    "contract_id",
-    id
-  );
+
   const groupData = {
     ...contractGroup,
     parking_rent_contract: parking?.result?.at(0),
-    contract_rent_financial_parking_parking:
-      contract_rent_financial_parking?.result?.at(0),
   };
 
   return groupData;
@@ -314,16 +325,10 @@ const getApartmentSaleContract = async (id) => {
     "contract_id",
     id
   );
-  const contract_sale_financial = await fetchData(
-    "contract_sale_financial",
-    "contract_id",
-    id
-  );
 
   const groupData = {
     ...contractGroup,
     apartment_sale_contract: apartment_sale_contract?.result?.at(0),
-    contract_sale_financial: contract_sale_financial?.result?.at(0),
   };
 
   return groupData;
@@ -336,16 +341,10 @@ const getShopSaleContract = async (id) => {
     "contract_id",
     id
   );
-  const contract_sale_financial = await fetchData(
-    "contract_sale_financial",
-    "contract_id",
-    id
-  );
 
   const groupData = {
     ...contractGroup,
     shop_sale_contract: shop_sale_contract?.result?.at(0),
-    contract_sale_financial: contract_sale_financial?.result?.at(0),
   };
 
   return groupData;
@@ -355,16 +354,10 @@ const getParkingSaleContract = async (id) => {
   // const contract = await fetchData("contract", "id", id);
   const contractGroup = await getContractUpdate(id);
   const parking = await fetchData("parking_sale_contract", "contract_id", id);
-  const contract_sale_financial_parking = await fetchData(
-    "contract_sale_financial_parking",
-    "contract_id",
-    id
-  );
+
   const groupData = {
     ...contractGroup,
     parking_sale_contract: parking?.result?.at(0),
-    contract_sale_financial_parking:
-      contract_sale_financial_parking?.result?.at(0),
   };
 
   return groupData;
@@ -377,7 +370,6 @@ async function getVoucherData({
   tableGridNameId,
   voucherType,
 }) {
-  
   let conditions = [{ type: "and", conditions: [["number", "=", number]] }];
   if (voucherType) {
     conditions.push({
@@ -389,7 +381,7 @@ async function getVoucherData({
   const res = await ApiActions.read(tableName, {
     conditions,
   });
-  
+
   const mainData = res?.result?.at(0);
 
   const responseGrid = await ApiActions.read(tableGridName, {
@@ -453,5 +445,35 @@ export default async function GET_UPDATE_DATE(name, id, params) {
       conditions: [{ type: "and", conditions: [["id", "=", id]] }],
     });
     return res.result?.at(0);
+  }
+}
+
+async function getContractData(name, number, code) {
+  const response = await ApiActions.read(name, {
+    conditions: [
+      { type: "and", conditions: [["number", "=", number]] },
+      { type: "and", conditions: [["code", "=", code]] },
+    ],
+  });
+  return response;
+}
+
+export async function getContractByNumber(
+  code,
+  type,
+  assetType,
+  number,
+  reset
+) {
+  if (!number || !code) return;
+  let name = `${assetType}_${type}_contract`;
+  const response = await getContractData(name, number, code);
+
+  if (response?.result?.length) {
+    const res = await getContractUpdate(response?.result?.at(0)?.contract_id);
+    let data = { ...res, [name]: response?.result?.at(0) };
+
+    return data;
+  } else {
   }
 }

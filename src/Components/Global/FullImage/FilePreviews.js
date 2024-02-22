@@ -17,14 +17,14 @@ export const FilePreviews = ({ images }) => {
       >
         {images?.slice(0, 5)?.map((imgSrc, index) => (
           <img
-            key={imgSrc}
+            key={`${imgSrc}-${index}`}
             src={imgSrc}
             alt={`file ${index}`}
-            className=" rounded-full border h-10 w-[40px] -ml-3 shadow-md shrink-0"
+            className=" rounded-full object-cover border h-12 w-[50px] -ml-3 shadow-md shrink-0"
           />
         ))}
         {images?.length > 5 ? (
-          <span className=" rounded-full border h-10 w-[40px] -ml-3 shadow-md flex items-center justify-center bg-blue-500 text-white">
+          <span className=" rounded-full border h-12 w-[50px] -ml-3 shadow-md flex items-center justify-center bg-blue-500 text-white">
             +{images?.slice(5)?.length}
           </span>
         ) : null}

@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
-import TableFields from "../CustomTable/TableFields";
+import TableFields from "../../CustomTable/TableFields";
 import Modal from "Components/Global/Modal/Modal";
 import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import { CloseIcon } from "Components/Icons";
 import { useFormContext } from "react-hook-form";
 
-const TerminationFinesForm = ({ errors, CACHE_LIST, onClose, contract_id }) => {
+const TerminationFinesForm = ({ errors, CACHE_LIST, onClose }) => {
   const { watch, setValue } = useFormContext();
   const fields_grid = useMemo(
     () => getFormByTableName("termination_fines_grid"),

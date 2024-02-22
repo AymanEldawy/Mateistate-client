@@ -6,16 +6,16 @@ export const DashboardGridLayout = () => {
     <div className="flex gap-4 h-full px-8">
       <div className="flex-1 flex flex-col -translate-y-4 h-full gap-4">
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
-          <ReportLatest itemHref="/update/contract" href="/reports/contracts" name="contract" />
+          <ReportLatest itemHref="/contracts" href="/reports/contracts" name="contract" />
         </div>
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
-          <ReportLatest itemHref="/update/building" href="/list/building" name="building" />
+          <ReportLatest itemHref="/buildings/update" href="/buildings" name="building" />
         </div>
       </div>
       <div className="flex-[2] flex flex-col gap-4">
         <div className="flex gap-4 h-1/5">
           <div className="flex-1 shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2">
-            <ReportCount name="building" href="list/building" />
+            <ReportCount name="building" href="buildings" />
           </div>
           <div className="flex-1 shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2">
             <ReportCount name="apartment" href="list/apartment" />
@@ -49,7 +49,7 @@ export const DashboardGridLayout = () => {
           <ReportLatest itemHref="/update/account" name="account" href="/list/account" />
         </div>
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2  h-1/2">
-          <ReportLatest itemHref="/update/bill" name="bill" href="/reports/bills" />
+          <ReportLatest itemHref="/update/cheque" colSearchName="number" name="bill" href="/reports/cheques" />
         </div>
       </div>
     </div>

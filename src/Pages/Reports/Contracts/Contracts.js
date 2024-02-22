@@ -1,13 +1,19 @@
 import { DynamicTable } from "Components/StructurePage/Tables/DynamicTable";
 import useFetch from "Hooks/useFetch";
-import { usePopupForm } from "Hooks/usePopupForm";
-import React from "react";
+import { ContractFiltersBar } from "./ContractFiltersBar";
 
 const Contracts = () => {
-  const { dispatchForm } = usePopupForm();
-  const {data, loading} = useFetch('contract')
+  const { data, loading } = useFetch("contract");
 
-  return <DynamicTable tableName={"contract"} data={data || []} />;
+  return (
+    <DynamicTable
+      hideAddNew
+      tableName={"contract"}
+      data={data || []}
+      extraContent={<ContractFiltersBar />}
+      loading={loading}
+    />
+  );
 };
 
 export default Contracts;

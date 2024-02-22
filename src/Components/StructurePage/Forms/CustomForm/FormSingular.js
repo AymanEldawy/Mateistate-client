@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { FormProvider } from "react-hook-form";
 
 import { Button } from "Components/Global/Button";
 
@@ -8,74 +7,64 @@ import { ApiActions } from "Helpers/Lib/api";
 import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import { Fields } from "./Fields";
 import { useParams } from "react-router-dom";
-import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
-import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
+import INSERT_FUNCTION from "Helpers/Lib/operations/global-insert";
+import { withFormSingular } from "HOC/withFormSingular";
 import { usePopupForm } from "Hooks/usePopupForm";
-import { SHOULD_GENERATE_ENTRIES } from "Helpers/constants";
+import { useEffect } from "react";
+import { getLastNumberByColumn } from "./../../../../Helpers/Lib/operations/global-insert";
 
-let CACHE_LIST = {};
+const automaticChangesOnAccount = async (name, watch, setValue) => {
+  if (name === "parent_id") {
+    const response = await ApiActions.read("account", {
+      conditions: [
+        { type: "and", conditions: [["id", "=", watch("parent_id")]] },
+      ],
+    });
+    if (response?.success) {
+      const number = await getLastNumberByColumn(
+        "account",
+        "parent_id",
+        watch("parent_id"),
+        "number"
+      );
+      let record = response?.result?.at(0);
+      setValue("final_id", record?.final_id || record?.parent_id);
+      setValue("number", +number + 1);
+    }
+  }
+};
 
-const FormSingular = ({ name, onClose, refetchData, layout, oldValues }) => {
-  const { refTable } = usePopupForm();
-  const params = useParams();
-  const [refresh, setRefresh] = useState(false);
-  const { openForm } = usePopupForm();
-  const methods = useForm({
-    defaultValues:
-      layout === "update"
-        ? async () => await GET_UPDATE_DATE(name, params?.id)
-        : oldValues || {},
-  });
-  const [loading, setLoading] = useState(false);
+const FormSingular = withFormSingular((props) => {
   const {
-    handleSubmit,
-    reset,
-    formState: { errors, isDirty, dirtyFields, isSubmitting },
+    name,
+    loading,
+    fields,
+    CACHE_LIST,
+    setLoading,
+    layout,
+    onClose,
+    refetchData,
+  } = props;
+  const {
     getValues,
+    handleSubmit,
+    formState: { errors, isDirty, dirtyFields, isSubmitting },
+    reset,
     setValue,
     watch,
-  } = methods;
+  } = props?.methods;
+  const params = useParams();
+  const { openForm } = usePopupForm();
 
   useEffect(() => {
-    if (layout !== "update" && oldValues) {
-      reset(oldValues);
-    }
-  }, [oldValues]);
-
-  const fields = useMemo(() => getFormByTableName(name), [name]);
-
-  useEffect(() => {
-    getRefTables();
-  }, [name]);
-
-  useEffect(() => {
-    if (refTable?.isClosed) {
-      reFetchRefTable(refTable?.table);
-    }
-  }, [refTable?.isClosed]);
-
-  const reFetchRefTable = async (table) => {
-    const response = await ApiActions.read(table);
-    if (response?.result?.length) {
-      CACHE_LIST[table] = response?.result;
-      setRefresh((p) => !p);
-    }
-  };
-
-  const getRefTables = async () => {
-    if (!fields?.length) return;
-
-    for (const field of fields) {
-      if (field.is_ref) {
-        const response = await ApiActions.read(field?.ref_table);
-        CACHE_LIST[field?.ref_table] = response?.result;
-
-        for (const item of response?.result) {
-          CACHE_LIST[item.id] = item.name || item.number || item.id;
-        }
+    let isAccount = name === "account";
+    const subscription = watch((value, { name, type }) => {
+      if (isAccount) {
+        automaticChangesOnAccount(name, watch, setValue);
       }
-    }
-  };
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   // Handel Submit
   const onSubmit = async (value) => {
@@ -98,13 +87,14 @@ const FormSingular = ({ name, onClose, refetchData, layout, oldValues }) => {
         updates: values,
       });
     } else {
-      res = await ApiActions.insert(name, {
-        data: values,
-      });
-    }
-    
-    if (SHOULD_GENERATE_ENTRIES?.[name] && openForm?.gen_entries) {
-      console.log("called", value, name, params, openForm);
+      if (INSERT_FUNCTION?.[name]) {
+        const getTheFunInsert = INSERT_FUNCTION[name];
+        res = await getTheFunInsert(values);
+      } else {
+        res = await ApiActions.insert(name, {
+          data: values,
+        });
+      }
     }
 
     if (res?.success) {
@@ -113,10 +103,23 @@ const FormSingular = ({ name, onClose, refetchData, layout, oldValues }) => {
           ? `Successfully update row: ${values?.name} in ${name}`
           : "Successfully added item in " + name
       );
+
+      if (layout !== "update") {
+        if (openForm.table) {
+          let record = res?.record;
+          let { additional } = openForm;
+          additional?.setList((prev) => {
+            return [...prev, { label: record?.name, value: record?.id }];
+          });
+          additional?.setValue(additional?.name, record.id);
+        }
+
+        reset();
+      }
+
       if (!!onClose) onClose();
       if (!!refetchData) refetchData();
       // reset form
-      reset();
     } else {
       toast.error("Failed to add new item in " + name);
     }
@@ -124,8 +127,8 @@ const FormSingular = ({ name, onClose, refetchData, layout, oldValues }) => {
   };
 
   return (
-    <FormProvider {...methods}>
-      <FormHeadingTitle title={name} />
+    <FormProvider {...props?.methods}>
+      <FormHeadingTitle title={name} onClose={onClose} />
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Fields
           values={getValues()}
@@ -137,12 +140,12 @@ const FormSingular = ({ name, onClose, refetchData, layout, oldValues }) => {
           <Button
             title="Submit"
             loading={loading}
-            disabled={!isDirty || isSubmitting}
+            disabled={!isDirty || isSubmitting || loading}
           />
         </div>
       </form>
     </FormProvider>
   );
-};
+});
 
 export default FormSingular;

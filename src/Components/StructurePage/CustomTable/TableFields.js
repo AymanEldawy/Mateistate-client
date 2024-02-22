@@ -1,11 +1,17 @@
 import { memo, useEffect, useState } from "react";
 
 import {
+  Checkbox,
+  ColorField,
   Input,
   Select,
   UniqueField,
 } from "Components/StructurePage/CustomFields";
 import { IncreaseTableBar } from "./IncreaseTableBar";
+import AreaField from "../CustomFields/AreaField";
+import { useTranslation } from "react-i18next";
+import { useFormContext } from "react-hook-form";
+import { PrintIcon } from "Components/Icons";
 
 const TableFields = ({
   fields,
@@ -26,14 +32,31 @@ const TableFields = ({
   onRowClick,
   rowsCount,
   onBlurNumbersField,
+  increasable = true,
+  allowPrint,
+  onClickPrint,
+  onlyView,
+  selectedRows
 }) => {
-  const [increaseCount, setIncreaseCount] = useState(10);
+  const { t } = useTranslation();
+  const { watch, setValue } = useFormContext();
+  const [increaseCount, setIncreaseCount] = useState(1);
 
   useEffect(() => {
     if (rowsCount) {
       setIncreaseCount(rowsCount);
     }
   }, [rowsCount]);
+
+  const onDecrement = () => {
+    let index = increaseCount - 1;
+    let grid = watch(tab || "grid");
+    let newGrid = grid?.filter((c, i) => i !== index);
+    if (index) {
+      setValue(tab || "grid", newGrid);
+    }
+    setIncreaseCount((prev) => prev - 1);
+  };
 
   return (
     <>
@@ -63,14 +86,22 @@ const TableFields = ({
                       return;
                     else {
                       return (
-                        <th key={col?.name} className={`px-4 py-2 border ${thClassName}`}>
+                        <th
+                          key={col?.name}
+                          className={`px-4 py-2 border ${thClassName}`}
+                        >
                           <div className="flex gap-2 items-center justify-between">
-                            {col?.label ||  col?.name}
+                            {col?.label || col?.name}
                           </div>
                         </th>
                       );
                     }
                   })}
+                  {allowPrint ? (
+                    <th className={`px-4 py-2 border ${thClassName}`}>
+                      {t("print")}
+                    </th>
+                  ) : null}
                 </>
               )}
             </tr>
@@ -84,12 +115,12 @@ const TableFields = ({
                   .fill(0)
                   .map((r, index) => (
                     <tr
-                      className={
+                      className={`${
                         typeof rowClassName === "function"
                           ? rowClassName(index)
-                          : rowClassName
+                          : rowClassName} ${selectedRows?.[index] ? 'bg-gray-100 dark:bg-dark-border' : ''}`
                       }
-                      key={index}
+                      key={`r-${index}`}
                       style={
                         typeof rowStyles === "function"
                           ? rowStyles(index)
@@ -131,13 +162,13 @@ const TableFields = ({
                           return (
                             <td
                               className={`border ${tdClassName}`}
-                              key={field?.name}
+                              key={`${field?.name}-${index}`}
                             >
                               {field?.is_ref ? (
                                 <UniqueField
                                   {...field}
-                                  label={""}
-                                  key={`${field?.name}`}
+                                  hideLabel
+                                  key={`${field?.name}-${index}`}
                                   updatedName={`${tab}.${index}.${field?.name}`}
                                   table={field.ref_table}
                                   containerClassName="!min-w-[190px] border-0 !rounded-none !h-full"
@@ -153,15 +184,16 @@ const TableFields = ({
                                       ? CACHE_LIST?.[field?.ref_table]
                                       : []
                                   }
+                                  readOnly={onlyView}
                                 />
                               ) : (
                                 <>
                                   {field?.key === "select" ? (
                                     <Select
                                       {...field}
-                                      key={`${field?.name}`}
+                                      key={`${field?.name}-${index}`}
                                       updatedName={`${tab}.${index}.${field?.name}`}
-                                      label={""}
+                                      hideLabel
                                       selectClassName="!rounded-none !border-0 !border-transparent"
                                       selectClassNames={{
                                         control: (state) =>
@@ -172,22 +204,62 @@ const TableFields = ({
                                           ? "Field is required"
                                           : ""
                                       }
+                                      readOnly={onlyView}
                                     />
                                   ) : (
-                                    <Input
-                                      {...field}
-                                      key={`${field?.name}`}
-                                      updatedName={`${tab}.${index}.${field?.name}`}
-                                      label={""}
-                                      error={
-                                        errors?.[tab]?.[field?.name]
-                                          ? "Field is required"
-                                          : ""
-                                      }
-                                      containerClassName="h-10 !h-full min-w-[55px]"
-                                      inputClassName={"border-0 !rounded-none"}
-                                      onBlur={onBlurNumbersField}
-                                    />
+                                    <>
+                                      {field?.type === "color" ? (
+                                        <ColorField
+                                          {...field}
+                                          key={`${field?.name}-${index}`}
+                                          updatedName={`${tab}.${index}.${field?.name}`}
+                                          hideLabel
+                                          error={
+                                            errors?.[tab]?.[field?.name]
+                                              ? "Field is required"
+                                              : ""
+                                          }
+                                          inputClassName={
+                                            "border-0 !rounded-none"
+                                          }
+                                        />
+                                      ) : field?.key === "area" ? (
+                                        <AreaField
+                                          {...field}
+                                          key={`${field?.name}-${index}`}
+                                          updatedName={`${tab}.${index}.${field?.name}`}
+                                          hideLabel
+                                          error={
+                                            errors?.[tab]?.[field?.name]
+                                              ? "Field is required"
+                                              : ""
+                                          }
+                                          containerClassName="h-10 !h-full min-w-[55px]"
+                                          inputClassName={
+                                            "border-0 !rounded-none"
+                                          }
+                                          onBlur={onBlurNumbersField}
+                                        />
+                                      ) : (
+                                        <Input
+                                          {...field}
+                                          key={`${field?.name}-${index}`}
+                                          updatedName={`${tab}.${index}.${field?.name}`}
+                                          hideLabel
+                                          error={
+                                            errors?.[tab]?.[field?.name]
+                                              ? "Field is required"
+                                              : ""
+                                          }
+                                          containerClassName="h-10 !h-full min-w-[55px]"
+                                          inputClassName={
+                                            "border-0 !rounded-none"
+                                          }
+                                          onBlur={onBlurNumbersField}
+                                          readOnly={onlyView}
+                                        />
+                                      )}
+                                    </>
                                   )}
                                 </>
                               )}
@@ -195,6 +267,18 @@ const TableFields = ({
                           );
                         }
                       })}
+                      {allowPrint ? (
+                        <td>
+                          <button
+                            className="flex justify-center items-center mx-auto hover:text-blue-500 hover:scale-110 duration-150"
+                            onClick={() =>
+                              onClickPrint(watch(`${tab}.${index}`))
+                            }
+                          >
+                            <PrintIcon className="w-5 h-5 text-inherit" />
+                          </button>
+                        </td>
+                      ) : null}
                     </tr>
                   ))}
               </>
@@ -202,10 +286,13 @@ const TableFields = ({
           </tbody>
         </table>
       </div>
-      <IncreaseTableBar
-        setIncreaseCount={setIncreaseCount}
-        increaseCount={increaseCount}
-      />
+      {increasable ? (
+        <IncreaseTableBar
+          onDecrement={onDecrement}
+          setIncreaseCount={setIncreaseCount}
+          increaseCount={increaseCount}
+        />
+      ) : null}
     </>
   );
 };

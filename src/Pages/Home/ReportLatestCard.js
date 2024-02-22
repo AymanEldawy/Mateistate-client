@@ -10,7 +10,8 @@ export const ReportLatestCard = ({
 }) => {
 
   return (
-    <Link to={`${itemHref}/${item?.id}/`} className={`${itemClassName}`}>
+    // to={`${itemHref}/${item?.id}/`}
+    <div  className={`${itemClassName}`}>
       <div className="flex justify-between text-gray-500 items-center p-[7px] px-2 rounded-md shadow hover:shadow-md">
         <div className="flex flex-col gap-1">
           <small className="text-xs">
@@ -20,10 +21,10 @@ export const ReportLatestCard = ({
             {renderTitle ? renderTitle(item) : item?.name || item?.number}
           </h4>
         </div>
-        <span className="flex justify-center items-center border rounded-full h-7 w-7 hover:bg-primary hover:text-white hover:border-primary">
+        {/* <span className="flex justify-center items-center border rounded-full h-7 w-7 hover:bg-primary hover:text-white hover:border-primary">
           <ChevronIcon className="w-4 h-4 ltr:-rotate-90 rtl:rotate-90" />
-        </span>
+        </span> */}
       </div>
-    </Link>
+    </div>
   );
 };

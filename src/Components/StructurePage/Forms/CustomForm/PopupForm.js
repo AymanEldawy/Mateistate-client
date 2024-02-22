@@ -1,10 +1,6 @@
-import { useMemo } from "react";
 
 import Modal from "Components/Global/Modal/Modal";
 import { usePopupForm } from "Hooks/usePopupForm";
-import { ApiActions } from "Helpers/Lib/api";
-import { toast } from "react-toastify";
-import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
 import { DynamicForm } from "./DynamicForm";
 
 const PopupForm = () => {

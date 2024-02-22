@@ -48,13 +48,13 @@
 
 NOTES: complicated tasks
 
-- auto_gen_entries
-- auto_transfer
-- auto_transfer_entries
-- installment page or form
-- user files field
-- get all ref building -> .. -> ...
-- get main row building
+- [✔️] auto_gen_entries
+- [] auto_transfer
+- [] auto_transfer_entries
+- [✔️] installment page or form
+- [] user files field
+- [✔️] get all ref building -> .. -> ...
+- [✔️] get main row building
 
 <!-- The problems -->
 
@@ -76,11 +76,9 @@ NOTES: complicated tasks
 ### database problems
 
 1. Joins
-
-
-    - it works like filter
-    - you can't join in the same table `parent_id`
-    - the response of table join return all the row data in the same level not in the nested level
+   - it works like filter
+   - you can't join in the same table `parent_id`
+   - the response of table join return all the row data in the same level not in the nested level
 
 ### Contract notes
 
@@ -91,3 +89,140 @@ NOTES: complicated tasks
 2. Asks
 
 - customer id = Insurance id maybe we need to remove Insurance id
+
+[✔️] Dynamic menu for others pattern
+[✔️] Ignore un touched rows on update
+
+## complete patterns
+
+[✔️] Vouchers
+[] accounting vouchers
+[✔️] Contract
+[✔️] check
+
+## Paperwork & and auto generate entries
+
+[] Contract 1
+[] Vouchers 2
+[] Checks & bill - [] op_collection - [] op_deportation - [] op_endorsement - [] op_return
+
+<!-- Cyber security -->
+
+<!-- Questions -->
+
+## Today Tasks
+
+[✔️] Build manual from page for Building
+[✔️] parent cost center & assets cost center
+[✔️] sort form
+[✔️] counting the input values
+[✔️] separate the from
+
+## New work notes
+
+[✔️] supplier and customers
+[✔️] code before name
+[✔️] contract default accounts
+[✔️] required fields
+[✔️] match values installment & contract
+
+## 5/2 Notes & tasks
+
+[✔️] generate assets from building with prefix  
+[✔️] generate contract
+[✔️] gen entries from contract
+[✔️] generate bill
+
+## Export database
+
+1. remove public in mateistate server
+2. copy DHB public from supebase
+3. execute script in mateistate server tanent1
+
+## TODO Tasks
+
+- Operations on `bill`
+
+  - [] gen entries from bill
+  - [] on_collection
+  - [] op_partial_collection
+  - [] op_deportation
+  - [] op_endorsement
+  - [] op_return
+
+- [] Global print file
+- [] update Global read file with joins
+- [] watch video for `Lawsuit` and generate database tables for it
+- [] watch video for completed apartment gen checks
+
+## Client new Notes
+
+- [✔️] merge tables general and finical one screen and one table on database
+- [✔️] contract number 2 gov
+- [✔️] pattern 10 default accounts
+- [✔️] hide more fields & steps
+- [✔️] bill table
+- [✔️] installment table
+- [✔️] grid numbers
+- [✔️] sub children account only show
+- [✔️] update contractForm
+- [] contract assets type
+- [] label names
+
+<!-- Questions -->
+
+## Notes
+
+- [✔️] building owning 5
+- [✔️] Building default accounts
+- [✔️] owner into suppliers
+- [✔️] apartment or assets only number number 
+- [✔️] cards account vouchers (bill)
+- [✔️] hide currency in installment
+- [✔️] contract account far
+- [✔️] area unit & unit count
+- [✔️] contract & bill next and prev number
+- [✔️] up or down auto 
+- [✔️] flag delete & status
+- [✔️] alert loading and success contract 
+
+
+
+## New note 
+- [✔️] suppliers ref table
+- [✔️] change loading
+- [✔️] new contract in another page or click new
+- [✔️] labels 
+- [✔️] accounting transaction reverse
+- [✔️] view building accounts 
+- [✔️] required fields installment
+- [✔️] Insurance labels
+- [✔️] Receipt voucher.
+- [✔️] First cash payment
+- [✔️] gov number required 
+- [✔️] no payment down 
+- [✔️] hide archive
+- [✔️] required fields contract
+- [✔️] entry view & sort currency
+- [✔️] installment rest amount equal or minus grid amount
+- [✔️] starting number & internal number
+- [✔️] installment bill insert fix
+- [✔️] show name and code an accounts
+- [✔️] first batch not more than contract value
+- [✔️] note1 add chq number
+- [✔️] print one or select 
+
+- [] fix month and default installment
+- [] connect with view  
+- [] constraint on code or name & customer default & client open customer form 
+- [] filter assets only unrented 
+- [] user always debit 
+- [] on delete cascade bill or account or building or account
+- [] scan
+
+<!-- 
+"مؤجرة" - "rented";
+"خالية" - "vacant";
+"منتهية ولم تجدد" - "expired and not renewed";
+"تم التجديد" - "renewed"; -->
+

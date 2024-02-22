@@ -3,33 +3,28 @@ import { EntryHead } from "./EntryHead";
 import { EntryFooter } from "./EntryFooter";
 import BlockPaper from "Components/Global/BlockPaper";
 import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FormProvider, useForm } from "react-hook-form";
 import { ApiActions } from "Helpers/Lib/api";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
-import { useNavigate } from "react-router-dom";
 import useFetch from "Hooks/useFetch";
-import { currency } from "Helpers/columns-structure";
 import { toast } from "react-toastify";
-import { insertIntoGrid } from "Helpers/Lib/operations/global-insert";
 import { GET_NEW_ENTRY_GRID } from "Helpers/constants";
-import { usePopupForm } from "Hooks/usePopupForm";
-
-let CACHE_LIST = {};
-
+import { getAccountList } from "Helpers/Lib/operations/global-read";
 
 const EntryForm = ({ oldValue, onlyView }) => {
   const params = useParams();
-  const { refTable } = usePopupForm();
   const { data, loading, error } = useFetch("entry_main_data", {
     limit: 1,
     sorts: [{ column: "number", order: "DESC", nulls: "last" }],
   });
   const methods = useForm();
-  const [refresh, setRefresh] = useState(false)
-  const [number, setNumber] = useState(params?.number);
-  const [isNewOne, setIsNewOne] = useState(false);
+  const navigate = useNavigate();
+  const [refresh, setRefresh] = useState(false);
+  const [number, setNumber] = useState(0);
+  const [maxLength, setMaxLength] = useState(0);
+  const [CACHE_LIST, setCACHE_LIST] = useState({});
 
   const {
     handleSubmit,
@@ -40,6 +35,7 @@ const EntryForm = ({ oldValue, onlyView }) => {
   } = methods;
 
   const getEntryValues = async (num) => {
+    console.log(number);
     const col = {
       number,
       credit: 0,
@@ -47,13 +43,13 @@ const EntryForm = ({ oldValue, onlyView }) => {
       currency_val: 0,
       debit: 0,
       difference: 0,
-      note: '',
+      note: "",
       created_at: "",
       grid: GET_NEW_ENTRY_GRID(),
     };
 
     const res = await GET_UPDATE_DATE("entry", num);
-    
+
     if (res?.id) {
       reset(res);
     } else {
@@ -62,25 +58,23 @@ const EntryForm = ({ oldValue, onlyView }) => {
   };
 
   useEffect(() => {
-    if (!number) return;
-    setValue('number', number)
-    getEntryValues(number);
-  }, [number]);
+    if (!params?.number) return;
+    setValue("number", params?.number);
+    getEntryValues(params?.number);
+    setNumber(params?.number);
+  }, [params?.number]);
+console.log(number, maxLength, '---');
+  useEffect(() => {
+    if (loading) return;
+    console.log(data, '=--');
+    setMaxLength(+data?.at(0)?.number || 0);
+  }, [loading]);
 
   useEffect(() => {
     if (oldValue) {
       reset(oldValue);
     }
   }, [oldValue]);
-
-  useEffect(() => {
-    if (loading) return;
-    if (number > (data?.at(0)?.number || 0)) {
-      setIsNewOne(true);
-    } else {
-      setIsNewOne(false);
-    }
-  }, [loading]);
 
   const fields = useMemo(() => {
     let forms = getFormByTableName("entry_main_data");
@@ -94,37 +88,18 @@ const EntryForm = ({ oldValue, onlyView }) => {
   const gridFields = useMemo(() => getFormByTableName("entry_grid_data"), []);
 
   const getRefTables = async () => {
-    for (const field of [...gridFields]) {
-      if (field.is_ref && !field?.hide_in_form) {
-        const response = await ApiActions.read(field?.ref_table, {
-          columns: ["id", field?.ref_name || "name"],
-        });
-        CACHE_LIST[field?.ref_table] = response?.result;
-
-        for (const item of response?.result) {
-          CACHE_LIST[item.id] = item.name || item.number || item.id;
-        }
-      }
+    let hash = {};
+    for (const field of ["cost_center", "currency", "seller"]) {
+      const response = await ApiActions.read(field);
+      hash[field] = response?.result;
     }
+    hash.account = await getAccountList();
+    setCACHE_LIST(hash);
   };
 
   useEffect(() => {
     getRefTables();
   }, []);
-
-  useEffect(() => {
-    if (refTable?.isClosed) {
-      reFetchRefTable(refTable?.table);
-    }
-  }, [refTable?.isClosed]);
-
-  const reFetchRefTable = async (table) => {
-    const response = await ApiActions.read(table);
-    if (response?.result?.length) {
-      CACHE_LIST[table] = response?.result;
-      setRefresh(p=>!p)
-    }
-  };
 
   const calculateDifferences = useCallback(() => {
     let grid = watch("grid");
@@ -151,13 +126,15 @@ const EntryForm = ({ oldValue, onlyView }) => {
   };
 
   const goTo = (num) => {
-    if (num > (data?.at(0)?.number || 0)) {
-      setIsNewOne(true);
-      reset();
-    } else {
-      setIsNewOne(false);
+    if (num > maxLength) {
+      setRefresh((p) => !p);
     }
     setNumber(num);
+  };
+
+  const onClickAddNew = () => {
+    navigate(`/vouchers/entries/${+maxLength + 1}`);
+    setNumber(maxLength + 1);
   };
 
   const onSubmit = async (value) => {
@@ -174,9 +151,11 @@ const EntryForm = ({ oldValue, onlyView }) => {
         res = await ApiActions.insert("entry_main_data", {
           data: value,
         });
+        if(res?.success)
+          setMaxLength((p) => +p + 1);
       }
 
-      let entryId = isNewOne ? res?.record?.id : value.id;
+      let entryId = maxLength < number ? res?.record?.id : value.id;
 
       insertIntoGrid(grid, entryId);
     } else {
@@ -186,7 +165,7 @@ const EntryForm = ({ oldValue, onlyView }) => {
 
   const insertIntoGrid = async (grid, itemId) => {
     for (const item of grid) {
-      if (item?.id && (item.account_id && item?.observe_account_id)) {
+      if (item?.id && item.account_id && item?.observe_account_id) {
         ApiActions.update("entry_grid_data", {
           conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
           updates: item,
@@ -204,18 +183,26 @@ const EntryForm = ({ oldValue, onlyView }) => {
   return (
     <FormProvider {...methods}>
       <BlockPaper
+        fullWidth={onlyView}
+        bodyClassName={onlyView ? "!p-0" : ""}
+        boxClassName="!shadow-none"
+        containerClassName={onlyView ? "mb-0" : ""}
         customTitle={
           <>
-            {isNewOne ? (
+            {maxLength < number ? (
               <span className="text-red-500 ltr:mr-2 rtl:ml-2 bg-red-100 px-2 py-1 rounded-md">
-                {isNewOne ? "New" : ""}
+                {maxLength < number ? "New" : ""}
               </span>
             ) : null}
             Entry {number || oldValue?.number}
           </>
         }
       >
-        <form onSubmit={handleSubmit(onSubmit)} key={number || oldValue?.number} noValidate>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          key={number || oldValue?.number}
+          noValidate
+        >
           <EntryHead
             fields={fields}
             errors={errors}
@@ -228,21 +215,27 @@ const EntryForm = ({ oldValue, onlyView }) => {
               fields={gridFields}
               tab="grid"
               errors={errors}
-              rowsCount={isNewOne ? 5 : watch("grid")?.length}
+              rowsCount={
+                maxLength < number && !onlyView ? 5 : watch("grid")?.length
+              }
               CACHE_LIST={CACHE_LIST}
               onBlurNumbersField={onBlurNumbersField}
+              increasable={onlyView ? false : true}
+              onlyView={onlyView || watch("created_from_id")}
             />
           </div>
           <EntryFooter
             fields={fields}
             errors={errors}
             CACHE_LIST={CACHE_LIST}
-            isNewOne={isNewOne}
+            isNewOne={+maxLength < number}
             number={number}
             maxLength={data?.at(0)?.number || 0}
             goTo={goTo}
             values={watch()}
             onlyView={onlyView}
+            hideSubmit={watch("created_from_id")}
+            onClickAddNew={onClickAddNew}
           />
         </form>
       </BlockPaper>

@@ -32,7 +32,7 @@ const SingleContract = () => {
 
   return (
     <BlockPaper title={`contract ${id}`}>
-
+      <h2 className="">Contract information</h2>
       <pre className="break-words">{JSON.stringify(data)}</pre>
     </BlockPaper>
   );

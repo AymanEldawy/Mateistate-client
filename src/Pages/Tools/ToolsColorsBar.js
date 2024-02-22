@@ -12,7 +12,7 @@ export const ToolsColorsBar = () => {
           !canInsertColor ? " bg-red-500 " : ""
         }`}
       >
-        <LockIcon open={!canInsertColor} className="h-5 w-5" />
+        <LockIcon open={canInsertColor} className="h-5 w-5" />
       </button>
     </div>
   );
