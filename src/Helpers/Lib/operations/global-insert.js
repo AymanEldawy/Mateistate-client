@@ -280,10 +280,8 @@ const dynamicInsertIntoContract = async ({
     // Insert into contract or update
     response = await ApiActions.insert("contract", {
       data: {
-        gov_number: data?.gov_number,
+        ...data?.contract,
         contract_type: contractType,
-        flat_type: data?.flat_type,
-        status: data?.status,
       },
     });
 
@@ -362,8 +360,7 @@ export const insertIntoContractInstallment = async ({
   installment_grid,
   firstTabData,
   cost_center_id,
-  clientName,
-  bankName,
+  note,
 }) => {
   let installment_id = installment?.id;
   let success = false;
@@ -393,16 +390,47 @@ export const insertIntoContractInstallment = async ({
     });
   }
 
-  const client_id = firstTabData?.client_id;
+  if (installment?.gen_entries_type === 3) {
+    return true;
+  }
+
+  const account_id = firstTabData?.client_id;
   const observe_account_id = firstTabData?.revenue_account_id;
-  const note = `received first payment from mr ${clientName} due date ${new Date(
-    installment?.payment_date
-  )?.toLocaleDateString("ar-EG")} bank ${bankName}`;
 
   let currency_id = installment?.currency_id;
   let currency_val = installment?.currency_val;
-
   let first_batch = installment?.first_batch;
+
+  let entryMainData = {
+    currency_id,
+    currency_val,
+    note,
+    debit: first_batch,
+    credit: first_batch,
+    difference: 0,
+  };
+
+  const gridEntry = [];
+
+  gridEntry.push({
+    account_id,
+    debit: first_batch,
+    observe_account_id: observe_account_id,
+    credit: 0,
+    currency_id,
+    cost_center_id,
+    note,
+  });
+
+  gridEntry.push({
+    account_id: observe_account_id,
+    debit: 0,
+    observe_account_id: account_id,
+    credit: first_batch,
+    currency_id,
+    cost_center_id,
+    note,
+  });
 
   if (installment?.gen_entries_type === 1 && first_batch) {
     // insert into vouchers
@@ -458,7 +486,7 @@ export const insertIntoContractInstallment = async ({
 
     const grid = [
       {
-        account_id: client_id,
+        account_id,
         debit: 0,
         credit: first_batch,
         currency_id,
@@ -475,53 +503,38 @@ export const insertIntoContractInstallment = async ({
       gridTableName: "voucher_grid_data",
       itemSearchName: "voucher_main_data_id",
     });
-    
-  } else if (installment?.gen_entries_type === 2) {
-    let entryMainData = {
-      currency_id,
-      currency_val,
-      note,
-      debit: first_batch,
-      credit: first_batch,
-      difference: 0,
-      created_from: CREATED_FROM.contract,
-      created_from_id: contract_id,
-      is_first_batch: true,
-    };
+
+    entryMainData.created_from = CREATED_FROM.receipt;
+    entryMainData.created_from_id = voucher_main_data_id;
 
     const entry = await insertIntoEntry(entryMainData);
     if (entry?.id) {
       success = true;
+      insertIntoGrid({
+        grid: gridEntry,
+        itemId: entry?.id,
+        tableName: "entry_main_data",
+        gridTableName: "entry_grid_data",
+        itemSearchName: "entry_main_data_id",
+      });
     }
-    const grid = [];
+    // gen entry from voucher
+  } else if (installment?.gen_entries_type === 2) {
+    entryMainData.is_first_batch = true;
+    entryMainData.created_from = CREATED_FROM.contract;
+    entryMainData.created_from_id = contract_id;
 
-    grid.push({
-      account_id: client_id,
-      debit: first_batch,
-      observe_account_id: observe_account_id,
-      credit: 0,
-      currency_id,
-      cost_center_id,
-      note,
-    });
-
-    grid.push({
-      account_id: observe_account_id,
-      debit: 0,
-      observe_account_id: client_id,
-      credit: first_batch,
-      currency_id,
-      cost_center_id,
-      note,
-    });
-
-    insertIntoGrid({
-      grid,
-      itemId: entry?.id,
-      tableName: "entry_main_data",
-      gridTableName: "entry_grid_data",
-      itemSearchName: "entry_main_data_id",
-    });
+    const entry = await insertIntoEntry(entryMainData);
+    if (entry?.id) {
+      success = true;
+      insertIntoGrid({
+        grid: gridEntry,
+        itemId: entry?.id,
+        tableName: "entry_main_data",
+        gridTableName: "entry_grid_data",
+        itemSearchName: "entry_main_data_id",
+      });
+    }
   }
 
   return success;
@@ -887,7 +900,6 @@ const insertToUser = async (data) => {
 
   if (accountResponse?.success) {
     // insert the USER after connect it with the inserted ACCOUNT
-    delete data?.name;
     const userResponse = await ApiActions.insert("user", {
       data: { ...data, account_id: accountResponse?.record?.id },
     });
@@ -933,7 +945,6 @@ const insertToOwner = async (data) => {
 
   if (accountResponse?.success) {
     // insert the USER after connect it with the inserted ACCOUNT
-    delete data?.name;
     const ownerResponse = await ApiActions.insert("owner", {
       data: { ...data, account_id: accountResponse?.record?.id },
     });

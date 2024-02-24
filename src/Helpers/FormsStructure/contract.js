@@ -829,7 +829,6 @@ const land_sale_contract = [
     required: false,
     is_ref: true,
     ref_table: "lessor",
-    ref_name: "full_name",
   },
   {
     label: "property_delivery_date",
@@ -1173,7 +1172,6 @@ const parking_sale_contract = [
     required: false,
     is_ref: true,
     ref_table: "lessor",
-    ref_name: "full_name",
   },
   {
     label: "property_delivery_date",
@@ -1378,7 +1376,6 @@ const apartment_rent_contract = [
     required: false,
     is_ref: true,
     ref_table: "lessor",
-    ref_name: "full_name",
   },
   {
     label: "status",
@@ -1538,7 +1535,6 @@ const shop_rent_contract = [
     required: false,
     is_ref: true,
     ref_table: "lessor",
-    ref_name: "full_name",
   },
   {
     label: "status",
@@ -1754,7 +1750,6 @@ const parking_rent_contract = [
     required: false,
     is_ref: true,
     ref_table: "lessor",
-    ref_name: "full_name",
   },
   {
     label: "status",

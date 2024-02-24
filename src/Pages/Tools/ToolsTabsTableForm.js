@@ -1,17 +1,46 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
 import useFlatColoring from "Hooks/useFlatColoring";
 import { useFormContext } from "react-hook-form";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import { SELECT_LISTS } from "Helpers/constants";
+import { ApiActions } from "Helpers/Lib/api";
 
-export const ToolsTabsTableForm = ({ errors }) => {
+export const ToolsTabsTableForm = ({ errors, row }) => {
   const { watch, setValue } = useFormContext();
   const { onSelectColor, selectedColor, roomCounts } = useFlatColoring();
+  const [fields, setFields] = useState([]);
 
-  const fields = useMemo(() => {
-    return getFormByTableName("property_values");
-  }, []);
+  const getBuildingOwning = async () => {
+    const res = await ApiActions.read("building_real_estate_management", {
+      conditions: [
+        { type: "and", conditions: [["building_id", "=", row?.id]] },
+      ],
+    });
+    if (res?.result?.length) {
+      let list = [];
+      for (const field of getFormByTableName("property_values")) {
+        if (
+          field?.name === "property_type" &&
+          res?.result?.at(0)?.owner_account_id
+        )
+          field.list = SELECT_LISTS("flat_property_type")?.reverse();
+        field.selectFirstAsDefault = true;
+
+        list.push(field);
+      }
+
+      setFields(list);
+    } else {
+      setFields(getFormByTableName("property_values"));
+    }
+  };
+
+  useEffect(() => {
+    if (!row?.id) return;
+    getBuildingOwning();
+  }, [row?.id]);
 
   useEffect(() => {
     let grid = watch()?.grid;
@@ -27,10 +56,7 @@ export const ToolsTabsTableForm = ({ errors }) => {
       tab="grid"
       errors={errors}
       fields={fields}
-      // deleteRowComponent={() => {
-      //   return <button className="absolute -top-1 -left-1 bg-red-500 p-[2px] scale-[80%]"><CloseIcon className="w-4 h-4 text-white"/></button>;
-      // }}
-      rowsCount={watch("grid")?.length || 20}
+      rowsCount={watch("grid")?.length || 5}
       theadClassName="!bg-[#5490d3] text-white"
       onRowClick={(index) => {
         let hex = watch(`grid.${[index]}.hex`);

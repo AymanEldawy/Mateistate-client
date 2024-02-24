@@ -12,6 +12,7 @@ import useFetch from "Hooks/useFetch";
 import { toast } from "react-toastify";
 import { GET_NEW_ENTRY_GRID } from "Helpers/constants";
 import { getAccountList } from "Helpers/Lib/operations/global-read";
+import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 
 const EntryForm = ({ oldValue, onlyView }) => {
   const params = useParams();
@@ -19,10 +20,11 @@ const EntryForm = ({ oldValue, onlyView }) => {
     limit: 1,
     sorts: [{ column: "number", order: "DESC", nulls: "last" }],
   });
+  const { setVoucherInfo } = useVoucherEntriesView();
   const methods = useForm();
   const navigate = useNavigate();
   const [refresh, setRefresh] = useState(false);
-  const [number, setNumber] = useState(0);
+  const [number, setNumber] = useState(oldValue?.number || params?.number);
   const [maxLength, setMaxLength] = useState(0);
   const [CACHE_LIST, setCACHE_LIST] = useState({});
 
@@ -35,7 +37,6 @@ const EntryForm = ({ oldValue, onlyView }) => {
   } = methods;
 
   const getEntryValues = async (num) => {
-    console.log(number);
     const col = {
       number,
       credit: 0,
@@ -59,14 +60,14 @@ const EntryForm = ({ oldValue, onlyView }) => {
 
   useEffect(() => {
     if (!params?.number) return;
+
     setValue("number", params?.number);
     getEntryValues(params?.number);
     setNumber(params?.number);
   }, [params?.number]);
-console.log(number, maxLength, '---');
+
   useEffect(() => {
     if (loading) return;
-    console.log(data, '=--');
     setMaxLength(+data?.at(0)?.number || 0);
   }, [loading]);
 
@@ -133,8 +134,9 @@ console.log(number, maxLength, '---');
   };
 
   const onClickAddNew = () => {
+    setVoucherInfo({});
     navigate(`/vouchers/entries/${+maxLength + 1}`);
-    setNumber(maxLength + 1);
+    setNumber(Math.max(+maxLength, +params?.number) + 1);
   };
 
   const onSubmit = async (value) => {
@@ -151,8 +153,7 @@ console.log(number, maxLength, '---');
         res = await ApiActions.insert("entry_main_data", {
           data: value,
         });
-        if(res?.success)
-          setMaxLength((p) => +p + 1);
+        if (res?.success) setMaxLength((p) => +p + 1);
       }
 
       let entryId = maxLength < number ? res?.record?.id : value.id;

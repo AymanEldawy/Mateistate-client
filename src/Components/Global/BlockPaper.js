@@ -10,11 +10,12 @@ const BlockPaper = ({
   fullWidth,
   containerClassName,
   bodyClassName,
-  boxClassName
+  boxClassName,
+  layoutBodyClassName
 }) => {
 
   return (
-    <Layout>
+    <Layout bodyClassName={layoutBodyClassName}>
       <div className={`${containerClassName ? '' : 'mb-16'}`}>
         <div
           className={`${fullWidth ? "container-full" : "container"} mx-auto ${bodyClassName}`}

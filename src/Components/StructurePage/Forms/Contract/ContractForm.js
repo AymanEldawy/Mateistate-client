@@ -15,7 +15,7 @@ import {
 } from "Helpers/constants";
 import useFormSteps from "Hooks/useFormSteps";
 import { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import {
   useParams,
   useSearchParams,
@@ -36,7 +36,9 @@ import {
   fetchAndMergeBuildingInfo,
   // filterAssetsByBuilding,
   getOldContracts,
+  mergeInstallmentAndFirstTabData,
   onWatchChangesInTab1,
+  onWatchChangesInstallmentGridTab,
   onWatchChangesInstallmentTab,
 } from "Helpers/Lib/operations/contract-helpers";
 import { VoucherStepsButton } from "../Vouchers/VoucherStepsButton";
@@ -46,6 +48,7 @@ import { generateEntryFromContract } from "Helpers/Lib/operations/vouchers-inser
 import { Locked } from "Components/Global/Locked";
 import { changeRowStatus } from "Helpers/functions";
 import useFetch from "Hooks/useFetch";
+import { resetContractFields } from "./../../../../Helpers/Lib/operations/contract-helpers";
 
 const CACHE_CONTRACTS_DATA = {};
 const SHOULD_UPDATES = {};
@@ -58,36 +61,31 @@ export async function filterAssetsByBuilding(
   setCACHE_LIST,
   contracts
 ) {
-  console.log("🚀 ~ CACHE_LIST:", CACHE_LIST)
-  
-  let assetsHash = contracts.map(
-    (c) => c?.[`${tableName}_id`]
-  );
-  console.log("🚀 ~ assetsHash:",contracts,  assetsHash)
+  let assetsHash = contracts.map((c) => c?.[`${tableName}_id`]);
 
   let copy = CACHE_LIST?.[`${tableName}_2`]
     ? [...CACHE_LIST?.[`${tableName}_2`]]
-    : [...CACHE_LIST?.[tableName]]
+    : [...CACHE_LIST?.[tableName]];
 
   let assets = [];
+  console.log(assetsHash, "---");
 
-  // const contracts =
   // check if the assets is rented by another contract
 
   if (CACHE_BUILDING_ASSETS[buildingId])
     assets = CACHE_BUILDING_ASSETS[buildingId];
   else {
-    assets = copy?.filter((c) => c?.building_id === buildingId && !assetsHash?.includes(c?.id));
+    assets = copy?.filter(
+      (c) => c?.building_id === buildingId && !assetsHash?.includes(c?.id)
+    );
     CACHE_BUILDING_ASSETS[buildingId] = assets;
   }
-  console.log("🚀 ~ assets:", assets)
 
   setCACHE_LIST((prev) => ({
     ...prev,
     [tableName]: assets,
     [`${tableName}_2`]: copy,
   }));
-
 }
 
 const ContractForm = () => {
@@ -104,13 +102,14 @@ const ContractForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [openInstallmentForm, setOpenInstallmentForm] = useState(false);
-  const [contractId, setContractId] = useState(null);
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const [maxLength, setMaxLength] = useState(0);
   const [openFeesForm, setOpenFeesForm] = useState(false);
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const [oldContracts, setOldContracts] = useState([]);
-  const method = useForm();
+  const method = useForm({
+    defaultValues: resetContractFields(),
+  });
 
   const {
     handleSubmit,
@@ -133,13 +132,12 @@ const ContractForm = () => {
     setCACHE_LIST,
     setFields,
     forms,
-    setCurrentIndex,
   } = useFormSteps({ name: contractName });
 
+  console.log(watch());
   useEffect(() => {
-    if(maxLength < number) return
-      getOldContracts(setOldContracts, contractName);
-  }, [number]);
+    getOldContracts(setOldContracts, contractName);
+  }, []);
 
   useEffect(() => {
     if (!tabNames?.length && !code) return;
@@ -192,6 +190,14 @@ const ContractForm = () => {
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
+      console.log(name, type);
+      watch(name);
+      if (
+        name?.indexOf(`installment_grid.`) - 1 &&
+        name?.indexOf("note1") !== -1
+      )
+        return;
+
       let tab = name?.split(".")?.at(0);
       if (type) SHOULD_UPDATES[tab] = true;
 
@@ -243,9 +249,20 @@ const ContractForm = () => {
           watch
         );
       }
+      if (name?.indexOf(`installment_grid`) !== -1) {
+        SHOULD_UPDATES.installment = true;
+        onWatchChangesInstallmentGridTab(
+          name,
+          watch(name),
+          setValue,
+          watch,
+          CACHE_LIST,
+          tabNames?.[0]
+        );
+      }
     });
     return () => subscription.unsubscribe();
-  }, [watch, oldContracts?.length]);
+  }, [watch, oldContracts?.length, CACHE_LIST]);
 
   useEffect(() => {
     if (!number) return;
@@ -283,19 +300,6 @@ const ContractForm = () => {
     if (!number || !code) return;
     if (+number <= maxLength) fetchData();
     else {
-      reset({
-        [contractName]: {
-          number: +number,
-          description: "",
-          contract_value: 0,
-          discount_rate: 0,
-          discount_value: 0,
-          final_price: 0,
-          previous_securing: 0,
-          current_securing_percentage: 0,
-          current_securing_value: 0,
-        },
-      });
       autoMergePatternSettingsWithValues(
         PATTERN_SETTINGS,
         watch,
@@ -316,6 +320,10 @@ const ContractForm = () => {
         PATTERN_SETTINGS?.name
       }?flat_type=${assetType}&code=${code}&number=${+maxLength + 1}`
     );
+    setNumber(+maxLength + 1);
+    reset({
+      defaultValues: resetContractFields(),
+    });
   };
 
   const onChangeContractStatus = async (col) => {
@@ -340,11 +348,12 @@ const ContractForm = () => {
     }
   };
 
+  console.log(SELECT_LISTS('contact_pattern_contract_type')?.find(c => c?.name?.toLowerCase() === type?.toLocaleLowerCase()),' type');
+
   const goToNumber = (num) => {
     if (num > maxLength) {
       setRefresh((p) => !p);
     }
-    setCurrentIndex(0);
     setNumber(num);
   };
 
@@ -387,12 +396,16 @@ const ContractForm = () => {
     }
     value[tabNames[0]].code = +code;
 
+    let contract = {
+      code: +code,
+      status: watch(`${tabNames?.[0]}.status`),
+      flat_type: CONTRACTS_ASSETS_TYPE?.[assetType],
+    };
+
     const getTheFunInsert = INSERT_FUNCTION[contractName];
     const res = await getTheFunInsert({
       ...value,
-      status: watch(`${tabNames?.[0]}.status`),
-      gov_number: watch("contract.gov_number"),
-      flat_type: CONTRACTS_ASSETS_TYPE?.[assetType],
+      contract,
       tabName: tabNames?.[0],
       layout: number <= maxLength,
       SHOULD_UPDATES,
@@ -410,8 +423,7 @@ const ContractForm = () => {
         const data = await GET_UPDATE_DATE(contractName, res?.record?.id);
         if (data) CACHE_CONTRACTS_DATA[number] = data;
         reset(data);
-
-        setContractId(contract_id);
+        await mergeInstallmentAndFirstTabData(firstTabData, setValue);
 
         if (firstTabData?.paid_type === 4) {
           setOpenInstallmentForm(true);
@@ -458,13 +470,11 @@ const ContractForm = () => {
     });
   };
 
+  console.log(fields, '----');
   return (
     <>
       {isLoading ? (
-        <Loading
-          withBackdrop
-          logo={isSubmitting ? false : true}
-        />
+        <Loading withBackdrop logo={isSubmitting ? false : true} />
       ) : null}
       <div>
         <FormProvider {...method}>
@@ -475,17 +485,19 @@ const ContractForm = () => {
               onClose={() => setOpenFeesForm(false)}
             />
           ) : null}
-          {openInstallmentForm && (contractId || watch("contract.id")) ? (
+
+          {openInstallmentForm && watch(`${tabNames?.[0]}.contract_value`) ? (
             <InstallmentForm
+              assetType={assetType}
               CACHE_LIST={CACHE_LIST}
               onClose={() => setOpenInstallmentForm(false)}
               firstTab={tabNames[0]}
-              contract_id={watch(`contract.id`) || contractId}
+              contract_id={watch(`contract.id`)}
               openInstallmentForm={openInstallmentForm}
             />
           ) : null}
-          <BlockPaper>
 
+          <BlockPaper>
             <FormHeadingTitleSteps
               customName={
                 <span className="capitalize">
@@ -536,24 +548,27 @@ const ContractForm = () => {
                   <>
                     {formSettings?.formType === "view" ? (
                       <ContractPayments
-                        contract_id={watch(`contract.id`) || contractId}
+                        contract_id={watch(`contract.id`)}
                         CACHE_LIST={CACHE_LIST}
                       />
                     ) : (
                       <>
                         {currentIndex === 0 && tab ? (
-                          <ContractFormStageOne
-                            fields={fields}
-                            tab={tab}
-                            values={watch()?.[tab]}
-                            errors={errors}
-                            CACHE_LIST={CACHE_LIST}
-                            globalButtonsActions={globalButtonsActions}
-                            contract_id={watch(`contract.id`) || contractId}
-                            dispatchVoucherEntries={dispatchVoucherEntries}
-                            layout={number <= maxLength}
-                            assetType={assetType}
-                          />
+                          <div key={number}>
+                            <ContractFormStageOne
+                              number={number}
+                              fields={fields}
+                              tab={tab}
+                              values={watch()?.[tab]}
+                              errors={errors}
+                              CACHE_LIST={CACHE_LIST}
+                              globalButtonsActions={globalButtonsActions}
+                              contract_id={watch(`contract.id`)}
+                              dispatchVoucherEntries={dispatchVoucherEntries}
+                              layout={number <= maxLength}
+                              assetType={assetType}
+                            />
+                          </div>
                         ) : (
                           <Fields
                             fields={fields}
@@ -571,29 +586,27 @@ const ContractForm = () => {
               </div>
 
               <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
-                {number > maxLength ? null : (
-                  <VoucherStepsButton
-                    number={number}
-                    goTo={goToNumber}
-                    maxLength={maxLength}
-                    isNewOne={number > maxLength}
-                    setNumber={setNumber}
-                    onClickArchive={() =>
-                      onChangeContractStatus(CONSTANT_COLUMNS_NAME.is_archived)
-                    }
-                    onClickDelete={() =>
-                      onChangeContractStatus(CONSTANT_COLUMNS_NAME.is_deleted)
-                    }
-                    isArchived={watch(
-                      `contract.${CONSTANT_COLUMNS_NAME.is_archived}`
-                    )}
-                    isDeleted={watch(
-                      `contract.${CONSTANT_COLUMNS_NAME.is_deleted}`
-                    )}
-                    allowActions={watch("contract.id")}
-                    onClickAddNew={onClickAddNewContract}
-                  />
-                )}
+                <VoucherStepsButton
+                  number={number}
+                  goTo={goToNumber}
+                  maxLength={maxLength}
+                  isNewOne={number > maxLength}
+                  setNumber={setNumber}
+                  onClickArchive={() =>
+                    onChangeContractStatus(CONSTANT_COLUMNS_NAME.is_archived)
+                  }
+                  onClickDelete={() =>
+                    onChangeContractStatus(CONSTANT_COLUMNS_NAME.is_deleted)
+                  }
+                  isArchived={watch(
+                    `contract.${CONSTANT_COLUMNS_NAME.is_archived}`
+                  )}
+                  isDeleted={watch(
+                    `contract.${CONSTANT_COLUMNS_NAME.is_deleted}`
+                  )}
+                  allowActions={watch("contract.id")}
+                  onClickAddNew={onClickAddNewContract}
+                />
 
                 <Button
                   title={maxLength >= number ? "Modify" : "Submit"}

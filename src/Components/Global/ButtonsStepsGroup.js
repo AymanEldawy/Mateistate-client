@@ -1,5 +1,8 @@
 import React from "react";
 import { Button } from "./Button";
+import { PaletteIcon } from "Components/Icons";
+import { Link } from "react-router-dom";
+import { useFormContext } from "react-hook-form";
 
 export const ButtonsStepsGroup = ({
   steps,
@@ -8,8 +11,11 @@ export const ButtonsStepsGroup = ({
   isLast,
   isFirst,
   disabled,
+  layout,
   next,
 }) => {
+  const { watch } = useFormContext();
+
   return (
     <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
       <div className="flex gap-2 items-center">
@@ -30,11 +36,21 @@ export const ButtonsStepsGroup = ({
           classes="bg-orange-500"
         />
       </div>
-      <Button
-        title={"Submit"}
-        loading={loading}
-        disabled={disabled || loading}
-      />
+      <div className="flex gap-2 items-center">
+        {watch("building.id") ? (
+          <Link
+            to={`/tools/${watch("building.id")}`}
+            className="bg-gray-200 rounded-md p-2"
+          >
+            <PaletteIcon />
+          </Link>
+        ) : null}
+        <Button
+          title={layout ? "Modify" : "submit"}
+          loading={loading}
+          disabled={disabled || loading}
+        />
+      </div>
     </div>
   );
 };

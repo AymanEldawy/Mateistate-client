@@ -1,10 +1,7 @@
-import {
-  CREATED_FROM,
-  RECEIVED_CHQ_CODE,
-  RECEIVED_VOUCHER_CODE,
-} from "Helpers/constants";
+import { CREATED_FROM, RECEIVED_CHQ_CODE } from "Helpers/constants";
 import { ApiActions } from "../api";
 import { toast } from "react-toastify";
+import { DEFAULT_VOUCHERS_INFO } from "Helpers/GENERATE_STARTING_DATA";
 
 const getVoucherNumber = async (name) => {
   const response = await ApiActions.read(name, {
@@ -645,7 +642,7 @@ export const generateBillsFromInstallment = async ({
     } else {
       if (item) {
         await ApiActions.insert("bill", {
-          data: item,
+          data: { ...item, connect_with_id: contract_id },
         });
       } else {
         await ApiActions.remove("bill", {
@@ -663,7 +660,7 @@ export const generateVoucherFromBill = async (values, pattern) => {
     amount,
     currency_id,
     currency_val,
-    client_id,
+    account_id,
     observe_account_id,
     cost_center_id,
     connect_with,
@@ -682,12 +679,12 @@ export const generateVoucherFromBill = async (values, pattern) => {
     currency_id,
     currency_val,
     connect_with,
-    account_id: client_id,
+    account_id,
     note,
     debit: 0,
     credit: 0,
     connect_with_id,
-    voucher_type: RECEIVED_VOUCHER_CODE,
+    voucher_type: DEFAULT_VOUCHERS_INFO?.receipts?.code,
     debit_amount: 0,
     credit_total: 0,
     credit_amount: 0,
@@ -737,7 +734,7 @@ export const generateVoucherFromBill = async (values, pattern) => {
       const gridEntry = [];
 
       gridEntry.push({
-        account_id: client_id,
+        account_id,
         observe_account_id: observe_account_id,
         currency_id,
         cost_center_id,
@@ -749,7 +746,7 @@ export const generateVoucherFromBill = async (values, pattern) => {
 
       gridEntry.push({
         account_id: observe_account_id,
-        observe_account_id: client_id,
+        observe_account_id: account_id,
         currency_id,
         cost_center_id,
         note,

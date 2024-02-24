@@ -11,7 +11,8 @@ import { IncreaseTableBar } from "./IncreaseTableBar";
 import AreaField from "../CustomFields/AreaField";
 import { useTranslation } from "react-i18next";
 import { useFormContext } from "react-hook-form";
-import { PrintIcon } from "Components/Icons";
+import { PrintIcon, SearchIcon } from "Components/Icons";
+import { usePopupForm } from "Hooks/usePopupForm";
 
 const TableFields = ({
   fields,
@@ -36,9 +37,13 @@ const TableFields = ({
   allowPrint,
   onClickPrint,
   onlyView,
-  selectedRows
+  selectedRows,
+  allowViewEntry,
+  refTableName,
+  showNumberAsLink
 }) => {
   const { t } = useTranslation();
+  const { dispatchForm } = usePopupForm();
   const { watch, setValue } = useFormContext();
   const [increaseCount, setIncreaseCount] = useState(1);
 
@@ -102,6 +107,11 @@ const TableFields = ({
                       {t("print")}
                     </th>
                   ) : null}
+                  {allowViewEntry ? (
+                    <th className={`px-4 py-2 border ${thClassName}`}>
+                      {t("view_entry")}
+                    </th>
+                  ) : null}
                 </>
               )}
             </tr>
@@ -118,8 +128,12 @@ const TableFields = ({
                       className={`${
                         typeof rowClassName === "function"
                           ? rowClassName(index)
-                          : rowClassName} ${selectedRows?.[index] ? 'bg-gray-100 dark:bg-dark-border' : ''}`
-                      }
+                          : rowClassName
+                      } ${
+                        selectedRows?.[index]
+                          ? "bg-gray-100 dark:bg-dark-border"
+                          : ""
+                      }`}
                       key={`r-${index}`}
                       style={
                         typeof rowStyles === "function"
@@ -127,7 +141,7 @@ const TableFields = ({
                           : rowStyles
                       }
                     >
-                      <td className={`min-w-[40px] ${tdClassName} border`}>
+                      <td className={`min-w-[40px] ${tdClassName} border relative`}>
                         {!!onRowClick ? (
                           <div className="flex items-center relative">
                             {deleteRowComponent
@@ -161,7 +175,7 @@ const TableFields = ({
                         else {
                           return (
                             <td
-                              className={`border ${tdClassName}`}
+                              className={`border ${tdClassName} relative`}
                               key={`${field?.name}-${index}`}
                             >
                               {field?.is_ref ? (
@@ -241,23 +255,43 @@ const TableFields = ({
                                           onBlur={onBlurNumbersField}
                                         />
                                       ) : (
-                                        <Input
-                                          {...field}
-                                          key={`${field?.name}-${index}`}
-                                          updatedName={`${tab}.${index}.${field?.name}`}
-                                          hideLabel
-                                          error={
-                                            errors?.[tab]?.[field?.name]
-                                              ? "Field is required"
-                                              : ""
-                                          }
-                                          containerClassName="h-10 !h-full min-w-[55px]"
-                                          inputClassName={
-                                            "border-0 !rounded-none"
-                                          }
-                                          onBlur={onBlurNumbersField}
-                                          readOnly={onlyView}
-                                        />
+                                        <>
+                                          {showNumberAsLink && field?.name === "number" &&
+                                          watch(`${tab}.${index}.id`) ? (
+                                            // <ViewRowFrom />
+                                            <button
+                                            className="absolute top-2 ltr:right-2 rtl:left-2 text-blue-500"
+                                              onClick={() => {
+                                                dispatchForm({
+                                                  open: true,
+                                                  table: refTableName,
+                                                  oldValues: watch(
+                                                    `${tab}.${index}`
+                                                  ),
+                                                });
+                                              }}
+                                            >
+                                              <SearchIcon className="text-inherit w-5 h-5" />{" "}
+                                            </button>
+                                          ) : null}
+                                          <Input
+                                            {...field}
+                                            key={`${field?.name}-${index}`}
+                                            updatedName={`${tab}.${index}.${field?.name}`}
+                                            hideLabel
+                                            error={
+                                              errors?.[tab]?.[field?.name]
+                                                ? "Field is required"
+                                                : ""
+                                            }
+                                            containerClassName="h-10 !h-full min-w-[55px]"
+                                            inputClassName={`
+                                              border-0 !rounded-none 
+                                            `}
+                                            onBlur={onBlurNumbersField}
+                                            readOnly={onlyView}
+                                          />
+                                        </>
                                       )}
                                     </>
                                   )}
@@ -279,6 +313,9 @@ const TableFields = ({
                           </button>
                         </td>
                       ) : null}
+                      {allowViewEntry
+                        ? allowViewEntry(watch(`${tab}.${index}`))
+                        : null}
                     </tr>
                   ))}
               </>

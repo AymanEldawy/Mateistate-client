@@ -12,6 +12,7 @@ import BlockPaper from "Components/Global/BlockPaper";
 import { BuildingSubSteps } from "./BuildingSubSteps";
 import { Input } from "Components/StructurePage/CustomFields";
 import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
+import { FLATS } from "Helpers/constants";
 
 const SUB_STEPS = [
   "building_real_estate_management",
@@ -21,20 +22,7 @@ const SUB_STEPS = [
   "building_real_estate_development",
 ];
 
-const FLATS = {
-  apartment_count: 0,
-  penthouse_count: 0,
-  parking_count: 0,
-  mezzanine_count: 0,
-  office_count: 0,
-  stores_count: 0,
-  warehouse_count: 0,
-  service_apartments: 0,
-  drivers_apartments: 0,
-  underground_parking: 0,
-};
-
-const calculateFlats = (name, watch, setValue) => {
+const calculateFlats = (name, watch) => {
   let flat = name?.split(".").at(-1);
   switch (flat) {
     case "apartment_count":
@@ -129,6 +117,7 @@ const BuildingForm = () => {
       setValue("building.create_into_cost_center", true);
     }
   }, []);
+
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
       if (name?.indexOf("building.") !== -1) {
@@ -146,7 +135,7 @@ const BuildingForm = () => {
     const res = await getTheFunInsert({ data: value });
 
     if (res?.success) {
-      if (!params?.id) navigate(`/tools/${res?.record?.id}`);
+      if (res?.record?.id) navigate(`/tools/${res?.record?.id}`);
       toast.success("Successfully added item in Building");
       reset();
     } else {
@@ -263,6 +252,8 @@ const BuildingForm = () => {
             steps={steps}
             next={next}
             back={back}
+            layout={params?.id}
+            // onClickPallette={() => navigate(`/tools/${watch("building.id")}`)}
           />
         </form>
       </FormProvider>

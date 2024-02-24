@@ -211,14 +211,28 @@ NOTES: complicated tasks
 - [✔️] first batch not more than contract value
 - [✔️] note1 add chq number
 - [✔️] print one or select 
+- [✔️] constraint on code or name & customer default & client open customer form 
+- [✔️] icon to color page
+- [✔️] contract name sensitive
+- [✔️] filter assets
+- [✔️] show buttons 
+- [✔️] note entry 
+- [✔️] open chq form 
+- [✔️] watch and auto generate note 
+- [✔️] property value ownership or Real state management
+- [✔️] filter assets only unrented 
+- [✔️] installment open
+- [✔️] reset contract
+- [✔️] fix month and default installment
 
-- [] fix month and default installment
-- [] connect with view  
-- [] constraint on code or name & customer default & client open customer form 
-- [] filter assets only unrented 
-- [] user always debit 
+
 - [] on delete cascade bill or account or building or account
 - [] scan
+- [] cheques cash 131 
+- [] connect with view 
+- [] unique name account fix
+
+
 
 <!-- 
 "مؤجرة" - "rented";

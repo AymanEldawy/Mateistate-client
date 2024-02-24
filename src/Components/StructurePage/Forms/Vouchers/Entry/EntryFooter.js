@@ -17,7 +17,7 @@ export const EntryFooter = ({
   maxLength,
   onlyView,
   hideSubmit,
-  onClickAddNew
+  onClickAddNew,
 }) => {
   const { t } = useTranslation();
   const { watch } = useFormContext();
@@ -62,15 +62,13 @@ export const EntryFooter = ({
         ) : null}
       </div>
       <div className="flex items-center mt-4 border-t pt-2 justify-between gap-4">
-        {onlyView || isNewOne ? null : (
-          <VoucherStepsButton
-            number={number}
-            goTo={goTo}
-            maxLength={maxLength}
-            isNewOne={isNewOne}
-            onClickAddNew={onClickAddNew}
-          />
-        )}
+        <VoucherStepsButton
+          number={number}
+          goTo={goTo}
+          maxLength={maxLength}
+          isNewOne={isNewOne}
+          onClickAddNew={onClickAddNew}
+        />
         {hideSubmit || onlyView ? null : (
           <Button title="Submit" disabled={watch("difference") !== 0} />
         )}

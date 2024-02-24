@@ -29,7 +29,6 @@ const Input = ({
 
   useEffect(() => {
     if (watchField && watch(watchFieldName) === watchFieldCondition) {
-      // console.log('called read only');
     } else {
     }
   }, [watch(watchFieldName)]);
@@ -66,11 +65,11 @@ const Input = ({
       <Controller
         name={updatedName || field?.name}
         control={control}
-        render={({ field: { onChange, onBlur, ref, value } }) => {
+        render={({ field: { onChange, onBlur, ref, value }, fieldState, formState }) => {
           if (field?.type === "date") {
-            // console.log("🚀 ~ value: date", value, new ate())
             return (
               <DatePicker
+                ref={ref}
                 className={`border h-[39px] w-full read-only:bg-blue-100 flex items-center gap-2 dark:read-only:bg-[#444] rounded ltr:!pl-7 rtl:!pr-7  p-1 ${inputClassName} ${
                   error ? "border-red-200 text-red-500" : ""
                 }`}
@@ -82,11 +81,15 @@ const Input = ({
                     <CalenderIcon className="h-5 w-5" />
                   </span>
                 }
-                readOnly={
-                  readOnly ||
-                  (watchField && watch(watchFieldName) === watchFieldCondition)||
-                  (field?.disabledCondition && watch(field?.disabledCondition))
-                }
+                todayHighlight={true}
+                locale="en"
+                isClearable
+                
+                // readOnly={
+                //   readOnly ||
+                //   (watchField && watch(watchFieldName) === watchFieldCondition)||
+                //   (field?.disabledCondition && watch(field?.disabledCondition))
+                // }
                 // placeholderText="Select date... YYYY/MM/DD"
                 placeholderText="Select date..."
                 onChange={(date) => {

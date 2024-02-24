@@ -72,7 +72,16 @@ const mergePatternWithChequeData = (pattern) => {
 
 const ChequeForm = withFormSingular(
   (props) => {
-    let { CACHE_LIST, onClose, refetchData, layout, methods } = props;
+    let {
+      CACHE_LIST,
+      onClose,
+      refetchData,
+      layout,
+      methods,
+      tableName,
+      patternCode,
+      onlyViewAndUpdate,
+    } = props;
 
     let {
       watch,
@@ -83,7 +92,8 @@ const ChequeForm = withFormSingular(
     } = methods;
     const { dispatchVoucherEntries } = useVoucherEntriesView();
     const params = useParams();
-    const { name, code } = params;
+    const name = params?.name || tableName;
+    const code = params?.code || patternCode;
     const [selectedFormOperation, setSelectedFormOperation] = useState({});
     const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
     const [isLoading, setIsLoading] = useState(false);
@@ -185,11 +195,13 @@ const ChequeForm = withFormSingular(
         }
       }
 
+      console.log(value, values, '---');
+
       let res = null;
 
       if (layout === "update" || values?.id) {
         res = await ApiActions.update("bill", {
-          conditions: [{ type: "and", conditions: [["id", "=", params?.id]] }],
+          conditions: [{ type: "and", conditions: [["id", "=", values?.id]] }],
           updates: values,
         });
       } else {
@@ -215,7 +227,7 @@ const ChequeForm = withFormSingular(
         toast.error("Failed to add new item in " + name);
       }
     };
-
+    // return;
     return (
       <>
         <Modal
@@ -228,7 +240,12 @@ const ChequeForm = withFormSingular(
             name={selectedFormOperation?.table}
           />
         </Modal>
-        <BlockPaper>
+        <BlockPaper
+        layoutBodyClassName={onlyViewAndUpdate ? '!m-0 !p-0': ''}
+        containerClassName={onlyViewAndUpdate ? '!m-0 !p-0': ''}
+        bodyClassName={onlyViewAndUpdate ? '!m-0 !p-0': ''}
+        boxClassName={onlyViewAndUpdate ? '!m-0 !p-0 !shadow-none': ''}
+        >
           <div key={name} className="relative">
             <FormProvider {...methods}>
               <FormHeadingTitle title={name} />
@@ -268,10 +285,10 @@ const ChequeForm = withFormSingular(
                     <UniqueFieldGroup values={watch()} />
                   </div>
                 </div>
-                <div className="my-4 grid gap-6 grid-cols-2 md:grid-cols-4">
+                <div className="my-4 grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   <Input
                     {...fields?.amount}
-                    inputClassName="bg-gray-100"
+                    // inputClassName="bg-gray-100"
                     values={watch()}
                     error={errors?.amount ? "Field is required" : ""}
                   />
@@ -283,22 +300,19 @@ const ChequeForm = withFormSingular(
                   />
                   <Input
                     {...fields?.beneficiary_name}
-                    inputClassName="bg-gray-100"
+                    // inputClassName="bg-gray-100"
                     values={watch()}
                     error={errors?.beneficiary_name ? "Field is required" : ""}
                   />
                 </div>
-                <div className="my-4 grid gap-6 grid-cols-2 md:grid-cols-4">
+                <div className="my-4 grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   {[
-                    "client_id",
+                    "account_id",
                     "cost_center_id",
                     "observe_account_id",
                     "observe_cost_center_id",
                   ]?.map((field) => {
                     let name = field?.replace(/observe_|_id/g, "");
-                    if (field === "client_id") {
-                      name = UNIQUE_REF_TABLES.clients;
-                    }
                     return (
                       <UniqueField
                         key={field}
@@ -312,7 +326,7 @@ const ChequeForm = withFormSingular(
                     );
                   })}
                 </div>
-                <div className="my-4 grid gap-6 grid-cols-2 md:grid-cols-4">
+                <div className="my-4 grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   <Switch
                     {...fields?.without_due_date}
                     values={watch()}
@@ -376,15 +390,17 @@ const ChequeForm = withFormSingular(
                   })}
                 </div>
                 <div className="flex justify-between gap-6 items-center mt-4 border-t pt-4">
-                  <VoucherStepsButton
-                    number={number}
-                    goTo={setNumber}
-                    maxLength={maxLength}
-                    isNewOne={number > maxLength}
-                    allowActions={watch("id")}
-                    setNumber={setNumber}
-                  />
-                  <Button title={"Submit"} />
+                  {onlyViewAndUpdate ? null : (
+                    <VoucherStepsButton
+                      number={number}
+                      goTo={setNumber}
+                      maxLength={maxLength}
+                      isNewOne={number > maxLength}
+                      allowActions={watch("id")}
+                      setNumber={setNumber}
+                    />
+                  )}
+                  <Button title={onlyViewAndUpdate ? "Modify" : "Submit"} />
                 </div>
               </form>
             </FormProvider>

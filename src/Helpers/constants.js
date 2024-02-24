@@ -1,7 +1,6 @@
 export const IGNORED_Fields = ["id", "created_at"];
 
 export const RECEIVED_CHQ_CODE = 2;
-export const RECEIVED_VOUCHER_CODE = 2;
 
 export const IGNORED_SHOW_NUMBER_TABLE = {
   parking: true,
@@ -727,18 +726,18 @@ export const FLAT_PROPERTY_TABS = [
     x: "warehouse_count",
     y: "",
   },
-  {
-    alias: 7,
-    tabName: "driver flats",
-    x: "drivers_apartments",
-    y: "",
-  },
-  {
-    alias: 8,
-    tabName: "servant flats",
-    x: "service_apartments",
-    y: "",
-  },
+  // {
+  //   alias: 7,
+  //   tabName: "driver flats",
+  //   x: "drivers_apartments",
+  //   y: "",
+  // },
+  // {
+  //   alias: 8,
+  //   tabName: "servant flats",
+  //   x: "service_apartments",
+  //   y: "",
+  // },
 ];
 
 export const FLATS_TABLE_NAME = {
@@ -867,12 +866,25 @@ export const resetChequeFields = () => ({
 });
 
 export const CONSTANT_COLUMNS_NAME = {
-  is_archived: 'is_archived',
-  is_deleted: 'is_deleted',
-}
+  is_archived: "is_archived",
+  is_deleted: "is_deleted",
+};
 
 export const UNIQUE_REF_TABLES = {
-  clients: 'CLIENTS',
-  suppliers: 'SUPPLIERS',
+  clients: "CLIENTS",
+  suppliers: "SUPPLIERS",
+};
 
-}
+
+export const FLATS = {
+  apartment_count: 0,
+  penthouse_count: 0,
+  parking_count: 0,
+  mezzanine_count: 0,
+  office_count: 0,
+  stores_count: 0,
+  warehouse_count: 0,
+  // service_apartments: 0,
+  // drivers_apartments: 0,
+  underground_parking: 0,
+};

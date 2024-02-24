@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { usePopupForm } from "Hooks/usePopupForm";
-import { PlusIcon } from "Components/Icons";
+import { EyeIcon, PlusIcon } from "Components/Icons";
 import { useState } from "react";
 import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
 import { SELECT_LISTS } from "Helpers/constants";
 import { ApiActions } from "Helpers/Lib/api";
 import { useTranslation } from "react-i18next";
+import { getConnectWithUrl } from "Helpers/functions";
 
 const REF_TABLES = {
   1: "contract",
@@ -23,10 +24,12 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
   const [selectNameError, setSelectNameError] = useState("");
   const [selectNameIdError, setSelectNameIdError] = useState("");
   const [selectedItemNumber, setSelectedItemNumber] = useState(1);
+  const [viewUrl, setViewUrl] = useState(null);
 
   const selectName = tab ? `${tab}.connect_with` : "connect_with";
   const selectNameId = tab ? `${tab}.connect_with_id` : "connect_with_id";
 
+  console.log(watch());
   useEffect(() => {
     setChooseList(
       SELECT_LISTS("bill_connect_with")?.map((item) => ({
@@ -53,6 +56,17 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
       fetchList(refTable);
     }
   }, [watch(selectName)]);
+
+  console.log(list);
+  useEffect(() => {
+    let connectWithId = watch(selectNameId);
+    if (connectWithId) getViewUrl(connectWithId);
+  }, [watch(selectNameId)]);
+
+  const getViewUrl = async (connectWithId) => {
+    const response = await getConnectWithUrl(watch(selectName), connectWithId);
+    console.log("🚀 ~ getViewUrl ~ response:", response);
+  };
 
   return (
     <>
@@ -123,9 +137,15 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
                       menuList: () => "dark:bg-dark-bg",
                     }}
                     value={list?.find((c) => c?.value === watch(selectNameId))}
-                    defaultValue={list?.find(
-                      (c) => c?.value === watch(selectNameId)
-                    )}
+                    // defaultValue={list?.find(
+                    //   (c) => c?.value === watch(selectNameId)
+                    // )}
+                    // value={list?.find(
+                    //   (c) =>{
+                    //     console.log(c?.value, watch(selectNameId));
+                    //     return c?.value == watch(selectNameId)
+                    //   }
+                    // )}
                     // onChange={onChange}
                     onChange={(option) => onChange(option?.value)}
                   />
@@ -136,15 +156,9 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
             <button
               type="button"
               disabled={selectedItemNumber <= 0}
-              className="right-2 rtl:left-2 rtl:right-auto mx-2 rounded-full disabled:hover:bg-transparent disabled:text-gray-500 text-blue-500 hover:text-white hover:bg-blue-400"
-              onClick={() => {
-                dispatchForm({
-                  open: true,
-                  table: REF_TABLES?.[watch(selectName)],
-                });
-              }}
+              className="rtl:right-auto mx-1 rounded-md p-1 disabled:hover:bg-transparent disabled:text-gray-500 text-blue-500 hover:text-white hover:bg-blue-400"
             >
-              <PlusIcon circle />
+              <EyeIcon />
             </button>
           </div>
           {selectNameIdError ? (

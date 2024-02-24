@@ -231,7 +231,6 @@ const VoucherForm = () => {
 
       if (PATTERN_SETTINGS?.auto_gen_entries) {
         // Generate A Constraint
-        console.log(values,'values');
         generateEntryFromVoucher({
           values: value,
           created_from: `voucher-${name}`,
@@ -298,15 +297,13 @@ const VoucherForm = () => {
             PATTERN_SETTINGS={PATTERN_SETTINGS}
           />
           <div className="flex items-center mt-4 border-t dark:border-dark-border pt-2 justify-between gap-4">
-            {maxLength < number ? null : (
-              <VoucherStepsButton
-                number={number}
-                goTo={goTo}
-                maxLength={data?.at(0)?.number || 0}
-                isNewOne={maxLength < number}
-                onClickAddNew={onClickAddNew}
-              />
-            )}
+            <VoucherStepsButton
+              number={number}
+              goTo={goTo}
+              maxLength={data?.at(0)?.number || 0}
+              isNewOne={maxLength < number}
+              onClickAddNew={onClickAddNew}
+            />
             <Button title="Submit" onClick={onSubmit} />
           </div>
         </form>

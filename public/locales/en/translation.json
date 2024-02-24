@@ -892,5 +892,20 @@
   "select_area": "Select area",
   "previous_securing": "previous insurance",
   "current_securing_percentage": "current insurance percentage",
-  "current_securing_value": "current insurance value"
+  "current_securing_value": "current insurance value",
+  "gov_number": "gov_number",
+  "lawsuit": "lawsuit",
+  "property_delivery_date": "property delivery date",
+  "residents_count": "residents count",
+  "property_area": "property area",
+  "discount_rate": "discount rate",
+  "discount_value": "discount value",
+  "discount_contract_amount": "discount contract amount",
+  "discount_account_id": "discount account id",
+  "electricity_deposit": "electricity deposit",
+  "paid_type": "paid type",
+  "revenue_account_id": "revenue account name",
+  "customer_account_id": "customer account name",
+  "view_entry":"View entry",
+  "id": "id"
 }

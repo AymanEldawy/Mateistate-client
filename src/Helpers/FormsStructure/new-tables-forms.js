@@ -8,6 +8,7 @@ import {
   PARKING_STEPS,
   SELECT_LISTS,
   SHOP_STEPS,
+  UNIQUE_REF_TABLES,
   VILLA_STEPS,
   VOUCHER_PATTERN_STEPS,
 } from "Helpers/constants";
@@ -124,7 +125,6 @@ const land = [
     is_ref: true,
     ref_table: "owner",
     ref_col: "id",
-    ref_name: "full_name",
   },
   FIELDS_STRUCTURE.cost_center(),
   {
@@ -165,7 +165,6 @@ const land = [
     is_ref: true,
     ref_table: "owner", // unknown table
     ref_col: "id",
-    ref_name: "full_name",
   },
   {
     label: "owner_account_id",
@@ -175,7 +174,6 @@ const land = [
     is_ref: true,
     ref_table: "owner", // unknown table
     ref_col: "id",
-    ref_name: "full_name",
   },
   {
     label: "identity_value",
@@ -321,7 +319,7 @@ const account = [
 
 const lessor = [
   FIELDS_STRUCTURE.id(),
-  { label: "full_name", name: "full_name", type: "text", required: true },
+  { label: "full_name", name: "name", type: "text", required: true },
   { label: "passport", name: "passport", type: "number", required: false },
   {
     label: "passport_expiry_date",
@@ -366,7 +364,7 @@ const lessor = [
 
 const owner = [
   FIELDS_STRUCTURE.id(),
-  { label: "full_name", name: "full_name", type: "text", required: true },
+  { label: "full_name", name: "name", type: "text", required: true },
   { label: "id_card", name: "id_card", type: "text", required: false },
   { label: "phone", name: "phone", type: "text", required: false },
   { label: "cell_phone", name: "cell_phone", type: "text", required: false },
@@ -380,7 +378,7 @@ const owner = [
 const seller = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
-  { label: "full_name", name: "full_name", type: "text", required: true },
+  { label: "full_name", name: "name", type: "text", required: true },
   FIELDS_STRUCTURE.nationality(),
   { label: "id_card", name: "id_card", type: "number", required: false },
   { label: "passport", name: "passport", type: "number", required: false },
@@ -702,7 +700,6 @@ const building = [
     is_ref: true,
     ref_table: "owner",
     ref_col: "id",
-    ref_name: "full_name",
   },
   {
     label: "display",
@@ -725,7 +722,6 @@ const building = [
     is_ref: true,
     ref_table: "lessor",
     ref_col: "id",
-    ref_name: "full_name",
   },
   {
     label: "bank_account_number",
@@ -1075,16 +1071,19 @@ const building_real_estate_development = [
 
 const building_real_estate_management = [
   FIELDS_STRUCTURE.id(),
-  {
-    label: "owner_id",
-    name: "owner_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "owner",
-    ref_col: "id",
-    ref_name: "full_name",
-  },
+  FIELDS_STRUCTURE.account({
+    label: "owner_account_id",
+    name: "owner_account_id",
+    ref_table: UNIQUE_REF_TABLES.suppliers,
+  }),
+  // {
+  //   type: "uuid",
+  //   required: false,
+  //   is_ref: true,
+  //   ref_table: "owner",
+  //   ref_col: "id",
+  //
+  // },
   {
     label: "commission_rate",
     name: "commission_rate",
@@ -2180,7 +2179,7 @@ const cheque = [
   //   is_ref: true,
   //   ref_table: "seller",
   //   ref_col: "id",
-  //   ref_name: "full_name",
+  //
   // },
   FIELDS_STRUCTURE.account({ required: true }),
   FIELDS_STRUCTURE.cost_center({ required: true }),
@@ -2315,6 +2314,15 @@ const cheque_grid = [
     type: "date",
     required: false,
     disabledCondition: "without_due_date",
+  },
+  {
+    label: "bank_id",
+    name: "bank_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "bank",
+    ref_col: "id",
   },
   {
     label: "note1",
@@ -3526,7 +3534,6 @@ const voucher_main_data = [
     is_ref: true,
     ref_table: "seller",
     ref_col: "id",
-    ref_name: "full_name",
   },
   {
     label: "connect_with",
@@ -5381,7 +5388,6 @@ const shop = [
     is_ref: true,
     ref_table: "owner", // unknown table
     ref_col: "id",
-    ref_name: "full_name",
   },
   {
     label: "flat_owner_id",
@@ -5648,7 +5654,6 @@ const villa = [
     is_ref: true,
     ref_table: "owner", // unknown table
     ref_col: "id",
-    ref_name: "full_name",
   },
   FIELDS_STRUCTURE.note(),
 ];
@@ -5710,7 +5715,6 @@ const villa_accounts = [
     is_ref: true,
     ref_table: "lessor",
     ref_col: "id",
-    ref_name: "full_name",
   },
 ];
 
@@ -6248,7 +6252,7 @@ const building_group_short = {
       tab_name: "building",
     },
     [BUILDING_STEPS.building_owning_the_property]: {
-      fields: building_buying,
+      fields: building_real_estate_management,
       tab_name: "owning_the_property",
       formType: "nested",
     },

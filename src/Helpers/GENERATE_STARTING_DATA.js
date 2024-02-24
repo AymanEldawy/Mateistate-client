@@ -2,8 +2,45 @@ import { RECEIVED_CHQ_CODE } from "./constants";
 
 const { ApiActions } = require("./Lib/api");
 
+export const DEFAULT_VOUCHERS_INFO = {
+  payment: {
+    auto_gen_entries: true,
+    auto_transfer_entry: true,
+    code: 1,
+    gen_entries: true,
+    generate_records: true,
+    list_name: "vouchers",
+    name: "payment",
+    required_cost_center: true,
+    required_statement: true,
+    show_contract_cost_center: true,
+    show_contract_field: true,
+    show_cost_center: true,
+    show_currency: true,
+    show_note: true,
+    show_debit_field: true,
+  },
+  receipts: {
+    auto_gen_entries: true,
+    auto_transfer_entry: true,
+    code: 2,
+    gen_entries: true,
+    generate_records: true,
+    list_name: "vouchers",
+    name: "receipts",
+    required_cost_center: true,
+    required_statement: true,
+    show_contract_cost_center: true,
+    show_contract_field: true,
+    show_cost_center: true,
+    show_credit_field: true,
+    show_currency: true,
+    show_note: true,
+  },
+};
+
 const DEFAULT_ACCOUNTS = [
-  { code: 1, name: "Assets ", type: "Balance Sheet", number: 3, level: 0 },
+  { code: 1, name: "Assets", type: "Balance Sheet", number: 3, level: 0 },
   {
     code: 11,
     name: "Fixed Assets",
@@ -321,44 +358,7 @@ async function INSERT_DEFAULT_BANKS() {
 
 // insert default VOUCHERS
 async function INSERT_DEFAULT_VOUCHERS() {
-  let vouchers = [
-    {
-      auto_gen_entries: true,
-      auto_transfer_entry: true,
-      code: 1,
-      gen_entries: true,
-      generate_records: true,
-      list_name: "vouchers",
-      name: "payment",
-      required_cost_center: true,
-      required_statement: true,
-      show_contract_cost_center: true,
-      show_contract_field: true,
-      show_cost_center: true,
-      show_currency: true,
-      show_note: true,
-      show_debit_field: true,
-
-    },
-    {
-      auto_gen_entries: true,
-      auto_transfer_entry: true,
-      code: 2,
-      gen_entries: true,
-      generate_records: true,
-      list_name: "vouchers",
-      name: "receipts",
-      required_cost_center: true,
-      required_statement: true,
-      show_contract_cost_center: true,
-      show_contract_field: true,
-      show_cost_center: true,
-      show_credit_field: true,
-      show_currency: true,
-      show_note: true,
-    },
-  ];
-  for (const voucher of vouchers) {
+  for (const voucher of Object.values(DEFAULT_VOUCHERS_INFO)) {
     await ApiActions.insert("voucher_pattern", {
       data: voucher,
     });
@@ -552,12 +552,11 @@ export async function INSERT_DEFAULT_MULTIPLE_DATA() {
 }
 
 export async function INSERT_DEFAULT_DATA() {
-  INSERT_DEFAULT_ACCOUNTS();
+  await ApiActions.read('cheque')
   INSERT_DEFAULT_BANKS();
   INSERT_DEFAULT_VOUCHERS();
   INSERT_DEFAULT_CONTRACTS();
   INSERT_DEFAULT_BILLS();
   INSERT_DEFAULT_MULTIPLE_DATA();
 }
-
-
+// INSERT_DEFAULT_ACCOUNTS();

@@ -1,3 +1,6 @@
+import { UNIQUE_REF_TABLES } from "Helpers/constants";
+import { getCacheRowData } from "Helpers/functions";
+
 const { ApiActions } = require("../api");
 
 export const COUNTER_CHQ_NUMBER = [
@@ -43,14 +46,6 @@ export const COUNTER_CHQ_NUMBER = [
   "fortieth",
 ];
 
-const CONTRACT_REQUIRED_FIELDS = [
-  "client_id",
-  "building_id",
-  "contract_value",
-  "start_duration_date",
-  "end_duration_date",
-];
-
 export const CONTRACT_STATUS_NAMES = {
   1: "Rented",
   2: "Vacant",
@@ -69,15 +64,25 @@ export async function fetchAndMergeBuildingInfo(
 ) {
   const response = await ApiActions.read("building", {
     conditions: [{ type: "and", conditions: [["id", "=", buildingId]] }],
+    joins: [
+      {
+        type: "leftJoin",
+        table: "building_real_estate_management",
+        conditions: {
+          "building_real_estate_management.id": "building.building_id",
+        },
+      },
+    ],
   });
 
+  console.log(response, '----');
+  
   if (response?.success) {
     let data = response?.result?.at(0);
     setValue(`${firstTab}.lessor_id`, data?.lessor_id);
+    // if owner setValue('owner_id', data?.building_real_estate_management?.account_id)
   }
 }
-
-
 
 export async function fetchAndMergeAssetInfo(
   asset,
@@ -134,7 +139,7 @@ export function onWatchChangesInTab1(
       let finalPrice = price - (discount / 100) * price;
       let discountValue = price - finalPrice;
 
-      setValue(`${tabNames}.discount_value`, discountValue);
+      setValue(`${tabNames}.discount_value`, discountValue?.toFixed(2));
       setValue(`${tabNames}.final_price`, finalPrice);
       setValue("installment.total_amount", price);
       SHOULD_UPDATES.installment = true;
@@ -155,18 +160,20 @@ export function onWatchChangesInTab1(
       let date = new Date(start);
 
       // change first installment date value
-      setValue(
-        `installment.first_installment_date`,
-        new Date(start).toISOString()?.substring(0, 10)
-      );
-      SHOULD_UPDATES.installment = true;
+      if (start) {
+        setValue(
+          `installment.first_installment_date`,
+          new Date(start)?.toISOString()?.substring(0, 10)
+        );
+        SHOULD_UPDATES.installment = true;
+      }
 
       switch (duration) {
         case 1:
           setValue(
             `${tabNames}.end_duration_date`,
             new Date(date.setMonth(date.getMonth() + 3))
-              .toISOString()
+              ?.toISOString()
               ?.substring(0, 10)
           );
           return;
@@ -174,7 +181,7 @@ export function onWatchChangesInTab1(
           setValue(
             `${tabNames}.end_duration_date`,
             new Date(date.setMonth(date.getMonth() + 6))
-              .toISOString()
+              ?.toISOString()
               ?.substring(0, 10)
           );
           return;
@@ -182,7 +189,7 @@ export function onWatchChangesInTab1(
           setValue(
             `${tabNames}.end_duration_date`,
             new Date(date.setMonth(date.getMonth() + 12))
-              .toISOString()
+              ?.toISOString()
               ?.substring(0, 10)
           );
           return;
@@ -195,9 +202,9 @@ export function onWatchChangesInTab1(
   }
 }
 
-export function mergeInstallmentAndFirstTabData(firstTab, watch, setValue) {
-  let total = watch(`${firstTab}.contract_value`);
-  let date = watch(`${firstTab}.start_duration_date`);
+export async function mergeInstallmentAndFirstTabData(firstTabData, setValue) {
+  let total = firstTabData?.contract_value;
+  let date = firstTabData?.start_duration_date;
 
   if (total) {
     setValue("installment.total_amount", total);
@@ -205,7 +212,7 @@ export function mergeInstallmentAndFirstTabData(firstTab, watch, setValue) {
   if (date) {
     setValue(
       `installment.first_installment_date`,
-      new Date(date).toISOString()?.substring(0, 10)
+      new Date(date)?.toISOString()?.substring(0, 10)
     );
   }
 }
@@ -235,6 +242,7 @@ export function onWatchChangesInstallmentTab(
       }
       return;
 
+    // case "each_duration":
     case "first_installment_date":
       const rest_amount = watch("installment.rest_amount");
       const each_duration = watch("installment.each_duration");
@@ -264,6 +272,51 @@ export function onWatchChangesInstallmentTab(
   }
 }
 
+export function onWatchChangesInstallmentGridTab(
+  name,
+  value,
+  setValue,
+  watch,
+  cache,
+  firstTab
+) {
+  let row = name?.split(".").slice(0, 2).join(".");
+
+  let note1 = ``;
+
+  switch (name?.split(".")?.at(-1)) {
+    case "due_date":
+    case "number":
+    case "amount":
+    case "bank_id":
+    case "end_due_date":
+      const number = watch(`${row}.number`);
+      const clientId = watch(`${firstTab}.client_id`);
+      const amount = watch(`${row}.amount`);
+
+      const dueDate = new Date(watch(`${row}.due_date`)).toLocaleDateString(
+        "en-UK"
+      );
+
+      const endDueDate = new Date(
+        watch(`${row}.end_due_date`)
+      ).toLocaleDateString("en-UK");
+
+      const bank = getCacheRowData(cache, "bank", watch(`${row}.bank_id`));
+      const client = getCacheRowData(
+        cache,
+        UNIQUE_REF_TABLES.clients,
+        clientId
+      );
+
+      note1 = `received chq number ${number} from mr ${client?.name} ${amount} due date ${dueDate} end date ${endDueDate} bank name ${bank?.name}`;
+      break;
+    default:
+      break;
+  }
+
+  setValue(`${row}.note1`, note1);
+}
 export async function autoMergePatternSettingsWithValues(
   pattern,
   watch,
@@ -307,28 +360,35 @@ export function dividePrice(
   const result = [];
 
   let currentDate = new Date(start_date);
-
   for (let i = 0; i < numbers; i++) {
-    const formattedDate = currentDate.toISOString()?.substring(0, 10);
+    const formattedDate = currentDate?.toISOString()?.substring(0, 10);
 
     // increase weeks
     if (duration === 1) {
-      currentDate.setDate(currentDate.getDate() + each_duration * 7);
+      currentDate = new Date(
+        currentDate.setDate(currentDate.getDate() + parseInt(each_duration) * 7)
+      );
     }
     // increase months
     if (duration === 2) {
-      currentDate.setMonth(currentDate.getMonth() + each_duration);
+      currentDate = new Date(
+        currentDate.setMonth(currentDate.getMonth() + parseInt(each_duration))
+      );
     }
     // increase year
     if (duration === 3) {
-      currentDate.setFullYear(currentDate.getFullYear() + each_duration);
+      currentDate = new Date(
+        currentDate.setFullYear(
+          currentDate.getFullYear() + parseInt(each_duration)
+        )
+      );
+      console.log(currentDate, "---");
     }
 
     let end = new Date(currentDate.getTime() - 86400000)
-      .toISOString()
+      ?.toISOString()
       ?.substring(0, 10);
     result.push({ month: formattedDate, price: monthlyPrice, end });
-    // currentDate.setMonth(currentDate.getMonth() + 1);
   }
 
   if (result[result.length - 1]?.price)
@@ -382,6 +442,7 @@ export const getOldContracts = async (setOldContracts, type) => {
       },
     ],
   });
+  console.log("🚀 ~ getOldContracts ~ response:", response);
 
   if (response?.success) {
     setOldContracts(response?.result);
@@ -392,20 +453,22 @@ export const resetContractFields = () => ({
   building_id: null,
   client_id: null,
   contract_duration: null,
-  contract_value: 0,
-  current_securing_percentage: 0,
-  current_securing_value: 0,
+  contract_value: null,
+  current_securing_percentage: null,
+  current_securing_value: null,
   description: null,
   discount_account_id: null,
-  discount_rate: 0,
-  discount_value: 0,
+  discount_rate: null,
+  discount_value: null,
   feedback: null,
-  final_price: 0,
+  final_price: null,
   insurance_account_id: null,
   lawsuit: null,
   lessor_id: null,
-  paid_type: 0,
-  previous_securing: 0,
+  paid_type: null,
+  previous_securing: null,
+  shop_id: null,
+  parking_id: null,
   apartment_id: null,
   end_duration_date: null,
   gen_entries: true,

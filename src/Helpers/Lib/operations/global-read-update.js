@@ -175,11 +175,18 @@ export const getVillaUpdate = async (id) => {
 
 export const getInstallmentData = async (contractId) => {
   const installment = await fetchData("installment", "contract_id", contractId);
-  const installment_grid = await fetchData(
-    "bill",
-    "installment_id",
-    installment?.result?.at(0)?.id
-  );
+  // const installment_grid = await fetchData(
+  //   "bill",
+  //   "installment_id",
+  //   installment?.result?.at(0)?.id
+  // );
+  const installment_grid = await ApiActions.read("bill", {
+    conditions: [
+      { type: "and", conditions: [["installment_id", "=", installment?.result?.at(0)?.id]] },
+    ],
+
+    sorts: [{ column: "number", order: "ASC", nulls: "last" }],
+  });
   const voucher_grid = await ApiActions.read("voucher_main_data", {
     conditions: [
       { type: "and", conditions: [["connect_with_id", "=", contractId]] },
@@ -209,7 +216,7 @@ export const getContractUpdate = async (id) => {
     "contract_id",
     id
   );
-  
+
   const contract_terms = await fetchData("contract_terms", "contract_id", id);
   const contract_pictures = await fetchData(
     "contract_pictures",
@@ -241,7 +248,7 @@ export const getContractUpdate = async (id) => {
     "contract_id",
     id
   );
-  
+
   const contract_receipt_number = await fetchData(
     "contract_receipt_number",
     "contract_id",

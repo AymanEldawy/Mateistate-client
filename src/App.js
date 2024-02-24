@@ -14,9 +14,8 @@ import Footer from "Components/Layout/Footer";
 import PopupForm from "Components/StructurePage/Forms/CustomForm/PopupForm";
 import { VoucherEntriesViewProvider } from "Hooks/useVoucherEntriesView";
 import { VoucherView } from "Components/StructurePage/Forms/Vouchers/VoucherView";
-import { INSERT_DEFAULT_DATA } from "Helpers/GENERATE_STARTING_DATA";
-import getMenu from "Helpers/menu";
 // import { INSERT_DEFAULT_DATA } from "Helpers/GENERATE_STARTING_DATA";
+import getMenu from "Helpers/menu";
 let called = true
 function App() {
   const [mode, setMode] = useState("dark");
@@ -29,13 +28,13 @@ function App() {
     }
   };
 
-  // useEffect(() => {
-  //   if(called) {
-  //     called = false
-  //     // INSERT_DEFAULT_DATA();
-  //   }
+  useEffect(() => {
+    if(called) {
+      called = false
+      // INSERT_DEFAULT_DATA();
+    }
 
-  // }, [])
+  }, [])
 
   useEffect(() => {
     window.addEventListener("resize", resize);

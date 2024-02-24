@@ -49,7 +49,7 @@ export const DashboardGridLayout = () => {
           <ReportLatest itemHref="/update/account" name="account" href="/list/account" />
         </div>
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2  h-1/2">
-          <ReportLatest itemHref="/update/cheque" colSearchName="number" name="bill" href="/reports/cheques" />
+          <ReportLatest itemHref="/update/cheque" colSearchName="number" name="bill" title="cheque" href="/reports/cheques" />
         </div>
       </div>
     </div>

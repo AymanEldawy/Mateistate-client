@@ -41,6 +41,7 @@ export const DynamicTable = ({
   allowPrint,
   onClickPrint,
   defaultName,
+  onClickDelete,
 }) => {
   const { t } = useTranslation();
   const { getTable, setTable } = useLocalStorage();
@@ -103,23 +104,28 @@ export const DynamicTable = ({
   };
 
   const deleteItem = async () => {
+    let ids = [];
     let list = [];
     let selected = table.getFilteredSelectedRowModel();
 
-    for (const row of selected.rows) {
-      list.push(row.original.id);
+    for (const row of selected?.rows) {
+      list.push(row.original);
+      ids.push(row.original.id);
     }
-
-    const res = await ApiActions.remove(defaultName || tableName, {
-      conditions: [
-        {
-          type: "and",
-          conditions:
-            list.length > 1 ? [["id", "in", list]] : [["id", "=", list[0]]],
-        },
-      ],
-    });
-
+    let res = null;
+    if (onClickDelete) {
+      res = await onClickDelete(list, ids);
+    } else {
+      res = await ApiActions.remove(defaultName || tableName, {
+        conditions: [
+          {
+            type: "and",
+            conditions:
+              ids.length > 1 ? [["id", "in", ids]] : [["id", "=", ids[0]]],
+          },
+        ],
+      });
+    }
     if (res.success) {
       setRowSelection([]);
       await refetchData();

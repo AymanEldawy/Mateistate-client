@@ -47,7 +47,9 @@ export const ContractPaymentsTable = ({
           rowsCount={watch("installment_grid")?.length || 10}
           increasable={false}
           allowPrint
-          onClickPrint={(data) => console.log(data, "----")}
+          onClickPrint={(data) => {
+            
+          }}
           onRowClick={onSelectToPrint}
           selectedRows={selectedRows}
         />

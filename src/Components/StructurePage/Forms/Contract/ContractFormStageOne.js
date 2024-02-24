@@ -23,6 +23,7 @@ export const ContractFormStageOne = ({
   dispatchVoucherEntries,
   layout,
   assetType,
+  number,
 }) => {
   const { watch } = useFormContext();
   const fieldsHash = useMemo(() => {
@@ -40,30 +41,30 @@ export const ContractFormStageOne = ({
           <Input
             {...fieldsHash?.gov_number}
             inputClassName="max-w-[250px]"
-            updatedName={`contract.gov_number`}
-            values={values}
+            updatedName={`${tab}.gov_number`}
+            // values={values}
             tab={tab}
             required={true}
-            error={errors?.contract?.gov_number ? "Field is required" : ""}
+            error={errors?.[tab]?.gov_number ? "Field is required" : ""}
           />
         </div>
         <div className="flex items-end gap-4">
           <Switch
             {...fieldsHash?.feedback}
             updatedName={`${tab}.feedback`}
-            values={values}
+            // values={values}
             error={errors?.[tab]?.feedback ? "Field is required" : ""}
           />
           <Switch
             {...fieldsHash?.lawsuit}
             updatedName={`${tab}.lawsuit`}
-            values={values}
+            // values={values}
             error={errors?.[tab]?.lawsuit ? "Field is required" : ""}
           />
           <Switch
             {...fieldsHash?.gen_entries}
             updatedName={`${tab}.gen_entries`}
-            values={values}
+            // values={values}
             error={errors?.[tab]?.gen_entries ? "Field is required" : ""}
           />
           {contract_id ? (
@@ -96,13 +97,13 @@ export const ContractFormStageOne = ({
               }
               return (
                 <UniqueField
-                  key={`${field}-${i}`}
+                  key={`${field}-${i}-${number}`}
                   {...fieldsHash?.[field]}
                   updatedName={`${tab}.${field}`}
                   table={table}
                   CACHE_LIST={CACHE_LIST}
                   list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
-                  values={values}
+                  // values={values}
                   error={errors?.[tab]?.[field] ? "Field is required" : ""}
                 />
               );
@@ -112,7 +113,7 @@ export const ContractFormStageOne = ({
             {...fieldsHash?.description}
             updatedName={`${tab}.description`}
             containerClassName=" col-span-full"
-            values={values}
+            // values={values}
             tab={tab}
             error={errors?.[tab]?.description ? "Field is required" : ""}
           />
@@ -130,7 +131,7 @@ export const ContractFormStageOne = ({
               table={"account"}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
-              values={values}
+              // values={values}
               error={
                 errors?.[tab]?.revenue_account_id ? "Field is required" : ""
               }
@@ -145,7 +146,7 @@ export const ContractFormStageOne = ({
               table={"account"}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
-              values={values}
+              // values={values}
               error={
                 errors?.[tab]?.discount_account_id ? "Field is required" : ""
               }
@@ -160,7 +161,7 @@ export const ContractFormStageOne = ({
               table={"account"}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
-              values={values}
+              // values={values}
               error={
                 errors?.[tab]?.insurance_account_id ? "Field is required" : ""
               }
@@ -176,10 +177,10 @@ export const ContractFormStageOne = ({
           "final_price",
         ]?.map((field, i) => (
           <Input
-            key={`${field}-${i}`}
+            key={`${field}-${i}-${number}`}
             {...fieldsHash?.[field]}
             updatedName={`${tab}.${field}`}
-            values={values}
+            // values={values}
             tab={tab}
             inputClassName={field === "final_price" ? "bg-blue-100" : ""}
             readOnly={field === "final_price"}
@@ -191,7 +192,7 @@ export const ContractFormStageOne = ({
         <Select
           {...fieldsHash?.status}
           updatedName={`${tab}.status`}
-          values={values}
+          // values={values}
           tab={tab}
           error={errors?.[tab]?.status ? "Field is required" : ""}
           value={watch(`${tab}.status`)}
@@ -202,10 +203,10 @@ export const ContractFormStageOne = ({
           "current_securing_value",
         ]?.map((field, i) => (
           <Input
-            key={`${field}-${i}`}
+            key={`${field}-${i}-${number}`}
             {...fieldsHash?.[field]}
             updatedName={`${tab}.${field}`}
-            values={values}
+            // values={values}
             tab={tab}
             error={errors?.[tab]?.[field] ? "Field is required" : ""}
           />
@@ -219,7 +220,7 @@ export const ContractFormStageOne = ({
         <Select
           {...fieldsHash?.contract_duration}
           updatedName={`${tab}.contract_duration`}
-          values={values}
+          // values={values}
           tab={tab}
           error={errors?.[tab]?.contract_duration ? "Field is required" : ""}
           value={watch(`${tab}.contract_duration`)}
@@ -227,14 +228,14 @@ export const ContractFormStageOne = ({
         <Input
           {...fieldsHash?.start_duration_date}
           updatedName={`${tab}.start_duration_date`}
-          values={values}
+          // values={values}
           tab={tab}
           error={errors?.[tab]?.start_duration_date ? "Field is required" : ""}
         />
         <Input
           {...fieldsHash?.end_duration_date}
           updatedName={`${tab}.end_duration_date`}
-          values={values}
+          // values={values}
           tab={tab}
           error={errors?.[tab]?.end_duration_date ? "Field is required" : ""}
           readOnly={watch(`${tab}.contract_duration`) < 4}
@@ -243,7 +244,7 @@ export const ContractFormStageOne = ({
         <Select
           {...fieldsHash?.paid_type}
           updatedName={`${tab}.paid_type`}
-          values={values}
+          // values={values}
           tab={tab}
           error={errors?.[tab]?.paid_type ? "Field is required" : ""}
           value={watch(`${tab}.paid_type`)}

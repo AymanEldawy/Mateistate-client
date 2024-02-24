@@ -116,18 +116,6 @@ export function getMonthsDiff(start_date, end_date, price) {
   return { monthlyPrice, remainingPrice, startDate, endDate, monthsDiff };
 }
 
-export const getCreatedFromUrl = (name, id) => {
-  switch (name?.toLowerCase()) {
-    case "contract":
-      return {
-        href: `/contracts/${id}`,
-        classes: "bg-red-600 text-white p-2 rounded-md text-xs",
-      };
-    default:
-      return;
-  }
-};
-
 export async function getInsertAccountTrigger(name, conditions) {
   // get suppliers or customers id
   const parentAccount = await ApiActions.read("account", {
@@ -254,5 +242,54 @@ export const getAlphabetSortingView = (index) => {
     "Y",
     "Z",
   ];
-  return alphabet[index -1];
+  return alphabet[index - 1];
+};
+
+export const getCacheRowData = (cache, name, id) => {
+  return cache?.[name]?.find((c) => c?.id === id);
+};
+
+export const getCreatedFromUrl = (name, id) => {
+  switch (name?.toLowerCase()) {
+    case "contract":
+      return {
+        href: `/contracts/${id}`,
+        classes: "bg-red-600 text-white p-2 rounded-md text-xs",
+      };
+    default:
+      return;
+  }
+};
+
+/*
+ * @ Function getConnectWithUrl
+ * @param number int
+ * @param id uuid
+ *
+ * Numbers
+ * ** Nothing     -> 0
+ * ** Contract    -> 1
+ * ** Lawsuit     -> 2
+ * ** Bill        -> 3
+ */
+
+export const getConnectWithUrl = async (number, id) => {
+  console.log("🚀 ~ getConnectWithUrl ~ number:", number)
+  switch (number) {
+    case 1:
+      const response = await ApiActions.read("contract", {
+        conditions: [{ type: "and", conditions: [["id", "=", id]] }],
+      });
+      console.log(response);
+      return {
+        href: `/contracts/${id}`,
+        classes: "bg-red-600 text-white p-2 rounded-md text-xs",
+      };
+    case 2:
+      return;
+    case 3:
+      return;
+    default:
+      return;
+  }
 };
