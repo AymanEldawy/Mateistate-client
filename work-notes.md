@@ -139,22 +139,6 @@ NOTES: complicated tasks
 2. copy DHB public from supebase
 3. execute script in mateistate server tanent1
 
-## TODO Tasks
-
-- Operations on `bill`
-
-  - [] gen entries from bill
-  - [] on_collection
-  - [] op_partial_collection
-  - [] op_deportation
-  - [] op_endorsement
-  - [] op_return
-
-- [] Global print file
-- [] update Global read file with joins
-- [] watch video for `Lawsuit` and generate database tables for it
-- [] watch video for completed apartment gen checks
-
 ## Client new Notes
 
 - [✔️] merge tables general and finical one screen and one table on database
@@ -176,31 +160,30 @@ NOTES: complicated tasks
 - [✔️] building owning 5
 - [✔️] Building default accounts
 - [✔️] owner into suppliers
-- [✔️] apartment or assets only number number 
+- [✔️] apartment or assets only number number
 - [✔️] cards account vouchers (bill)
 - [✔️] hide currency in installment
 - [✔️] contract account far
 - [✔️] area unit & unit count
 - [✔️] contract & bill next and prev number
-- [✔️] up or down auto 
+- [✔️] up or down auto
 - [✔️] flag delete & status
-- [✔️] alert loading and success contract 
+- [✔️] alert loading and success contract
 
+## New note
 
-
-## New note 
 - [✔️] suppliers ref table
 - [✔️] change loading
 - [✔️] new contract in another page or click new
-- [✔️] labels 
+- [✔️] labels
 - [✔️] accounting transaction reverse
-- [✔️] view building accounts 
+- [✔️] view building accounts
 - [✔️] required fields installment
 - [✔️] Insurance labels
 - [✔️] Receipt voucher.
 - [✔️] First cash payment
-- [✔️] gov number required 
-- [✔️] no payment down 
+- [✔️] gov number required
+- [✔️] no payment down
 - [✔️] hide archive
 - [✔️] required fields contract
 - [✔️] entry view & sort currency
@@ -210,33 +193,42 @@ NOTES: complicated tasks
 - [✔️] show name and code an accounts
 - [✔️] first batch not more than contract value
 - [✔️] note1 add chq number
-- [✔️] print one or select 
-- [✔️] constraint on code or name & customer default & client open customer form 
+- [✔️] print one or select
+- [✔️] constraint on code or name & customer default & client open customer form
 - [✔️] icon to color page
 - [✔️] contract name sensitive
 - [✔️] filter assets
-- [✔️] show buttons 
-- [✔️] note entry 
-- [✔️] open chq form 
-- [✔️] watch and auto generate note 
+- [✔️] show buttons
+- [✔️] note entry
+- [✔️] open chq form
+- [✔️] watch and auto generate note
 - [✔️] property value ownership or Real state management
-- [✔️] filter assets only unrented 
+- [✔️] filter assets only unrented
 - [✔️] installment open
 - [✔️] reset contract
 - [✔️] fix month and default installment
 
-
 - [] on delete cascade bill or account or building or account
 - [] scan
-- [] cheques cash 131 
-- [] connect with view 
+- [] cheques cash 131
+- [] connect with view
 - [] unique name account fix
 
+## TODO Tasks
 
+- [] gen entries from bill
+- [] on_collection
+- [] op_partial_collection
+- [] op_deportation
+- [] op_return
 
-<!-- 
+- [] Global print file
+- [] update Global read file with joins
+- [] watch video for `Lawsuit` and generate database tables for it
+- [] watch video for completed apartment gen checks
+
+<!--
 "مؤجرة" - "rented";
 "خالية" - "vacant";
 "منتهية ولم تجدد" - "expired and not renewed";
 "تم التجديد" - "renewed"; -->
-
