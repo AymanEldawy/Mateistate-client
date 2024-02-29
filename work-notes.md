@@ -289,10 +289,10 @@ NOTES: complicated tasks
 - [✔️] Receipt form fix
 - [✔️] entry from chq
 - [✔️] all popup should has x close 
+- [✔️] change view from able to book view <>
 
-
+- [] fix cache default values
 - [] working on operation from 
-- [] change view from able to book view <>
 - [] all entries rows should start with debit as first 
 - [] add icons to buttons and description to color icon on building form
 - [] fix user form on add suppliers 
