@@ -235,10 +235,39 @@ export const getAccountList = async () => {
     if (isParent) {
       hashIndexes[isParent] = true;
     }
-
   }
 
   return response?.result?.filter((item) => !hashIndexes?.[item?.id]);
+};
+
+export const getVoucherLastNumber = async (code) => {
+  const response = await ApiActions.read("voucher_main_data", {
+    conditions: [{ type: "and", conditions: [["voucher_type", "=", +code]] }],
+    limit: 1,
+    sorts: [{ column: "number", order: "DESC", nulls: "last" }],
+  });
+  return +response?.result?.at(0)?.number || 0;
+};
+
+export const getAccountCash = async () => {
+  const res = await ApiActions.read("account", {
+    conditions: [
+      { type: "or", conditions: [["name", "=", "Cash"]] },
+      { type: "or", conditions: [["number", "=", 131]] },
+    ],
+  });
+
+  if (res?.success) return res?.result?.at(0)?.id;
+};
+
+export const getAccountReceivable = async () => {
+  const res = await ApiActions.read("account", {
+    conditions: [
+      { type: "or", conditions: [["name", "=", "Notes Receivables"]] },
+      { type: "or", conditions: [["number", "=", 122]] },
+    ],
+  });
+  if (res?.success) return res?.result?.at(0)?.id;
 };
 
 // contract_commission;

@@ -20,10 +20,7 @@ export const VoucherHead = ({
     <div className="flex gap-4 lg:gap-8 justify-between">
       <div className="w-2/3">
         <div
-          className={`grid gap-4  ${
-            "grid-cols-3"
-            // isPaymentVoucher ? "grid-cols-2" : "grid-cols-3"
-          }`}
+          className={`grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3`}
         >
           <Input
             {...fields["created_at"]}
@@ -98,7 +95,7 @@ export const VoucherHead = ({
             error={errors?.feedback ? "Field is required" : ""}
           />
         </div>
-        <UniqueField
+        {/* <UniqueField
           {...fields["seller_id"]}
           containerClassName="mt-[10px]"
           className="min-w-[170px] border-0 !rounded-none !h-full"
@@ -108,7 +105,7 @@ export const VoucherHead = ({
           error={errors?.seller_id ? "Field is required" : ""}
           list={CACHE_LIST?.seller}
           value={values?.seller_id || ""}
-        />
+        /> */}
         <div className="grid grid-cols-2 gap-4">
           <label className="flex flex-col gap-1">
             Debit:{" "}

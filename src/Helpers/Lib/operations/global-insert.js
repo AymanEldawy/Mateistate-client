@@ -2,27 +2,27 @@ import { ApiActions } from "../api";
 import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
 import {
   generateBillsFromInstallment,
-  generateEntryFromBuilding,
-  generateEntryFromBuildingBuying,
-  generateEntryFromBuildingInvestment,
-  generateEntryFromContract,
-  generateEntryFromVoucher,
   insertIntoEntry,
   insertIntoGrid,
-  insertIntoVoucher,
 } from "./vouchers-insert";
 import {
-  CONTRACTS_ASSETS_TYPE,
-  CREATED_FROM,
   FLATS_TABLE_NAME,
-  FLAT_PROPERTY_TABS_SETTINGS,
+  FLAT_PROPERTY_TABS,
   FLAT_PROPERTY_TYPES,
   SELECT_LISTS,
 } from "Helpers/constants";
 import { toast } from "react-toastify";
 import { getInsertAccountTrigger, removeNullValues } from "Helpers/functions";
+import {
+  CONNECT_WITH_CONTRACT_CODE,
+  CREATED_FROM_CONTRACT_CODE,
+  CREATED_FROM_RECEIPT_VOUCHER_CODE,
+  DEFAULT_CURRENCY_CODE,
+  VOUCHER_PAYMENT_CODE,
+  VOUCHER_RECEIPTS_CODE,
+} from "Helpers/GENERATE_STARTING_DATA";
+import { getAccountCash } from "./global-read";
 import { type } from "@testing-library/user-event/dist/type";
-import { CONTRACT_STATUS } from "./contract-helpers";
 
 const CONTRACT_GRID_FORMS_NAMES = {
   contract_pictures: {
@@ -78,6 +78,7 @@ const dynamicInsertIntoMultiStepsTable = async ({
 }) => {
   const SHOULD_UPDATES = data?.SHOULD_UPDATES;
 
+  console.log('called', tableName, data, '-w');
   let steps = Object.values(getFormByTableName(tableName)?.forms)?.map(
     (c) => c?.tab_name
   );
@@ -87,29 +88,30 @@ const dynamicInsertIntoMultiStepsTable = async ({
   const list = {};
   // Loop through all the data and save each step with the table name in database which mean
   for (const step of steps) {
-    list[step] = data.data?.[step];
+    list[step] = data?.[step];
   }
 
+  console.log(list[stepGeneralName], '---');
   // Insert to building
-  let response = null;
+  let mainResponse = null;
   let tableId = null;
-  let mainValues = removeNullValues(list[stepGeneralName]);
+  let mainValues = list[stepGeneralName] // removeNullValues(list[stepGeneralName]);
   if (!mainValues) return;
 
   if (mainValues?.id) {
     tableId = mainValues?.id;
-    response = await ApiActions.update(tableName, {
+    mainResponse = await ApiActions.update(tableName, {
       conditions: [{ type: "and", conditions: [["id", "=", tableId]] }],
       updates: mainValues,
     });
   } else {
-    response = await ApiActions.insert(tableName, {
+    mainResponse = await ApiActions.insert(tableName, {
       data: mainValues,
     });
-    tableId = response?.record?.id;
+    tableId = mainResponse?.record?.id;
   }
 
-  if (response.success) {
+  if (mainResponse.success) {
     for (const name in list) {
       if (list[name] && name !== stepGeneralName) {
         if (CONTRACT_GRID_FORMS_NAMES?.[name]) {
@@ -121,13 +123,13 @@ const dynamicInsertIntoMultiStepsTable = async ({
             item_id: tableId,
           });
         } else {
-          let values = removeNullValues(list[name]);
+          let values = list[name] // removeNullValues(list[name]);
           if (!values) continue;
 
           let subItemId = null;
-
+          let subResponse = null;
           if (values?.id) {
-            response = await ApiActions.update(name, {
+            subResponse = await ApiActions.update(name, {
               conditions: [
                 { type: "and", conditions: [["id", "=", values?.id]] },
               ],
@@ -135,84 +137,87 @@ const dynamicInsertIntoMultiStepsTable = async ({
             });
             subItemId = list[name]?.id;
           } else {
-            response = await ApiActions.insert(name, {
+            subResponse = await ApiActions.insert(name, {
               data: {
                 ...list[name],
                 [`${tableName}_id`]: tableId,
               },
             });
-            subItemId = response?.record?.id;
+            subItemId = subResponse?.record?.id;
           }
 
-          switch (name) {
-            case "building": {
-              if (list?.building && list?.building?.gen_entries) {
-                generateEntryFromBuilding({
-                  values: list?.building,
-                  created_from: "building",
-                  created_from_id: tableId,
-                  should_update: SHOULD_UPDATES?.building,
-                });
-              }
-              break;
-            }
-            case "building_buying": {
-              if (list?.building_buying && list?.building_buying?.gen_entries) {
-                generateEntryFromBuildingBuying({
-                  values: list?.building,
-                  created_from: "building_buying",
-                  created_from_id: subItemId,
-                  should_update: SHOULD_UPDATES?.building_buying,
-                });
-              }
-              break;
-            }
-            case "building_investment": {
-              if (
-                list?.building_investment &&
-                list?.building_investment?.gen_entries
-              ) {
-                generateEntryFromBuildingInvestment({
-                  values: list?.building_investment,
-                  created_from: "building_investment",
-                  created_from_id: subItemId,
-                  should_update: SHOULD_UPDATES?.building_investment,
-                });
-              }
-              break;
-            }
-            default:
-              break;
-          }
+          // switch (name) {
+          //   case "building": {
+          //     if (list?.building && list?.building?.gen_entries) {
+          //       generateEntryFromBuilding({
+          //         values: list?.building,
+          //         created_from: "building",
+          //         created_from_id: tableId,
+          //         should_update: SHOULD_UPDATES?.building,
+          //       });
+          //     }
+          //     break;
+          //   }
+          //   case "building_buying": {
+          //     if (list?.building_buying && list?.building_buying?.gen_entries) {
+          //       generateEntryFromBuildingBuying({
+          //         values: list?.building,
+          //         created_from: "building_buying",
+          //         created_from_id: subItemId,
+          //         should_update: SHOULD_UPDATES?.building_buying,
+          //       });
+          //     }
+          //     break;
+          //   }
+          //   case "building_investment": {
+          //     if (
+          //       list?.building_investment &&
+          //       list?.building_investment?.gen_entries
+          //     ) {
+          //       generateEntryFromBuildingInvestment({
+          //         values: list?.building_investment,
+          //         created_from: "building_investment",
+          //         created_from_id: subItemId,
+          //         should_update: SHOULD_UPDATES?.building_investment,
+          //       });
+          //     }
+          //     break;
+          //   }
+          //   default:
+          //     break;
+          // }
           // response
         }
       }
     }
   }
 
-  return response;
+  return mainResponse;
 };
 
 // Insert to Building and other relation tables
-const insertToBuilding = async (building) => {
+const insertToBuilding = async (data) => {
+  console.log("🚀 ~ insertToBuilding ~ building:", data)
+  // return;
   // insert into cost center at first time
   const response = await dynamicInsertIntoMultiStepsTable({
     tableName: "building",
-    data: building,
+    data,
   });
 
-  if (!building?.data?.building?.id && response?.success) {
-    let lastNumber = await getLastNumber("cost_center");
-    let number = lastNumber ? +lastNumber + 1 : 101;
+  if (!data?.building?.id && response?.success) {
+    let lastCostCenterNumber = await getLastCostCenterNumber();
+    let number = lastCostCenterNumber ? +lastCostCenterNumber + 1 : 101;
+
     const responseCostCenter = await ApiActions.insert("cost_center", {
       data: {
         number,
-        name: building?.data?.building?.name,
+        name: data?.building?.name,
       },
     });
 
     let accountData = await getInsertAccountTrigger("Buildings");
-    accountData.name = building?.data?.building?.name;
+    accountData.name = data?.building?.name;
 
     const accountResponse = await ApiActions.insert("account", {
       data: accountData,
@@ -228,9 +233,9 @@ const insertToBuilding = async (building) => {
       },
     });
   }
-
   return response;
 };
+
 // Insert to Villa and other relation tables
 const insertToVilla = async (data) =>
   await dynamicInsertIntoMultiStepsTable({
@@ -276,6 +281,7 @@ const dynamicInsertIntoContract = async ({
 
   let response = null;
   let contract_id = data?.contract?.id;
+
   if (!contract_id) {
     // Insert into contract or update
     response = await ApiActions.insert("contract", {
@@ -284,10 +290,14 @@ const dynamicInsertIntoContract = async ({
         contract_type: contractType,
       },
     });
-
     contract_id = response?.record?.id;
   } else {
-    response = { success: true, contract_id };
+    response = await ApiActions.update("contract", {
+      conditions: [
+        { type: "and", conditions: [["id", "=", data?.contract?.id]] },
+      ],
+      updates: data?.contract,
+    });
   }
 
   if (contract_id) {
@@ -359,7 +369,6 @@ export const insertIntoContractInstallment = async ({
   installment,
   installment_grid,
   firstTabData,
-  cost_center_id,
   note,
 }) => {
   let installment_id = installment?.id;
@@ -381,12 +390,15 @@ export const insertIntoContractInstallment = async ({
     installment_id = response?.record?.id;
   }
 
+  const cost_center_id = firstTabData?.cost_center_id;
+
   if (installment_id) {
     await generateBillsFromInstallment({
       installment,
       installment_grid,
       installment_id,
       contract_id,
+      cost_center_id,
     });
   }
 
@@ -395,7 +407,7 @@ export const insertIntoContractInstallment = async ({
   }
 
   const account_id = firstTabData?.client_id;
-  const observe_account_id = firstTabData?.revenue_account_id;
+  // const observe_account_id = firstTabData?.revenue_account_id;
 
   let currency_id = installment?.currency_id;
   let currency_val = installment?.currency_val;
@@ -410,12 +422,21 @@ export const insertIntoContractInstallment = async ({
     difference: 0,
   };
 
+  // get CASH
+  const observe_account_id = await getAccountCash();
+
+  if (!observe_account_id) {
+    toast.error(
+      "Failed to generate First payment because Cash Account is not found"
+    );
+    return;
+  }
   const gridEntry = [];
 
   gridEntry.push({
-    account_id,
+    account_id: observe_account_id,
     debit: first_batch,
-    observe_account_id: observe_account_id,
+    observe_account_id: account_id,
     credit: 0,
     currency_id,
     cost_center_id,
@@ -423,9 +444,9 @@ export const insertIntoContractInstallment = async ({
   });
 
   gridEntry.push({
-    account_id: observe_account_id,
+    account_id: account_id,
     debit: 0,
-    observe_account_id: account_id,
+    observe_account_id: observe_account_id,
     credit: first_batch,
     currency_id,
     cost_center_id,
@@ -437,7 +458,7 @@ export const insertIntoContractInstallment = async ({
     let voucherMainData = {
       currency_id,
       currency_val,
-      connect_with: CREATED_FROM.contract,
+      connect_with: CONNECT_WITH_CONTRACT_CODE,
       account_id: observe_account_id,
       debit_amount: 0,
       credit_amount: first_batch,
@@ -470,17 +491,23 @@ export const insertIntoContractInstallment = async ({
 
       if (res?.success) {
         success = true;
+        toast.success("Successfully Update First Payment Cash");
+      } else {
+        toast.success("Failed to Update First Payment Cash");
       }
     } else {
       let response = await ApiActions.insert("voucher_main_data", {
         data: {
           ...voucherMainData,
-          voucher_type: 2,
+          voucher_type: VOUCHER_RECEIPTS_CODE,
         },
       });
       if (response?.success) {
         success = true;
         voucher_main_data_id = response?.record?.id;
+        toast.success("Successfully Insert First Payment Cash");
+      } else {
+        toast.success("Failed to Insert First Payment Cash");
       }
     }
 
@@ -504,7 +531,7 @@ export const insertIntoContractInstallment = async ({
       itemSearchName: "voucher_main_data_id",
     });
 
-    entryMainData.created_from = CREATED_FROM.receipt;
+    entryMainData.created_from = CREATED_FROM_RECEIPT_VOUCHER_CODE;
     entryMainData.created_from_id = voucher_main_data_id;
 
     const entry = await insertIntoEntry(entryMainData);
@@ -517,11 +544,15 @@ export const insertIntoContractInstallment = async ({
         gridTableName: "entry_grid_data",
         itemSearchName: "entry_main_data_id",
       });
+      toast.success("Successfully Generate Entry from First Payment Cash");
+    } else {
+      toast.success("Failed to Generate Entry from First Payment Cash");
     }
+
     // gen entry from voucher
   } else if (installment?.gen_entries_type === 2) {
     entryMainData.is_first_batch = true;
-    entryMainData.created_from = CREATED_FROM.contract;
+    entryMainData.created_from = CREATED_FROM_CONTRACT_CODE;
     entryMainData.created_from_id = contract_id;
 
     const entry = await insertIntoEntry(entryMainData);
@@ -534,6 +565,9 @@ export const insertIntoContractInstallment = async ({
         gridTableName: "entry_grid_data",
         itemSearchName: "entry_main_data_id",
       });
+      toast.success("Successfully Insert Entry as First Payment Cash");
+    } else {
+      toast.success("Failed to Insert Entry from as First Payment Cash");
     }
   }
 
@@ -700,12 +734,25 @@ export const getLastNumberByColumn = async (
   return response?.result?.at(0)?.number || 0;
 };
 
-export const getLastNumber = async (name) => {
+export const getLastNumberByName = async (name) => {
   const response = await ApiActions.read(name, {
-    limit: 1,
     sorts: [{ column: "number", order: "DESC", nulls: "last" }],
   });
-  return response?.result?.at(0)?.number;
+  console.log("🚀 ~ getLastNumberByName ~ response:", response)
+  if (response?.success) {
+    let data = response?.result?.at(0);
+    return data?.internal_number || data?.number || 0;
+  }
+};
+
+export const getLastCostCenterNumber = async () => {
+  const response = await ApiActions.read("cost_center");
+
+  let bigNumber = 0;
+  for (const item of response?.result) {
+    if (item?.number > bigNumber && !item?.parent_id) bigNumber = item?.number;
+  }
+  return +bigNumber;
 };
 
 export const getCostCenterNumberById = async (id) => {
@@ -727,7 +774,7 @@ export const generateApartments = async (
     "cost_center",
     "parent_id",
     building?.main_cost_center_id,
-    "number"
+    "internal_number"
   );
   let costCenterNumber = await getCostCenterNumberById(
     building?.main_cost_center_id
@@ -789,13 +836,15 @@ export const generateApartments = async (
 
       let flatNameType =
         flatTableName === "apartment"
-          ? `${flatTableName}_${data?.flat_type}`
+          ? `${flatTableName}_${data?.apartment_kind}`
           : flatTableName === "parking"
           ? `${flatTableName}_${data?.parking_kind}`
-          : "shop";
-      let flatType = FLAT_PROPERTY_TYPES[flatNameType];
+          : flatTableName === "shop"
+          ? `${flatTableName}_${data?.shop_kind}`
+          : "";
 
-      let typeSettings = FLAT_PROPERTY_TABS_SETTINGS[flatType];
+      let flatType = FLAT_PROPERTY_TYPES[flatNameType];
+      let typeSettings = FLAT_PROPERTY_TABS[flatType];
 
       if (data?.id) {
         if (UPDATES_ROWS?.[assetHash]) {
@@ -805,6 +854,11 @@ export const generateApartments = async (
           });
           if (!response?.success) {
             FAILED_INSERTED_FLATS.push(data?.[typeSettings?.no]);
+
+            await generateCostCenterFromUnits(
+              { name: data?.[typeSettings?.no] },
+              data?.cost_center_id
+            );
           }
         }
       } else {
@@ -822,26 +876,23 @@ export const generateApartments = async (
         } else {
           let costCenterData = {
             parent_id: building?.main_cost_center_id,
-            number: assetLastNumber,
-            name: assetHash,
+            internal_number: assetLastNumber,
+            name: data?.[typeSettings?.no], // change name
           };
-          // insert into cost center
-          const costCenterResponse = await ApiActions.insert("cost_center", {
-            data: costCenterData,
-          });
 
-          await ApiActions.update(flatTableName, {
-            conditions: [
-              {
-                type: "and",
-                conditions: [["id", "=", newFlatResponse?.record?.id]],
-              },
-            ],
-            updates: {
-              cost_center_id: costCenterResponse?.record?.id,
+          // insert into cost center
+          const cost_center_id = await generateCostCenterFromUnits(
+            costCenterData
+          );
+
+          await updateUnits(
+            flatTableName,
+            {
+              cost_center_id,
               main_cost_center_id: building?.main_cost_center_id,
             },
-          });
+            newFlatResponse?.record?.id
+          );
         }
       }
     }
@@ -855,8 +906,35 @@ export const generateApartments = async (
   };
 };
 
+const generateCostCenterFromUnits = async (data, id = null) => {
+  if (id) {
+    await ApiActions.update("cost_center", {
+      conditions: [{ type: "and", conditions: [["id", "=", data?.id]] }],
+      updates: data,
+    });
+  } else {
+    const response = await ApiActions.insert("cost_center", {
+      data,
+    });
+    return response?.record?.id;
+  }
+};
+
+const updateUnits = async (unit, data, unitId) => {
+  await ApiActions.update(unit, {
+    conditions: [
+      {
+        type: "and",
+        conditions: [["id", "=", data?.id || unitId]],
+      },
+    ],
+    updates: data,
+  });
+};
+
 // insert To User
-const insertToUser = async (data) => {
+const insertToUser = async ({ data }) => {
+  data = data?.user;
   if (data?.id) return; // if is UPDATE ignore
 
   let type = SELECT_LISTS("user_type")?.find(
@@ -878,12 +956,14 @@ const insertToUser = async (data) => {
     "account",
     "parent_id",
     parent_id,
-    "number"
+    "internal_number"
   );
 
   // get default currency id
   const currencyResponse = await ApiActions.read("currency", {
-    conditions: [{ type: "and", conditions: [["code", "=", "AED"]] }],
+    conditions: [
+      { type: "and", conditions: [["code", "=", DEFAULT_CURRENCY_CODE]] },
+    ],
   });
 
   let account = {
@@ -914,6 +994,7 @@ const insertToOwner = async (data) => {
   const parentAccount = await ApiActions.read("account", {
     conditions: [{ type: "and", conditions: [["name", "=", `Suppliers`]] }],
   });
+  console.log("🚀 ~ insertToOwner ~ parentAccount:", parentAccount)
 
   let parent_id = parentAccount?.result?.at(0)?.id;
   let final_id = parentAccount?.result?.at(0)?.final_id;
@@ -923,17 +1004,19 @@ const insertToOwner = async (data) => {
     "account",
     "parent_id",
     parent_id,
-    "number"
+    "internal_number"
   );
 
   // get default currency id
   const currencyResponse = await ApiActions.read("currency", {
-    conditions: [{ type: "and", conditions: [["code", "=", "AED"]] }],
+    conditions: [
+      { type: "and", conditions: [["code", "=", DEFAULT_CURRENCY_CODE]] },
+    ],
   });
 
   let account = {
     type: 1,
-    name: data?.full_name,
+    name: data?.name,
     number: +lastNumber + 1,
     currency_id: currencyResponse?.result?.at(0)?.id,
     parent_id,
@@ -951,6 +1034,7 @@ const insertToOwner = async (data) => {
     return ownerResponse;
   }
 };
+
 // insert To owner
 // const insertToOwner = async (data) => {
 //   if (data?.id) return; // if is UPDATE ignore
@@ -962,7 +1046,7 @@ const insertToOwner = async (data) => {
 
 //   // get default currency id
 //   const currencyResponse = await ApiActions.read("currency", {
-//     conditions: [{ type: "and", conditions: [["code", "=", "AED"]] }],
+//     conditions: [{ type: "and", conditions: [["code", "=", DEFAULT_CURRENCY_CODE]] }],
 //   });
 
 //   let parent_id = null;

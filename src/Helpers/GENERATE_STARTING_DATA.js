@@ -1,16 +1,84 @@
-import { RECEIVED_CHQ_CODE } from "./constants";
-
 const { ApiActions } = require("./Lib/api");
+
+// Connect With DEFAULT
+export const CONNECT_WITH_NOTHING_CODE = 0;
+export const CONNECT_WITH_CONTRACT_CODE = 1;
+export const CONNECT_WITH_LAWSUIT_CODE = 2;
+export const CONNECT_WITH_BILL_CODE = 3;
+export const CONNECT_WITH_NOTHING_NAME = "Nothing";
+export const CONNECT_WITH_CONTRACT_NAME = "Contract";
+export const CONNECT_WITH_LAWSUIT_NAME = "Lawsuit";
+export const CONNECT_WITH_BILL_NAME = "Bill";
+
+// Created From DEFAULT
+export const CREATED_FROM_CONTRACT_CODE = 1;
+export const CREATED_FROM_LAWSUIT_CODE = 2;
+export const CREATED_FROM_BILL_NAME = 3;
+export const CREATED_FROM_PAYMENT_VOUCHER_CODE = 4;
+export const CREATED_FROM_RECEIPT_VOUCHER_CODE = 5;
+export const CREATED_FROM_CHQ_PAID_CODE = 6;
+export const CREATED_FROM_CHQ_RECEIVED_CODE = 7;
+
+export const CREATED_FROM_CHQ_DYNAMIC_CODE = "10";
+
+export const CREATED_FROM_CONTRACT_NAME = CONNECT_WITH_CONTRACT_NAME;
+export const CREATED_FROM_LAWSUIT_NAME = CONNECT_WITH_LAWSUIT_NAME;
+export const CREATED_FROM_BILL_CODE = CONNECT_WITH_BILL_NAME;
+export const CREATED_FROM_PAYMENT_VOUCHER_NAME = "Payment Voucher";
+export const CREATED_FROM_RECEIPT_VOUCHER_NAME = "Receipt Voucher";
+export const CREATED_FROM_CHQ_PAID_NAME = "Paid Check";
+export const CREATED_FROM_CHQ_RECEIVED_NAME = "Received Check";
+
+// Currency DEFAULT
+export const DEFAULT_CURRENCY_NAME = "United Arab Emirates Dirham";
+export const DEFAULT_CURRENCY_CODE = "AED";
+export const DEFAULT_CURRENCY_RATE = 1;
+
+// CHQ PATTERN DEFAULT NAME
+export const CHQ_PAID_CODE = 1;
+export const CHQ_PAID_NAME = "Paid Check";
+export const CHQ_RECEIVED_CODE = 2;
+export const CHQ_RECEIVED_NAME = "Received Check";
+
+// Vouchers PATTERN DEFAULT NAME
+export const VOUCHER_PAYMENT_CODE = 1;
+export const VOUCHER_RECEIPTS_CODE = 2;
+export const VOUCHER_PAYMENT_NAME = "Payment Voucher";
+export const VOUCHER_RECEIPTS_NAME = "Receipt Voucher";
+export const VOUCHER_LIST_NAME = "Vouchers";
+
+// CONTRACT PATTERN DEFAULT CONSTANTS
+export const CONTRACT_RENT_LIST_NAME = "Contract Rent";
+export const CONTRACT_SALE_LIST_NAME = "Contract Sale";
+export const APARTMENT_ASSET_TYPE_CODE = 1;
+export const PARKING_ASSET_TYPE_CODE = 2;
+export const SHOP_ASSET_TYPE_CODE = 3;
+export const LAND_ASSET_TYPE_CODE = 4;
+export const APARTMENT_ASSET_TYPE_DEFAULT_NAME = "Apartment";
+export const PARKING_ASSET_TYPE_DEFAULT_NAME = "Parking";
+export const SHOP_ASSET_TYPE_DEFAULT_NAME = "Shop";
+export const LAND_ASSET_TYPE_DEFAULT_NAME = "Land";
+
+// CONTRACT PATTERN DEFAULT CONSTANTS
+export const CONTRACT_RENT_CODE = 2;
+export const CONTRACT_SALE_CODE = 1;
+export const CONTRACT_RENT_APARTMENT_NAME = "Apartment Rent Contract";
+export const CONTRACT_RENT_PARKING_NAME = "Parking Rent Contract";
+export const CONTRACT_RENT_SHOP_NAME = "Shop Rent Contract";
+export const CONTRACT_SALE_APARTMENT_NAME = "Apartment Sale Contract";
+export const CONTRACT_SALE_PARKING_NAME = "Parking Sale Contract";
+export const CONTRACT_SALE_SHOP_NAME = "Shop Sale Contract";
+export const CONTRACT_SALE_LAND_NAME = "Apartment Sale Contract";
 
 export const DEFAULT_VOUCHERS_INFO = {
   payment: {
     auto_gen_entries: true,
     auto_transfer_entry: true,
-    code: 1,
+    code: VOUCHER_RECEIPTS_CODE,
     gen_entries: true,
     generate_records: true,
-    list_name: "vouchers",
-    name: "payment",
+    list_name: VOUCHER_LIST_NAME,
+    name: VOUCHER_RECEIPTS_NAME,
     required_cost_center: true,
     required_statement: true,
     show_contract_cost_center: true,
@@ -18,26 +86,121 @@ export const DEFAULT_VOUCHERS_INFO = {
     show_cost_center: true,
     show_currency: true,
     show_note: true,
-    show_debit_field: true,
+    show_credit_field: true,
   },
   receipts: {
     auto_gen_entries: true,
     auto_transfer_entry: true,
-    code: 2,
+    code: VOUCHER_PAYMENT_CODE,
     gen_entries: true,
     generate_records: true,
-    list_name: "vouchers",
-    name: "receipts",
+    list_name: VOUCHER_LIST_NAME,
+    name: VOUCHER_PAYMENT_NAME,
     required_cost_center: true,
     required_statement: true,
     show_contract_cost_center: true,
     show_contract_field: true,
     show_cost_center: true,
-    show_credit_field: true,
+    show_debit_field: true,
     show_currency: true,
     show_note: true,
   },
 };
+
+let SHARED_CHQ = {
+  auto_gen_entries: true,
+  auto_transfer_entry: true,
+  collection: true,
+  collection_auto_gen_entries: true,
+  collection_auto_transfer_entry: true,
+  deportable: true,
+  deportable_auto_gen_entries: true,
+  deportable_auto_transfer_entry: true,
+  deportable_gen_entries: false,
+  gen_entries: true,
+  partial_auto_gen_entries: true,
+  partial_auto_transfer_entry: true,
+  partial_collection: true,
+  partial_gen_entries: true,
+  returnable: true,
+  returnable_auto_gen_entries: true,
+  returnable_auto_transfer_entry: true,
+  returnable_gen_entries: true,
+};
+
+export const DEFAULT_CHQ_INFO = [
+  {
+    auto_gen_entries: true,
+    auto_transfer_entry: true,
+    collection_default_date: 0,
+    commission_type: 0,
+    deportable_default_date: 0,
+    gen_entries: true,
+    name: CHQ_PAID_NAME,
+    paper_type: 1,
+    returnable_default_date: 0,
+    code: CHQ_PAID_CODE,
+    ...SHARED_CHQ,
+  },
+  {
+    auto_gen_entries: true,
+    auto_transfer_entry: true,
+    collection_default_date: 0,
+    commission_type: 0,
+    deportable_default_date: 0,
+    gen_entries: true,
+    name: CHQ_RECEIVED_NAME,
+    paper_type: 2,
+    returnable_default_date: 0,
+    code: CHQ_RECEIVED_CODE,
+    ...SHARED_CHQ,
+  },
+];
+
+export const DEFAULT_CONTRACT_PATTERN_INFO = [
+  {
+    name: CONTRACT_RENT_APARTMENT_NAME,
+    type: CONTRACT_RENT_CODE,
+    list: CONTRACT_RENT_LIST_NAME,
+    assets_type: APARTMENT_ASSET_TYPE_CODE,
+  },
+  {
+    name: CONTRACT_RENT_SHOP_NAME,
+    type: CONTRACT_RENT_CODE,
+    list: CONTRACT_RENT_LIST_NAME,
+    assets_type: SHOP_ASSET_TYPE_CODE,
+  },
+  {
+    name: CONTRACT_RENT_PARKING_NAME,
+    type: CONTRACT_RENT_CODE,
+    list: CONTRACT_RENT_LIST_NAME,
+    assets_type: PARKING_ASSET_TYPE_CODE,
+  },
+  {
+    name: CONTRACT_SALE_APARTMENT_NAME,
+    type: CONTRACT_SALE_CODE,
+    list: CONTRACT_SALE_LIST_NAME,
+    assets_type: APARTMENT_ASSET_TYPE_CODE,
+  },
+  {
+    name: CONTRACT_SALE_SHOP_NAME,
+    type: CONTRACT_SALE_CODE,
+    list: CONTRACT_SALE_LIST_NAME,
+    assets_type: SHOP_ASSET_TYPE_CODE,
+  },
+  {
+    name: CONTRACT_SALE_PARKING_NAME,
+    type: CONTRACT_SALE_CODE,
+    list: CONTRACT_SALE_LIST_NAME,
+    assets_type: PARKING_ASSET_TYPE_CODE,
+  },
+  {
+    name: CONTRACT_SALE_LAND_NAME,
+    type: CONTRACT_SALE_CODE,
+    list: CONTRACT_SALE_LIST_NAME,
+    assets_type: LAND_ASSET_TYPE_CODE,
+  },
+];
 
 const DEFAULT_ACCOUNTS = [
   { code: 1, name: "Assets", type: "Balance Sheet", number: 3, level: 0 },
@@ -227,9 +390,9 @@ let levels = {};
 async function INSERT_DEFAULT_ACCOUNTS() {
   const currencyResponse = await ApiActions.insert("currency", {
     data: {
-      name: "United Arab Emirates Dirham",
-      code: "AED",
-      rate: 1,
+      name: DEFAULT_CURRENCY_NAME,
+      code: DEFAULT_CURRENCY_CODE,
+      rate: DEFAULT_CURRENCY_RATE,
     },
   });
   let currency_id = null;
@@ -237,14 +400,16 @@ async function INSERT_DEFAULT_ACCOUNTS() {
     currency_id = currencyResponse?.record?.id;
   } else {
     const currencyResponse = await ApiActions.read("currency", {
-      conditions: [{ type: "and", conditions: [["code", "=", "AED"]] }],
+      conditions: [
+        { type: "and", conditions: [["code", "=", DEFAULT_CURRENCY_CODE]] },
+      ],
     });
     currency_id = currencyResponse?.result?.at(0)?.id;
   }
 
   for (const item of DEFAULT_ACCOUNTS) {
     let data = {
-      number: item?.code,
+      internal_number: item?.code,
       name: item?.name,
       type: 1,
       currency_id,
@@ -367,52 +532,7 @@ async function INSERT_DEFAULT_VOUCHERS() {
 
 // INSERT DEFAULT CONTRACTS
 export async function INSERT_DEFAULT_CONTRACTS() {
-  const contractPatterns = [
-    {
-      name: "apartment",
-      type: 2,
-      list: "Contract Rent",
-      assets_type: 1,
-    },
-    {
-      name: "shop",
-      type: 2,
-      list: "Contract Rent",
-      assets_type: 3,
-    },
-    {
-      name: "parking",
-      type: 2,
-      list: "Contract Rent",
-      assets_type: 2,
-    },
-    {
-      name: "apartment",
-      type: 1,
-      list: "Contract Sale",
-      assets_type: 1,
-    },
-    {
-      name: "shop",
-      type: 1,
-      list: "Contract Sale",
-      assets_type: 3,
-    },
-    {
-      name: "parking",
-      type: 1,
-      list: "Contract Sale",
-      assets_type: 2,
-    },
-    {
-      name: "land",
-      type: 1,
-      list: "Contract Sale",
-      assets_type: 4,
-    },
-  ];
-
-  for (const contract of contractPatterns) {
+  for (const contract of DEFAULT_CONTRACT_PATTERN_INFO) {
     const response = await ApiActions.insert("contract_pattern", {
       data: {
         contract_type: contract.type,
@@ -431,35 +551,7 @@ export async function INSERT_DEFAULT_CONTRACTS() {
 
 // INSERT DEFAULT BILLS
 export async function INSERT_DEFAULT_BILLS() {
-  let bills = [
-    {
-      auto_gen_entries: true,
-      auto_transfer_entry: true,
-      collection_default_date: 0,
-      commission_type: 0,
-      deportable_default_date: 0,
-      endorsement_default_date: 0,
-      gen_entries: true,
-      name: "Paid Check",
-      paper_type: 1,
-      returnable_default_date: 0,
-      code: 1,
-    },
-    {
-      auto_gen_entries: true,
-      auto_transfer_entry: true,
-      collection_default_date: 0,
-      commission_type: 0,
-      deportable_default_date: 0,
-      endorsement_default_date: 0,
-      gen_entries: true,
-      name: "Received Check",
-      paper_type: 2,
-      returnable_default_date: 0,
-      code: RECEIVED_CHQ_CODE,
-    },
-  ];
-  for (const bill of bills) {
+  for (const bill of DEFAULT_CHQ_INFO) {
     await ApiActions.insert("bill_pattern", {
       data: bill,
     });
@@ -552,11 +644,13 @@ export async function INSERT_DEFAULT_MULTIPLE_DATA() {
 }
 
 export async function INSERT_DEFAULT_DATA() {
-  await ApiActions.read('cheque')
-  INSERT_DEFAULT_BANKS();
+  await ApiActions.read("cheque");
   INSERT_DEFAULT_VOUCHERS();
   INSERT_DEFAULT_CONTRACTS();
   INSERT_DEFAULT_BILLS();
   INSERT_DEFAULT_MULTIPLE_DATA();
+  INSERT_DEFAULT_ACCOUNTS();
+  INSERT_DEFAULT_BANKS();
 }
-// INSERT_DEFAULT_ACCOUNTS();
+// INSERT_DEFAULT_BILLS()
+// INSERT_DEFAULT_DATA()

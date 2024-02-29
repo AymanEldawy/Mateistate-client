@@ -24,6 +24,7 @@ const useFormSteps = ({ name }) => {
 
   const forms = useMemo(() => formSchema?.forms, [formSchema]);
   const steps = useMemo(() => Object.keys(formSchema?.forms), [formSchema]);
+
   const tabNames = useMemo(
     () => Object.values(formSchema?.forms)?.map((f) => f?.tab_name),
     [formSchema]

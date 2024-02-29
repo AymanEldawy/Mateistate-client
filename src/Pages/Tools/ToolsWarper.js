@@ -2,7 +2,6 @@ import { ApiActions } from "Helpers/Lib/api";
 import {
   FLATS,
   FLAT_PROPERTY_TABS,
-  FLAT_PROPERTY_TABS_SETTINGS,
   FLAT_PROPERTY_TYPES,
 } from "Helpers/constants";
 import { useEffect, useState } from "react";
@@ -18,81 +17,115 @@ import ContentBar from "Components/Global/ContentBar/ContentBar";
 import BlockPaper from "Components/Global/BlockPaper";
 import { ToolsColorsBar } from "./ToolsColorsBar";
 
-// const FLATS = {
-//   apartment_count: {},
-//   penthouse_count: {},
-//   parking_count: {},
-//   mezzanine_count: {},
-//   office_count: {},
-//   stores_count: {},
-//   warehouse_count: {},
-//   underground_parking: {},
-// };
-
 const calculateFlats = (building) => {
   FLATS.apartment_count = building?.apartment_count * building?.apartment_floor;
   FLATS.penthouse_count = building?.penthouse_count * building?.penthouse_floor;
   FLATS.parking_count = building?.parking_count * building?.parking_floor;
   FLATS.mezzanine_count = building?.mezzanine_count * building?.mezzanine_floor;
   FLATS.office_count = building?.office_count * building?.office_floor;
-  FLATS.stores_count = building?.stores_count || 0;
+  FLATS.store_count = building?.store_count || 0;
   FLATS.warehouse_count = building?.warehouse_count || 0;
   FLATS.underground_parking = building?.underground_parking || 0;
   // FLATS.service_apartments = building?.service_apartments;
   // FLATS.drivers_apartments = building?.drivers_apartments;
 };
 
-const findList = async (type, id, setFlatsDetails, COLLECTION_COUNTS) => {
-  let name = FLAT_PROPERTY_TABS_SETTINGS[type]?.no;
+const findList = async (
+  type,
+  id,
+  setFlatsDetails,
+  COLLECTION_COUNTS,
+  setUNITS_COLORED_COUNT
+) => {
+  let name = FLAT_PROPERTY_TABS[type]?.no;
   const response = await ApiActions.read(type, {
     conditions: [{ type: "and", conditions: [["building_id", "=", id]] }],
   });
 
   let data = response?.result;
   let hashApartmentTypes = {};
+  let newType = "";
   if (data?.length) {
     for (const row of data) {
       let assetsType =
         type === "apartment"
-          ? `${type}_${row?.flat_type}`
+          ? `${type}_${row?.apartment_kind}`
           : type === "parking"
           ? `${type}_${row?.parking_kind}`
+          : type === "shop"
+          ? `${type}_${row?.shop_kind}`
           : type;
-      let newType = FLAT_PROPERTY_TYPES[assetsType];
+
+      newType = FLAT_PROPERTY_TYPES[assetsType];
       hashApartmentTypes[newType] = {
         ...hashApartmentTypes?.[newType],
-        [row?.[name]]: row,
+        [row?.asset_hash]: row,
       };
-      COLLECTION_COUNTS[row?.[name]] = row?.hex;
+      COLLECTION_COUNTS[row?.asset_hash] = row?.hex;
     }
 
     setFlatsDetails((prev) => ({
       ...prev,
       ...hashApartmentTypes,
     }));
+
+    setUNITS_COLORED_COUNT((prev) => ({
+      ...prev,
+      [newType]: Object.keys(hashApartmentTypes?.[newType]),
+    }));
   }
 };
 
-const refetchBuildingAssets = (id, setFlatsDetails, COLLECTION_COUNTS) => {
+const refetchBuildingAssets = (
+  id,
+  setFlatsDetails,
+  COLLECTION_COUNTS,
+  setUNITS_COLORED_COUNT
+) => {
+  setFlatsDetails({});
+  setUNITS_COLORED_COUNT({});
+  COLLECTION_COUNTS = {};
   for (const asset of ["apartment", "shop", "parking"]) {
-    findList(asset, id, setFlatsDetails, COLLECTION_COUNTS);
+    findList(
+      asset,
+      id,
+      setFlatsDetails,
+      COLLECTION_COUNTS,
+      setUNITS_COLORED_COUNT
+    );
   }
 };
 
 const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
-  const { flatsDetails, setFlatsDetails, COLLECTION_COUNTS, UPDATES_ROWS } =
-    useFlatColoring();
+  const {
+    flatsDetails,
+    setFlatsDetails,
+    COLLECTION_COUNTS,
+    UPDATES_ROWS,
+    setUPDATES_ROWS,
+    UNITS_COLORED_COUNT,
+    setUNITS_COLORED_COUNT,
+  } = useFlatColoring();
+
   const {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const { watch } = useFormContext();
-  const [selectedTab, setSelectedTab] = useState(FLAT_PROPERTY_TABS[0]);
+  const [selectedTab, setSelectedTab] = useState(
+    Object.values(FLAT_PROPERTY_TABS)?.[0]
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     calculateFlats(row);
-    refetchBuildingAssets(row?.id, setFlatsDetails, COLLECTION_COUNTS);
+    refetchBuildingAssets(
+      row?.id,
+      setFlatsDetails,
+      COLLECTION_COUNTS,
+      setUNITS_COLORED_COUNT
+    );
   }, [row?.id]);
 
   useEffect(() => {
@@ -108,12 +141,19 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
       row,
       UPDATES_ROWS
     );
+
     if (response?.isCompleted) {
+      setUPDATES_ROWS({});
       refetchPropertyValuesData();
+      refetchBuildingAssets(
+        row?.id,
+        setFlatsDetails,
+        COLLECTION_COUNTS,
+        setUNITS_COLORED_COUNT
+      );
     }
     setIsLoading(false);
   };
-
 
   return (
     <>
@@ -138,16 +178,25 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
       >
         <div className="flex flex-wrap gap-2 items-center pb-2 border-b dark:border-dark-border">
           {Object.entries(FLATS)?.map(([key, val]) => {
+            let assets = key
+              ?.replace(/_count/g, "")
+              ?.replace(/_/g, " ")
+              ?.toLowerCase();
+
+            let assetsColoringCount = Object.keys(
+              UNITS_COLORED_COUNT?.[assets] || {}
+            )?.length;
+
             if (val)
               return (
                 <span
                   className={`rounded-md py-1 px-2 ${
-                    val
+                    val - assetsColoringCount
                       ? "text-red-500 bg-red-50 font-normal border-red-500"
                       : "text-gray-400"
                   } border text-center capitalize`}
                 >
-                  {key?.replace("_", " ")} : {val}
+                  {key?.replace("_", " ")} : {val - assetsColoringCount}
                 </span>
               );
           })}
@@ -158,7 +207,7 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
           </div>
           <div className="mt-9 shadow border border-gray-300 overflow-hidden">
             <div className="flex items-center overflow-auto text-left bg-gray-100 dark:bg-dark-bg ">
-              {FLAT_PROPERTY_TABS?.map((tab, index) => {
+              {Object.values(FLAT_PROPERTY_TABS)?.map((tab, index) => {
                 if (row?.[tab?.x])
                   return (
                     <button

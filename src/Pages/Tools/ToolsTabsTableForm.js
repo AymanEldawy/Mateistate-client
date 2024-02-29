@@ -9,7 +9,7 @@ import { ApiActions } from "Helpers/Lib/api";
 
 export const ToolsTabsTableForm = ({ errors, row }) => {
   const { watch, setValue } = useFormContext();
-  const { onSelectColor, selectedColor, roomCounts } = useFlatColoring();
+  const { onSelectColor, selectedColor, roomCounts, availableColors } = useFlatColoring();
   const [fields, setFields] = useState([]);
 
   const getBuildingOwning = async () => {
@@ -51,13 +51,15 @@ export const ToolsTabsTableForm = ({ errors, row }) => {
       }
     }
   }, [JSON.stringify(roomCounts)]);
+
   return (
     <TableFields
       tab="grid"
       errors={errors}
       fields={fields}
-      rowsCount={watch("grid")?.length || 5}
+      rowsCount={watch("grid")?.length > 10 ? watch("grid")?.length : 10}
       theadClassName="!bg-[#5490d3] text-white"
+      availableColors={availableColors}
       onRowClick={(index) => {
         let hex = watch(`grid.${[index]}.hex`);
         if (!hex || hex === "#000000") return;

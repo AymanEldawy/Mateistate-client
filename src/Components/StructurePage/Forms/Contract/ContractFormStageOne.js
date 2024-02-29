@@ -44,7 +44,6 @@ export const ContractFormStageOne = ({
             updatedName={`${tab}.gov_number`}
             // values={values}
             tab={tab}
-            required={true}
             error={errors?.[tab]?.gov_number ? "Field is required" : ""}
           />
         </div>

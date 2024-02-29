@@ -34,6 +34,7 @@ import {
   autoMergePatternSettingsWithValues,
   fetchAndMergeAssetInfo,
   fetchAndMergeBuildingInfo,
+  fetchContractRestData,
   // filterAssetsByBuilding,
   getOldContracts,
   mergeInstallmentAndFirstTabData,
@@ -68,7 +69,6 @@ export async function filterAssetsByBuilding(
     : [...CACHE_LIST?.[tableName]];
 
   let assets = [];
-  console.log(assetsHash, "---");
 
   // check if the assets is rented by another contract
 
@@ -134,7 +134,6 @@ const ContractForm = () => {
     forms,
   } = useFormSteps({ name: contractName });
 
-  console.log(watch());
   useEffect(() => {
     getOldContracts(setOldContracts, contractName);
   }, []);
@@ -190,14 +189,6 @@ const ContractForm = () => {
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
-      console.log(name, type);
-      watch(name);
-      if (
-        name?.indexOf(`installment_grid.`) - 1 &&
-        name?.indexOf("note1") !== -1
-      )
-        return;
-
       let tab = name?.split(".")?.at(0);
       if (type) SHOULD_UPDATES[tab] = true;
 
@@ -214,7 +205,12 @@ const ContractForm = () => {
           break;
         case buildingIdPathInData:
           if (watch(name)) {
-            fetchAndMergeBuildingInfo(watch(name), setValue, tabNames?.[0]);
+            fetchAndMergeBuildingInfo(
+              watch(name),
+              setValue,
+              tabNames?.[0],
+              SHOULD_UPDATES
+            );
 
             filterAssetsByBuilding(
               watch(name),
@@ -249,34 +245,45 @@ const ContractForm = () => {
           watch
         );
       }
+
       if (name?.indexOf(`installment_grid`) !== -1) {
-        SHOULD_UPDATES.installment = true;
-        onWatchChangesInstallmentGridTab(
-          name,
-          watch(name),
-          setValue,
-          watch,
-          CACHE_LIST,
-          tabNames?.[0]
-        );
+        let subName = name?.split(".")?.at(-1);
+        switch (subName) {
+          case "due_date":
+          case "number":
+          case "amount":
+          case "bank_id":
+          case "end_due_date": {
+            SHOULD_UPDATES.installment = true;
+            onWatchChangesInstallmentGridTab(
+              name,
+              setValue,
+              watch,
+              CACHE_LIST,
+              tabNames?.[0]
+            );
+            break;
+          }
+          default:
+            return;
+        }
       }
     });
     return () => subscription.unsubscribe();
   }, [watch, oldContracts?.length, CACHE_LIST]);
 
   useEffect(() => {
-    if (!number) return;
     const getLastNumber = async () => {
-      const lastNumber = await getLastNumberByColumn(
-        contractName,
-        "code",
-        +code
-      );
-      setMaxLength(lastNumber);
+      const lastNumber = await getLastNumberByColumn("contract", "code", +code);
+      setMaxLength(+lastNumber);
     };
+
     getLastNumber();
-    setValue(`${tabNames?.[0]}.number`, number);
-  }, [number, location?.search]);
+
+    if (!watch("contract.number")) {
+      setValue(`${tabNames?.[0]}.number`, number);
+    }
+  }, []);
 
   const fetchData = async () => {
     if (CACHE_CONTRACTS_DATA?.[number] && +number <= maxLength) {
@@ -310,16 +317,12 @@ const ContractForm = () => {
     }
   }, [number, code, type, assetType, maxLength, PATTERN_SETTINGS?.id]);
 
-  const onClickAddNewContract = () => {
-    let contractType = SELECT_LISTS("contact_pattern_contract_type")?.find(
-      (c) => c.id === PATTERN_SETTINGS.contract_type
-    );
+  useEffect(() => {
+    if (currentIndex > 1 && watch("contract.id"))
+      fetchContractRestData(currentIndex, tabNames, watch, setValue);
+  }, [currentIndex]);
 
-    navigate(
-      `/contracts/add/${contractType?.name?.toLowerCase()}/${
-        PATTERN_SETTINGS?.name
-      }?flat_type=${assetType}&code=${code}&number=${+maxLength + 1}`
-    );
+  const onClickAddNewContract = () => {
     setNumber(+maxLength + 1);
     reset({
       defaultValues: resetContractFields(),
@@ -347,8 +350,6 @@ const ContractForm = () => {
         return;
     }
   };
-
-  console.log(SELECT_LISTS('contact_pattern_contract_type')?.find(c => c?.name?.toLowerCase() === type?.toLocaleLowerCase()),' type');
 
   const goToNumber = (num) => {
     if (num > maxLength) {
@@ -399,7 +400,7 @@ const ContractForm = () => {
     let contract = {
       code: +code,
       status: watch(`${tabNames?.[0]}.status`),
-      flat_type: CONTRACTS_ASSETS_TYPE?.[assetType],
+      flat_type: CONTRACTS_ASSETS_TYPE?.[searchQuery.get("flat_type")],
     };
 
     const getTheFunInsert = INSERT_FUNCTION[contractName];
@@ -442,12 +443,6 @@ const ContractForm = () => {
   const genEntry = async (contract_id) => {
     let values = watch(tabNames?.[0]);
 
-    const cost_center = await ApiActions.read(assetType, {
-      conditions: [
-        { type: "and", conditions: [["id", "=", values?.[`${assetType}_id`]]] },
-      ],
-    });
-
     const assetsTypeNumber = CACHE_LIST?.[assetType]?.find(
       (c) => c?.id === values?.[`${assetType}_id`]
     )?.[`${assetType}_no`];
@@ -456,21 +451,19 @@ const ContractForm = () => {
     )?.name;
 
     if (!contract_id) return;
+
     generateEntryFromContract({
       contractId: contract_id,
       assetsType: assetType,
       assetsTypeNumber,
       buildingNumber,
       contractNumber: number,
-      values: {
-        ...values,
-        cost_center_id: cost_center?.result?.at(0)?.cost_center_id,
-      },
+      values: values,
       should_update: SHOULD_UPDATES?.[tabNames?.[0]],
+      commission: watch("contract_commission"),
     });
   };
 
-  console.log(fields, '----');
   return (
     <>
       {isLoading ? (
@@ -506,7 +499,7 @@ const ContractForm = () => {
                       New
                     </span>
                   ) : null}
-                  {name?.replace(/_/g, " ")} {number}
+                  {name?.replace(/_/g, " ")} number {number}
                 </span>
               }
               steps={steps}
@@ -550,6 +543,8 @@ const ContractForm = () => {
                       <ContractPayments
                         contract_id={watch(`contract.id`)}
                         CACHE_LIST={CACHE_LIST}
+                        firstTabData={watch(tabNames?.[0])}
+                        assetType={assetType}
                       />
                     ) : (
                       <>

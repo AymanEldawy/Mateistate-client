@@ -1,5 +1,6 @@
 import { Button } from "Components/Global/Button";
 import Modal from "Components/Global/Modal/Modal";
+import { CloseIcon } from "Components/Icons";
 import PRINT from "Helpers/Lib/operations/global-print";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,7 +20,7 @@ const PrintSettingsModal = ({ open, setOpen, name, columns, data }) => {
         for (const col in selectedColumns) {
           newItem[col] = item?.[col];
         }
-        newData.push(newItem)
+        newData.push(newItem);
       }
       PRINT.normal(newData, name);
     }
@@ -37,14 +38,18 @@ const PrintSettingsModal = ({ open, setOpen, name, columns, data }) => {
 
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
-      <div className="">
+      <div className="relative">
+        <button
+          onClick={() => setOpen(false)}
+          className="absolute z-10 top-2 ltr:left-2 rtl:right-2 h-9 w-9 rounded-full flex items-center justify-center bg-red-100 text-red-500 "
+        >
+          <CloseIcon className="w-5 h-5 text-red-500" />
+        </button>
         {columns?.map((column) => {
           if (column?.id === "select") return;
           return (
             <div key={column.id}>
-              <li
-                className="border-b last:border-b-0 p-2 px-4 text-sm capitalize flex items-center justify-between gap-4  dark:bg-transparent"
-              >
+              <li className="border-b last:border-b-0 p-2 px-4 text-sm capitalize flex items-center justify-between gap-4  dark:bg-transparent">
                 <span className="w-1/2 ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
                   {column.header}
                 </span>

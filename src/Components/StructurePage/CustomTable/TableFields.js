@@ -11,7 +11,7 @@ import { IncreaseTableBar } from "./IncreaseTableBar";
 import AreaField from "../CustomFields/AreaField";
 import { useTranslation } from "react-i18next";
 import { useFormContext } from "react-hook-form";
-import { PrintIcon, SearchIcon } from "Components/Icons";
+import { EyeIcon, PrintIcon, SearchIcon } from "Components/Icons";
 import { usePopupForm } from "Hooks/usePopupForm";
 
 const TableFields = ({
@@ -32,15 +32,16 @@ const TableFields = ({
   rowStyles,
   onRowClick,
   rowsCount,
-  onBlurNumbersField,
-  increasable = true,
   allowPrint,
   onClickPrint,
   onlyView,
   selectedRows,
   allowViewEntry,
-  refTableName,
-  showNumberAsLink
+  showNumberAsLink,
+  onClickOnNumber,
+  withPortal,
+  availableColors,
+  increasable = true,
 }) => {
   const { t } = useTranslation();
   const { dispatchForm } = usePopupForm();
@@ -54,7 +55,7 @@ const TableFields = ({
   }, [rowsCount]);
 
   const onDecrement = () => {
-    let index = increaseCount - 1;
+    let index = increaseCount - 2;
     let grid = watch(tab || "grid");
     let newGrid = grid?.filter((c, i) => i !== index);
     if (index) {
@@ -65,7 +66,7 @@ const TableFields = ({
 
   return (
     <>
-      <div className={`relative overflow-x-auto mt-4 ${containerClassName}`}>
+      <div className={`relative overflow-auto mt-4 ${containerClassName}`}>
         <table
           className={`border-collapse w-full text-sm text-left text-gray-500 dark:text-gray-400 border rounded-md dark:border-[#333] ${tableClassName}`}
         >
@@ -141,7 +142,9 @@ const TableFields = ({
                           : rowStyles
                       }
                     >
-                      <td className={`min-w-[40px] ${tdClassName} border relative`}>
+                      <td
+                        className={`min-w-[40px] ${tdClassName} border relative`}
+                      >
                         {!!onRowClick ? (
                           <div className="flex items-center relative">
                             {deleteRowComponent
@@ -175,7 +178,9 @@ const TableFields = ({
                         else {
                           return (
                             <td
-                              className={`border ${tdClassName} relative`}
+                              className={`border ${tdClassName} relative ${
+                                field?.type === "date" ? "min-w-[190px]" : ""
+                              }`}
                               key={`${field?.name}-${index}`}
                             >
                               {field?.is_ref ? (
@@ -225,6 +230,7 @@ const TableFields = ({
                                       {field?.type === "color" ? (
                                         <ColorField
                                           {...field}
+                                          availableColors={availableColors}
                                           key={`${field?.name}-${index}`}
                                           updatedName={`${tab}.${index}.${field?.name}`}
                                           hideLabel
@@ -252,24 +258,20 @@ const TableFields = ({
                                           inputClassName={
                                             "border-0 !rounded-none"
                                           }
-                                          onBlur={onBlurNumbersField}
                                         />
                                       ) : (
                                         <>
-                                          {showNumberAsLink && field?.name === "number" &&
+                                          {showNumberAsLink &&
+                                          field?.name === "number" &&
                                           watch(`${tab}.${index}.id`) ? (
                                             // <ViewRowFrom />
                                             <button
-                                            className="absolute top-2 ltr:right-2 rtl:left-2 text-blue-500"
                                               onClick={() => {
-                                                dispatchForm({
-                                                  open: true,
-                                                  table: refTableName,
-                                                  oldValues: watch(
-                                                    `${tab}.${index}`
-                                                  ),
-                                                });
+                                                onClickOnNumber(
+                                                  watch(`${tab}.${index}`)
+                                                );
                                               }}
+                                              className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-blue-500"
                                             >
                                               <SearchIcon className="text-inherit w-5 h-5" />{" "}
                                             </button>
@@ -288,8 +290,8 @@ const TableFields = ({
                                             inputClassName={`
                                               border-0 !rounded-none 
                                             `}
-                                            onBlur={onBlurNumbersField}
                                             readOnly={onlyView}
+                                            withPortal={withPortal}
                                           />
                                         </>
                                       )}
@@ -302,7 +304,7 @@ const TableFields = ({
                         }
                       })}
                       {allowPrint ? (
-                        <td>
+                        <td className={`border ${tdClassName} relative `}>
                           <button
                             className="flex justify-center items-center mx-auto hover:text-blue-500 hover:scale-110 duration-150"
                             onClick={() =>
@@ -313,9 +315,19 @@ const TableFields = ({
                           </button>
                         </td>
                       ) : null}
-                      {allowViewEntry
-                        ? allowViewEntry(watch(`${tab}.${index}`))
-                        : null}
+                      {allowViewEntry ? (
+                        <td className={`border ${tdClassName} relative `}>
+                          <button
+                            type="button"
+                            className="bg-blue-500 my-2 text-white mx-auto px-2 py-1 rounded-md flex items-center gap-2"
+                            onClick={() =>
+                              allowViewEntry(watch(`${tab}.${index}`))
+                            }
+                          >
+                            <EyeIcon className="h-5 w-5" />
+                          </button>
+                        </td>
+                      ) : null}
                     </tr>
                   ))}
               </>

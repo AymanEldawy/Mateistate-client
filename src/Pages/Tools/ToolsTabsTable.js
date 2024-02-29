@@ -8,8 +8,12 @@ import useFlatColoring from "Hooks/useFlatColoring";
 import React, { useMemo, useState } from "react";
 import ToolsColColor from "./ToolsColColor";
 import Table from "Components/StructurePage/CustomTable/Table";
-import { generateFlatHashName, getAlphabetSortingView, getPrefix } from "Helpers/functions";
-import { FLAT_PROPERTY_TABS_SETTINGS } from "Helpers/constants";
+import {
+  generateFlatHashName,
+  getAlphabetSortingView,
+  getPrefix,
+} from "Helpers/functions";
+import { FLAT_PROPERTY_TABS } from "Helpers/constants";
 
 export const ToolsTabsTable = ({
   row,
@@ -26,26 +30,15 @@ export const ToolsTabsTable = ({
 
   if (!row?.id) return;
 
-  const defaultInsertColor = (itemHash, tabName, data, index) => {
-    setFlatsDetails((prev) => {
-      return {
-        ...prev,
-        [`${itemHash}&${tabName}`]: {
-          ...data,
-        },
-      };
-    });
-  };
-
   const onSelectAllHorizontal = (e, y, x, matrix) => {
     const { tabName } = selectedTab;
-    let setting = FLAT_PROPERTY_TABS_SETTINGS[tabName];
+    let setting = FLAT_PROPERTY_TABS[tabName];
 
     for (let i = 0; i < x; i++) {
       let itemHash = matrix
         ? generateFlatHashName(tabName, setting, i, y)
         : generateFlatHashName(tabName, setting, y, i);
-        
+
       if (e.target.checked) {
         let additional = {
           name: itemHash,
@@ -61,10 +54,9 @@ export const ToolsTabsTable = ({
 
   const onSelectAllVertical = (e, y, x) => {
     const { tabName } = selectedTab;
-    let setting = FLAT_PROPERTY_TABS_SETTINGS[tabName];
-
     for (let i = 0; i < x; i++) {
-      let itemHash = generateFlatHashName(tabName, setting, y, i);
+      
+      let itemHash = generateFlatHashName(tabName, selectedTab, y, i);
       if (e.target.checked) {
         let additional = {
           name: itemHash,
@@ -138,7 +130,6 @@ export const ToolsTabsTable = ({
                         yIndex={indexY}
                         prefix={prefix}
                         tabName={tabName}
-                        defaultInsertColor={defaultInsertColor}
                         isUpdatable={isUpdatable}
                         setFlatsDetails={setFlatsDetails}
                         selectedTab={selectedTab}
@@ -168,7 +159,6 @@ export const ToolsTabsTable = ({
                     xIndex={indexX}
                     prefix={prefix}
                     tabName={tabName}
-                    defaultInsertColor={defaultInsertColor}
                     isUpdatable={isUpdatable}
                     setFlatsDetails={setFlatsDetails}
                     selectedTab={selectedTab}

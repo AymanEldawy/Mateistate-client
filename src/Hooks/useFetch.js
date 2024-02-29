@@ -1,4 +1,5 @@
 import { ApiActions } from "Helpers/Lib/api";
+import { getLastCostCenterNumber } from "Helpers/Lib/operations/global-insert";
 import { getAccount, getContracts, getCostCenter } from "Helpers/Lib/operations/global-read";
 import { useEffect, useState } from "react";
 
@@ -31,6 +32,7 @@ const useFetch = (name, params) => {
   };
 
   useEffect(() => {
+    getLastCostCenterNumber()
     fetchData();
   }, [name]);
 

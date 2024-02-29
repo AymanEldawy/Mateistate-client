@@ -5,7 +5,11 @@ import { useState } from "react";
 import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { IGNORED_SHOW_NUMBER_TABLE, UNIQUE_REF_TABLES } from "Helpers/constants";
+import {
+  IGNORED_SHOW_NUMBER_TABLE,
+  UNIQUE_REF_TABLES,
+} from "Helpers/constants";
+import { DEFAULT_CURRENCY_CODE } from "Helpers/GENERATE_STARTING_DATA";
 
 const UniqueField = ({
   list: defaultList,
@@ -45,7 +49,7 @@ const UniqueField = ({
 
     if ((field?.defaultValue || isCurrency) && defaultList?.length) {
       let searchKey = isCurrency ? "code" : field?.defaultValueSearchKey;
-      let searchVal = isCurrency ? "AED" : field?.defaultValue;
+      let searchVal = isCurrency ? DEFAULT_CURRENCY_CODE : field?.defaultValue;
       let val = defaultList?.find((c) => c?.[searchKey] === searchVal)?.id;
 
       setValue(updatedName || field?.name, val);
@@ -79,6 +83,7 @@ const UniqueField = ({
           render={({ field: { onChange }, fieldState, formState }) => {
             return (
               <Select
+                isClearable={true}
                 options={list}
                 // value={watch(field?.name)}
                 name={updatedName || field?.name}
@@ -124,16 +129,22 @@ const UniqueField = ({
             type="button"
             className="right-2 rtl:left-2 rtl:right-auto mx-2 rounded-full text-blue-500 hover:text-white hover:bg-blue-400"
             onClick={() => {
+              let refTable =
+                field?.ref_table === UNIQUE_REF_TABLES.clients ||
+                field?.ref_table === UNIQUE_REF_TABLES.suppliers
+                  ? "user"
+                  : table;
 
               if (onPlusClick) onPlusClick();
+              
               dispatchForm({
                 open: true,
-                table: field?.ref_table === UNIQUE_REF_TABLES.clients ? "user" : table,
+                table: refTable,
                 additional: {
                   setValue,
                   name: updatedName || field?.name,
                   setList,
-                  refTableName: field?.ref_table === UNIQUE_REF_TABLES.clients ? "user" : table,
+                  refTableName: refTable,
                 },
               });
             }}

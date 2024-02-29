@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { usePopupForm } from "Hooks/usePopupForm";
-import { EyeIcon, PlusIcon } from "Components/Icons";
+import { EyeIcon } from "Components/Icons";
 import { useState } from "react";
 import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
@@ -8,16 +7,24 @@ import { SELECT_LISTS } from "Helpers/constants";
 import { ApiActions } from "Helpers/Lib/api";
 import { useTranslation } from "react-i18next";
 import { getConnectWithUrl } from "Helpers/functions";
+import {
+  CONNECT_WITH_BILL_CODE,
+  CONNECT_WITH_BILL_NAME,
+  CONNECT_WITH_CONTRACT_CODE,
+  CONNECT_WITH_CONTRACT_NAME,
+  CONNECT_WITH_LAWSUIT_CODE,
+  CONNECT_WITH_LAWSUIT_NAME,
+  CONNECT_WITH_NOTHING_CODE,
+} from "Helpers/GENERATE_STARTING_DATA";
 
 const REF_TABLES = {
-  1: "contract",
-  2: "lawsuit",
-  3: "bill",
+  [CONNECT_WITH_CONTRACT_CODE]: CONNECT_WITH_CONTRACT_NAME,
+  [CONNECT_WITH_LAWSUIT_CODE]: CONNECT_WITH_LAWSUIT_NAME,
+  [CONNECT_WITH_BILL_CODE]: CONNECT_WITH_BILL_NAME,
 };
 
 const UniqueFieldGroup = ({ tab, values, errors }) => {
   const { t } = useTranslation();
-  const { dispatchForm } = usePopupForm();
   const { control, watch, setValue } = useFormContext();
   const [list, setList] = useState([]);
   const [chooseList, setChooseList] = useState([]);
@@ -29,7 +36,6 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
   const selectName = tab ? `${tab}.connect_with` : "connect_with";
   const selectNameId = tab ? `${tab}.connect_with_id` : "connect_with_id";
 
-  console.log(watch());
   useEffect(() => {
     setChooseList(
       SELECT_LISTS("bill_connect_with")?.map((item) => ({
@@ -45,7 +51,7 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
       if (response?.success) {
         const list = response?.result?.map((item) => ({
           value: item?.id,
-          label: table === "contract" ? item?.number : item?.name,
+          label: table === CONNECT_WITH_CONTRACT_NAME?.toLocaleLowerCase() ? item?.number : item?.name,
         }));
         setList(list);
       }
@@ -53,11 +59,10 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
     setSelectedItemNumber(watch(selectName));
     const refTable = REF_TABLES?.[watch(selectName)];
     if (refTable) {
-      fetchList(refTable);
+      fetchList(refTable?.toLowerCase());
     }
   }, [watch(selectName)]);
 
-  console.log(list);
   useEffect(() => {
     let connectWithId = watch(selectNameId);
     if (connectWithId) getViewUrl(connectWithId);
@@ -65,7 +70,6 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
 
   const getViewUrl = async (connectWithId) => {
     const response = await getConnectWithUrl(watch(selectName), connectWithId);
-    console.log("🚀 ~ getViewUrl ~ response:", response);
   };
 
   return (
@@ -83,6 +87,7 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
           render={({ field: { onChange }, value, ref }) => {
             return (
               <Select
+                // isClearable={true}
                 className={`border rounded-md bg-none bg-transparent`}
                 classNames={{
                   control: (state) => "bg-transparent !border-none",
@@ -106,7 +111,7 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
           </p>
         ) : null}
       </div>
-      {selectedItemNumber > 0 ? (
+      {selectedItemNumber > CONNECT_WITH_NOTHING_CODE ? (
         <div className=" min-w-[200px]">
           <label
             title="connect with id"
@@ -124,6 +129,7 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
               render={({ field: { onChange }, fieldState, formState }) => {
                 return (
                   <Select
+                    isClearable={true}
                     menuPlacement="auto"
                     options={list}
                     name={selectNameId}
@@ -137,16 +143,6 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
                       menuList: () => "dark:bg-dark-bg",
                     }}
                     value={list?.find((c) => c?.value === watch(selectNameId))}
-                    // defaultValue={list?.find(
-                    //   (c) => c?.value === watch(selectNameId)
-                    // )}
-                    // value={list?.find(
-                    //   (c) =>{
-                    //     console.log(c?.value, watch(selectNameId));
-                    //     return c?.value == watch(selectNameId)
-                    //   }
-                    // )}
-                    // onChange={onChange}
                     onChange={(option) => onChange(option?.value)}
                   />
                 );

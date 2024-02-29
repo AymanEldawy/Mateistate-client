@@ -1,8 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
-import AsyncSelect from "react-select/async";
 
 const CustomSelect = ({
   labelClassName,

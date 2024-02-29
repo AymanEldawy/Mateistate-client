@@ -16,6 +16,8 @@ import { VoucherEntriesViewProvider } from "Hooks/useVoucherEntriesView";
 import { VoucherView } from "Components/StructurePage/Forms/Vouchers/VoucherView";
 // import { INSERT_DEFAULT_DATA } from "Helpers/GENERATE_STARTING_DATA";
 import getMenu from "Helpers/menu";
+import { ApiActions } from "Helpers/Lib/api";
+import { getLastCostCenterNumber } from "Helpers/Lib/operations/global-insert";
 let called = true
 function App() {
   const [mode, setMode] = useState("dark");
@@ -30,9 +32,11 @@ function App() {
 
   useEffect(() => {
     if(called) {
+      //  ApiActions.read('cheque')
       called = false
       // INSERT_DEFAULT_DATA();
     }
+    getLastCostCenterNumber()
 
   }, [])
 
@@ -63,9 +67,11 @@ function App() {
                 <ToastContainer
                   position="top-center"
                   autoClose={2000}
-                  // hideProgressBar={false}
-                  // newestOnTop={false}
-                  // draggable
+                  style={{
+                    maxWidth: 500,
+                    width: '80%'
+                  }}
+                  newestOnTop={true}
                   theme="light"
                 />
                 <div id="layout-wrapper" className={"flex flex-col h-screen "}>

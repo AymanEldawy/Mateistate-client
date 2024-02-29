@@ -1,6 +1,7 @@
 import Modal from "Components/Global/Modal/Modal";
 import React, { useState } from "react";
 import { FullImage } from "./FullImage";
+import { CloseIcon } from "Components/Icons";
 
 export const FilePreviews = ({ images }) => {
   const [open, setOpen] = useState(false);
@@ -36,7 +37,13 @@ export const FilePreviews = ({ images }) => {
           modalClassName="!p-2"
           containerClassName="!z-20"
         >
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 rounded-xl z-20">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 rounded-xl z-20 relative">
+            <button
+              onClick={() => setOpen(false)}
+              className="absolute z-10 top-2 ltr:left-2 rtl:right-2 h-9 w-9 rounded-full flex items-center justify-center bg-red-100 text-red-500 "
+            >
+              <CloseIcon className="w-5 h-5 text-red-500" />
+            </button>
             {images?.map((imgSrc, index) => (
               <FullImage
                 key={imgSrc}

@@ -1,14 +1,11 @@
-import React, { useMemo, useRef } from "react";
-import { memo } from "react";
+import { useMemo, useRef } from "react";
 import { useEffect } from "react";
 
-import { Button } from "Components/Global/Button";
 import { generateFlatHashName, getValueOfInputColor } from "Helpers/functions";
 import { CloseIcon, EditIcon } from "Components/Icons";
 import TableCol from "Components/StructurePage/CustomTable/TableCol";
-import { Input } from "Components/StructurePage/CustomFields";
 import useFlatColoring from "Hooks/useFlatColoring";
-import { FLAT_PROPERTY_TABS_SETTINGS } from "Helpers/constants";
+import { FLAT_PROPERTY_TABS } from "Helpers/constants";
 import { useFormContext } from "react-hook-form";
 
 const ToolsColColor = ({
@@ -32,7 +29,7 @@ const ToolsColColor = ({
   const { watch } = useFormContext();
 
   let tabSettings = useMemo(
-    () => FLAT_PROPERTY_TABS_SETTINGS[tabName],
+    () => FLAT_PROPERTY_TABS[tabName],
     [tabName]
   );
 
@@ -43,13 +40,8 @@ const ToolsColColor = ({
   }, [isUpdatable]);
 
   const itemHash = generateFlatHashName(tabName, tabSettings, yIndex, xIndex);
-  // const itemNumber = isMatrix
-  //   ? `${xIndex + 1}0${yIndex + 1}`
-  //   : `${1}0${xIndex + 1}`;
 
-  // const itemHash = `${prefix} ${itemNumber}`;
-
-  const itemData = flatsDetails?.[tabName]?.[itemHash];
+  const itemData = flatsDetails?.[tabName]?.asset_hash || flatsDetails?.[tabName]?.[itemHash];
   const flatName = tabSettings?.no;
   const itemValue = flatsDetails?.[tabName]?.[itemHash]?.[flatName] || itemHash;
   const itemColor = watch("grid")?.[itemData?.row_index]?.hex || itemData?.hex;

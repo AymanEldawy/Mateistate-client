@@ -70,7 +70,7 @@ export const VoucherFooter = ({
               error={errors?.credit_total ? "Field is required" : ""}
             />
           </div>
-          <div className="w-1/3">Final amount</div>
+          <div className="w-1/3 whitespace-nowrap">Final amount</div>
         </div>
       </div>
       <div className="flex gap-4 items-end">

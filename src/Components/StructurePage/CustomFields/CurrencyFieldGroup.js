@@ -4,15 +4,9 @@ import { PlusIcon } from "Components/Icons";
 import { useState } from "react";
 import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
-import { SELECT_LISTS } from "Helpers/constants";
-import { ApiActions } from "Helpers/Lib/api";
 import { useTranslation } from "react-i18next";
+import { DEFAULT_CURRENCY_CODE } from "Helpers/GENERATE_STARTING_DATA";
 
-const REF_TABLES = {
-  1: "contract",
-  2: "lawsuit",
-  3: "bill",
-};
 
 const CurrencyFieldGroup = ({
   tab,
@@ -39,13 +33,13 @@ const CurrencyFieldGroup = ({
     );
 
     if (defaultList?.length && !watch(currency_id)) {
-      let val = defaultList?.find((c) => c?.code === "AED")?.id;
+      let val = defaultList?.find((c) => c?.code === DEFAULT_CURRENCY_CODE)?.id;
       setValue(currency_id, val);
       if(!field?.hideValue) {
         setValue(currency_val, 1)
       }
     }
-  }, [defaultList?.length]);
+  }, [defaultList?.length, watch(currency_id)]);
 
   return (
     <>

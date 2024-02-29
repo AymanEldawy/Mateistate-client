@@ -7,47 +7,7 @@ import {
   SHOP_STEPS_CONTRACT,
   UNIQUE_REF_TABLES,
 } from "Helpers/constants";
-import { validate } from "uuid";
 import FIELDS_STRUCTURE from "./fields-structure";
-
-const contract = [
-  {
-    label: "id",
-    name: "id",
-    type: "uuid",
-    required: false,
-    hide_in_form: true,
-  },
-  {
-    label: "created_at",
-    name: "created_at",
-    type: "date",
-    required: false,
-    hide_in_form: true,
-  },
-  // {
-  //   label: 'contract_type', name: "contract_type",
-  //   key: "select",
-  //   required: false,
-  //   intValue: true,
-  //   list: SELECT_LISTS("contract_type"),
-  // },
-  {
-    // label: 'flat_type', name: "flat_type",
-    key: "select",
-    required: false,
-    intValue: true,
-    list: SELECT_LISTS("contact_pattern_assets_type"),
-    // future  add land to flat type list  -> contact_pattern_assets_type
-  },
-  {
-    label: "number",
-    name: "number",
-    type: "number",
-    required: false,
-    hide_in_form: true,
-  },
-];
 
 const contract_commission = [
   {
@@ -356,7 +316,7 @@ const contract_pictures = [
     key: "image",
     multiple: true,
     required: false,
-    allowScan: true
+    allowScan: true,
   },
 ];
 const contract_termination = [
@@ -611,7 +571,7 @@ const apartment_sale_contract = [
     label: "gov_number",
     name: "gov_number",
     type: "number",
-    required: true,
+    required: false,
   },
   {
     label: "feedback",
@@ -796,7 +756,7 @@ const land_sale_contract = [
     label: "gov_number",
     name: "gov_number",
     type: "number",
-    required: true,
+    required: false,
   },
   {
     label: "feedback",
@@ -971,7 +931,7 @@ const shop_sale_contract = [
     label: "gov_number",
     name: "gov_number",
     type: "number",
-    required: true,
+    required: false,
   },
   {
     label: "feedback",
@@ -1139,7 +1099,7 @@ const parking_sale_contract = [
     label: "gov_number",
     name: "gov_number",
     type: "number",
-    required: true,
+    required: false,
   },
   {
     label: "feedback",
@@ -1163,6 +1123,7 @@ const parking_sale_contract = [
     required: true,
     is_ref: true,
     ref_table: "parking",
+    ref_name: "parking_no",
   },
   { label: "description", name: "description", type: "text", required: false },
   {
@@ -1342,7 +1303,7 @@ const apartment_rent_contract = [
     label: "gov_number",
     name: "gov_number",
     type: "number",
-    required: true,
+    required: false,
   },
   {
     label: "feedback",
@@ -1510,7 +1471,7 @@ const shop_rent_contract = [
     label: "gov_number",
     name: "gov_number",
     type: "number",
-    required: true,
+    required: false,
   },
   {
     label: "feedback",
@@ -1717,7 +1678,7 @@ const parking_rent_contract = [
     label: "gov_number",
     name: "gov_number",
     type: "number",
-    required: true,
+    required: false,
   },
   {
     label: "feedback",
@@ -1741,6 +1702,7 @@ const parking_rent_contract = [
     required: true,
     is_ref: true,
     ref_table: "parking",
+    ref_name: "parking_no",
   },
   { label: "description", name: "description", type: "text", required: false },
   {

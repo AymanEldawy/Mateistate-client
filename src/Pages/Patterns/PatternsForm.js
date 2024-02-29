@@ -1,14 +1,8 @@
 import BlockPaper from "Components/Global/BlockPaper";
-import { Button } from "Components/Global/Button";
 import { ButtonsStepsGroup } from "Components/Global/ButtonsStepsGroup";
 import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
-import { GalleryForm } from "Components/StructurePage/Forms/CustomForm/GalleryForm";
-import TableForm from "Components/StructurePage/Forms/CustomForm/TableForm";
-import Installment from "Components/StructurePage/Forms/Contract/InstallmentForm";
 import { ApiActions } from "Helpers/Lib/api";
-import INSERT_FUNCTION from "Helpers/Lib/operations/global-insert";
 import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
 import useFormSteps from "Hooks/useFormSteps";
 import { useState } from "react";

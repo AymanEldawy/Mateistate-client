@@ -1,11 +1,9 @@
 import Backdrop from "Components/Global/Backdrop";
 import logoImg from "Assets/Images/Mati-Estate-Logo-Animaitona02.gif";
-import animation from "Assets/Images/loading.gif";
-import loading from "Assets/Images/loading.png";
 const Loading = ({ withBackdrop, logo, backdropClasses, hideText }) => {
   let classes = withBackdrop
     ? "!fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-    : "mt-32 ml-32";
+    : "";
   return (
     <>
       {withBackdrop ? <Backdrop open={true} classes={backdropClasses} /> : null}
@@ -13,7 +11,32 @@ const Loading = ({ withBackdrop, logo, backdropClasses, hideText }) => {
         {logo ? (
           <img src={logoImg} alt="mateistate" className="w-96 object-contain" />
         ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><linearGradient id="a11"><stop offset="0" stop-color="#16FF83" stop-opacity="0"></stop><stop offset="1" stop-color="#16FF83"></stop></linearGradient><circle fill="none" stroke="url(#a11)" stroke-width="15" stroke-linecap="round" stroke-dasharray="0 44 0 44 0 44 0 44 0 360" cx="100" cy="100" r="70" transform-origin="center"><animateTransform type="rotate" attributeName="transform" calcMode="discrete" dur="1" values="360;324;288;252;216;180;144;108;72;36" repeatCount="indefinite"></animateTransform></circle></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+            <linearGradient id="a11">
+              <stop offset="0" stop-color="#16FF83" stop-opacity="0"></stop>
+              <stop offset="1" stop-color="#16FF83"></stop>
+            </linearGradient>
+            <circle
+              fill="none"
+              stroke="url(#a11)"
+              stroke-width="15"
+              stroke-linecap="round"
+              stroke-dasharray="0 44 0 44 0 44 0 44 0 360"
+              cx="100"
+              cy="100"
+              r="70"
+              transform-origin="center"
+            >
+              <animateTransform
+                type="rotate"
+                attributeName="transform"
+                calcMode="discrete"
+                dur="1"
+                values="360;324;288;252;216;180;144;108;72;36"
+                repeatCount="indefinite"
+              ></animateTransform>
+            </circle>
+          </svg>
         )}
         {logo ? null : (
           <h3 className="text-[#36E1A7] text-2xl -m-2 capitalize animate-pulse">

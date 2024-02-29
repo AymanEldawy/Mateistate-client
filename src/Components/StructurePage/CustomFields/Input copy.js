@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useTranslation } from "react-i18next";
 import { CalenderIcon } from "Components/Icons";
+import moment from "moment";
 
 const Input = ({
   labelClassName,
@@ -18,7 +19,6 @@ const Input = ({
   tab,
   onBlur,
   value,
-  withPortal,
   ...field
 }) => {
   const { t } = useTranslation();
@@ -66,40 +66,56 @@ const Input = ({
       <Controller
         name={updatedName || field?.name}
         control={control}
-        render={({ field: { onChange, onBlur, ref, value }, fieldState, formState }) => {
+        render={({
+          field: { onChange, onBlur, ref, value },
+          fieldState,
+          formState,
+        }) => {
           if (field?.type === "date") {
             return (
-              <DatePicker
-                ref={ref}
-                className={`border h-[39px] w-full read-only:bg-blue-100 flex items-center gap-2 dark:read-only:bg-[#444] rounded ltr:!pl-7 rtl:!pr-7  p-1 ${inputClassName} ${
-                  error ? "border-red-200 text-red-500" : ""
-                }`}
-                calendarIconClassname="!pt-[10px] -ml-1 pointer-events-none cursor-"
-                showIcon
-                selected={value ? new Date(value) : ""}
-                icon={
-                  <span>
-                    <CalenderIcon className="h-5 w-5" />
+              <div className="relative">
+                <span
+                  className={`border h-[39px] flex items-center justify-between dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${
+                    error ? "border-red-200 text-red-500" : ""
+                  } 
+                `}
+                >
+                  {value ? moment(new Date(value)).format("DD/MM/YYYY") : 'MM/DD/YYYY'}
+                  <span className="pointer-events-none h-5 w-5 mx-2">
+                    <CalenderIcon />
                   </span>
-                }
-                todayHighlight={true}
-                locale="en"
-                isClearable
-                withPortal={withPortal}
-                
-                readOnly={
-                  readOnly ||
-                  (watchField && watch(watchFieldName) === watchFieldCondition)||
-                  (field?.disabledCondition && watch(field?.disabledCondition))
-                }
-                // placeholderText="Select date... YYYY/MM/DD"
-                placeholderText="Select date..."
-                onChange={(date) => {
-                  onChange(date);
-                }}
-                // dateFormat="dd-mm-yyyy"
-                dateFormat="MMMM d, yyyy"
-              />
+                </span>
+                <input
+                  ref={ref}
+                  name={updatedName || field?.name}
+                  className="absolute w-full h-full z-10 top-0 left-0 opacity-0"
+                  //   className={`border h-[39px] read-only:bg-blue-100 dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${
+                  //     error ? "border-red-200 text-red-500" : ""
+                  //   }
+                  // `}
+                  type={field?.type}
+                  readOnly={
+                    readOnly ||
+                    (watchField &&
+                      watch(watchFieldName) === watchFieldCondition) ||
+                    (field?.disabledCondition &&
+                      watch(field?.disabledCondition))
+                  }
+                  placeholder={field?.type === "number" ? "0" : ""}
+                  // defaultValue={field?.defaultValue}
+                  // value={
+                  //   field?.type === "date" && value
+                  //     ? new Date(value)?.toJSON()?.substring(0, 10)
+                  //     : value
+                  // }
+                  value={value ? moment(value).format("mm/dd/yyyy") : null}
+                  // value={watch(updatedName || field?.name)}
+                  onChange={(e) => {
+                    onChange(e.target.value);
+                  }}
+                  onBlur={onBlur}
+                />
+              </div>
             );
           } else {
             return (
@@ -113,12 +129,17 @@ const Input = ({
                 type={field?.type}
                 readOnly={
                   readOnly ||
-                  (watchField && watch(watchFieldName) === watchFieldCondition)||
+                  (watchField &&
+                    watch(watchFieldName) === watchFieldCondition) ||
                   (field?.disabledCondition && watch(field?.disabledCondition))
                 }
-                placeholder={field?.type === 'number' ? '0' : ''}
+                placeholder={field?.type === "number" ? "0" : ""}
                 // defaultValue={field?.defaultValue}
-                value={value}
+                value={
+                  field?.type === "date" && value
+                    ? new Date(value)?.toJSON()?.substring(0, 10)
+                    : value
+                }
                 // value={watch(updatedName || field?.name)}
                 onChange={(e) => {
                   onChange(e.target.value);

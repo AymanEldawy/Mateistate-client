@@ -27,26 +27,33 @@ const installmentValidation = (watch) => {
 
   if (count > watch("installment.rest_amount")) {
     toast.error(
-      `The Total Amount of cheques must be equal or less than Rest Amount`
+      `The Total Amount of cheques must be equal or less than Rest Amount`,
+      { autoClose: false }
     );
     return;
   }
 
-  if (watch("installment.first_batch") > watch("installment.total_amount")) {
+  if (+watch("installment.first_batch") > +watch("installment.total_amount")) {
     toast.error(
-      `The First Cash Payment must be equal or less than Total Amount`
+      `The First Cash Payment must be equal or less than Total Amount`,
+      { autoClose: false }
     );
+    return;
+  }
+
+  if (!watch("installment.currency_id")) {
+    toast.error(`Currency is Required`, { autoClose: false });
     return;
   }
 
   let type = +watch("installment.gen_entries_type");
   if (type === 1 || type === 2) {
     if (!watch("installment.payment_date")) {
-      toast.error(`The Payment Date is required`);
+      toast.error(`The Payment Date is required`, { autoClose: false });
       return;
     }
     if (!watch("installment.first_batch")) {
-      toast.error(`The First Cash Payment is required`);
+      toast.error(`The First Cash Payment is required`, { autoClose: false });
       return;
     }
   }
@@ -62,7 +69,6 @@ const generatePaymentBatches = (firstTab, watch, setValue, CACHE_LIST) => {
   const installments_numbers = watch("installment.installments_numbers");
   const begin_number = watch("installment.begin_number");
   const beneficiary_name = watch("installment.beneficiary_name");
-  const payment_date = watch("installment.payment_date");
   const account_id = watch(`${firstTab}.client_id`);
   const observe_account_id = watch(`${firstTab}.revenue_account_id`);
   const bank_id = watch("installment.bank_id");
@@ -82,14 +88,14 @@ const generatePaymentBatches = (firstTab, watch, setValue, CACHE_LIST) => {
   let bills = [];
 
   for (let i = 0; i < result.length; i++) {
-    let dueDate = new Date(result[i]?.month)?.toLocaleDateString("en-UK")
-    let endDueDate = new Date(result[i]?.end)?.toLocaleDateString("en-UK")
-    let number = +(begin_number || 1) + i;
+    let dueDate = new Date(result[i]?.month)?.toLocaleDateString("en-UK");
+    let endDueDate = new Date(result[i]?.end)?.toLocaleDateString("en-UK");
+    let internal_number = +(begin_number || 1) + i;
     const note2 = `${COUNTER_CHQ_NUMBER?.[i]} Payment (${i + 1})`;
-    const note1 = `received chq number ${number} from mr ${client?.name} ${result[i]?.price} due date ${dueDate} end date ${endDueDate} bank name ${bank?.name}`;
+    const note1 = `received chq number ${internal_number} from mr ${client?.name} ${result[i]?.price} due date ${dueDate} end date ${endDueDate} bank name ${bank?.name}`;
 
     bills.push({
-      number,
+      internal_number,
       due_date: result[i]?.month,
       amount: result[i]?.price,
       end_due_date: result[i]?.end,
@@ -126,7 +132,9 @@ const InstallmentForm = ({
   }, [openInstallmentForm]);
 
   const onSubmitInstallment = async () => {
-    if (!installmentValidation(watch)) return;
+    if (!installmentValidation(watch)) {
+      return;
+    }
     setIsLoading(true);
 
     const installmentData = watch("installment");
@@ -152,13 +160,12 @@ const InstallmentForm = ({
     )?.toLocaleDateString("en-UK")} bank ${bankName} ${
       buildingNumber ? `building number ${buildingNumber}` : ""
     }  ${assetsNumber ? `${assetType} number ${assetsNumber}` : ""} `;
-   
+
     const success = await insertIntoContractInstallment({
       installment: installmentData,
       installment_grid: installmentGridData,
       contract_id,
       firstTabData: watch(firstTab),
-      cost_center_id: watch("cost_center_id"),
       note,
     });
 
@@ -195,23 +202,37 @@ const InstallmentForm = ({
             CACHE_LIST={CACHE_LIST}
             rowsCount={watch("installment_grid")?.length}
             tdClassName="first:min-w-[40px] min-w-[140px]"
+            withPortal
           />
         ) : null}
         <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
           <Button
+            disabled={
+              !watch("installment.each_number") ||
+              !watch("installment.installments_numbers") ||
+              !watch("installment.each_duration") ||
+              !watch("installment.rest_amount")
+            }
             title={watch("installment.id") ? "ReGenerate" : "Generate"}
-            classes="bg-orange-500"
+            classes={`bg-orange-500 ${
+              watch("installment_grid")?.length < 1
+                ? "ltr:ml-auto rtl:mr-auto"
+                : ""
+            }`}
             type="button"
             onClick={() => {
               generatePaymentBatches(firstTab, watch, setValue, CACHE_LIST);
             }}
           />
-          <Button
-            type="button"
-            title={watch("installment.id") ? "Modify" : "Submit"}
-            // disabled={}
-            onClick={onSubmitInstallment}
-          />
+          {!watch("installment_grid") ||
+          watch("installment_grid")?.length < 1 ? null : (
+            <Button
+              type="button"
+              title={watch("installment.id") ? "Modify" : "Submit"}
+              disabled={watch("installment_grid")?.length < 1}
+              onClick={onSubmitInstallment}
+            />
+          )}
         </div>
       </Modal>
     </>

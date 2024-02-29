@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useRef } from "react";
 
 import Modal from "Components/Global/Modal/Modal";
+import { CloseIcon } from "Components/Icons";
 
 export const FullImage = ({ src, alt, height, width, ...imgProps }) => {
   const [open, setOpen] = useState(false);
@@ -51,11 +52,19 @@ export const FullImage = ({ src, alt, height, width, ...imgProps }) => {
           modalClassName="!p-2"
           containerClassName=" z-50"
         >
-          <img
-            src={src}
-            alt={alt}
-            className="xs:w-96 min-w-[270px] w-full max-w-none max-h-[90vh] rounded-md object-cover "
-          />
+          <div className="relative">
+            <button
+              onClick={() => setOpen(false)}
+              className="absolute z-10 top-2 ltr:left-2 rtl:right-2 h-9 w-9 rounded-full flex items-center justify-center bg-red-100 text-red-500 "
+            >
+              <CloseIcon className="w-5 h-5 text-red-500" />
+            </button>
+            <img
+              src={src}
+              alt={alt}
+              className="xs:w-96 min-w-[270px] w-full max-w-none max-h-[90vh] rounded-md object-cover "
+            />
+          </div>
         </Modal>
       ) : null}
     </>

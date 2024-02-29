@@ -1,9 +1,10 @@
 import FormHeadingTitle from "Components/Global/FormHeadingTitle";
-import { withFormSingular } from "HOC/withFormSingular";
-import { FormProvider } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { Fields } from "../CustomForm/Fields";
 import { Button } from "Components/Global/Button";
 import { useEffect } from "react";
+import { PartialCollectionFrom } from "./PartialCollectionFrom";
+import useRefTable from "Hooks/useRefTables";
 
 const mergePatternWithData = async (
   name,
@@ -39,8 +40,6 @@ const mergePatternWithData = async (
       return;
     case "op_deportation":
       return;
-    case "op_endorsement":
-      return;
     case "op_return":
       return;
     default:
@@ -48,43 +47,59 @@ const mergePatternWithData = async (
   }
 };
 
-export const OperationsForm = withFormSingular((props) => {
-  const { name, loading, fields, CACHE_LIST, PATTERN_SETTINGS, layout } = props;
+export const OperationsForm = ({
+  name,
+  loading,
+  PATTERN_SETTINGS,
+  layout,
+  onClose,
+}) => {
+  const { fields, CACHE_LIST, setCACHE_LIST } = useRefTable(name);
+  const methods = useForm();
   const {
     getValues,
     handleSubmit,
     formState: { errors, isDirty, dirtyFields, isSubmitting },
     watch,
     setValue,
-  } = props?.methods;
-
+  } = methods;
 
   useEffect(() => {
     mergePatternWithData(name, PATTERN_SETTINGS, watch, setValue);
   }, [PATTERN_SETTINGS?.name]);
 
-
-
   const onSubmit = async () => {};
 
   return (
-    <FormProvider {...props?.methods}>
-      <FormHeadingTitle title={name} />
+    <FormProvider {...methods}>
+      <FormHeadingTitle title={name?.replace("op_", "")} onClose={onClose} />
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Fields
-          values={getValues()}
-          errors={errors}
-          CACHE_LIST={CACHE_LIST}
-          fields={fields}
-        />
-        <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
-          <Button
-            title="Submit"
-            loading={loading}
-            disabled={!isDirty || isSubmitting || loading}
+        {name === "op_partial_collection" ? (
+          <PartialCollectionFrom
+            errors={errors}
+            fields={fields}
+            CACHE_LIST={CACHE_LIST}
+            popupView
           />
-        </div>
+        ) : (
+          <>
+            <Fields
+              customGrid="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+              values={getValues()}
+              errors={errors}
+              fields={fields}
+              CACHE_LIST={CACHE_LIST}
+            />
+            <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
+              <Button
+                title="Submit"
+                loading={loading}
+                disabled={!isDirty || isSubmitting || loading}
+              />
+            </div>
+          </>
+        )}
       </form>
     </FormProvider>
   );
-});
+};

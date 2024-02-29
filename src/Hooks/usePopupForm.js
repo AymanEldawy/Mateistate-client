@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext } from "react";
 import { useState } from "react";
 
 export const PopupFormContext = createContext();
 
 export const PopupFormProvider = ({ children }) => {
   const [openForm, setOpenForm] = useState({});
+  const [recordResponse, setRecordResponse] = useState(null)
 
   const dispatchForm = (form) => {
     if (form?.table) {
@@ -16,7 +17,7 @@ export const PopupFormProvider = ({ children }) => {
   };
 
   return (
-    <PopupFormContext.Provider value={{ dispatchForm, openForm }}>
+    <PopupFormContext.Provider value={{ dispatchForm, openForm, setRecordResponse, recordResponse }}>
       {children}
     </PopupFormContext.Provider>
   );

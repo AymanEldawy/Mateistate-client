@@ -1,5 +1,6 @@
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
 import { getCacheRowData } from "Helpers/functions";
+import { fetchData } from "./global-read-update";
 
 const { ApiActions } = require("../api");
 
@@ -46,6 +47,11 @@ export const COUNTER_CHQ_NUMBER = [
   "fortieth",
 ];
 
+export const DESPATCH_TABLES_NAME = {
+  CHEQUE: "CHEQUE",
+  VOUCHER: "VOUCHER",
+};
+
 export const CONTRACT_STATUS_NAMES = {
   1: "Rented",
   2: "Vacant",
@@ -60,27 +66,39 @@ export const CONTRACT_STATUS = {
 export async function fetchAndMergeBuildingInfo(
   buildingId,
   setValue,
-  firstTab
+  firstTab,
+  SHOULD_UPDATES
 ) {
   const response = await ApiActions.read("building", {
     conditions: [{ type: "and", conditions: [["id", "=", buildingId]] }],
-    joins: [
-      {
-        type: "leftJoin",
-        table: "building_real_estate_management",
-        conditions: {
-          "building_real_estate_management.id": "building.building_id",
-        },
-      },
+  });
+  const res = await ApiActions.read("building_real_estate_management", {
+    conditions: [
+      { type: "and", conditions: [["building_id", "=", buildingId]] },
     ],
   });
-
-  console.log(response, '----');
-  
   if (response?.success) {
     let data = response?.result?.at(0);
     setValue(`${firstTab}.lessor_id`, data?.lessor_id);
-    // if owner setValue('owner_id', data?.building_real_estate_management?.account_id)
+  }
+
+  // commission_from_owner_note
+  // commission_from_owner_percentage
+  // commission_from_owner_value
+  // commission_note
+  // commission_value
+
+  if (res?.success) {
+    let data = res?.result?.at(0);
+    setValue(
+      "contract_commission.commission_percentage",
+      data?.commission_rate
+    );
+    setValue(
+      "contract_commission.commission_from_owner_account_id",
+      data?.owner_account_id
+    );
+    setValue("contract_commission.commission_account_id", data?.revenue_id);
   }
 }
 
@@ -100,7 +118,7 @@ export async function fetchAndMergeAssetInfo(
     setValue(`${tabName}.description`, data?.description);
     // setValue(`${tabName}.property_area`, data?.property_type);
     setValue(`${tabName}.lawsuit`, data?.has_lawsuit);
-    setValue(`cost_center_id`, data?.cost_center_id);
+    setValue(`${tabName}.cost_center_id`, data?.cost_center_id);
     // setValue(`${tabNames[1]}.contract_value`, data?.has_lawsuit);
   }
 }
@@ -139,10 +157,20 @@ export function onWatchChangesInTab1(
       let finalPrice = price - (discount / 100) * price;
       let discountValue = price - finalPrice;
 
-      setValue(`${tabNames}.discount_value`, discountValue?.toFixed(2));
       setValue(`${tabNames}.final_price`, finalPrice);
       setValue("installment.total_amount", price);
+      if (discount)
+        setValue(`${tabNames}.discount_value`, discountValue?.toFixed(2));
       SHOULD_UPDATES.installment = true;
+
+      // if Contract has Real state management
+      if (watch("contract_commission.commission_percentage")) {
+        let commissionPrice = price - (discount / 100) * price;
+        let commissionValue = price - commissionPrice;
+        setValue(`contract_commission.commission_value`, commissionValue);
+        SHOULD_UPDATES.contract_commission = true
+      }
+
       return;
     }
     case "current_securing_percentage": {
@@ -242,31 +270,6 @@ export function onWatchChangesInstallmentTab(
       }
       return;
 
-    // case "each_duration":
-    case "first_installment_date":
-      const rest_amount = watch("installment.rest_amount");
-      const each_duration = watch("installment.each_duration");
-      const each_number = watch("installment.each_number");
-      const first_installment_date = watch(
-        "installment.first_installment_date"
-      );
-      const installments_numbers = watch("installment.installments_numbers");
-
-      if (rest_amount) {
-        const result = dividePrice(
-          first_installment_date,
-          rest_amount,
-          installments_numbers,
-          each_duration,
-          each_number
-        );
-        // getMonthsDiff();
-        setValue(`installment.installment_price`, result?.at(0)?.price);
-        // setValue(`installment.final_payment`, result?.at(-1)?.price);
-      }
-
-      return;
-
     default:
       return;
   }
@@ -274,14 +277,12 @@ export function onWatchChangesInstallmentTab(
 
 export function onWatchChangesInstallmentGridTab(
   name,
-  value,
   setValue,
   watch,
   cache,
   firstTab
 ) {
   let row = name?.split(".").slice(0, 2).join(".");
-
   let note1 = ``;
 
   switch (name?.split(".")?.at(-1)) {
@@ -314,7 +315,6 @@ export function onWatchChangesInstallmentGridTab(
     default:
       break;
   }
-
   setValue(`${row}.note1`, note1);
 }
 export async function autoMergePatternSettingsWithValues(
@@ -382,7 +382,6 @@ export function dividePrice(
           currentDate.getFullYear() + parseInt(each_duration)
         )
       );
-      console.log(currentDate, "---");
     }
 
     let end = new Date(currentDate.getTime() - 86400000)
@@ -442,10 +441,37 @@ export const getOldContracts = async (setOldContracts, type) => {
       },
     ],
   });
-  console.log("🚀 ~ getOldContracts ~ response:", response);
 
   if (response?.success) {
     setOldContracts(response?.result);
+  }
+};
+
+export const fetchContractRestData = async (index, tabs, watch, setValue) => {
+  let contract_id = watch("contract.id");
+  let currentTabName = tabs?.[index];
+
+  if (watch(currentTabName)) return;
+
+  const res = await fetchData(currentTabName, "contract_id", contract_id);
+  if (!res?.success) return;
+
+  switch (currentTabName) {
+    case "contract_commission":
+    case "contract_terms":
+    case "contract_cycle":
+    case "contract_termination":
+      setValue(currentTabName, res?.result?.at(0) || {});
+      return;
+    case "contract_pictures":
+    case "contract_other_fees":
+    case "contract_fixed_assets":
+    case "contract_linked_parking":
+    case "contract_receipt_number":
+      setValue(currentTabName, res?.result || []);
+      return;
+    default:
+      return;
   }
 };
 

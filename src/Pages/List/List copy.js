@@ -25,11 +25,39 @@ const List = ({ addPageHref }) => {
   };
 
   return (
-    <DynamicForm
-      name={name}
-      refetchData={refetchData}
-      onClose={() => setOpen(false)}
-    />
+    <>
+      {/* <PrintSettingsModal
+        open={openPrint}
+        setOpen={setOpenPrint}
+        name={name}
+        data={data}
+        columns={getTableColumns(name)}
+      /> */}
+      <Modal
+        containerClassName="!z-[19]"
+        open={open}
+        onClose={() => setOpen(false)}
+      >
+        <DynamicForm
+          name={name}
+          refetchData={refetchData}
+          onClose={() => setOpen(false)}
+        />
+      </Modal>
+      <div key={name}>
+        <DynamicTable
+          defaultName={defaultName}
+          tableName={name}
+          setOpen={setOpen}
+          refetchData={refetchData}
+          data={data || []}
+          loading={loading}
+          onClickAdd={addPageHref && onClickAdd}
+          allowPrint
+          onClickPrint={() => setOpenPrint(true)}
+        />
+      </div>
+    </>
   );
 };
 

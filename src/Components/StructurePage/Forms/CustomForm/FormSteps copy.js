@@ -11,7 +11,6 @@ import { ButtonsStepsGroup } from "Components/Global/ButtonsStepsGroup";
 import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
 import { useParams } from "react-router-dom";
 import { usePopupForm } from "Hooks/usePopupForm";
-import withListBookView from "HOC/withListBookView";
 
 const FormSteps = ({
   name,
@@ -96,7 +95,7 @@ const FormSteps = ({
   };
 
   return (
-    <>
+    <FormProvider {...methods}>
       <FormHeadingTitleSteps
         name={name}
         steps={steps}
@@ -105,30 +104,40 @@ const FormSteps = ({
         onClose={onClose}
       />
       <div className="h-5" />
-      {fields?.length ? (
-        <>
-          {formSettings?.formType === "grid" ? (
-            <div key={steps?.[currentIndex]}>
-              <TableFields
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        {fields?.length ? (
+          <>
+            {formSettings?.formType === "grid" ? (
+              <div key={steps?.[currentIndex]}>
+                <TableFields
+                  tab={tab}
+                  values={watch()?.[tab]}
+                  fields={fields}
+                  CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
+                />
+              </div>
+            ) : (
+              <Fields
                 tab={tab}
-                values={watch()?.[tab]}
                 fields={fields}
-                CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
+                values={watch()?.[tab]}
+                errors={errors}
+                CACHE_LIST={CACHE_LIST}
               />
-            </div>
-          ) : (
-            <Fields
-              tab={tab}
-              fields={fields}
-              values={watch()?.[tab]}
-              errors={errors}
-              CACHE_LIST={CACHE_LIST}
-            />
-          )}
-        </>
-      ) : null}
-    </>
+            )}
+          </>
+        ) : null}
+        <ButtonsStepsGroup
+          isLast={isLast}
+          isFirst={isFirst}
+          loading={loading}
+          steps={steps}
+          next={next}
+          back={back}
+        />
+      </form>
+    </FormProvider>
   );
 };
 
-export default withListBookView(FormSteps);
+export default FormSteps;

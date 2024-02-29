@@ -12,22 +12,30 @@ import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
 import { Button } from "Components/Global/Button";
 import { VoucherStepsButton } from "./VoucherStepsButton";
 import useFetch from "Hooks/useFetch";
-import { GET_NEW_VOUCHER_ENTRY_GRID } from "Helpers/constants";
-import { usePopupForm } from "Hooks/usePopupForm";
+import { GET_NEW_VOUCHER_ENTRY_GRID, METHODS } from "Helpers/constants";
 import {
   generateEntryFromVoucher,
   insertIntoGrid,
 } from "Helpers/Lib/operations/vouchers-insert";
 import { getAccountList } from "Helpers/Lib/operations/global-read";
+import { CloseIcon } from "Components/Icons";
 
 let CACHE_ROW_VALUE = {};
 
-const VoucherForm = () => {
+const VoucherForm = ({
+  voucherName,
+  voucherType,
+  popupView,
+  setRecordResponse,
+  oldValues = null,
+  outerClose
+}) => {
   const params = useParams();
-  const { name, type } = params;
+  const name = params?.name || voucherName;
+  const type = params?.type || voucherType;
   const methods = useForm();
   const { data, loading, error } = useFetch("voucher_main_data", {
-    conditions: [{ type: "and", conditions: [["voucher_type", "=", +type]] }],
+    conditions: [{ type: "and", conditions: [["voucher_type", "=", type]] }],
     limit: 1,
     sorts: [{ column: "number", order: "DESC", nulls: "last" }],
   });
@@ -94,8 +102,14 @@ const VoucherForm = () => {
           break;
       }
     }
-    setGridFields(newFields);
+    setGridFields(newFields, " ---- ");
   }, [PATTERN_SETTINGS, type]);
+
+  useEffect(() => {
+    if (oldValues) {
+      reset(oldValues);
+    }
+  }, [oldValues]);
 
   const getEntryValues = async (num) => {
     const col = {
@@ -158,29 +172,31 @@ const VoucherForm = () => {
   };
 
   const onClickAddNew = () => {
-    navigate(
-      `/vouchers/${PATTERN_SETTINGS?.code}/${PATTERN_SETTINGS?.name}/${
-        +maxLength + 1
-      }`
-    );
+    // navigate(
+    //   `/vouchers/${PATTERN_SETTINGS?.code}/${PATTERN_SETTINGS?.name}/${
+    //     +maxLength + 1
+    //   }`
+    // );
     setNumber(+maxLength + 1);
   };
 
   const calculateAmount = useCallback((row, val, column) => {
-    let prevValue = watch(column);
-    let newValue = prevValue;
-    let value = parseInt(val);
-    if (!value) return;
+    let value = 0;
+    let amountColumnName =
+      column === "credit" ? "credit_amount" : "debit_amount";
+    let totalColumnName = column === "credit" ? "debit_total" : "credit_total";
 
     if (CACHE_ROW_VALUE?.[row]) {
-      newValue -= CACHE_ROW_VALUE?.[row];
-      newValue += value;
+      let oldValue = CACHE_ROW_VALUE?.[row];
+      let subValue = watch(amountColumnName) - oldValue;
+      value = +val + subValue;
     } else {
-      newValue += value;
+      value = watch(amountColumnName) ? +val + +watch(amountColumnName) : +val;
     }
+    CACHE_ROW_VALUE[row] = +val;
 
-    CACHE_ROW_VALUE[row] = value;
-    setValue(column, newValue);
+    setValue(amountColumnName, value);
+    setValue(totalColumnName, value);
   }, []);
 
   useEffect(() => {
@@ -188,12 +204,11 @@ const VoucherForm = () => {
       if (!type) return;
       if (name?.indexOf("grid.") === -1) return;
       let currentVal = watch(name);
-      let nameSplit = name?.split(".");
-      let row = nameSplit?.[1];
-      let columnName = nameSplit?.[2];
+      let subName = name?.split(".")?.at(-1);
+      let row = name?.split(".")?.[1];
 
-      if (columnName === "credit" || columnName === "debit")
-        calculateAmount(row, currentVal, columnName);
+      if (subName === "credit" || subName === "debit")
+        calculateAmount(row, currentVal, subName);
     });
 
     return () => subscription.unsubscribe();
@@ -207,6 +222,7 @@ const VoucherForm = () => {
     let res = null;
 
     let itemId = value.id;
+
     if (maxLength >= number && value?.id) {
       res = await ApiActions.update("voucher_main_data", {
         conditions: [{ type: "and", conditions: [["id", "=", value?.id]] }],
@@ -219,6 +235,7 @@ const VoucherForm = () => {
       itemId = res?.record.id;
       setMaxLength((p) => p + 1);
     }
+
     if (res?.success) {
       insertIntoGrid({
         grid,
@@ -229,11 +246,23 @@ const VoucherForm = () => {
         should_update: maxLength < number,
       });
 
+      if (!!setRecordResponse) {
+        setRecordResponse({
+          table: name,
+          response: res,
+          method: values?.id ? METHODS.UPDATE : METHODS.INSERT,
+          grid,
+          id: values?.id,
+        });
+
+        // grid
+      }
+
       if (PATTERN_SETTINGS?.auto_gen_entries) {
         // Generate A Constraint
         generateEntryFromVoucher({
           values: value,
-          created_from: `voucher-${name}`,
+          created_from: type,
           grid,
           created_from_id: itemId,
           should_update: !maxLength < number,
@@ -255,6 +284,11 @@ const VoucherForm = () => {
   return (
     <FormProvider {...methods}>
       <BlockPaper
+        fullWidth={popupView}
+        bodyClassName={popupView ? "!p-0" : ""}
+        boxClassName={popupView ? "!shadow-none !p-0" : ""}
+        containerClassName={popupView ? "mb-0" : ""}
+        layoutBodyClassName={popupView ? "!my-0" : ""}
         customTitle={
           <span className="capitalize">
             {maxLength < number ? (
@@ -264,6 +298,14 @@ const VoucherForm = () => {
             ) : null}
             {name?.replace("-", " ")} {number}
           </span>
+        }
+        subTitle={
+          <button
+            onClick={outerClose}
+            className="h-9 w-9 rounded-full flex items-center justify-center bg-red-100 text-red-500 "
+          >
+            <CloseIcon className="w-5 h-5 text-red-500" />
+          </button>
         }
       >
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -280,6 +322,7 @@ const VoucherForm = () => {
             errors={errors}
             rowsCount={watch("grid")?.length || 1}
             CACHE_LIST={CACHE_LIST}
+            withPortal
             rowStyles={(index) => {
               if (PATTERN_SETTINGS?.even_table_color && index % 2 === 0) {
                 return { background: PATTERN_SETTINGS?.even_table_color };
@@ -297,6 +340,7 @@ const VoucherForm = () => {
             PATTERN_SETTINGS={PATTERN_SETTINGS}
           />
           <div className="flex items-center mt-4 border-t dark:border-dark-border pt-2 justify-between gap-4">
+            {/* {popupView ? null : ( */}
             <VoucherStepsButton
               number={number}
               goTo={goTo}
@@ -304,7 +348,12 @@ const VoucherForm = () => {
               isNewOne={maxLength < number}
               onClickAddNew={onClickAddNew}
             />
-            <Button title="Submit" onClick={onSubmit} />
+            {/* )} */}
+            <Button
+              title={watch("id") ? "Modify" : "Submit"}
+              onClick={onSubmit}
+              classes={"ltr:ml-auto rtl:mr-auto"}
+            />
           </div>
         </form>
       </BlockPaper>

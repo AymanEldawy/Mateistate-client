@@ -1,13 +1,6 @@
-import axios from "axios";
 import { ApiActions } from "./Lib/api";
-import {
-  FLATS_TABLE_NAME,
-  FLAT_PROPERTY_TABS_SETTINGS,
-  FLAT_PROPERTY_TYPES,
-  SELECT_LISTS,
-} from "./constants";
-import { toast } from "react-toastify";
 import { getLastNumberByColumn } from "./Lib/operations/global-insert";
+import { DEFAULT_CURRENCY_CODE } from "./GENERATE_STARTING_DATA";
 
 // export const SERVER_URL = `https://matiestate-server.vercel.app/`;
 export const SERVER_URL = `https://matiestate-server.vercel.app`;
@@ -132,12 +125,14 @@ export async function getInsertAccountTrigger(name, conditions) {
     "account",
     "parent_id",
     parent_id,
-    "number"
+    "internal_number"
   );
 
   // get default currency id
   const currencyResponse = await ApiActions.read("currency", {
-    conditions: [{ type: "and", conditions: [["code", "=", "AED"]] }],
+    conditions: [
+      { type: "and", conditions: [["code", "=", DEFAULT_CURRENCY_CODE]] },
+    ],
   });
 
   let account = {
@@ -250,6 +245,8 @@ export const getCacheRowData = (cache, name, id) => {
 };
 
 export const getCreatedFromUrl = (name, id) => {
+  if (!name || id) return;
+  
   switch (name?.toLowerCase()) {
     case "contract":
       return {
@@ -274,13 +271,11 @@ export const getCreatedFromUrl = (name, id) => {
  */
 
 export const getConnectWithUrl = async (number, id) => {
-  console.log("🚀 ~ getConnectWithUrl ~ number:", number)
   switch (number) {
     case 1:
       const response = await ApiActions.read("contract", {
         conditions: [{ type: "and", conditions: [["id", "=", id]] }],
       });
-      console.log(response);
       return {
         href: `/contracts/${id}`,
         classes: "bg-red-600 text-white p-2 rounded-md text-xs",

@@ -1364,8 +1364,8 @@ export const apartment = [
   },
   { header: "floor", accessorKey: "floor" },
   {
-    header: "flat type",
-    accessorKey: "flat_type",
+    header: "flat Kind",
+    accessorKey: "apartment_kind",
     cell: ({ getValue }) => (
       <span
         className={`rounded-md text-white py-1 px-2 text-xs capitalize `}
@@ -2624,7 +2624,7 @@ export const bill_pattern = [
       return (
         <Link
           className="text-blue-500 capitalize whitespace-nowrap"
-          to={`/patterns/update/bill_pattern/${getValue()}/${row.original.id}`}
+          to={`/patterns/update/cheque_pattern/${getValue()}/${row.original.id}`}
         >
           {getValue()}
         </Link>
@@ -3109,7 +3109,6 @@ export const installment = [
     accessorKey: "first_installment_date",
     cell: ({ getValue }) => new Date(getValue()).toLocaleDateString("en-UK"),
   },
-  { header: "installment price", accessorKey: "installment_price" },
   { header: "final payment", accessorKey: "final_payment" },
   { header: "begin number", accessorKey: "begin_number" },
   {
@@ -5914,7 +5913,7 @@ export const cheque = (type) => [
     return (
       <Link
         className="text-blue-500 capitalize whitespace-nowrap"
-        to={`/patterns/update/bill_pattern/${patternType?.name}/${patternType?.id}`}
+        to={`/patterns/update/cheque_pattern/${patternType?.name}/${patternType?.id}`}
       >
       {patternType?.name}
       </Link>

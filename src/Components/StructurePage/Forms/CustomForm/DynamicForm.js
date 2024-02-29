@@ -1,7 +1,9 @@
 import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
 import { Suspense, lazy, useMemo } from "react";
-const FormSingular = lazy(() => import("./FormSingular"));
-const FormSteps = lazy(() => import("./FormSteps"));
+import FormSteps from "./FormSteps";
+import FormSingular from "./FormSingular";
+// const FormSingular = lazy(() => import("./FormSingular"));
+// const FormSteps = lazy(() => import("./FormSteps"));
 
 export const DynamicForm = ({
   name,
@@ -9,8 +11,9 @@ export const DynamicForm = ({
   onClose,
   layout,
   oldValues,
+  setRecordResponse,
 }) => {
-  
+
   let isMultiSteps = useMemo(() => {
     const table = getFormByTableName(name);
     if (table?.forms) return true;
@@ -19,7 +22,7 @@ export const DynamicForm = ({
 
   return (
     <div key={name}>
-      <Suspense fallback={<>loading</>}>
+      {/* <Suspense fallback={<>loading</>}> */}
         {!isMultiSteps ? (
           <FormSingular
             onClose={onClose}
@@ -27,6 +30,7 @@ export const DynamicForm = ({
             refetchData={refetchData}
             layout={layout}
             oldValues={oldValues}
+            setRecordResponse={setRecordResponse}
           />
         ) : (
           <FormSteps
@@ -35,9 +39,10 @@ export const DynamicForm = ({
             refetchData={refetchData}
             layout={layout}
             oldValues={oldValues}
+            setRecordResponse={setRecordResponse}
           />
         )}
-      </Suspense>
+      {/* </Suspense> */}
     </div>
   );
 };

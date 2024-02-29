@@ -2,6 +2,7 @@ import Backdrop from "Components/Global/Backdrop";
 import Modal from "Components/Global/Modal/Modal";
 import { PlusIcon } from "Components/Icons";
 import { DEFAULT_COLORS } from "Helpers/constants";
+import useFlatColoring from "Hooks/useFlatColoring";
 import React, { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -14,11 +15,14 @@ const ColorField = ({
   error,
   readOnly,
   index,
-  updatedName, hideLabel,
   tab,
   onBlur,
+  availableColors,
+  updatedName,
+  hideLabel,
   ...field
 }) => {
+  const { changeAvailableColors } = useFlatColoring();
   const { t } = useTranslation();
   const { register, setValue, watch } = useFormContext();
   const [openColorList, setOpenColorList] = useState();
@@ -31,10 +35,17 @@ const ColorField = ({
     }
   }, [color]);
 
+  useEffect(() => {
+    if (openColorList) return;
+    if (changeAvailableColors) {
+      changeAvailableColors(watch(updatedName || field?.name));
+    }
+  }, [openColorList]);
+
   return (
     <div className="relative">
       <div className={"flex flex-col " + containerClassName} key={field?.name}>
-        {label && !hideLabel ? ( 
+        {label && !hideLabel ? (
           <label
             title={label}
             htmlFor={updatedName || field?.name}
@@ -43,7 +54,7 @@ const ColorField = ({
               labelClassName
             }
           >
-            {t(label)?.replace(/_/g, ' ')}
+            {t(label)?.replace(/_/g, " ")}
             {field?.required ? (
               <span className="text-red-600 mx-1">*</span>
             ) : null}
@@ -77,7 +88,11 @@ const ColorField = ({
       <>
         {openColorList ? (
           <div>
-            <Backdrop open={openColorList} onClose={()=> setOpenColorList(false)} classes="bg-transparent !z-10" />
+            <Backdrop
+              open={openColorList}
+              onClose={() => setOpenColorList(false)}
+              classes="bg-transparent !z-10"
+            />
             <div className="absolute z-20 min-w-[200px] p-4 top-0 ltr:left-full rtl:right-full bg-white shadow-md rounded-md">
               <div
                 className={`relative h-6 mb-4 w-6 rounded-full border flex items-center justify-center text-white text-lg overflow-hidden ${
@@ -100,7 +115,7 @@ const ColorField = ({
                 )}
               </div>
               <div className="grid grid-cols-5 gap-1">
-                {DEFAULT_COLORS?.map((currentColor) => (
+                {(availableColors || DEFAULT_COLORS)?.map((currentColor) => (
                   <button
                     key={currentColor}
                     type="button"

@@ -61,18 +61,6 @@ export const EntryFooter = ({
           </Link>
         ) : null}
       </div>
-      <div className="flex items-center mt-4 border-t pt-2 justify-between gap-4">
-        <VoucherStepsButton
-          number={number}
-          goTo={goTo}
-          maxLength={maxLength}
-          isNewOne={isNewOne}
-          onClickAddNew={onClickAddNew}
-        />
-        {hideSubmit || onlyView ? null : (
-          <Button title="Submit" disabled={watch("difference") !== 0} />
-        )}
-      </div>
     </div>
   );
 };

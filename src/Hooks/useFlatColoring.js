@@ -1,11 +1,16 @@
 import { ApiActions } from "Helpers/Lib/api";
-import { FLAT_PROPERTY_TABS_SETTINGS } from "Helpers/constants";
-import { createContext, useContext, useEffect, useState } from "react";
+import { DEFAULT_COLORS, FLAT_PROPERTY_TABS } from "Helpers/constants";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 const FlatColoringContext = createContext(null);
 
 const COLLECTION_COUNTS = {};
-const UPDATES_ROWS = {};
 
 const deleteAssetsById = async (table, row) => {
   const response = await ApiActions.remove(table, {
@@ -36,10 +41,15 @@ export const FlatColoringProvider = ({ children }) => {
   const [flatsDetails, setFlatsDetails] = useState({});
   const [canInsertColor, setCanInsertColor] = useState(false);
   const [roomCounts, setRoomCounts] = useState({});
+  const [UNITS_COLORED_COUNT, setUNITS_COLORED_COUNT] = useState({});
+  const [UPDATES_ROWS, setUPDATES_ROWS] = useState({});
+  const [availableColors, setAvailableColors] = useState(DEFAULT_COLORS);
 
   useEffect(() => {
     calculateRoomCount(COLLECTION_COUNTS, setRoomCounts);
   }, [JSON.stringify(COLLECTION_COUNTS)]);
+
+  useEffect(() => {}, []);
 
   // select color
   const onSelectColor = (rowIndex, hexValue) => {
@@ -48,14 +58,44 @@ export const FlatColoringProvider = ({ children }) => {
     setCanInsertColor(true);
   };
 
+  const changeAvailableColors = useCallback((color) => {
+    if (!color) return;
+    setAvailableColors((prev) => prev?.filter((c, i) => c !== color));
+  }, []);
+
   const onPreventColor = () => {
     setSelectedColor("");
     setHex("");
     setCanInsertColor(false);
   };
 
+  const calculateUnitsColoringOnAdd = (tab, indexHash) => {
+    let assets = UNITS_COLORED_COUNT?.[tab];
+    if (assets?.[indexHash]) return;
+
+    setUNITS_COLORED_COUNT((prev) => ({
+      ...prev,
+      [tab]: {
+        ...prev?.[tab],
+        [indexHash]: true,
+      },
+    }));
+  };
+
+  const calculateUnitsColoringOnRemove = (tab, indexHash) => {
+    let assets = UNITS_COLORED_COUNT?.[tab];
+    if (!assets?.[indexHash]) return;
+
+    delete assets?.[indexHash];
+    // insert
+    setUNITS_COLORED_COUNT((prev) => ({
+      ...prev,
+      [tab]: assets,
+    }));
+  };
+
   const onInsertColor = (tab, indexHash, additional) => {
-    let tabSettings = FLAT_PROPERTY_TABS_SETTINGS[tab];
+    let tabSettings = FLAT_PROPERTY_TABS[tab];
     let flatType = tabSettings?.type
       ? { [tabSettings?.type_col_name]: tabSettings?.type }
       : {};
@@ -63,15 +103,21 @@ export const FlatColoringProvider = ({ children }) => {
       ? { ...additional, [tabSettings?.no]: additional?.name, ...flatType }
       : {};
 
-    UPDATES_ROWS[indexHash] = true;
+    if (!UPDATES_ROWS?.[indexHash]) {
+      setUPDATES_ROWS((prev) => ({
+        ...prev,
+        [indexHash]: true,
+      }));
+    }
 
     COLLECTION_COUNTS[additional?.name] = hex;
 
+    calculateUnitsColoringOnAdd(tab, indexHash);
     let prevItem = flatsDetails?.[tab]?.[indexHash];
 
     if (prevItem?.id && prevItem?.hex !== hex) {
       // Handle delete prev asset
-      let asset = FLAT_PROPERTY_TABS_SETTINGS?.[tab];
+      let asset = FLAT_PROPERTY_TABS?.[tab];
       deleteAssetsById(asset?.table, prevItem);
     }
 
@@ -97,9 +143,10 @@ export const FlatColoringProvider = ({ children }) => {
     let removedItem = flats?.[tabName]?.[item];
     // Handle delete prev asset
     if (removedItem?.id) {
-      let asset = FLAT_PROPERTY_TABS_SETTINGS?.[tabName];
+      let asset = FLAT_PROPERTY_TABS?.[tabName];
       deleteAssetsById(asset?.table, removedItem);
     }
+    calculateUnitsColoringOnRemove(tabName, item);
     delete flats[tabName][item];
     setFlatsDetails((prev) => ({
       ...flats,
@@ -107,7 +154,7 @@ export const FlatColoringProvider = ({ children }) => {
   };
 
   const onChangeApartmentName = (tab, indexHash, value) => {
-    let tabSettings = FLAT_PROPERTY_TABS_SETTINGS[tab];
+    let tabSettings = FLAT_PROPERTY_TABS[tab];
     setFlatsDetails((prev) => ({
       ...prev,
       [tab]: {
@@ -118,6 +165,12 @@ export const FlatColoringProvider = ({ children }) => {
         },
       },
     }));
+    if (!UPDATES_ROWS?.[indexHash]) {
+      setUPDATES_ROWS((prev) => ({
+        ...prev,
+        [indexHash]: true,
+      }));
+    }
   };
 
   return (
@@ -136,6 +189,11 @@ export const FlatColoringProvider = ({ children }) => {
         roomCounts,
         COLLECTION_COUNTS,
         UPDATES_ROWS,
+        setUPDATES_ROWS,
+        availableColors,
+        changeAvailableColors,
+        UNITS_COLORED_COUNT,
+        setUNITS_COLORED_COUNT,
       }}
     >
       {children}

@@ -53,12 +53,13 @@ const authProtectedRoutes = [
   { path: "/vouchers/:type/:name/:number", component: <VoucherForm /> },
   { path: "/vouchers/entries/:number", component: <EntryForm /> },
 
-  {
-    path: "/patterns/:name",
-    component: (
-      <List addPageHref={{ allowName: true, href: "/patterns/add/" }} />
-    ),
-  },
+  // {
+  //   path: "/patterns/:name",
+  //   component: (
+  //     <List addPageHref={{ allowName: true, href: "/patterns/add/" }} />
+  //   ),
+  // },
+  { path: "/patterns/:pattern/:number", component: <PatternsForm /> },
   { path: "/patterns/add/:pattern", component: <PatternsForm /> },
   {
     path: "/patterns/update/:pattern/:name/:id",
@@ -67,11 +68,11 @@ const authProtectedRoutes = [
 
   { path: "/cheques/:code/:name/:number", component: <ChequeForm /> },
 
-  { path: "/buildings", component: <Buildings /> },
-  { path: "/buildings/add", component: <BuildingForm /> },
-  { path: "/buildings/update/:id", component: <BuildingForm /> },
-  { path: "/list/:name", component: <List /> },
-  { path: "/update/:name/:id", component: <Update /> },
+  // { path: "/buildings", component: <Buildings /> },
+  { path: "/buildings/:number", component: <BuildingForm /> },
+  // { path: "/buildings/update/:id", component: <BuildingForm /> },
+  { path: "/list/:name/:number", component: <List /> },
+  // { path: "/update/:name/:id", component: <Update /> },
   { path: "/chart/:name", component: <Chart /> },
 ];
 

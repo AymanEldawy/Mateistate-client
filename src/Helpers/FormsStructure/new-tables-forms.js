@@ -9,6 +9,7 @@ import {
   SELECT_LISTS,
   SHOP_STEPS,
   UNIQUE_REF_TABLES,
+  USER_STEPS,
   VILLA_STEPS,
   VOUCHER_PATTERN_STEPS,
 } from "Helpers/constants";
@@ -414,7 +415,7 @@ const seller = [
   },
 ];
 
-const user = [
+const user_general = [
   FIELDS_STRUCTURE.id(),
   {
     label: "number",
@@ -433,6 +434,12 @@ const user = [
     intValue: true,
     list: SELECT_LISTS("user_type"),
     selectFirstAsDefault: true,
+  },
+  {
+    label: "trn_number",
+    name: "trn_number",
+    type: "number",
+    required: false,
   },
   {
     label: "account_id",
@@ -576,10 +583,15 @@ const user = [
     required: false,
   },
   FIELDS_STRUCTURE.nationality(),
+];
+
+const user_files = [
   {
     label: "files",
     name: "files",
     key: "image",
+    allowScan: true,
+    multiple: true,
   },
 ];
 
@@ -757,13 +769,7 @@ const building = [
   //   required: false,
   // },
 ];
-const building_apartments = [
-  {
-    label: "apartment_count",
-    name: "apartment_count",
-    type: "number",
-    required: false,
-  },
+const building_units = [
   {
     label: "apartment_floor",
     name: "apartment_floor",
@@ -771,8 +777,39 @@ const building_apartments = [
     required: false,
   },
   {
-    label: "penthouse_count",
-    name: "penthouse_count",
+    label: "apartment_count_each_floor",
+    name: "apartment_count",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "shop_count",
+    name: "shop_count",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "parking_floor",
+    name: "parking_floor",
+    type: "number",
+    required: false,
+  },
+
+  {
+    label: "parking_count_each_floor",
+    name: "parking_count",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "underground_parking",
+    name: "underground_parking",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "store_count",
+    name: "store_count",
     type: "number",
     required: false,
   },
@@ -783,23 +820,12 @@ const building_apartments = [
     required: false,
   },
   {
-    label: "parking_count",
-    name: "parking_count",
+    label: "penthouse_count_each_floor",
+    name: "penthouse_count",
     type: "number",
     required: false,
   },
-  {
-    label: "parking_floor",
-    name: "parking_floor",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "mezzanine_count",
-    name: "mezzanine_count",
-    type: "number",
-    required: false,
-  },
+
   {
     label: "mezzanine_floor",
     name: "mezzanine_floor",
@@ -807,11 +833,12 @@ const building_apartments = [
     required: false,
   },
   {
-    label: "office_count",
-    name: "office_count",
+    label: "mezzanine_count_each_floor",
+    name: "mezzanine_count",
     type: "number",
     required: false,
   },
+
   {
     label: "office_floor",
     name: "office_floor",
@@ -819,32 +846,15 @@ const building_apartments = [
     required: false,
   },
   {
-    label: "stores_count",
-    name: "stores_count",
+    label: "office_count_each_floor",
+    name: "office_count",
     type: "number",
     required: false,
   },
+
   {
     label: "warehouse_count",
     name: "warehouse_count",
-    type: "number",
-    required: false,
-  },
-  // {
-  //   label: "service_apartments",
-  //   name: "service_apartments",
-  //   type: "number",
-  //   required: false,
-  // },
-  // {
-  //   label: "drivers_apartments",
-  //   name: "drivers_apartments",
-  //   type: "number",
-  //   required: false,
-  // },
-  {
-    label: "underground_parking",
-    name: "underground_parking",
     type: "number",
     required: false,
   },
@@ -1420,8 +1430,8 @@ const apartment = [
     required: false,
   },
   {
-    label: "flat_type",
-    name: "flat_type",
+    label: "apartment_kind",
+    name: "apartment_kind",
     key: "select",
     intValue: true,
     list: SELECT_LISTS("apartment_flat_type"),
@@ -1605,7 +1615,7 @@ const property_values = [
     required: false,
   },
   {
-    label: "room_count",
+    label: "unit_count",
     name: "room_count",
     type: "number",
     required: false,
@@ -2205,6 +2215,32 @@ const cheque = [
     required: false,
   },
   {
+    label: "unit number",
+    name: "parking_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "parking",
+  },
+  {
+    label: "unit number",
+    name: "shop_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "shop",
+    ref_name: "shop_no",
+  },
+  {
+    label: "unit number",
+    name: "apartment_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "apartment",
+    ref_name: "apartment_no",
+  },
+  {
     label: "due_date",
     name: "due_date",
     type: "date",
@@ -2289,8 +2325,8 @@ const cheque = [
 ];
 const cheque_grid = [
   {
-    label: "number",
-    name: "number",
+    label: "internal_number",
+    name: "internal_number",
     type: "number",
     required: false,
   },
@@ -2751,78 +2787,6 @@ const bill_partial_collection = [
   },
 ];
 
-const bill_endorsement = [
-  {
-    label: "endorsable",
-    name: "endorsable",
-    type: "checkbox",
-    key: "switch",
-    required: false,
-  },
-  {
-    label: "endorsement_gen_entries",
-    name: "endorsement_gen_entries",
-    type: "checkbox",
-    key: "switch",
-    required: false,
-  },
-  {
-    label: "endorsement_auto_gen_entries",
-    name: "endorsement_auto_gen_entries",
-    type: "checkbox",
-    key: "switch",
-    required: false,
-    disabledCondition: "endorsement_gen_entries",
-  },
-  {
-    label: "endorsement_auto_transfer_entry",
-    name: "endorsement_auto_transfer_entry",
-    type: "checkbox",
-    key: "switch",
-    required: false,
-    disabledCondition: "endorsement_gen_entries",
-  },
-  {
-    label: "endorsement_default_date",
-    name: "endorsement_default_date",
-    type: "number",
-    required: true,
-    // here list --  future
-  },
-  {
-    label: "endorsement_move_cost_center_debit",
-    name: "endorsement_move_cost_center_debit",
-    type: "checkbox",
-    key: "switch",
-    required: false,
-  },
-  {
-    label: "endorsement_move_cost_center_credit",
-    name: "endorsement_move_cost_center_credit",
-    type: "checkbox",
-    key: "switch",
-    required: false,
-  },
-  {
-    label: "endorsement_debit_account_id",
-    name: "endorsement_debit_account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-  {
-    label: "endorsement_credit_account_id",
-    name: "endorsement_credit_account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-];
-
 const bill_return = [
   {
     label: "returnable",
@@ -3002,21 +2966,22 @@ const bill_group = {
       fields: bill_collection,
       tab_name: "bill_collection",
     },
-    [BILL_PATTERN_STEPS.bill_pattern_commission]: {
-      fields: bill_commission,
-      tab_name: "bill_commission",
-    },
+
     [BILL_PATTERN_STEPS.bill_pattern_partial_collection]: {
       fields: bill_partial_collection,
       tab_name: "bill_partial_collection",
     },
-    [BILL_PATTERN_STEPS.bill_pattern_endorsement]: {
-      fields: bill_endorsement,
-      tab_name: "bill_endorsement",
-    },
+    // [BILL_PATTERN_STEPS.bill_pattern_endorsement]: {
+    //   fields: bill_endorsement,
+    //   tab_name: "bill_endorsement",
+    // },
     [BILL_PATTERN_STEPS.bill_pattern_return]: {
       fields: bill_return,
       tab_name: "bill_return",
+    },
+    [BILL_PATTERN_STEPS.bill_pattern_commission]: {
+      fields: bill_commission,
+      tab_name: "bill_commission",
     },
     [BILL_PATTERN_STEPS.bill_pattern_default_statement]: {
       fields: bill_default_statement,
@@ -3104,8 +3069,11 @@ const installment = [
   {
     label: "each_number",
     name: "each_number",
-    type: "number",
-    required: false,
+    key: "select",
+    intValue: true,
+    isArray: true,
+    list: SELECT_LISTS("installment_each_number"),
+    selectFirstAsDefault: true,
   },
   {
     label: "each_duration",
@@ -3115,15 +3083,9 @@ const installment = [
     selectFirstAsDefault: true,
   },
   {
-    label: "first_installment_date",
+    label: "first_chq_date",
     name: "first_installment_date",
     type: "date",
-    required: false,
-  },
-  {
-    label: "installment_price",
-    name: "installment_price",
-    type: "number",
     required: false,
   },
   {
@@ -3574,6 +3536,30 @@ const voucher_main_data = [
     key: "switch",
     required: false,
   },
+];
+const voucher_main_data_short = [
+  FIELDS_STRUCTURE.number(),
+  {
+    label: "created_at",
+    name: "created_at",
+    type: "date",
+    required: false,
+  },
+
+  FIELDS_STRUCTURE.note(),
+  {
+    label: "debit",
+    name: "debit",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "credit",
+    name: "credit",
+    type: "number",
+    required: false,
+  },
+  FIELDS_STRUCTURE.account(),
 ];
 
 const voucher_grid_data = [
@@ -6210,8 +6196,8 @@ const building_group = {
       fields: building,
       tab_name: "building",
     },
-    [BUILDING_STEPS.building_apartments]: {
-      fields: building_apartments,
+    [BUILDING_STEPS.building_units]: {
+      fields: building_units,
       tab_name: "building",
     },
     [BUILDING_STEPS.building_buying]: {
@@ -6241,17 +6227,30 @@ const building_group = {
   },
 };
 
+const user_group = {
+  forms: {
+    [USER_STEPS.user_general]: {
+      fields: user_general,
+      tab_name: "user",
+    },
+    [USER_STEPS.user_files]: {
+      fields: user_files,
+      tab_name: "user",
+    },
+  },
+};
+
 const building_group_short = {
   forms: {
     [BUILDING_STEPS.building_general]: {
       fields: building,
       tab_name: "building",
     },
-    [BUILDING_STEPS.building_apartments]: {
-      fields: building_apartments,
+    [BUILDING_STEPS.building_units]: {
+      fields: building_units,
       tab_name: "building",
     },
-    [BUILDING_STEPS.building_owning_the_property]: {
+    [BUILDING_STEPS.building_ownership]: {
       fields: building_real_estate_management,
       tab_name: "owning_the_property",
       formType: "nested",
@@ -6395,7 +6394,6 @@ const FORMS = {
   lessor,
   owner,
   seller,
-  user,
   bank,
   cost_center,
   country,
@@ -6405,6 +6403,7 @@ const FORMS = {
   materials,
   material_group,
   assets_group,
+  user: user_group,
   assets: assets_card_group,
   apartment: apartment_group,
   property_values,
@@ -6423,6 +6422,7 @@ const FORMS = {
   // accounting_voucher_grid_data,
   // accounting_voucher_main_data,
   accounting_voucher_pictures,
+  voucher_main_data_short,
   voucher_grid_data,
   voucher_main_data,
 

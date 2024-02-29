@@ -1,7 +1,17 @@
-import { CREATED_FROM, RECEIVED_CHQ_CODE } from "Helpers/constants";
+import { CREATED_FROM } from "Helpers/constants";
 import { ApiActions } from "../api";
 import { toast } from "react-toastify";
-import { DEFAULT_VOUCHERS_INFO } from "Helpers/GENERATE_STARTING_DATA";
+import {
+  DEFAULT_VOUCHERS_INFO,
+  CHQ_RECEIVED_CODE,
+  DEFAULT_CURRENCY_CODE,
+  CREATED_FROM_CONTRACT_CODE,
+  CREATED_FROM_BILL_CODE,
+  CONNECT_WITH_CONTRACT_CODE,
+  CREATED_FROM_CHQ_RECEIVED_NAME,
+  CREATED_FROM_CHQ_RECEIVED_CODE,
+} from "Helpers/GENERATE_STARTING_DATA";
+import { getAccountReceivable } from "./global-read";
 
 const getVoucherNumber = async (name) => {
   const response = await ApiActions.read(name, {
@@ -38,7 +48,6 @@ export const insertIntoEntry = async ({
     currency_val,
     created_from,
     created_from_id,
-    number,
   };
 
   let res = null;
@@ -75,7 +84,7 @@ export const insertIntoEntry = async ({
     responseData = entry?.result?.at(0);
   } else {
     res = await ApiActions.insert("entry_main_data", {
-      data,
+      data: { ...data, number },
     });
     responseData = res?.record;
   }
@@ -230,6 +239,7 @@ export const generateEntryFromContract = async ({
   assetsTypeNumber,
   buildingNumber,
   should_update,
+  commission,
 }) => {
   let {
     currency_id: defaultCurrency,
@@ -248,7 +258,9 @@ export const generateEntryFromContract = async ({
   let currency_id = defaultCurrency;
   if (!currency_id) {
     const currency = await ApiActions.read("currency", {
-      conditions: [{ type: "and", conditions: [["code", "=", "AED"]] }],
+      conditions: [
+        { type: "and", conditions: [["code", "=", DEFAULT_CURRENCY_CODE]] },
+      ],
     });
     currency_id = currency?.result?.at(0)?.id;
     currency_val = 1;
@@ -273,27 +285,73 @@ export const generateEntryFromContract = async ({
 
   let gridRows = [];
 
-  gridRows.push({
-    created_at,
-    account_id: client_id,
-    debit: contract_value,
-    observe_account_id: revenue_account_id,
-    credit: 0,
-    currency_id,
-    cost_center_id,
-    note,
-  });
+  if (
+    commission?.commission_percentage &&
+    commission?.commission_from_owner_account_id &&
+    commission?.commission_account_id
+  ) {
+    let ownerTotal =
+      contract_value -
+      ((commission?.commission_percentage / 100) * contract_value).toFixed(2);
+    let revenueTotal = (contract_value - ownerTotal).toFixed(2);
 
-  gridRows.push({
-    created_at,
-    account_id: revenue_account_id,
-    debit: 0,
-    observe_account_id: client_id,
-    credit: contract_value,
-    currency_id,
-    cost_center_id,
-    note,
-  });
+    gridRows.push({
+      created_at,
+      account_id: client_id,
+      debit: contract_value,
+      observe_account_id: revenue_account_id,
+      credit: 0,
+      currency_id,
+      cost_center_id,
+      note,
+    });
+
+    // revenue
+    gridRows.push({
+      created_at,
+      account_id: commission?.commission_account_id,
+      debit: 0,
+      observe_account_id: client_id,
+      credit: revenueTotal,
+      currency_id,
+      cost_center_id,
+      note,
+    });
+
+    // owner
+    gridRows.push({
+      created_at,
+      account_id: commission?.commission_from_owner_account_id,
+      debit: 0,
+      observe_account_id: client_id,
+      credit: ownerTotal,
+      currency_id,
+      cost_center_id,
+      note,
+    });
+  } else {
+    gridRows.push({
+      created_at,
+      account_id: client_id,
+      debit: contract_value,
+      observe_account_id: revenue_account_id,
+      credit: 0,
+      currency_id,
+      cost_center_id,
+      note,
+    });
+
+    gridRows.push({
+      created_at,
+      account_id: revenue_account_id,
+      debit: 0,
+      observe_account_id: client_id,
+      credit: contract_value,
+      currency_id,
+      cost_center_id,
+      note,
+    });
+  }
 
   if (current_securing_value) {
     gridRows.push({
@@ -349,7 +407,7 @@ export const generateEntryFromContract = async ({
     debit,
     credit,
     difference,
-    created_from: CREATED_FROM?.contract,
+    created_from: CREATED_FROM_CONTRACT_CODE,
     created_from_id: contractId,
     should_update,
   });
@@ -441,170 +499,43 @@ export const generateEntryFromVoucher = async ({
   });
 };
 
-// generate Entry From Building
-export const generateEntryFromBuilding = async ({
-  values,
-  created_from,
-  created_from_id,
-  grid,
-  should_update,
-}) => {
-  let {
-    currency_id,
-    currency_val,
-    note,
-    debit,
-    credit,
-    difference,
-    account_id,
-    cost_center_id,
-  } = values;
-
-  const response = await insertIntoEntry({
-    currency_id,
-    currency_val,
-    note,
-    debit,
-    credit,
-    difference,
-    created_from,
-    created_from_id,
-  });
-
-  if (!response?.id) {
-    return;
-  }
-};
-// generate Entry From Building Buying
-export const generateEntryFromBuildingBuying = async ({
-  values,
-  created_from,
-  created_from_id,
-  grid,
-  should_update,
-}) => {
-  let {
-    currency_id,
-    currency_val,
-    note,
-    debit,
-    credit,
-    difference,
-    account_id,
-    cost_center_id,
-  } = values;
-
-  const response = await insertIntoEntry({
-    currency_id,
-    currency_val,
-    note,
-    debit,
-    credit,
-    difference,
-    created_from,
-    created_from_id,
-  });
-
-  if (!response?.id) {
-    return;
-  }
-};
-// generate Entry From Building Investment
-export const generateEntryFromBuildingInvestment = async ({
-  values,
-  created_from,
-  created_from_id,
-  grid,
-  should_update,
-}) => {
-  let {
-    currency_id,
-    currency_val,
-    note,
-    debit,
-    credit,
-    difference,
-    account_id,
-    cost_center_id,
-  } = values;
-
-  const response = await insertIntoEntry({
-    currency_id,
-    currency_val,
-    note,
-    debit,
-    credit,
-    difference,
-    created_from,
-    created_from_id,
-  });
-
-  if (!response?.id) {
-    return;
-  }
-};
-
-// generate Entry From Bill
-export const generateEntryFromBill = async ({
-  values,
-  created_from,
-  created_from_id,
-  grid,
-  should_update,
-}) => {
-  let {
-    currency_id,
-    currency_val,
-    note,
-    debit,
-    credit,
-    difference,
-    account_id,
-    cost_center_id,
-  } = values;
-
-  const response = await insertIntoEntry({
-    currency_id,
-    currency_val,
-    note,
-    debit,
-    credit,
-    difference,
-    created_from,
-    created_from_id,
-  });
-
-  if (!response?.id) {
-    return;
-  }
-};
-
 // generateBillsFromInstallment
 export const generateBillsFromInstallment = async ({
   installment,
   installment_grid,
   installment_id,
   contract_id,
+  cost_center_id,
 }) => {
+  if (!installment_grid?.length) return;
+
   const { currency_id } = installment;
   const responseBillPattern = await ApiActions.read("bill_pattern", {
     conditions: [
-      { type: "and", conditions: [["code", "=", RECEIVED_CHQ_CODE]] },
+      { type: "and", conditions: [["code", "=", CHQ_RECEIVED_CODE]] },
     ],
   });
 
   const pattern = responseBillPattern?.result?.at(0);
+
+  let observe_account_id =
+    pattern?.default_account_id || (await getAccountReceivable());
+
   const bills = [];
 
   for (const item of installment_grid) {
-    let internal_number = item?.number;
-    delete item?.number;
+    // let internal_number = item?.number;
+    // delete item?.number;
     bills.push({
       ...item,
-      internal_number,
+      // internal_number,
       installment_id,
       currency_id,
-      type: RECEIVED_CHQ_CODE,
+      type: CHQ_RECEIVED_CODE,
+      connect_with: CONNECT_WITH_CONTRACT_CODE,
+      connect_with_id: contract_id,
+      cost_center_id,
+      observe_account_id,
     });
   }
 
@@ -623,10 +554,14 @@ export const generateBillsFromInstallment = async ({
     ],
   });
 
-  let prevCount = prevGrid?.result?.length;
+  let prevCount = prevGrid?.result?.length || 0;
   let currentCount = bills?.length;
 
   let length = Math.max(prevCount, currentCount);
+
+  let deletedChq = [];
+  let insertChq = [];
+  let updatedChq = [];
 
   for (let i = 0; i < length; i++) {
     let item = bills?.[i];
@@ -634,134 +569,139 @@ export const generateBillsFromInstallment = async ({
 
     if (JSON.stringify(item) === JSON.stringify(prevItem)) continue;
 
+    let chq_id = prevItem?.id;
+
     if (item && prevItem) {
-      await ApiActions.update("bill", {
+      const repUpdate = await ApiActions.update("bill", {
         conditions: [{ type: "and", conditions: [["id", "=", prevItem?.id]] }],
         updates: item,
       });
+
+      if (repUpdate?.success) updatedChq.push(item?.internal_number);
     } else {
       if (item) {
-        await ApiActions.insert("bill", {
+        const resInsert = await ApiActions.insert("bill", {
           data: { ...item, connect_with_id: contract_id },
         });
+
+        if (resInsert?.success) {
+          insertChq.push(item?.internal_number);
+          chq_id = resInsert?.record?.id;
+        }
       } else {
-        await ApiActions.remove("bill", {
+        deletedChq.push(item?.internal_number);
+        const resDelete = await ApiActions.remove("bill", {
           conditions: [
             { type: "and", conditions: [["id", "=", prevItem?.id]] },
           ],
         });
+        if (resDelete?.success) {
+          const res = await ApiActions.update("entry_main_data", {
+            conditions: [
+              { type: "and", conditions: [["created_from_id", "=", chq_id]] },
+            ],
+            updates: { is_deleted: true },
+          });
+          if (res?.success) chq_id = null;
+        } else {
+          deletedChq?.filter((c) => c !== item?.internal_number);
+        }
       }
     }
+    if (chq_id) {
+      // Entry;
+      await generateEntryFromBill({
+        created_from_id: chq_id,
+        created_from: CREATED_FROM_CHQ_RECEIVED_CODE,
+        values: item,
+      });
+    }
   }
+
+  if (deletedChq?.length) {
+    toast.success(`Successfully deleted Cheques ${deletedChq}`, {
+      autoClose: false,
+    });
+  }
+  if (updatedChq?.length) {
+    toast.success(`Successfully updated Cheques ${updatedChq}`, {
+      autoClose: false,
+    });
+  }
+  if (insertChq?.length) {
+    toast.success(`Successfully inserted Cheques ${insertChq}`, {
+      autoClose: false,
+    });
+  }
+  return;
 };
 
-export const generateVoucherFromBill = async (values, pattern) => {
-  const {
+// generate Entry From Bill
+export const generateEntryFromBill = async ({
+  values,
+  created_from,
+  created_from_id,
+}) => {
+  let {
+    account_id,
     amount,
     currency_id,
     currency_val,
-    account_id,
-    observe_account_id,
     cost_center_id,
-    connect_with,
-    connect_with_id,
-    note,
     due_date,
+    note: note1,
+    observe_account_id,
+    internal_number,
   } = values;
 
-  const isCredit = pattern?.paper_type === 2 ? "credit" : "debit";
-  const isCreditAmount =
-    isCredit === "credit" ? "credit_amount" : "debit_amount";
-  const isCreditTotal = isCredit === "debit" ? "credit_total" : "debit_total";
+  let note = `Generated Entry From chq number ${internal_number} amount ${amount}`;
 
-  const response = await insertIntoVoucher({
+  let entry = {
     created_at: due_date,
-    currency_id,
-    currency_val,
-    connect_with,
-    account_id,
+    currency_id: currency_id,
+    currency_val: currency_val || 1,
     note,
-    debit: 0,
-    credit: 0,
-    connect_with_id,
-    voucher_type: DEFAULT_VOUCHERS_INFO?.receipts?.code,
-    debit_amount: 0,
-    credit_total: 0,
-    credit_amount: 0,
-    debit_total: 0,
-    [isCredit]: amount,
-    [isCreditAmount]: amount,
-    [isCreditTotal]: amount,
-  });
+    debit: amount, // cash
+    credit: amount, // customer
+    difference: 0,
+    created_from,
+    created_from_id,
+  };
 
-  const grid = [
-    {
-      account_id: observe_account_id,
-      currency_id,
-      cost_center_id,
-      debit: 0,
-      credit: 0,
-      voucher_main_data_id: response?.id,
-      [isCredit]: amount,
-    },
-  ];
+  // insert into Entry
+  const response = await insertIntoEntry(entry);
 
   if (response?.id) {
-    await insertIntoGrid({
-      grid,
-      itemId: response?.id,
-      tableName: "voucher_main_data",
-      gridTableName: "voucher_grid_data",
-      itemSearchName: "voucher_main_data_id",
-    });
-  }
-
-  if (pattern?.auto_gen_entries) {
-    // Generate A Constraint
-    const responseEntry = await insertIntoEntry({
-      currency_id,
-      note,
-      debit: 0,
-      credit: 0,
-      difference: 0,
-      currency_val,
-      created_from: CREATED_FROM.bill,
-      created_from_id: response?.id,
-      [isCredit]: amount,
-    });
-
-    if (responseEntry?.id) {
-      const gridEntry = [];
-
-      gridEntry.push({
-        account_id,
-        observe_account_id: observe_account_id,
-        currency_id,
-        cost_center_id,
-        note,
-        debit: 0,
-        credit: 0,
-        [isCredit]: amount,
-      });
-
-      gridEntry.push({
+    const grid = [
+      {
         account_id: observe_account_id,
         observe_account_id: account_id,
         currency_id,
         cost_center_id,
-        note,
-        debit: 0,
+        debit: amount,
         credit: 0,
-        [isCredit === "credit" ? "debit" : "credit"]: amount,
-      });
+        note: note1,
+      },
 
-      await insertIntoGrid({
-        grid: gridEntry,
-        itemId: responseEntry?.id,
-        tableName: "entry_main_data",
-        gridTableName: "entry_grid_data",
-        itemSearchName: "entry_main_data_id",
-      });
-    }
+      {
+        account_id,
+        observe_account_id,
+        currency_id,
+        cost_center_id,
+        debit: 0,
+        credit: amount,
+        note: note1,
+      },
+    ];
+
+    await insertIntoGrid({
+      grid,
+      itemId: response?.id,
+      tableName: "entry_main_data",
+      gridTableName: "entry_grid_data",
+      itemSearchName: "entry_main_data_id",
+    });
+
+    return;
   }
 };

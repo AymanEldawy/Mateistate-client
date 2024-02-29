@@ -22,7 +22,7 @@ const created_at = (additional) => ({
   label: "created_at",
   name: "created_at",
   type: "date",
-
+  defaultValue: new Date(),
   ...additional,
 });
 

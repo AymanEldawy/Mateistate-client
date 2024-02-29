@@ -1,6 +1,45 @@
-export const IGNORED_Fields = ["id", "created_at"];
+import {
+  APARTMENT_ASSET_TYPE_CODE,
+  APARTMENT_ASSET_TYPE_DEFAULT_NAME,
+  CONNECT_WITH_BILL_CODE,
+  CONNECT_WITH_BILL_NAME,
+  CONNECT_WITH_CONTRACT_CODE,
+  CONNECT_WITH_CONTRACT_NAME,
+  CONNECT_WITH_LAWSUIT_CODE,
+  CONNECT_WITH_LAWSUIT_NAME,
+  CONNECT_WITH_NOTHING_CODE,
+  CONNECT_WITH_NOTHING_NAME,
+  CREATED_FROM_BILL_CODE,
+  CREATED_FROM_BILL_NAME,
+  CREATED_FROM_CONTRACT_CODE,
+  CREATED_FROM_CONTRACT_NAME,
+  CREATED_FROM_LAWSUIT_CODE,
+  CREATED_FROM_LAWSUIT_NAME,
+  CREATED_FROM_PAYMENT_VOUCHER_CODE,
+  CREATED_FROM_PAYMENT_VOUCHER_NAME,
+  CREATED_FROM_RECEIPT_VOUCHER_CODE,
+  CREATED_FROM_RECEIPT_VOUCHER_NAME,
+  LAND_ASSET_TYPE_CODE,
+  LAND_ASSET_TYPE_DEFAULT_NAME,
+  PARKING_ASSET_TYPE_CODE,
+  PARKING_ASSET_TYPE_DEFAULT_NAME,
+  SHOP_ASSET_TYPE_CODE,
+  SHOP_ASSET_TYPE_DEFAULT_NAME,
+} from "./GENERATE_STARTING_DATA";
 
-export const RECEIVED_CHQ_CODE = 2;
+export const HAS_INTERNAL_NUMBER = {
+  cost_center: true,
+  cheque: true,
+  account: true,
+};
+
+export const METHODS = {
+  INSERT: "INSERT",
+  UPDATE: "UPDATE",
+  DELETE: "DELETE",
+};
+
+export const IGNORED_Fields = ["id", "created_at"];
 
 export const IGNORED_SHOW_NUMBER_TABLE = {
   parking: true,
@@ -238,14 +277,14 @@ const nationality_list = [
 ];
 
 export const CONTRACTS_ASSETS_TYPE = {
-  apartment: 1,
-  parking: 2,
-  shop: 3,
-  land: 4,
-  1: "apartment",
-  2: "parking",
-  3: "shop",
-  4: "land",
+  [APARTMENT_ASSET_TYPE_DEFAULT_NAME]: APARTMENT_ASSET_TYPE_CODE,
+  [PARKING_ASSET_TYPE_DEFAULT_NAME]: PARKING_ASSET_TYPE_CODE,
+  [SHOP_ASSET_TYPE_DEFAULT_NAME]: SHOP_ASSET_TYPE_CODE,
+  [LAND_ASSET_TYPE_DEFAULT_NAME]: LAND_ASSET_TYPE_CODE,
+  [APARTMENT_ASSET_TYPE_CODE]: APARTMENT_ASSET_TYPE_DEFAULT_NAME,
+  [PARKING_ASSET_TYPE_CODE]: PARKING_ASSET_TYPE_DEFAULT_NAME,
+  [SHOP_ASSET_TYPE_CODE]: SHOP_ASSET_TYPE_DEFAULT_NAME,
+  [LAND_ASSET_TYPE_CODE]: LAND_ASSET_TYPE_DEFAULT_NAME,
 };
 
 export const SELECT_LISTS = (listName) => {
@@ -256,10 +295,10 @@ export const SELECT_LISTS = (listName) => {
     type: ["Debit", "Credit"],
 
     bill_connect_with: [
-      { name: "Nothing", id: 0 },
-      { name: "Contract", id: 1 },
-      { name: "Lawsuit", id: 2 },
-      { name: "Bill", id: 3 },
+      { name: [CONNECT_WITH_NOTHING_NAME], id: CONNECT_WITH_NOTHING_CODE },
+      { name: [CONNECT_WITH_CONTRACT_NAME], id: CONNECT_WITH_CONTRACT_CODE },
+      { name: [CONNECT_WITH_LAWSUIT_NAME], id: CONNECT_WITH_LAWSUIT_CODE },
+      { name: [CONNECT_WITH_BILL_NAME], id: CONNECT_WITH_BILL_CODE },
     ],
 
     user_type: [
@@ -280,8 +319,8 @@ export const SELECT_LISTS = (listName) => {
       { name: "office", id: 3 },
       { name: "penthouse", id: 4 },
       { name: "warehouse", id: 5 },
-      { name: "driver flats", id: 6 },
-      { name: "servant flats", id: 7 },
+      // { name: "driver flats", id: 6 },
+      // { name: "servant flats", id: 7 },
     ],
 
     parking_kind_type: [
@@ -315,10 +354,17 @@ export const SELECT_LISTS = (listName) => {
     ],
 
     contact_pattern_assets_type: [
-      { name: "Apartment", id: 1 },
-      { name: "Parking", id: 2 },
-      { name: "Shop", id: 3 },
-      { name: "Land", id: 4 },
+      // { name: "Apartment", id: 1 },
+      // { name: "Parking", id: 2 },
+      // { name: "Shop", id: 3 },
+      // { name: "Land", id: 4 },
+      {
+        name: [APARTMENT_ASSET_TYPE_DEFAULT_NAME],
+        id: APARTMENT_ASSET_TYPE_CODE,
+      },
+      { name: [PARKING_ASSET_TYPE_DEFAULT_NAME], id: PARKING_ASSET_TYPE_CODE },
+      { name: [SHOP_ASSET_TYPE_DEFAULT_NAME], id: SHOP_ASSET_TYPE_CODE },
+      { name: [LAND_ASSET_TYPE_DEFAULT_NAME], id: LAND_ASSET_TYPE_CODE },
     ],
 
     contact_pattern_record_created_date: [
@@ -331,6 +377,8 @@ export const SELECT_LISTS = (listName) => {
       { name: "Week", id: 1 },
       { name: "Year", id: 3 },
     ],
+
+    installment_each_number: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
 
     installment_voucher_type: [
       { name: "No down payment.", id: 3 },
@@ -345,10 +393,10 @@ export const SELECT_LISTS = (listName) => {
     // contract
 
     contract_connect_with: [
-      { name: "Nothing", id: 0 },
-      { name: "Contract", id: 1 },
-      { name: "Lawsuit", id: 2 },
-      { name: "Bill", id: 3 },
+      { name: CONNECT_WITH_NOTHING_NAME, id: CONNECT_WITH_NOTHING_CODE },
+      { name: CONNECT_WITH_CONTRACT_NAME, id: CONNECT_WITH_CONTRACT_CODE },
+      { name: CONNECT_WITH_LAWSUIT_NAME, id: CONNECT_WITH_LAWSUIT_CODE },
+      { name: CONNECT_WITH_BILL_NAME, id: CONNECT_WITH_BILL_CODE },
     ],
 
     contract_status: [
@@ -402,11 +450,16 @@ export const ACTIONS = {
   OPEN_TERMINATION_FINES_FORM: "OPEN_TERMINATION_FINES_FORM",
 };
 
+export const USER_STEPS = {
+  user_general: "user_general",
+  user_files: "user_files",
+};
+
 export const BUILDING_STEPS = {
   building_general: "building_general",
-  building_apartments: "building_apartments",
+  building_units: "building_units",
   building_buying: "building_buying",
-  building_owning_the_property: "building_owning_the_property",
+  building_ownership: "building_ownership",
   building_editorial_entry: "building_editorial_entry",
   building_investment: "building_investment",
   building_pictures: "building_pictures",
@@ -574,8 +627,8 @@ export const FLAT_PROPERTY_COLORS = {
   apartment_5: "#FF004D",
   apartment_6: "#86B6F6",
   apartment_7: "#F6F7C4",
-  shop: "#FB8B24",
-  // stores: "storess",
+  shop_1: "#FB8B24",
+  shop_2: "#3498DB",
   parking_1: "#200E3A",
   parking_2: "#9A031E",
 };
@@ -587,79 +640,72 @@ export const FLAT_PROPERTY_TYPES = {
   apartment_5: "warehouse",
   apartment_6: "driver flats",
   apartment_7: "servant flats",
-  shop: "shop",
-  // stores: "storess",
+  shop_1: "shop",
+  shop_2: "store",
   parking_1: "parking",
   parking_2: "underground parking",
 };
 
-export const FLAT_PROPERTY_TABS_SETTINGS = {
+export const FLAT_PROPERTY_TABS = {
   apartment: {
+    tabName: "apartment",
+    x: "apartment_floor",
+    y: "apartment_count",
     no: "apartment_no",
     type: 1,
-    type_col_name: "flat_type",
+    type_col_name: "apartment_kind",
     table: "apartment",
     prefix: "",
     start: 101,
   },
   mezzanine: {
+    tabName: "mezzanine",
+    x: "mezzanine_floor",
+    y: "mezzanine_count",
     no: "apartment_no",
     type: 2,
-    type_col_name: "flat_type",
+    type_col_name: "apartment_kind",
     table: "apartment",
     prefix: "M",
     start: "01",
   },
   office: {
+    tabName: "office",
+    x: "office_floor",
+    y: "office_count",
     no: "apartment_no",
     type: 3,
-    type_col_name: "flat_type",
+    type_col_name: "apartment_kind",
     table: "apartment",
     prefix: "O",
     start: "101",
   },
-  penthouse: {
-    no: "apartment_no",
-    type: 4,
-    type_col_name: "flat_type",
-    table: "apartment",
-    prefix: "PH",
-    start: "101",
-  },
-  warehouse: {
-    no: "apartment_no",
-    type: 5,
-    type_col_name: "flat_type",
-    table: "apartment",
-    prefix: "W",
-    start: "01",
-  },
-  "driver flats": {
-    no: "apartment_no",
-    type: 6,
-    type_col_name: "flat_type",
-    table: "apartment",
-    prefix: "DF",
-    start: "101",
-  },
-  "servant flats": {
-    no: "apartment_no",
-    type: 7,
-    type_col_name: "flat_type",
-    table: "apartment",
-    prefix: "SF",
-    start: "101",
-  },
-  stores: {
-    no: "apartment_no",
-    type_col_name: "flat_type",
-    table: "apartment",
+  store: {
+    tabName: "store",
+    x: "store_count",
+    y: "",
+    no: "shop_no",
+    type_col_name: "shop_kind",
+    type: 2,
+    table: "shop",
     prefix: "S",
     start: "01",
   },
-
-  shop: { no: "shop_no", table: "shop", prefix: "SH", start: "01" },
+  shop: {
+    tabName: "shop",
+    x: "shop_count",
+    y: "",
+    no: "shop_no",
+    type: 1,
+    type_col_name: "shop_kind",
+    table: "shop",
+    prefix: "SH",
+    start: "01",
+  },
   parking: {
+    tabName: "parking",
+    x: "parking_floor",
+    y: "parking_count",
     no: "parking_no",
     type: 1,
     type_col_name: "parking_kind",
@@ -667,7 +713,21 @@ export const FLAT_PROPERTY_TABS_SETTINGS = {
     prefix: "P",
     start: "01",
   },
+  penthouse: {
+    tabName: "penthouse",
+    x: "penthouse_floor",
+    y: "penthouse_count",
+    no: "apartment_no",
+    type: 4,
+    type_col_name: "apartment_kind",
+    table: "apartment",
+    prefix: "PH",
+    start: "101",
+  },
   "underground parking": {
+    tabName: "underground parking",
+    x: "underground_parking",
+    y: "",
     no: "parking_no",
     type: 2,
     type_col_name: "parking_kind",
@@ -675,80 +735,29 @@ export const FLAT_PROPERTY_TABS_SETTINGS = {
     prefix: "UP",
     start: "01",
   },
-};
-
-export const FLAT_PROPERTY_TABS = [
-  {
-    alias: 0,
-    tabName: "apartment",
-    x: "apartment_floor",
-    y: "apartment_count",
-  },
-  {
-    alias: 2,
-    tabName: "mezzanine",
-    x: "mezzanine_floor",
-    y: "mezzanine_count",
-  },
-  {
-    alias: 1,
-    tabName: "office",
-    x: "office_floor",
-    y: "office_count",
-  },
-  {
-    alias: "shop",
-    tabName: "shop",
-    x: "stores_count",
-    y: "",
-  },
-  {
-    alias: 3,
-    tabName: "parking",
-    x: "parking_floor",
-    y: "parking_count",
-  },
-  {
-    alias: "penthouse",
-    tabName: "penthouse",
-    x: "penthouse_floor",
-    y: "penthouse_count",
-  },
-  {
-    alias: "underground_parking",
-    tabName: "underground parking",
-    x: "underground_parking",
-    y: "",
-  },
-  {
-    alias: "warehouse",
+  warehouse: {
     tabName: "warehouse",
     x: "warehouse_count",
     y: "",
+    no: "apartment_no",
+    type: 5,
+    type_col_name: "apartment_kind",
+    table: "apartment",
+    prefix: "W",
+    start: "01",
   },
-  // {
-  //   alias: 7,
-  //   tabName: "driver flats",
-  //   x: "drivers_apartments",
-  //   y: "",
-  // },
-  // {
-  //   alias: 8,
-  //   tabName: "servant flats",
-  //   x: "service_apartments",
-  //   y: "",
-  // },
-];
+};
 
 export const FLATS_TABLE_NAME = {
   "underground parking": "parking",
   parking: "parking",
   shop: "shop",
+  store: "shop",
   apartment: "apartment",
 };
 
 export const GET_NEW_ENTRY_GRID = () => {
-  return Array(10)
+  return Array(5)
     ?.fill(0)
     .map((item) => ({
       account_id: null,
@@ -762,7 +771,7 @@ export const GET_NEW_ENTRY_GRID = () => {
 };
 
 export const GET_NEW_VOUCHER_ENTRY_GRID = () => {
-  return Array(10)
+  return Array(5)
     ?.fill(0)
     .map((item) => ({
       account_id: null,
@@ -776,24 +785,11 @@ export const GET_NEW_VOUCHER_ENTRY_GRID = () => {
 };
 
 export const CREATED_FROM = {
-  contract: "Contract",
-  receipt: "Receipt Voucher",
-  payment: "Payment Voucher",
-  lawsuit: "Lawsuit",
-  bill: "Bill",
-  1: "Contract",
-  2: "Lawsuit",
-  3: "Bill",
-  4: "Payment Voucher",
-  5: "Receipt Voucher",
-};
-
-export const SHOULD_GENERATE_ENTRIES = {
-  op_collection: true,
-  op_partial_collection: true,
-  op_deportation: true,
-  op_endorsement: true,
-  op_return: true,
+  [CREATED_FROM_CONTRACT_CODE]: CREATED_FROM_CONTRACT_NAME,
+  [CREATED_FROM_LAWSUIT_CODE]: CREATED_FROM_LAWSUIT_NAME,
+  [CREATED_FROM_BILL_CODE]: CREATED_FROM_BILL_NAME,
+  [CREATED_FROM_PAYMENT_VOUCHER_CODE]: CREATED_FROM_PAYMENT_VOUCHER_NAME,
+  [CREATED_FROM_RECEIPT_VOUCHER_CODE]: CREATED_FROM_RECEIPT_VOUCHER_NAME,
 };
 
 export const DEFAULT_COLORS = [
@@ -818,23 +814,6 @@ export const DEFAULT_COLORS = [
   "#2E8B57", // Sea Green
   "#7B68EE", // Medium Slate Blue
 ];
-
-export const SPECIAL_TABLES = [
-  "op_collection",
-  "op_partial_collection",
-  "op_deportation",
-  "op_endorsement",
-  "op_return",
-];
-
-export const APP_SETTINGS = {
-  DEFAULT_VALUES: {
-    CURRENCY: {
-      key: "code",
-      value: "AED",
-    },
-  },
-};
 
 export const resetChequeFields = () => ({
   amount: 0,
@@ -875,15 +854,15 @@ export const UNIQUE_REF_TABLES = {
   suppliers: "SUPPLIERS",
 };
 
-
 export const FLATS = {
   apartment_count: 0,
   penthouse_count: 0,
   parking_count: 0,
   mezzanine_count: 0,
   office_count: 0,
-  stores_count: 0,
+  store_count: 0,
   warehouse_count: 0,
+  shop_count: 0,
   // service_apartments: 0,
   // drivers_apartments: 0,
   underground_parking: 0,

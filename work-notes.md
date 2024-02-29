@@ -208,27 +208,140 @@ NOTES: complicated tasks
 - [✔️] reset contract
 - [✔️] fix month and default installment
 
-- [] on delete cascade bill or account or building or account
-- [] scan
-- [] cheques cash 131
-- [] connect with view
-- [] unique name account fix
-
 ## TODO Tasks
 
-- [] gen entries from bill
+- [✔️] تغيير اسم ال apartments الي units
+- [✔️] اضافة shops
+- [✔️] ترتيب ظهور الشقق و المحلات بالبناء
+- [✔️] اصلاح اضافة البناء بعد تحديد المالك
+- [✔️] طرح عدد الشقق الملونة من العدد المعروض في صفحة التلوين
+- [✔️] اسم مركز الكلفة بيكون نفس الاسم الذي تم تحديده في صفحة التلوين
+- [✔️] اصلاح الترقيم في مركز الكلفة
+- [✔️] اضافة حقل جديد في حساب المستخدم
+- [✔️] اصلاح اضافة المستخدم
+- [✔️] اصلاح بوب اب التاريخ
+- [✔️] اصلاح بوب اب supplier
+- [✔️] اخفاء حقل السعر في الاقساط
+- [✔️] اضافة ايقون اغلاق في جميع البوب اب
+- [✔️] اضافة دروبدون لعدد الشهور
+- [✔️] تغيير بعض المسميات في الاقساط
+- [✔️] تغيير لون القائمة الجانبية بالبناء
+- [✔️] نوافذ البوب اب التي تفتح يجب ان تكون مرتبة بحيث الجديد اعلي او امام القديم
+- [✔️] اصلاح مشكلة اضافة الدفعة الاولي
+- [✔️] اضافة زرار اضافة جديدة للشيكات و الكاش
+- [✔️] طباعة الكل كوضع افتراضي
+- [✔️] تقسيم صفحة المستخدم الي اثنين معلومات و ملفات
+- [✔️] ايقونة التكبير و التصغير
+- [✔️] note1 اصلاح اختفاء
+- [✔️] حل مشكلة عدم ظهور العملة كوضع افترضي & و جميع التواريخ تاخذ التاريخ الحالي كبداية
+- [✔️] unique field clearable
+- [✔️] اضافة تنبيهات لكل الحالات اثناء الsubmit
+  ملاحظات السند
+- [✔️] يجب ان يحتوي كل سند علي مدين و دائن
+- [✔️] يجب ان يكون طرح قيمة الدائن من المدين او العكس تساوي 0
+- [✔️] يجب ان لا يقل السند عن سطرين
+- [] الحسابات مختلفة
+
+
+## TODO Tasks
+- [✔️] cheques cash 131
+- [✔️] unique name account fix
+- [✔️] chq apartment column
+- [✔️] tools count 
+- [✔️] tools color
+- [✔️] entry reverse user debit 
+- [✔️] all user credit voucher and cash debit 
+- [✔️] contract flat type
+- [✔️] chq operation 
+- [✔️] Hadnle Add Cash & Chq 
+- [✔️] gen entries from bill
+
+- [] handle hide deleted entry 
+- [] Update Cash & Chq  `whatsapp` 
+- [] handle next and back with cache data in each page has steps feature
+- [] connect with view
+- [] on delete cascade bill or account or building or account
+- [] handle delete Entry 
+
+
 - [] on_collection
 - [] op_partial_collection
 - [] op_deportation
 - [] op_return
+
 
 - [] Global print file
 - [] update Global read file with joins
 - [] watch video for `Lawsuit` and generate database tables for it
 - [] watch video for completed apartment gen checks
 
+
+- [] Reports 
+- [] scan
+- [] speed tools page 
+
+
+
+
+
+- [✔️] fix page tools count & color 
+- [✔️] Fix cost center duplicate 
+- [✔️] Receipt form fix
+- [✔️] entry from chq
+- [✔️] all popup should has x close 
+
+
+- [] working on operation from 
+- [] change view from able to book view <>
+- [] all entries rows should start with debit as first 
+- [] add icons to buttons and description to color icon on building form
+- [] fix user form on add suppliers 
+- [] get and merge building accounts if exsit on add contract 
+- [] descrease installmet alert
+- [] readable alert on failed to insert name exsit or dubplicate name
+- [] fix search select 
+- []
+
+depost 
+note
+cash
+revenuse
+owner 
+update chq 
+entry from chq
+
+ 
+
+- Recipet to cash 
+- chq to note recivable 
+- partial < all partial must <= amount >
+- hide deproation 
+- escape delete entry 
+- sort prtial form 
+- collection debit bank credit note recivable 
+- building commin 1 pattern 2 manual 3 
+
+
+
+
+
+
+
+
+
+
+<!-- internal_number -->
+account
+cost_center
+chq
+
+
+
+
+
 <!--
 "مؤجرة" - "rented";
 "خالية" - "vacant";
 "منتهية ولم تجدد" - "expired and not renewed";
 "تم التجديد" - "renewed"; -->
+
