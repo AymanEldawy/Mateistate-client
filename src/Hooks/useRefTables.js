@@ -1,25 +1,16 @@
-import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
+import getFormByTableName from "Helpers/Forms/forms";
 import { ApiActions } from "Helpers/Lib/api";
-import { getLastCostCenterNumber } from "Helpers/Lib/operations/global-insert";
 import {
-  getAccount,
   getAccountList,
-  getAccountsChildrenByName,
-  getContracts,
-  getCostCenter,
-} from "Helpers/Lib/operations/global-read";
+  getAccountsChildrenByName, getCostCenterList
+} from "Helpers/Lib/global-read";
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
 import { useEffect, useMemo, useState } from "react";
 
-const GLOBAL_READ_DATA = {
-  account: getAccount,
-  contract: getContracts,
-  cost_center: getCostCenter,
-};
-
 const useRefTable = (name, params) => {
   const [CACHE_LIST, setCACHE_LIST] = useState({});
-  
+  const [fieldsHash, setFieldsHash] = useState({});
+
   const fields = useMemo(() => getFormByTableName(name), [name]);
 
   useEffect(() => {
@@ -29,13 +20,29 @@ const useRefTable = (name, params) => {
   const getRefTables = async () => {
     if (!fields?.length) return;
     let hash = {};
+    let fieldsHash = {};
     for (let i = 0; i < fields?.length; i++) {
       let field = fields?.[i];
+      fieldsHash[field?.name] = field;
 
       if (hash[field?.ref_table] || CACHE_LIST?.[field?.ref_table]) continue;
 
+      if (field?.is_ref && field?.no_filter) {
+        const response = await ApiActions.read(
+          field?.ref_table,
+          field?.conditions || {}
+        );
+        hash[field?.ref_table] = response?.result;
+        continue;
+      }
+
       if (field?.ref_table === "account") {
         hash.account = await getAccountList();
+        continue;
+      }
+
+      if (field?.ref_table === "cost_center") {
+        hash.cost_center = await getCostCenterList();
         continue;
       }
 
@@ -67,9 +74,10 @@ const useRefTable = (name, params) => {
       ...prev,
       ...hash,
     }));
+    setFieldsHash(fieldsHash);
   };
 
-  return { fields, CACHE_LIST, setCACHE_LIST };
+  return { fields, fieldsHash, CACHE_LIST, setCACHE_LIST };
 };
 
 export default useRefTable;

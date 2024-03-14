@@ -2,34 +2,45 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { EntryHead } from "./EntryHead";
 import { EntryFooter } from "./EntryFooter";
 import BlockPaper from "Components/Global/BlockPaper";
-import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
-import { useParams, useNavigate } from "react-router-dom";
+import getFormByTableName from "Helpers/Forms/forms";
 import { FormProvider, useForm } from "react-hook-form";
 import { ApiActions } from "Helpers/Lib/api";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
-import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
-import useFetch from "Hooks/useFetch";
+import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
 import { toast } from "react-toastify";
-import { GET_NEW_ENTRY_GRID } from "Helpers/constants";
-import { getAccountList } from "Helpers/Lib/operations/global-read";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import { CloseIcon } from "Components/Icons";
 import { Button } from "Components/Global/Button";
-import { VoucherStepsButton } from "../VoucherStepsButton";
+import { FormStepPagination } from "../../../../Global/FormStepPagination";
+import useListView from "Hooks/useListView";
+import { getResetFields } from "Helpers/Lib/global-reset";
+import ConfirmModal from "Components/Global/Modal/ConfirmModal";
+import Loading from "Components/Global/Loading";
+import { ErrorText } from "Components/Global/ErrorText";
+import useRefTable from "Hooks/useRefTables";
 
 const EntryForm = ({ oldValue, onlyView, outerClose }) => {
-  const params = useParams();
-  const { data, loading, error } = useFetch("entry_main_data", {
-    limit: 1,
-    sorts: [{ column: "number", order: "DESC", nulls: "last" }],
-  });
+  // const [number, setNumber] = useState(0)
+  const name = "entry_main_data";
+  const {
+    goToNumber,
+    isLayoutUpdate,
+    listOfNumbers,
+    number,
+    setNumber,
+    maxLength,
+    setMaxLength,
+    openConfirmation,
+    setOpenConfirmation,
+    setListOfNumbers,
+    onDeleteItem,
+  } = useListView({ name, ignoreList: !!onlyView });
   const { setVoucherInfo } = useVoucherEntriesView();
+  const { CACHE_LIST } = useRefTable("entry_grid_data");
   const methods = useForm();
-  const navigate = useNavigate();
   const [refresh, setRefresh] = useState(false);
-  const [number, setNumber] = useState(oldValue?.number || params?.number);
-  const [maxLength, setMaxLength] = useState(0);
-  const [CACHE_LIST, setCACHE_LIST] = useState({});
+  const [gridErrors, setGridErrors] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     handleSubmit,
@@ -37,42 +48,23 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
     reset,
     setValue,
     formState: { errors },
+    unregister,
   } = methods;
 
   const getEntryValues = async (num) => {
-    const col = {
-      number,
-      credit: null,
-      currency_id: "",
-      currency_val: null,
-      debit: null,
-      difference: null,
-      note: "",
-      created_at: "",
-      grid: GET_NEW_ENTRY_GRID(),
-    };
-
     const res = await GET_UPDATE_DATE("entry", num);
-
     if (res?.id) {
       reset(res);
-    } else {
-      reset(col);
     }
+    setRefresh((p) => !p);
   };
 
   useEffect(() => {
-    if (!number) return;
-
-    // setValue("number", number);
-    getEntryValues(number);
-    // setNumber(number);
+    reset(getResetFields(name));
+    if (number <= maxLength) {
+      getEntryValues(listOfNumbers?.at(number - 1));
+    }
   }, [number]);
-
-  useEffect(() => {
-    if (loading) return;
-    setMaxLength(+data?.at(0)?.number || 0);
-  }, [loading]);
 
   useEffect(() => {
     if (oldValue) {
@@ -98,13 +90,16 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
       if (subName === "credit" || subName === "debit") {
         calculateDifferences();
       }
+      if (subName === "account_id" && value) {
+        validationAccounts();
+      }
     });
 
     return () => subscription.unsubscribe();
   }, [watch]);
 
   const fields = useMemo(() => {
-    let forms = getFormByTableName("entry_main_data");
+    let forms = getFormByTableName(name);
     let hash = {};
     for (const field of forms) {
       hash[field.name] = field;
@@ -114,20 +109,22 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
 
   const gridFields = useMemo(() => getFormByTableName("entry_grid_data"), []);
 
-  const getRefTables = async () => {
-    let hash = {};
-    for (const field of ["cost_center", "currency", "seller"]) {
-      const response = await ApiActions.read(field);
-      hash[field] = response?.result;
+  const onDelete = async () => {
+    let [id, number] = watch(["id", "number"]);
+    // let number =
+    let res = await ApiActions.remove(name, {
+      conditions: [
+        {
+          type: "and",
+          conditions: [["id", "=", id]],
+        },
+      ],
+    });
+    if (res?.success) {
+      onDeleteItem(number);
     }
-    hash.account = await getAccountList();
-    setCACHE_LIST(hash);
+    setOpenConfirmation(false);
   };
-
-  useEffect(() => {
-    getRefTables();
-  }, []);
-
   const calculateDifferences = useCallback(() => {
     let grid = watch("grid");
     let credit = 0;
@@ -145,17 +142,22 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
     setValue("difference", debit - credit);
   }, []);
 
-  const goTo = (num) => {
-    if (num > maxLength) {
-      setRefresh((p) => !p);
+  const validationAccounts = useCallback(() => {
+    let grid = watch("grid");
+    for (let i = 0; i < grid.length; i++) {
+      let current = grid?.[i]?.account_id;
+      let next = grid?.[i + 1]?.account_id;
+      if (current && next) {
+        if (current === next) {
+          setGridErrors("The Accounts must be different");
+          return;
+        } else setGridErrors(``);
+      }
     }
-    setNumber(num);
-  };
+  }, []);
 
   const onClickAddNew = () => {
     setVoucherInfo({});
-    // navigate(`/vouchers/entries/${+maxLength + 1}`);
-    // setNumber(Math.max(+maxLength, +params?.number) + 1);
     setNumber(+maxLength + 1);
   };
 
@@ -164,21 +166,25 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
       toast.error("The Difference Amount must be equal 0");
       return;
     }
+    setIsLoading(true);
 
     if (value.difference === 0) {
       let grid = value.grid;
       delete value.grid;
       let res = null;
       if (value.id) {
-        res = await ApiActions.update("entry_main_data", {
+        res = await ApiActions.update(name, {
           conditions: [{ type: "and", conditions: [["id", "=", value?.id]] }],
           updates: value,
         });
       } else {
-        res = await ApiActions.insert("entry_main_data", {
-          data: value,
+        res = await ApiActions.insert(name, {
+          data: { ...value, number },
         });
-        if (res?.success) setMaxLength((p) => +p + 1);
+        if (res?.success) {
+          setMaxLength((p) => +p + 1);
+          setListOfNumbers((prev) => [...prev, number]);
+        }
       }
 
       let entryId = maxLength < number ? res?.record?.id : value.id;
@@ -187,17 +193,18 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
     } else {
       toast.error("The difference value must be equal 0");
     }
+    setIsLoading(false);
   };
 
   const insertIntoGrid = async (grid, itemId) => {
     for (const item of grid) {
-      if (item?.id && item.account_id && item?.observe_account_id) {
+      if (item?.id && item.account_id) {
         ApiActions.update("entry_grid_data", {
           conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
           updates: item,
         });
       } else {
-        if (item.account_id && item?.observe_account_id) {
+        if (item.account_id) {
           ApiActions.insert("entry_grid_data", {
             data: { ...item, entry_main_data_id: itemId },
           });
@@ -208,107 +215,127 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
 
 
   return (
-    <FormProvider {...methods}>
-      <BlockPaper
-        fullWidth={onlyView}
-        bodyClassName={onlyView ? "!p-0" : ""}
-        boxClassName="!shadow-none"
-        containerClassName={onlyView ? "mb-0" : ""}
-        layoutBodyClassName={onlyView ? "!my-0" : ""}
-        subTitle={
-          <>
-            {outerClose ? (
-              <button
-                onClick={outerClose}
-                className="h-9 w-9 rounded-full flex items-center justify-center bg-red-100 text-red-500"
-              >
-                <CloseIcon className="w-6 h-6" />
-              </button>
-            ) : null}
-          </>
-        }
-        customTitle={
-          <>
-            {maxLength < number ? (
-              <span className="text-red-500 ltr:mr-2 rtl:ml-2 bg-red-100 px-2 py-1 rounded-md">
-                {maxLength < number ? "New" : ""}
-              </span>
-            ) : null}
-            Entry {number || oldValue?.number}
-          </>
-        }
-      >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          key={number || oldValue?.number}
-          noValidate
+    <>
+      {isLoading ? <Loading withBackdrop /> : null}
+      <ConfirmModal
+        onConfirm={onDelete}
+        open={openConfirmation}
+        setOpen={setOpenConfirmation}
+      />
+      <FormProvider {...methods}>
+        <BlockPaper
+          fullWidth={onlyView}
+          bodyClassName={onlyView ? "!p-0" : ""}
+          boxClassName="!shadow-none"
+          containerClassName={onlyView ? "mb-0" : ""}
+          layoutBodyClassName={onlyView ? "!my-0" : ""}
+          subTitle={
+            <>
+              {outerClose ? (
+                <button
+                  onClick={outerClose}
+                  className="h-9 w-9 rounded-full flex items-center justify-center bg-red-100 text-red-500"
+                >
+                  <CloseIcon className="w-6 h-6" />
+                </button>
+              ) : null}
+            </>
+          }
+          customTitle={
+            <>
+              {maxLength < number ? (
+                <span className="text-red-500 ltr:mr-2 rtl:ml-2 bg-red-100 px-2 py-1 rounded-md">
+                  {maxLength < number ? "New" : ""}
+                </span>
+              ) : null}
+              Entry {number || oldValue?.number}
+            </>
+          }
         >
-          <div
-            className={
-              watch("is_deleted")
-                ? "filter blur-sm grayscale pointer-events-none"
-                : ""
-            }
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            key={number || oldValue?.number}
+            noValidate
           >
-            <EntryHead
-              fields={fields}
-              errors={errors}
-              CACHE_LIST={CACHE_LIST}
-              layout={"update"}
-              values={watch()}
-            />
-
-            <div className={`min-h-[150px]`}>
-              <TableFields
-                fields={gridFields}
-                tab="grid"
+            <div
+              className={
+                watch("is_deleted")
+                  ? "filter blur-sm grayscale pointer-events-none"
+                  : ""
+              }
+            >
+              <EntryHead
+                fields={fields}
                 errors={errors}
-                withPortal
                 CACHE_LIST={CACHE_LIST}
-                increasable={onlyView ? false : true}
-                onlyView={onlyView || watch("created_from_id")}
-                rowsCount={
-                  maxLength < number && !onlyView ? 5 : watch("grid")?.length
-                }
+                layout={"update"}
+                values={watch()}
+                number={number}
+                isNewOne={+maxLength < number}
+              />
+
+              <div
+                className={`min-h-[150px] mt-4 ${
+                  gridErrors ? "border border-red-500" : ""
+                }`}
+              >
+                {gridErrors ? (
+                  <ErrorText containerClassName="-mb-4 -mt-[1px] rounded-none">
+                    {gridErrors}
+                  </ErrorText>
+                ) : null}
+                <TableFields
+                  key={number}
+                  fields={gridFields}
+                  tab="grid"
+                  errors={errors}
+                  withPortal
+                  CACHE_LIST={CACHE_LIST}
+                  increasable={onlyView || watch("created_from") ? false : true}
+                  onlyView={onlyView || watch("created_from_id")}
+                  rowsCount={
+                    maxLength < number && !onlyView ? 5 : watch("grid")?.length
+                  }
+                />
+              </div>
+
+              <EntryFooter
+                fields={fields}
+                errors={errors}
+                CACHE_LIST={CACHE_LIST}
+                number={number}
+                maxLength={maxLength}
+                goTo={goToNumber}
+                values={watch()}
+                onlyView={onlyView}
+                hideSubmit={watch("created_from_id")}
               />
             </div>
-
-            <EntryFooter
-              fields={fields}
-              errors={errors}
-              CACHE_LIST={CACHE_LIST}
-              number={number}
-              maxLength={data?.at(0)?.number || 0}
-              goTo={goTo}
-              values={watch()}
-              onlyView={onlyView}
-              hideSubmit={watch("created_from_id")}
-            />
-          </div>
-          <div className="flex items-center mt-4 border-t pt-2 justify-between gap-4">
-            {onlyView ? null : (
-              <VoucherStepsButton
-                number={number}
-                goTo={goTo}
-                maxLength={maxLength}
-                isNewOne={+maxLength < number}
-                onClickAddNew={onClickAddNew}
-              />
-            )}
-            {watch("created_from_id") || onlyView ? null : (
-              <Button
-                title="Submit"
-                disabled={
-                  watch("difference") !== 0 ||
-                  watch("grid")?.length < 2 ||
-                  (watch("debit") === 0 && watch("credit") === 0)
-                }
-              />
-            )}
-          </div>
-        </form>
-      </BlockPaper>
-    </FormProvider>
+            <div className="flex items-center mt-4 border-t pt-2 justify-between gap-4">
+              {onlyView ? null : (
+                <FormStepPagination
+                  number={number}
+                  goTo={goToNumber}
+                  maxLength={maxLength}
+                  isNewOne={+maxLength < number}
+                  onClickAddNew={onClickAddNew}
+                />
+              )}
+              {watch("created_from_id") || onlyView ? null : (
+                <Button
+                  title="Submit"
+                  disabled={
+                    watch("difference") !== 0 ||
+                    watch("grid")?.length < 2 ||
+                    (watch("debit") === 0 && watch("credit") === 0)
+                  }
+                />
+              )}
+            </div>
+          </form>
+        </BlockPaper>
+      </FormProvider>
+    </>
   );
 };
 

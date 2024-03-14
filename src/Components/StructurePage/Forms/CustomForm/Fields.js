@@ -39,8 +39,7 @@ export const Fields = ({
         if (
           IGNORED_Fields?.includes(field.name) ||
           field?.hide_in_form ||
-          field?.hide_in_form_add ||
-          field?.name === "created_at"
+          field?.hide_in_form_add
         )
           return;
         if (field?.name?.indexOf("terms") !== -1 || field?.type === "long") {
@@ -125,6 +124,8 @@ export const Fields = ({
             <Select
               {...field}
               key={`${field?.name}-${i}`}
+              menuPortalTarget={document?.body}
+              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               values={values}
               value={watch(tab ? `${tab}.${field?.name}` : field?.name)}

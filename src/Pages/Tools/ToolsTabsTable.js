@@ -91,7 +91,7 @@ export const ToolsTabsTable = ({
                   {canInsertColor && selectedTab?.y !== "" ? (
                     <Checkbox
                       name={tabName}
-                      className="mr-2 !ml-0 bg-gray-500 w-9"
+                      inputClassName="mr-2 !ml-0 bg-gray-500 w-9"
                       onChange={(e) => {
                         onSelectAllVertical(e, indexY, xCount);
                         // onSelectAllVertical(e, indexY, yCount, tabName);
@@ -111,7 +111,7 @@ export const ToolsTabsTable = ({
               .map((r, indexX) => (
                 <TableRow key={`${r}-${indexX}`}>
                   {canInsertColor ? (
-                    <TableCol classes="!p-0 !px-2  border border-gray-400">
+                    <TableCol classes="!p-0 !px-2  border border-gray-400 darkL">
                       <Checkbox
                         name={tabName}
                         onChange={
@@ -143,7 +143,7 @@ export const ToolsTabsTable = ({
           ) : (
             <TableRow>
               {canInsertColor ? (
-                <TableCol classes="!p-0 !px-2  border border-gray-400">
+                <TableCol classes="!p-0 !px-2  border border-gray-400 darkL">
                   <Checkbox
                     name={tabName}
                     onChange={(e) => onSelectAllHorizontal(e, 0, xCount)}

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { usePopupForm } from "Hooks/usePopupForm";
-import { PlusIcon } from "Components/Icons";
+import { PlusIcon, SearchIcon } from "Components/Icons";
 import { useState } from "react";
 import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
@@ -10,10 +10,10 @@ import {
   UNIQUE_REF_TABLES,
 } from "Helpers/constants";
 import { DEFAULT_CURRENCY_CODE } from "Helpers/GENERATE_STARTING_DATA";
+import { ErrorText } from "Components/Global/ErrorText";
 
 const UniqueField = ({
   list: defaultList,
-  onPlusClick,
   onChange,
   label,
   containerClassName,
@@ -39,7 +39,9 @@ const UniqueField = ({
           value: item?.[field?.ref_col || "id"],
           label:
             item?.number && !IGNORED_SHOW_NUMBER_TABLE[field?.ref_table]
-              ? `${item?.number}-${item?.[field?.ref_name || "name"]}`
+              ? `${item?.internal_number || item?.number}-${
+                  item?.[field?.ref_name || "name"]
+                }${item?.parent_name ? `-(${item?.parent_name})` : ''}`
               : item[field?.ref_name || "name"],
         };
       })
@@ -85,7 +87,8 @@ const UniqueField = ({
               <Select
                 isClearable={true}
                 options={list}
-                // value={watch(field?.name)}
+                menuPortalTarget={document?.body}
+                styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
                 name={updatedName || field?.name}
                 menuPlacement="auto"
                 // required={field?.required}
@@ -124,22 +127,33 @@ const UniqueField = ({
           }}
         />
 
-        {field?.hideAdd ? null : (
+        {field?.hideAdd ? (
+          <button
+            type="button"
+            className="right-2 rtl:left-2 rtl:right-auto mx-2 rounded-full text-blue-500"
+          >
+            <SearchIcon className="text-inherit w-5 h-5" />
+          </button>
+        ) : (
           <button
             type="button"
             className="right-2 rtl:left-2 rtl:right-auto mx-2 rounded-full text-blue-500 hover:text-white hover:bg-blue-400"
             onClick={() => {
-              let refTable =
-                field?.ref_table === UNIQUE_REF_TABLES.clients ||
-                field?.ref_table === UNIQUE_REF_TABLES.suppliers
-                  ? "user"
-                  : table;
+              let refTable = table;
+              let oldValues = null;
 
-              if (onPlusClick) onPlusClick();
-              
+              if (field?.ref_table === UNIQUE_REF_TABLES.clients) {
+                refTable = "user";
+                oldValues = { card_type: 1 };
+              } else if (field?.ref_table === UNIQUE_REF_TABLES.suppliers) {
+                refTable = "user";
+                oldValues = { card_type: 2 };
+              }
+
               dispatchForm({
                 open: true,
                 table: refTable,
+                oldValues,
                 additional: {
                   setValue,
                   name: updatedName || field?.name,
@@ -153,11 +167,7 @@ const UniqueField = ({
           </button>
         )}
       </div>
-      {error ? (
-        <p className="bg-red-200 mt-2 rounded text-sm text-red-500 px-2 py-1">
-          {error}
-        </p>
-      ) : null}
+      {error ? <ErrorText containerClassName="py-1">{error}</ErrorText> : null}
     </div>
   );
 };

@@ -13,12 +13,19 @@ import Sidebar from "Components/Layout/Sidebar";
 import Footer from "Components/Layout/Footer";
 import PopupForm from "Components/StructurePage/Forms/CustomForm/PopupForm";
 import { VoucherEntriesViewProvider } from "Hooks/useVoucherEntriesView";
-import { VoucherView } from "Components/StructurePage/Forms/Vouchers/VoucherView";
-// import { INSERT_DEFAULT_DATA } from "Helpers/GENERATE_STARTING_DATA";
+import { VoucherView } from "Components/StructurePage/Forms/Vouchers/Voucher/VoucherView";
 import getMenu from "Helpers/menu";
-import { ApiActions } from "Helpers/Lib/api";
-import { getLastCostCenterNumber } from "Helpers/Lib/operations/global-insert";
-let called = true
+import { getLastCostCenterNumber } from "Helpers/Lib/global-insert";
+import { QueryClient } from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+    },
+  },
+});
+
 function App() {
   const [mode, setMode] = useState("dark");
   const [open, setOpen] = useState(false);
@@ -29,16 +36,6 @@ function App() {
       setOpen(false);
     }
   };
-
-  useEffect(() => {
-    if(called) {
-      //  ApiActions.read('cheque')
-      called = false
-      // INSERT_DEFAULT_DATA();
-    }
-    getLastCostCenterNumber()
-
-  }, [])
 
   useEffect(() => {
     window.addEventListener("resize", resize);

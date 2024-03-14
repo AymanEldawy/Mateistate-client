@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
+import getFormByTableName from "Helpers/Forms/forms";
 import useFlatColoring from "Hooks/useFlatColoring";
 import { useFormContext } from "react-hook-form";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
@@ -65,7 +65,7 @@ export const ToolsTabsTableForm = ({ errors, row }) => {
         if (!hex || hex === "#000000") return;
         onSelectColor(index, hex);
       }}
-      rowClassName={(index) => (index === selectedColor ? "bg-gray-200" : "")}
+      rowClassName={(index) => (index === selectedColor ? "bg-gray-200 dark:!bg-[#333]" : "")}
     />
   );
 };

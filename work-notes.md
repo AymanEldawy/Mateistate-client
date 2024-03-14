@@ -242,106 +242,124 @@ NOTES: complicated tasks
 - [✔️] يجب ان لا يقل السند عن سطرين
 - [] الحسابات مختلفة
 
-
 ## TODO Tasks
+
 - [✔️] cheques cash 131
 - [✔️] unique name account fix
 - [✔️] chq apartment column
-- [✔️] tools count 
+- [✔️] tools count
 - [✔️] tools color
-- [✔️] entry reverse user debit 
-- [✔️] all user credit voucher and cash debit 
+- [✔️] entry reverse user debit
+- [✔️] all user credit voucher and cash debit
 - [✔️] contract flat type
-- [✔️] chq operation 
-- [✔️] Hadnle Add Cash & Chq 
+- [✔️] chq operation
+- [✔️] Hadnle Add Cash & Chq
 - [✔️] gen entries from bill
+- [✔️] on_collection
+- [✔️] op_partial_collection
+- [✔️] op_deportation
+- [✔️] op_return
 
-- [] handle hide deleted entry 
-- [] Update Cash & Chq  `whatsapp` 
-- [] handle next and back with cache data in each page has steps feature
+- [✔️] fix page tools count & color
+- [✔️] Fix cost center duplicate
+- [✔️] Receipt form fix
+- [✔️] entry from chq
+- [✔️] all popup should has x close
+- [✔️] change view from able to book view <>
+- [✔️] all entries rows should start with debit as first
+- [✔️] add icons to buttons and description to color icon on building form
+- [✔️] fix user form on add suppliers
+- [✔️] hide deproation
+- [✔️] descrease installmet alert
+- [✔️] readable alert on failed to insert name exsit or dubplicate name
+- [✔️] collection debit bank credit note recivable
+- [✔️] fix search select
+- [✔️] partial < all partial must <= amount >
+- [✔️] working on operation from
+- [✔️] completed list view form
+
+- [✔️] Update Cash & Chq `whatsapp`
+- [✔️] handle next and back with cache data in each page has steps feature
+- [✔️] contract terminaton
+- [✔️] escape deleted numbers page
+
+- [✔️] handle hide deleted entry
+- [✔️] get and merge building accounts if exsit on add contract
+- [✔️] contract renew
+- [✔️] Account type & level
+- [✔️] reDesign reports
+
 - [] connect with view
+- [] test inserting for all tables
 - [] on delete cascade bill or account or building or account
-- [] handle delete Entry 
+- [] View Entry component
+
+## New Notes
+
+- [✔️] Show `percentage` in account form
+- [✔️] `parent_id` is required if the account type is `normal`
+- [✔️] Start From Ending when naviagte to page
+- [✔️] Notifcation and Errors handling
+- [✔️] Entry form | `Defferent account`
+- [✔️] Installment Grid update when change number or date & end due date change position
+- [✔️] Installment Amount
+- [✔️] change action to Regenerate after generate the first time
+- [✔️] Coloring page
+- [✔️] building default accounts
+- [✔️] Dropdown opening as portal
+- [✔️] units & contract number sequentions
+- [✔️] Cost center show parent name
+- [✔️] React Query
+
+## New Notes 12/3/2024
+
+- [✔️] Fix get Entery Value after insert
+- [✔️] Fix Account distributive calculation
+- [✔️] Hide `observe_account_id` and `number` in Entry form
+- [✔️] Fix Open new one in `cach` and `Chq` in contract form
+- [✔️] Fix `Voucher` form
+- [✔️] Refetch Contract after insert to avoid units unavilable to show in suggestion units
+- [✔️] Open Voucher form or each form on `oldValue number` of `last | new number`
+- [✔️] Fix Chq form
+- [✔️] Fix update Installment Chq
+- [✔️] Installment Calculation
+- [✔️] Contract Status
+- [✔️] Contract Termenation
+- [✔️] Contract Renew should start more one day after termenation date
+- [✔️] Complete using Building Account
+- [✔️] Building Chq account when replace the `Note Recivable`
+- [✔️] update contract when termenation
+- [✔️] Building Bank account when `Collection Chq`
+
+- [] Chq Status
+
+- [] update `useQuery calls` to sync with `number` come form `useViewList`
+- [] Update Contract table in database to continuo other data like [lawsuit status start and end date amount]
+- [] Prevent to navigate to anthor page if the form is touched or dirty
+- [] reFetch Table inserted in CACHE_LIST
 
 
-- [] on_collection
-- [] op_partial_collection
-- [] op_deportation
-- [] op_return
+### - [] fix cache default values
 
+### Reports
 
+- [] Contract
+- [] Completed Contract
+- [] Contracts will ending
+- [] Chq
+- [] Master
+- [] Property Status
+- [] others
+- [] trial balance
+- [] proft and cons
+
+## Futrue
+
+- [] Settings page
+- [] Users Permssions
+- [] scan
+- [] speed tools page
 - [] Global print file
 - [] update Global read file with joins
 - [] watch video for `Lawsuit` and generate database tables for it
 - [] watch video for completed apartment gen checks
-
-
-- [] Reports 
-- [] scan
-- [] speed tools page 
-
-
-
-
-
-- [✔️] fix page tools count & color 
-- [✔️] Fix cost center duplicate 
-- [✔️] Receipt form fix
-- [✔️] entry from chq
-- [✔️] all popup should has x close 
-- [✔️] change view from able to book view <>
-
-- [] fix cache default values
-- [] working on operation from 
-- [] all entries rows should start with debit as first 
-- [] add icons to buttons and description to color icon on building form
-- [] fix user form on add suppliers 
-- [] get and merge building accounts if exsit on add contract 
-- [] descrease installmet alert
-- [] readable alert on failed to insert name exsit or dubplicate name
-- [] fix search select 
-- []
-
-depost 
-note
-cash
-revenuse
-owner 
-update chq 
-entry from chq
-
- 
-
-- Recipet to cash 
-- chq to note recivable 
-- partial < all partial must <= amount >
-- hide deproation 
-- escape delete entry 
-- sort prtial form 
-- collection debit bank credit note recivable 
-- building commin 1 pattern 2 manual 3 
-
-
-
-
-
-
-
-
-
-
-<!-- internal_number -->
-account
-cost_center
-chq
-
-
-
-
-
-<!--
-"مؤجرة" - "rented";
-"خالية" - "vacant";
-"منتهية ولم تجدد" - "expired and not renewed";
-"تم التجديد" - "renewed"; -->
-

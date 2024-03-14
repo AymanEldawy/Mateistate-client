@@ -102,13 +102,7 @@ export const FlatColoringProvider = ({ children }) => {
     let rest = additional
       ? { ...additional, [tabSettings?.no]: additional?.name, ...flatType }
       : {};
-
-    if (!UPDATES_ROWS?.[indexHash]) {
-      setUPDATES_ROWS((prev) => ({
-        ...prev,
-        [indexHash]: true,
-      }));
-    }
+    let prevData = flatsDetails?.[tab]?.[indexHash];
 
     COLLECTION_COUNTS[additional?.name] = hex;
 
@@ -119,6 +113,14 @@ export const FlatColoringProvider = ({ children }) => {
       // Handle delete prev asset
       let asset = FLAT_PROPERTY_TABS?.[tab];
       deleteAssetsById(asset?.table, prevItem);
+      prevData = {};
+    }
+
+    if (!UPDATES_ROWS?.[indexHash]) {
+      setUPDATES_ROWS((prev) => ({
+        ...prev,
+        [indexHash]: true,
+      }));
     }
 
     setFlatsDetails((prev) => ({
@@ -126,7 +128,7 @@ export const FlatColoringProvider = ({ children }) => {
       [tab]: {
         ...prev?.[tab],
         [indexHash]: {
-          ...prev?.[tab]?.[indexHash],
+          ...prevData,
           ...rest,
           hex: hex,
           row_index: selectedColor,

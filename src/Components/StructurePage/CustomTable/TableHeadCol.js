@@ -5,7 +5,7 @@ const TableHeadCol = ({ children, scope, classes, sort, sortBy }) => {
   return (
     <th
       scope={scope ? scope : "col"}
-      className={`px-4 py-2 ${classes} ${sort ? "sorting-hover hover:bg-gray-300 dark:hover:bg-dark-bg cursor-pointer" : ""}`}
+      className={`px-4 py-2 ${classes} ${sort ? "sorting-hover hover:bg-gray-300 dark:border-dark-border dark:hover:bg-dark-bg cursor-pointer" : ""}`}
       onClick={() => (!!sort ? sortBy(children) : undefined)}
     >
       <div className="flex  gap-2 items-center justify-between">

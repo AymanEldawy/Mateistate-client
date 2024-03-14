@@ -1,22 +1,39 @@
-import {
-  CurrencyFieldGroup,
-  Input,
-  Select,
-  Switch,
-  Textarea,
-  UniqueField,
-} from "../../../CustomFields";
+import { useEffect } from "react";
+import { CurrencyFieldGroup, Input, Textarea } from "../../../CustomFields";
+import { useFormContext } from "react-hook-form";
 
-export const EntryHead = ({ fields, errors, values, CACHE_LIST }) => {
+export const EntryHead = ({
+  fields,
+  errors,
+  values,
+  CACHE_LIST,
+  number,
+  isNewOne,
+}) => {
+  const { setValue } = useFormContext();
+  
+  useEffect(() => {
+    if (!number) return;
+    setValue("number", number);
+  }, [isNewOne, number]);
+
   return (
     <div className="">
       <div className={`grid grid-cols-2 md:grid-cols-3 gap-4`}>
-        <Input
-          readOnly
+        {/* <Input
+          value={number}
+          readOnly={!isNewOne}
           {...fields["number"]}
           className="border-0 !rounded-none !h-full"
           error={errors?.number ? "Field is required" : ""}
-        />
+        /> */}
+        {/* <div className="flex gap-2">
+          <p
+            className={`border h-[39px] bg-blue-100 dark:bg-[#444] rounded p-1 `}
+          >
+            {number}
+          </p>
+        </div> */}
         <Input
           {...fields["created_at"]}
           value={values?.created_at || ""}

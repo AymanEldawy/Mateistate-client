@@ -5,11 +5,16 @@ import App from "./App";
 
 import "./i18n.js";
 import "./index.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+const queryClient = new QueryClient();
+
 root.render(
-  // <React.StrictMode>
-    <App />
-  // </React.StrictMode>
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </React.StrictMode>
 );

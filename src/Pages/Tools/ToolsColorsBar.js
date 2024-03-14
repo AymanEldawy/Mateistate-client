@@ -5,10 +5,10 @@ export const ToolsColorsBar = () => {
   const { onPreventColor, canInsertColor } = useFlatColoring();
 
   return (
-    <div className="flex bg-white dark:bg-dark-border shadow-sm rounded min-w-[70px] overflow-hidden">
+    <div className="flex bg-white dark:bg-dark-border shadow-sm rounded overflow-hidden">
       <button
         onClick={onPreventColor}
-        className={`px-4 py-1 bg-green-500 rounded-sm text-white ${
+        className={`px-4 py-1 bg-green-500 rounded-sm text-white  ${
           !canInsertColor ? " bg-red-500 " : ""
         }`}
       >

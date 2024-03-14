@@ -1,7 +1,6 @@
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
-  Checkbox,
   ColorField,
   Input,
   Select,
@@ -42,6 +41,7 @@ const TableFields = ({
   withPortal,
   availableColors,
   increasable = true,
+  tableError,
 }) => {
   const { t } = useTranslation();
   const { dispatchForm } = usePopupForm();
@@ -58,23 +58,25 @@ const TableFields = ({
     let index = increaseCount - 2;
     let grid = watch(tab || "grid");
     let newGrid = grid?.filter((c, i) => i !== index);
-    if (index) {
-      setValue(tab || "grid", newGrid);
-    }
+    setValue(tab || "grid", newGrid);
     setIncreaseCount((prev) => prev - 1);
   };
 
   return (
     <>
-      <div className={`relative overflow-auto mt-4 ${containerClassName}`}>
+      <div className={`relative overflow-x-auto mt-4 ${containerClassName}`}>
         <table
-          className={`border-collapse w-full text-sm text-left text-gray-500 dark:text-gray-400 border rounded-md dark:border-[#333] ${tableClassName}`}
+          className={`border-collapse w-full text-sm text-left text-gray-500 dark:text-gray-400 border dark:border-dark-border rounded-md  ${tableClassName} ${
+            tableError ? "!border-red-500" : ""
+          }`}
         >
           <thead
             className={`text-xs text-gray-700 uppercase dark:bg-dark-border dark:text-gray-300 bg-gray-200 ${theadClassName}`}
           >
             <tr>
-              <th className={`${thClassName} border py-2`}>
+              <th
+                className={`${thClassName} border py-2 dark:border-dark-border`}
+              >
                 {" "}
                 <div className="text-center w-full block">#</div>
               </th>
@@ -94,7 +96,7 @@ const TableFields = ({
                       return (
                         <th
                           key={col?.name}
-                          className={`px-4 py-2 border ${thClassName}`}
+                          className={`px-4 py-2 border dark:border-dark-border ${thClassName}`}
                         >
                           <div className="flex gap-2 items-center justify-between">
                             {col?.label || col?.name}
@@ -104,12 +106,16 @@ const TableFields = ({
                     }
                   })}
                   {allowPrint ? (
-                    <th className={`px-4 py-2 border ${thClassName}`}>
+                    <th
+                      className={`px-4 py-2 border dark:border-dark-border ${thClassName}`}
+                    >
                       {t("print")}
                     </th>
                   ) : null}
                   {allowViewEntry ? (
-                    <th className={`px-4 py-2 border ${thClassName}`}>
+                    <th
+                      className={`px-4 py-2 border dark:border-dark-border ${thClassName}`}
+                    >
                       {t("view_entry")}
                     </th>
                   ) : null}
@@ -143,7 +149,7 @@ const TableFields = ({
                       }
                     >
                       <td
-                        className={`min-w-[40px] ${tdClassName} border relative`}
+                        className={`min-w-[40px] ${tdClassName} border dark:border-dark-border relative`}
                       >
                         {!!onRowClick ? (
                           <div className="flex items-center relative">
@@ -178,7 +184,7 @@ const TableFields = ({
                         else {
                           return (
                             <td
-                              className={`border ${tdClassName} relative ${
+                              className={`border dark:border-dark-border ${tdClassName} relative ${
                                 field?.type === "date" ? "min-w-[190px]" : ""
                               }`}
                               key={`${field?.name}-${index}`}
@@ -211,6 +217,13 @@ const TableFields = ({
                                     <Select
                                       {...field}
                                       key={`${field?.name}-${index}`}
+                                      menuPortalTarget={document?.body}
+                                      styles={{
+                                        menuPortal: (base) => ({
+                                          ...base,
+                                          zIndex: 9999,
+                                        }),
+                                      }}
                                       updatedName={`${tab}.${index}.${field?.name}`}
                                       hideLabel
                                       selectClassName="!rounded-none !border-0 !border-transparent"
@@ -262,7 +275,9 @@ const TableFields = ({
                                       ) : (
                                         <>
                                           {showNumberAsLink &&
-                                          field?.name === "number" &&
+                                          (field?.name === "number" ||
+                                            field?.name ===
+                                              "internal_number") &&
                                           watch(`${tab}.${index}.id`) ? (
                                             // <ViewRowFrom />
                                             <button

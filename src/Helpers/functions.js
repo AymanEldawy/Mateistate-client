@@ -1,6 +1,10 @@
 import { ApiActions } from "./Lib/api";
-import { getLastNumberByColumn } from "./Lib/operations/global-insert";
+import {
+  getAccountLastNumber,
+  getLastNumberByColumn,
+} from "./Lib/global-insert";
 import { DEFAULT_CURRENCY_CODE } from "./GENERATE_STARTING_DATA";
+import { FLAT_PROPERTY_TABS, FLAT_PROPERTY_TYPES } from "./constants";
 
 // export const SERVER_URL = `https://matiestate-server.vercel.app/`;
 export const SERVER_URL = `https://matiestate-server.vercel.app`;
@@ -120,12 +124,11 @@ export async function getInsertAccountTrigger(name, conditions) {
   let parent_id = parentAccount?.result?.at(0)?.id;
   let final_id = parentAccount?.result?.at(0)?.final_id;
   if (!final_id) final_id = parentAccount?.result?.at(0)?.parent_id;
-  // get last child id of suppliers or customers
-  const lastNumber = await getLastNumberByColumn(
+
+  const parentAccountData = await getAccountLastNumber(
     "account",
     "parent_id",
-    parent_id,
-    "internal_number"
+    parent_id
   );
 
   // get default currency id
@@ -135,12 +138,16 @@ export async function getInsertAccountTrigger(name, conditions) {
     ],
   });
 
+  let internal_number = +parentAccountData?.internal_number + 1;
+  let level = +parentAccountData?.level || 0;
+
   let account = {
-    number: +lastNumber + 1,
+    internal_number,
     type: 1,
     currency_id: currencyResponse?.result?.at(0)?.id,
     parent_id,
     final_id,
+    level,
   };
 
   return account;
@@ -246,7 +253,7 @@ export const getCacheRowData = (cache, name, id) => {
 
 export const getCreatedFromUrl = (name, id) => {
   if (!name || id) return;
-  
+
   switch (name?.toLowerCase()) {
     case "contract":
       return {
@@ -286,5 +293,72 @@ export const getConnectWithUrl = async (number, id) => {
       return;
     default:
       return;
+  }
+};
+
+
+export const findList = async (
+  type,
+  id,
+  setFlatsDetails,
+  COLLECTION_COUNTS,
+  setUNITS_COLORED_COUNT
+) => {
+  let name = FLAT_PROPERTY_TABS[type]?.no;
+  const response = await ApiActions.read(type, {
+    conditions: [{ type: "and", conditions: [["building_id", "=", id]] }],
+  });
+
+  let data = response?.result;
+  let hashApartmentTypes = {};
+  let newType = "";
+  if (data?.length) {
+    for (const row of data) {
+      let assetsType =
+        type === "apartment"
+          ? `${type}_${row?.apartment_kind}`
+          : type === "parking"
+          ? `${type}_${row?.parking_kind}`
+          : type === "shop"
+          ? `${type}_${row?.shop_kind}`
+          : type;
+
+      newType = FLAT_PROPERTY_TYPES[assetsType];
+      hashApartmentTypes[newType] = {
+        ...hashApartmentTypes?.[newType],
+        [row?.asset_hash]: row,
+      };
+      COLLECTION_COUNTS[row?.asset_hash] = row?.hex;
+    }
+
+    setFlatsDetails((prev) => ({
+      ...prev,
+      ...hashApartmentTypes,
+    }));
+
+    setUNITS_COLORED_COUNT((prev) => ({
+      ...prev,
+      [newType]: Object.keys(hashApartmentTypes?.[newType]),
+    }));
+  }
+};
+
+export const refetchBuildingAssets = (
+  id,
+  setFlatsDetails,
+  COLLECTION_COUNTS,
+  setUNITS_COLORED_COUNT
+) => {
+  setFlatsDetails({});
+  setUNITS_COLORED_COUNT({});
+  COLLECTION_COUNTS = {};
+  for (const asset of ["apartment", "shop", "parking"]) {
+    findList(
+      asset,
+      id,
+      setFlatsDetails,
+      COLLECTION_COUNTS,
+      setUNITS_COLORED_COUNT
+    );
   }
 };

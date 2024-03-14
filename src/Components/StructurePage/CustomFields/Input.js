@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useTranslation } from "react-i18next";
 import { CalenderIcon } from "Components/Icons";
+import { ErrorText } from "Components/Global/ErrorText";
 
 const Input = ({
   labelClassName,
@@ -132,9 +133,9 @@ const Input = ({
       />
 
       {error ? (
-        <p className="bg-red-200 mt-2 rounded text-sm text-red-500 px-2 py-1">
+        <ErrorText containerClassName="py-1">
           {error}
-        </p>
+        </ErrorText>
       ) : null}
     </div>
   );

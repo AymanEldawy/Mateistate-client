@@ -6,7 +6,7 @@ import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { DEFAULT_CURRENCY_CODE } from "Helpers/GENERATE_STARTING_DATA";
-
+import { ErrorText } from "Components/Global/ErrorText";
 
 const CurrencyFieldGroup = ({
   tab,
@@ -35,8 +35,8 @@ const CurrencyFieldGroup = ({
     if (defaultList?.length && !watch(currency_id)) {
       let val = defaultList?.find((c) => c?.code === DEFAULT_CURRENCY_CODE)?.id;
       setValue(currency_id, val);
-      if(!field?.hideValue) {
-        setValue(currency_val, 1)
+      if (!field?.hideValue) {
+        setValue(currency_val, 1);
       }
     }
   }, [defaultList?.length, watch(currency_id)]);
@@ -62,6 +62,8 @@ const CurrencyFieldGroup = ({
                 return (
                   <Select
                     menuPlacement="auto"
+                    menuPortalTarget={document?.body}
+                    styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}    
                     options={list}
                     name={currency_id}
                     className="w-full border-none"
@@ -101,6 +103,7 @@ const CurrencyFieldGroup = ({
             <input
               // name={currency_val}
               // value={watch(currency_val)}
+              defaultValue={1}
               className={`border h-[39px] font-medium bg-gray-100 max-w-[50px] w-full read-only:bg-blue-100 flex items-center gap-2 dark:read-only:bg-[#444] rounded-sm px-4`}
               type="number"
               {...register(currency_val, {
@@ -110,9 +113,7 @@ const CurrencyFieldGroup = ({
           )}
         </div>
         {error ? (
-          <p className="bg-red-200 mt-2 rounded text-sm text-red-500 px-2 py-1">
-            {error}
-          </p>
+          <ErrorText containerClassName="py-1">{error}</ErrorText>
         ) : null}
       </div>
     </>

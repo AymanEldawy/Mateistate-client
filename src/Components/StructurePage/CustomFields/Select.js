@@ -1,3 +1,4 @@
+import { ErrorText } from "Components/Global/ErrorText";
 import { useEffect, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -60,7 +61,10 @@ const CustomSelect = ({
         render={({ field: { onChange }, value, ref }) => {
           return (
             <Select
+              id={updatedName || field?.name}
               menuPlacement="auto"
+              menuPortalTarget={document?.body}
+              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               className={`border rounded-md bg-none bg-transparent ${selectClassName}`}
               classNames={{
                 control: (state) => "bg-transparent !border-none",
@@ -107,11 +111,7 @@ const CustomSelect = ({
         }}
         rules={{ required: field?.required }}
       />
-      {error ? (
-        <p className="bg-red-200 mt-2 rounded text-sm text-red-500 px-2 py-1">
-          {error}
-        </p>
-      ) : null}
+      {error ? <ErrorText containerClassName="py-1">{error}</ErrorText> : null}
     </div>
   );
 };

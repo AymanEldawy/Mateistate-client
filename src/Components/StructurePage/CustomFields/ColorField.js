@@ -1,4 +1,5 @@
 import Backdrop from "Components/Global/Backdrop";
+import { ErrorText } from "Components/Global/ErrorText";
 import Modal from "Components/Global/Modal/Modal";
 import { PlusIcon } from "Components/Icons";
 import { DEFAULT_COLORS } from "Helpers/constants";
@@ -22,7 +23,8 @@ const ColorField = ({
   hideLabel,
   ...field
 }) => {
-  const { changeAvailableColors } = useFlatColoring();
+  const coloring = useFlatColoring();
+  // const changeAvailableColors =
   const { t } = useTranslation();
   const { register, setValue, watch } = useFormContext();
   const [openColorList, setOpenColorList] = useState();
@@ -37,8 +39,8 @@ const ColorField = ({
 
   useEffect(() => {
     if (openColorList) return;
-    if (changeAvailableColors) {
-      changeAvailableColors(watch(updatedName || field?.name));
+    if (coloring?.changeAvailableColors) {
+      coloring?.changeAvailableColors(watch(updatedName || field?.name));
     }
   }, [openColorList]);
 
@@ -80,9 +82,7 @@ const ColorField = ({
           })}
         />
         {error ? (
-          <p className="bg-red-200 mt-2 rounded text-sm text-red-600 px-2 py-1">
-            {error}
-          </p>
+          <ErrorText containerClassName="py-1">{error}</ErrorText>
         ) : null}
       </div>
       <>

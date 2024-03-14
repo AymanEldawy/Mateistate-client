@@ -10,12 +10,13 @@ import { Button } from "Components/Global/Button";
 import useFlatColoring from "Hooks/useFlatColoring";
 import { useForm, useFormContext } from "react-hook-form";
 import { ToolsTabsTable } from "./ToolsTabsTable";
-import { generateApartments } from "Helpers/Lib/operations/global-insert";
+import { generateApartments } from "Helpers/Lib/global-insert";
 import Loading from "Components/Global/Loading";
 import { Link } from "react-router-dom";
 import ContentBar from "Components/Global/ContentBar/ContentBar";
 import BlockPaper from "Components/Global/BlockPaper";
 import { ToolsColorsBar } from "./ToolsColorsBar";
+import { refetchBuildingAssets } from "Helpers/functions";
 
 const calculateFlats = (building) => {
   FLATS.apartment_count = building?.apartment_count * building?.apartment_floor;
@@ -28,72 +29,6 @@ const calculateFlats = (building) => {
   FLATS.underground_parking = building?.underground_parking || 0;
   // FLATS.service_apartments = building?.service_apartments;
   // FLATS.drivers_apartments = building?.drivers_apartments;
-};
-
-const findList = async (
-  type,
-  id,
-  setFlatsDetails,
-  COLLECTION_COUNTS,
-  setUNITS_COLORED_COUNT
-) => {
-  let name = FLAT_PROPERTY_TABS[type]?.no;
-  const response = await ApiActions.read(type, {
-    conditions: [{ type: "and", conditions: [["building_id", "=", id]] }],
-  });
-
-  let data = response?.result;
-  let hashApartmentTypes = {};
-  let newType = "";
-  if (data?.length) {
-    for (const row of data) {
-      let assetsType =
-        type === "apartment"
-          ? `${type}_${row?.apartment_kind}`
-          : type === "parking"
-          ? `${type}_${row?.parking_kind}`
-          : type === "shop"
-          ? `${type}_${row?.shop_kind}`
-          : type;
-
-      newType = FLAT_PROPERTY_TYPES[assetsType];
-      hashApartmentTypes[newType] = {
-        ...hashApartmentTypes?.[newType],
-        [row?.asset_hash]: row,
-      };
-      COLLECTION_COUNTS[row?.asset_hash] = row?.hex;
-    }
-
-    setFlatsDetails((prev) => ({
-      ...prev,
-      ...hashApartmentTypes,
-    }));
-
-    setUNITS_COLORED_COUNT((prev) => ({
-      ...prev,
-      [newType]: Object.keys(hashApartmentTypes?.[newType]),
-    }));
-  }
-};
-
-const refetchBuildingAssets = (
-  id,
-  setFlatsDetails,
-  COLLECTION_COUNTS,
-  setUNITS_COLORED_COUNT
-) => {
-  setFlatsDetails({});
-  setUNITS_COLORED_COUNT({});
-  COLLECTION_COUNTS = {};
-  for (const asset of ["apartment", "shop", "parking"]) {
-    findList(
-      asset,
-      id,
-      setFlatsDetails,
-      COLLECTION_COUNTS,
-      setUNITS_COLORED_COUNT
-    );
-  }
 };
 
 const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
@@ -164,7 +99,7 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
             title="Flat Building Details"
             description={
               <Link
-                to={`/buildings/update/${row?.id}`}
+                to={`/buildings/${row?.number}`}
                 state={{ row, table: "building" }}
                 className="text-blue-500 dark:text-white hover:underline text-sm"
               >
@@ -205,7 +140,7 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
           <div className="overflow-auto max-h-96">
             <ToolsTabsTableForm errors={errors} row={row} />
           </div>
-          <div className="mt-9 shadow border border-gray-300 overflow-hidden">
+          <div className="mt-9 shadow border border-gray-300 dark:border-dark-border overflow-hidden">
             <div className="flex items-center overflow-auto text-left bg-gray-100 dark:bg-dark-bg ">
               {Object.values(FLAT_PROPERTY_TABS)?.map((tab, index) => {
                 if (row?.[tab?.x])
@@ -216,9 +151,9 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
                       key={`${index}-${tab?.tabName}`}
                       className={`${
                         selectedTab?.tabName === tab?.tabName
-                          ? "!text-black !font-medium dark:bg-dark-border dark:text-white bg-white"
+                          ? "!text-black !font-medium dark:bg-dark-border dark:!text-white bg-white"
                           : ""
-                      } border p-2 px-4 text-sm text-gray-500 font-normal min-w-[120px] w-fit capitalize whitespace-nowrap`}
+                      } border dark:border-dark-border p-2 px-4 text-sm text-gray-500 font-normal min-w-[120px] w-fit capitalize whitespace-nowrap`}
                     >
                       {tab?.tabName}
                     </button>

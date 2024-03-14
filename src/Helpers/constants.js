@@ -1,4 +1,8 @@
 import {
+  ACCOUNT_ASSEMBLY_TYPE_CODE,
+  ACCOUNT_CLOSING_TYPE_CODE,
+  ACCOUNT_DISTRIBUTIVE_TYPE_CODE,
+  ACCOUNT_NORMAL_TYPE_CODE,
   APARTMENT_ASSET_TYPE_CODE,
   APARTMENT_ASSET_TYPE_DEFAULT_NAME,
   CONNECT_WITH_BILL_CODE,
@@ -9,28 +13,32 @@ import {
   CONNECT_WITH_LAWSUIT_NAME,
   CONNECT_WITH_NOTHING_CODE,
   CONNECT_WITH_NOTHING_NAME,
-  CREATED_FROM_BILL_CODE,
-  CREATED_FROM_BILL_NAME,
-  CREATED_FROM_CONTRACT_CODE,
-  CREATED_FROM_CONTRACT_NAME,
-  CREATED_FROM_LAWSUIT_CODE,
-  CREATED_FROM_LAWSUIT_NAME,
-  CREATED_FROM_PAYMENT_VOUCHER_CODE,
-  CREATED_FROM_PAYMENT_VOUCHER_NAME,
-  CREATED_FROM_RECEIPT_VOUCHER_CODE,
-  CREATED_FROM_RECEIPT_VOUCHER_NAME,
   LAND_ASSET_TYPE_CODE,
   LAND_ASSET_TYPE_DEFAULT_NAME,
   PARKING_ASSET_TYPE_CODE,
   PARKING_ASSET_TYPE_DEFAULT_NAME,
   SHOP_ASSET_TYPE_CODE,
   SHOP_ASSET_TYPE_DEFAULT_NAME,
+  USER_CUSTOMER_CODE,
+  USER_SUPPLIER_CODE,
 } from "./GENERATE_STARTING_DATA";
+
+export const SHOULD_DELETE_COST_CENTER = {
+  apartment: true,
+  parking: true,
+  shop: true,
+};
 
 export const HAS_INTERNAL_NUMBER = {
   cost_center: true,
   cheque: true,
   account: true,
+};
+
+export const POPUP_ACTIONS = {
+  ADD_NEW: "ADD_NEW",
+  MODIFY: "MODIFY",
+  ONLY_VIEW: "ONLY_VIEW",
 };
 
 export const METHODS = {
@@ -39,7 +47,7 @@ export const METHODS = {
   DELETE: "DELETE",
 };
 
-export const IGNORED_Fields = ["id", "created_at"];
+export const IGNORED_Fields = ["id"];
 
 export const IGNORED_SHOW_NUMBER_TABLE = {
   parking: true,
@@ -291,6 +299,29 @@ export const SELECT_LISTS = (listName) => {
   let list = {
     property_values_area: ["Square Feet", "Square Meter"],
 
+    filter_using: [
+      { id: 1, name: "Days number" },
+      { id: 2, name: "Date" },
+    ],
+    revenues_report_contract_termination: [
+      { id: 0, name: "All" },
+      { id: 1, name: "Not finished" },
+      { id: 2, name: "completed" },
+    ],
+
+    revenues_report_date: [
+      { id: 1, name: "Contract Beginning" },
+      { id: 2, name: "Contract completed" },
+      { id: 3, name: "Contract Terminate" },
+      { id: 4, name: "Contract Created" },
+    ],
+
+    cheque_report_deposit: [
+      { id: 0, name: "All" },
+      { id: "", name: "" },
+      { id: "", name: "" },
+    ],
+
     nationality_list,
     type: ["Debit", "Credit"],
 
@@ -302,15 +333,15 @@ export const SELECT_LISTS = (listName) => {
     ],
 
     user_type: [
-      { name: "Customer", id: 2 },
-      { name: "Supplier", id: 1 },
+      { name: "Customer", id: USER_CUSTOMER_CODE },
+      { name: "Supplier", id: USER_SUPPLIER_CODE },
     ],
 
     account_type: [
-      { name: "Normal", id: 1 },
-      { name: "Final", id: 2 },
-      { name: "Collective", id: 3 },
-      { name: "Distributive", id: 4 },
+      { name: "Normal", id: ACCOUNT_NORMAL_TYPE_CODE },
+      // { name: "Closing", id: ACCOUNT_CLOSING_TYPE_CODE },
+      { name: "Assembly", id: ACCOUNT_ASSEMBLY_TYPE_CODE },
+      { name: "Distributive", id: ACCOUNT_DISTRIBUTIVE_TYPE_CODE },
     ],
 
     apartment_flat_type: [
@@ -339,8 +370,8 @@ export const SELECT_LISTS = (listName) => {
     ],
 
     bill_pattern_default_date: [
-      { name: "Entitlement", id: 1 },
-      { name: "operation", id: 2 },
+      { name: "Operation date", id: 1 },
+      { name: "Due date", id: 2 },
     ],
 
     bill_pattern_commission_type: [
@@ -386,12 +417,6 @@ export const SELECT_LISTS = (listName) => {
       { name: "Receipt voucher.", id: 1 },
     ],
 
-    // "Receipt voucher."
-    // "Payment voucher."
-    // "Daily voucher."
-
-    // contract
-
     contract_connect_with: [
       { name: CONNECT_WITH_NOTHING_NAME, id: CONNECT_WITH_NOTHING_CODE },
       { name: CONNECT_WITH_CONTRACT_NAME, id: CONNECT_WITH_CONTRACT_CODE },
@@ -429,13 +454,21 @@ export const SELECT_LISTS = (listName) => {
       { name: "Installment", id: 4 },
     ],
     contract_round_to: [
-      { name: "Without rounding", id: 0 },
+      { name: "Without rounding", id: -1 },
+      { name: "0", id: 0 },
       { name: "1", id: 1 },
       { name: "-1", id: -1 },
       { name: "5", id: 5 },
       { name: "-5", id: -5 },
       { name: "10", id: 10 },
       { name: "-10", id: -10 },
+    ],
+    chq_return_reasons: [
+      { name: "Insufficient funds", id: 1 },
+      { name: "Check bounce", id: 2 },
+      { name: "Mismatched signature", id: 3 },
+      { name: "Bank account closed", id: 4 },
+      { name: "Other", id: 5 },
     ],
   };
   return list[listName];
@@ -448,6 +481,7 @@ export const ACTIONS = {
   OPEN_ENDORSEMENT_FORM: "OPEN_ENDORSEMENT_FORM",
   OPEN_RETURN_FORM: "OPEN_RETURN_FORM",
   OPEN_TERMINATION_FINES_FORM: "OPEN_TERMINATION_FINES_FORM",
+  RENEW_CONTRACT: "RENEW_CONTRACT",
 };
 
 export const USER_STEPS = {
@@ -757,21 +791,21 @@ export const FLATS_TABLE_NAME = {
 };
 
 export const GET_NEW_ENTRY_GRID = () => {
-  return Array(5)
+  return Array(2)
     ?.fill(0)
     .map((item) => ({
       account_id: null,
       cost_center_id: null,
-      credit: 0,
+      credit: null,
       currency_id: null,
-      debit: 0,
+      debit: null,
       note: "",
       observe_account_id: null,
     }));
 };
 
 export const GET_NEW_VOUCHER_ENTRY_GRID = () => {
-  return Array(5)
+  return Array(1)
     ?.fill(0)
     .map((item) => ({
       account_id: null,
@@ -782,14 +816,6 @@ export const GET_NEW_VOUCHER_ENTRY_GRID = () => {
       note: "",
       obverse_account_id: null,
     }));
-};
-
-export const CREATED_FROM = {
-  [CREATED_FROM_CONTRACT_CODE]: CREATED_FROM_CONTRACT_NAME,
-  [CREATED_FROM_LAWSUIT_CODE]: CREATED_FROM_LAWSUIT_NAME,
-  [CREATED_FROM_BILL_CODE]: CREATED_FROM_BILL_NAME,
-  [CREATED_FROM_PAYMENT_VOUCHER_CODE]: CREATED_FROM_PAYMENT_VOUCHER_NAME,
-  [CREATED_FROM_RECEIPT_VOUCHER_CODE]: CREATED_FROM_RECEIPT_VOUCHER_NAME,
 };
 
 export const DEFAULT_COLORS = [
@@ -816,6 +842,7 @@ export const DEFAULT_COLORS = [
 ];
 
 export const resetChequeFields = () => ({
+  id: null,
   amount: 0,
   bank_id: null,
   beneficiary_name: null,

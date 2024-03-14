@@ -1,21 +1,36 @@
 import BlockPaper from "Components/Global/BlockPaper";
+import { Button } from "Components/Global/Button";
 import { ButtonsStepsGroup } from "Components/Global/ButtonsStepsGroup";
 import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
+import { FormStepPagination } from "Components/Global/FormStepPagination";
 import { ApiActions } from "Helpers/Lib/api";
-import GET_UPDATE_DATE from "Helpers/Lib/operations/global-read-update";
+import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
+import { getResetFields } from "Helpers/Lib/global-reset";
+import { CONSTANT_COLUMNS_NAME } from "Helpers/constants";
 import useFormSteps from "Hooks/useFormSteps";
-import { useState } from "react";
+import useListView from "Hooks/useListView";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
+const CACHE_DATA = {};
+
 const PatternsForm = ({ layout }) => {
   const params = useParams();
   let pattern = params?.pattern;
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   let name = pattern === "cheque_pattern" ? "bill_pattern" : pattern;
-
+  const {
+    goToNumber,
+    isLayoutUpdate,
+    listOfNumbers,
+    maxLength,
+    number,
+    setMaxLength,
+    setNumber,
+  } = useListView({ name });
 
   const methods = useForm({
     defaultValues:
@@ -29,6 +44,7 @@ const PatternsForm = ({ layout }) => {
     watch,
     formState: { errors, isDirty },
     setValue,
+    reset,
   } = methods;
 
   const {
@@ -45,24 +61,44 @@ const PatternsForm = ({ layout }) => {
     CACHE_LIST,
   } = useFormSteps({ name: pattern });
 
-  const onSubmit = async (value) => {
+  useEffect(() => {
+    if (!number) return;
+
+    fetchData(number);
+  }, [number]);
+
+  const fetchData = async (num = number) => {
+    setIsLoading(true);
+
+    const res = await ApiActions.read(name, {
+      conditions: [{ type: "and", conditions: [["number", "=", num]] }],
+    });
+    const data = res?.result?.at(0);
+    if (res?.success && data?.id) {
+      CACHE_DATA[num] = data;
+      reset(data);
+    }
+
+    if (!data?.id || !Object.values(data)) {
+      reset(getResetFields(name));
+    }
+    setIsLoading(false);
+  };
+
+  const onDelete = async () => {};
+
+  const onClickAddNew = async () => {};
+
+  const onSubmit = async (values) => {
     if (!isDirty) return;
 
-    setLoading(true);
-
-    let values = {};
-    for (const key in value) {
-      let val = value[key];
-      if (val !== undefined && val !== null && val !== "") {
-        values[key] = val;
-      }
-    }
+    setIsLoading(true);
 
     let res = null;
 
-    if (layout === "update") {
+    if (values?.id) {
       res = await ApiActions.update(name, {
-        conditions: [{ type: "and", conditions: [["id", "=", params?.id]] }],
+        conditions: [{ type: "and", conditions: [["id", "=", values?.id]] }],
         updates: values,
       });
     } else {
@@ -73,14 +109,14 @@ const PatternsForm = ({ layout }) => {
 
     if (res?.success) {
       toast.success(
-        layout === "update"
+        values?.id
           ? `Successfully update row: ${values?.name} in ${pattern}`
           : "Successfully added item in " + pattern
       );
     } else {
-      toast.error("Failed to add new item in " + pattern);
+      toast.error(res?.error?.detail);
     }
-    setLoading(false);
+    setIsLoading(false);
   };
 
   return (
@@ -89,10 +125,20 @@ const PatternsForm = ({ layout }) => {
         <FormProvider {...methods}>
           <BlockPaper>
             <FormHeadingTitleSteps
-              name={pattern}
+              // name={pattern}
               steps={steps}
               goTo={goTo}
               activeStage={currentIndex}
+              customName={
+                <span className="capitalize">
+                  {maxLength < number ? (
+                    <span className="text-red-500 ltr:mr-2 rtl:ml-2 bg-red-100 px-2 py-1 rounded-md">
+                      New
+                    </span>
+                  ) : null}
+                  {pattern?.replace(/_/g, ' ')} number {number}
+                </span>
+              }
             />
             <div className="h-5" />
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -103,15 +149,28 @@ const PatternsForm = ({ layout }) => {
                 // values={watch()}
                 errors={errors}
                 CACHE_LIST={CACHE_LIST}
+                customGrid="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
               />
-              <ButtonsStepsGroup
-                isLast={isLast}
-                isFirst={isFirst}
-                loading={loading}
-                steps={steps}
-                next={next}
-                back={back}
-              />
+              <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
+                <FormStepPagination
+                  number={number}
+                  goTo={goToNumber}
+                  // maxLength={maxLength}
+                  maxLength={maxLength}
+                  isNewOne={number > maxLength}
+                  setNumber={setNumber}
+                  onClickDelete={onDelete}
+                  isArchived={watch(CONSTANT_COLUMNS_NAME.is_archived)}
+                  isDeleted={watch(CONSTANT_COLUMNS_NAME.is_deleted)}
+                  allowActions={watch("building.id")}
+                  onClickAddNew={onClickAddNew}
+                />
+                <Button
+                  title={maxLength >= number ? "Modify" : "Submit"}
+                  classes="ltr:ml-auto rtl:mr-auto"
+                  disabled={!isDirty}
+                />
+              </div>
             </form>
           </BlockPaper>
         </FormProvider>

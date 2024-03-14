@@ -1,10 +1,8 @@
-import Loading from "Components/Global/Loading";
-import { CheckIcon, ChevronIcon, NotAllowIcon } from "Components/Icons";
-import useFetch from "Hooks/useFetch";
-import React from "react";
-import { Link } from "react-router-dom";
+import { NotAllowIcon } from "Components/Icons";
 import { ReportLatestCard } from "./ReportLatestCard";
 import { LoadingCircle } from "Components/Global/LoadingCircle";
+import { useQuery } from "@tanstack/react-query";
+import { ApiActions } from "Helpers/Lib/api";
 
 export const ReportLatest = ({
   title,
@@ -20,11 +18,15 @@ export const ReportLatest = ({
   limit = 5,
   colSearchName = "name",
 }) => {
-  const { loading, data, error } = useFetch(name, {
-    columns: ["id", 'created_at', colSearchName],
-    limit: limit,
-    sorts: [{ column: colSearchName, order: "DESC", nulls: "last" }],
+  const { data, isLoading, isError } = useQuery({
+    queryKey: [name],
+    queryFn: async () => await ApiActions.read(name, {
+      columns: ["id", "created_at", colSearchName],
+      limit: limit,
+      sorts: [{ column: colSearchName, order: "DESC", nulls: "last" }],
+    }),
   });
+
 
   return (
     <div className={`${containerClassName} flex flex-col  w-full h-full`}>
@@ -42,13 +44,13 @@ export const ReportLatest = ({
         </Link> */}
       </div>
       <div className={`${bodyClassName} flex-1 flex flex-col`}>
-        {loading ? (
+        {isLoading ? (
           <LoadingCircle />
         ) : (
           <>
-            {data?.length ? (
+            {data?.result?.length ? (
               <>
-                {data?.slice(0, 4)?.map((item) => {
+                {data?.result?.slice(0, 4)?.map((item) => {
                   if (renderItem) return renderItem(item);
                   else
                     return (
@@ -64,7 +66,7 @@ export const ReportLatest = ({
             ) : (
               <p className="text-red-500 flex justify-center items-center flex-1 capitalize flex-col">
                 <NotAllowIcon className="w-12 h-12" />
-                <span>{name} is empty </span>
+                <span>{title || name} is empty </span>
               </p>
             )}
           </>

@@ -1,3 +1,4 @@
+import { ErrorText } from "Components/Global/ErrorText";
 import React from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -19,7 +20,7 @@ const Radio = ({
 
   return (
     <div className={"flex flex-col " + containerClassName}>
-      {label && !hideLabel ? ( 
+      {label && !hideLabel ? (
         <p
           title={label}
           className={
@@ -110,11 +111,7 @@ const Radio = ({
           </>
         )}
       </div>
-      {error ? (
-        <p className="bg-red-200 mt-2 rounded text-sm text-red-500 px-2 py-1">
-          {error}
-        </p>
-      ) : null}
+      {error ? <ErrorText containerClassName="py-1">{error}</ErrorText> : null}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { Input } from "../../../CustomFields";
 import { useTranslation } from "react-i18next";
-import { VoucherStepsButton } from "../VoucherStepsButton";
+import { FormStepPagination } from "../../../../Global/FormStepPagination";
 import { Button } from "Components/Global/Button";
 import { Link } from "react-router-dom";
 import { getCreatedFromUrl } from "Helpers/functions";

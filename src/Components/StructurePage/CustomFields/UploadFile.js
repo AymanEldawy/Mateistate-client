@@ -5,6 +5,7 @@ import { FolderPlusIcon } from "Components/Icons";
 import { Controller } from "react-hook-form";
 import { FilePreviews } from "Components/Global/FullImage/FilePreviews";
 import { useTranslation } from "react-i18next";
+import { ErrorText } from "Components/Global/ErrorText";
 
 const UploadFile = ({
   label,
@@ -98,9 +99,7 @@ const UploadFile = ({
             </span>
           </div>
           {error ? (
-            <p className="bg-red-200 mt-2 rounded text-sm text-red-500 px-2 py-1">
-              {error}
-            </p>
+            <ErrorText containerClassName="py-1">{error}</ErrorText>
           ) : null}
         </div>
         {field?.allowScan ? (

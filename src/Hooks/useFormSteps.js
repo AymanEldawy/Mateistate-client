@@ -1,12 +1,11 @@
-import getFormByTableName from "Helpers/FormsStructure/new-tables-forms";
+import getFormByTableName from "Helpers/Forms/forms";
 import { ApiActions } from "Helpers/Lib/api";
 import { useEffect, useMemo, useState } from "react";
-import { usePopupForm } from "./usePopupForm";
 import {
   getAccountList,
   getAccountsChildrenByName,
-  getCustomers,
-} from "Helpers/Lib/operations/global-read";
+  getCostCenterList
+} from "Helpers/Lib/global-read";
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
 
 const useFormSteps = ({ name }) => {
@@ -62,6 +61,11 @@ const useFormSteps = ({ name }) => {
       let field = fields?.[i];
 
       if (hash[field?.ref_table] || CACHE_LIST?.[field?.ref_table]) continue;
+
+      if (field?.ref_table === "cost_center") {
+        hash.cost_center = await getCostCenterList();
+        continue;
+      }
 
       if (field?.ref_table === "account") {
         hash.account = await getAccountList();

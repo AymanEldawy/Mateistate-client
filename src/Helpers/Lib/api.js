@@ -1,13 +1,15 @@
-import { v4 as uuidv4 } from "uuid";
 
 // Example Usage of MatieStateClient
 
 import MatieStateClient from "./MatieStateClient";
+import { toast } from 'react-toastify';
 
 function CURD() {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI0NTVjN2VjLTMwOGItNGNiYi05MWQ0LWIwYjQ4MTdmM2Y1MSIsImlhdCI6MTcwNDIyMzY3MywiZXhwIjoxODYyMDExNjczfQ.ctpe7dG7a-wJo3NBMQ-e_ORSGjCLBxzYAWltBYR65Fs";
-  const baseURL = "http://203.161.62.124:3000";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZmMDdiYWE0LTllN2MtNDE4YS1hOWUwLTEzMTA5YzQ0NjVmNiIsImlhdCI6MTcwOTMxMjcyMywiZXhwIjoxODY3MTAwNzIzfQ.mO3u3EkSpCaOtzGHJS_cjZb7fj_5SgIMLDoLgnxMI68";
+    // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI0NTVjN2VjLTMwOGItNGNiYi05MWQ0LWIwYjQ4MTdmM2Y1MSIsImlhdCI6MTcwNDIyMzY3MywiZXhwIjoxODYyMDExNjczfQ.ctpe7dG7a-wJo3NBMQ-e_ORSGjCLBxzYAWltBYR65Fs";
+  // const baseURL = "http://203.161.62.124:3000";
+  const baseURL = "http://localhost:4000";
   const matieStateClient = new MatieStateClient(baseURL, token);
 
   // Example Usage of createRecord method
@@ -60,7 +62,12 @@ function CURD() {
         params
       );
       return deleteRecordResponse;
-    } catch (error) {
+    } catch ({error}) {
+      if(error?.table) 
+      {
+        toast.error(`You can't delete this item because it's connect with ${error?.table} data.`)
+      }
+      // constraint
       console.error("Error deleting records:", error);
       return error;
     }

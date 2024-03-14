@@ -1,9 +1,7 @@
 import {
   BanknoteIcon,
   BriefcaseIcon,
-  BuildingIcon,
   GearIcon,
-  PuzzleIcon,
   ToolsIcon,
   UserIcon,
   ClipboardIcon,
@@ -88,7 +86,7 @@ export const menuData = [
           {
             key: "account-card",
             name: "account card",
-            link: "/list/account/1",
+            link: "/account/1",
           },
 
           {
@@ -117,7 +115,7 @@ export const menuData = [
       {
         key: "Customer",
         name: "Customer/Supplier Card",
-        link: "/list/user/1",
+        link: "/user/1",
       },
       { key: "owner-card", name: "owner card", link: "/list/owner/1" },
       { key: "seller-card", name: "seller card", link: "/list/seller/1" },
@@ -345,27 +343,60 @@ export const menuData = [
       {
         key: "Reports contracts",
         name: "Reports contracts",
-        link: "/reports/contracts",
+        link: "/reports/contract",
+        subChild: [
+          {
+            key: "Reports contracts",
+            name: "Contract disclosure report",
+            link: "/reports/contracts/disclosure",
+          },
+          {
+            key: "Reports contracts",
+            name: "Expired contract report",
+            link: "/reports/contracts/expired-contract",
+          },
+          {
+            key: "Reports contracts",
+            name: "Near to expire contract report",
+            link: "/reports/contracts/near-to-expire-contract",
+          },
+        ],
       },
       {
         key: "Reports cheques",
-        name: "Reports cheques",
-        link: "/reports/cheques",
+        name: "cheques report",
+        link: "/reports/cheque",
       },
       {
-        key: "Reports vouchers receipts",
-        name: "Reports vouchers receipts",
-        link: "/reports/vouchers/receipts",
+        key: "Ledger Report",
+        name: "Ledger Report",
+        link: "/reports/ledger/",
       },
       {
-        key: "Reports vouchers payments",
-        name: "Reports vouchers payments",
-        link: "/reports/vouchers/payments",
+        key: "property Report",
+        name: "Property Report",
+        link: "/reports/property/",
       },
       {
-        key: "Reports vouchers entries",
-        name: "Reports vouchers entries",
-        link: "/reports/entries/",
+        key: "property Report",
+        name: "building schema Report",
+        link: "/reports/building-schema",
+      },
+      {
+        key: "Revenue report",
+        name: "Revenues report",
+        subChild: [
+          {
+            key: "property Report",
+            name: "realized revenue Report",
+            link: "/reports/revenues/realized",
+          },
+          // {
+          //   key: "property Report",
+          //   name: "unrealized revenue Report",
+          //   link: "/reports/revenues/unrealized",
+          // },
+        ],
       },
     ],
   },
@@ -542,35 +573,38 @@ async function getBillsMenus() {
 
 const getMenu = async () => {
   const contractMenu = await getContractMenus();
-  menuData[3].children.unshift({
-    key: "Contracts 2",
-    name: "Contracts",
-    subChild: contractMenu,
-  });
+  if (menuData[3].children?.[0]?.name !== "Contracts") {
+    menuData[3].children.unshift({
+      key: "Contracts 2",
+      name: "Contracts",
+      subChild: contractMenu,
+    });
+  }
 
   const billsMenus = await getBillsMenus();
   const voucherMenu = await getVouchersMenus();
 
-  menuData[2].children = [
-    {
-      key: "Journal Entry",
-      name: "Journal Entry",
-      link: "/vouchers/entries/1",
-    },
-    {
-      key: "Vouchers",
-      name: "Vouchers",
-      link: "",
-      subChild: voucherMenu,
-    },
-    {
-      key: "Cheques",
-      name: "Cheques",
-      link: "",
-      subChild: billsMenus,
-    },
-  ];
-  // menuData[2].children.unshift(,)
+  if (menuData[2].children?.[0]?.name !== "Journal Entry") {
+    menuData[2].children = [
+      {
+        key: "Journal Entry",
+        name: "Journal Entry",
+        link: "/vouchers/entries/1",
+      },
+      {
+        key: "Vouchers",
+        name: "Vouchers",
+        link: "",
+        subChild: voucherMenu,
+      },
+      {
+        key: "Cheques",
+        name: "Cheques",
+        link: "",
+        subChild: billsMenus,
+      },
+    ];
+  }
 
   return menuData;
 };

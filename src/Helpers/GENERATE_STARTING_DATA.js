@@ -1,5 +1,19 @@
 const { ApiActions } = require("./Lib/api");
 
+// Account & Users Codes
+
+export const USER_CUSTOMER_CODE = 1;
+export const USER_SUPPLIER_CODE = 2;
+
+export const ACCOUNT_NORMAL_TYPE_CODE = 1;
+export const ACCOUNT_CLOSING_TYPE_CODE = 2;
+export const ACCOUNT_ASSEMBLY_TYPE_CODE = 3;
+export const ACCOUNT_DISTRIBUTIVE_TYPE_CODE = 4;
+export const ACCOUNT_NORMAL_TYPE_NAME = "account_normal";
+export const ACCOUNT_CLOSING_TYPE_NAME = "account_closing";
+export const ACCOUNT_ASSEMBLY_TYPE_NAME = "account_assembly";
+export const ACCOUNT_DISTRIBUTIVE_TYPE_NAME = "account_distributive";
+
 // Connect With DEFAULT
 export const CONNECT_WITH_NOTHING_CODE = 0;
 export const CONNECT_WITH_CONTRACT_CODE = 1;
@@ -13,22 +27,11 @@ export const CONNECT_WITH_BILL_NAME = "Bill";
 // Created From DEFAULT
 export const CREATED_FROM_CONTRACT_CODE = 1;
 export const CREATED_FROM_LAWSUIT_CODE = 2;
-export const CREATED_FROM_BILL_NAME = 3;
-export const CREATED_FROM_PAYMENT_VOUCHER_CODE = 4;
-export const CREATED_FROM_RECEIPT_VOUCHER_CODE = 5;
-export const CREATED_FROM_CHQ_PAID_CODE = 6;
-export const CREATED_FROM_CHQ_RECEIVED_CODE = 7;
-
-export const CREATED_FROM_CHQ_DYNAMIC_CODE = "10";
-
-export const CREATED_FROM_CONTRACT_NAME = CONNECT_WITH_CONTRACT_NAME;
-export const CREATED_FROM_LAWSUIT_NAME = CONNECT_WITH_LAWSUIT_NAME;
-export const CREATED_FROM_BILL_CODE = CONNECT_WITH_BILL_NAME;
-export const CREATED_FROM_PAYMENT_VOUCHER_NAME = "Payment Voucher";
-export const CREATED_FROM_RECEIPT_VOUCHER_NAME = "Receipt Voucher";
-export const CREATED_FROM_CHQ_PAID_NAME = "Paid Check";
-export const CREATED_FROM_CHQ_RECEIVED_NAME = "Received Check";
-
+export const CREATED_FROM_BILL_CODE = 3;
+export const CREATED_FROM_CHQ_CODE = 4;
+export const CREATED_FROM_VOUCHER_CODE = 5;
+export const CREATED_FROM_CHQ_OPERATION_CODE = 6;
+export const CREATED_FROM_CONTRACT_TERMINATION_CODE = 7;
 // Currency DEFAULT
 export const DEFAULT_CURRENCY_NAME = "United Arab Emirates Dirham";
 export const DEFAULT_CURRENCY_CODE = "AED";
@@ -70,25 +73,10 @@ export const CONTRACT_SALE_PARKING_NAME = "Parking Sale Contract";
 export const CONTRACT_SALE_SHOP_NAME = "Shop Sale Contract";
 export const CONTRACT_SALE_LAND_NAME = "Apartment Sale Contract";
 
+const ACCOUNT_IDS = {};
+
 export const DEFAULT_VOUCHERS_INFO = {
   payment: {
-    auto_gen_entries: true,
-    auto_transfer_entry: true,
-    code: VOUCHER_RECEIPTS_CODE,
-    gen_entries: true,
-    generate_records: true,
-    list_name: VOUCHER_LIST_NAME,
-    name: VOUCHER_RECEIPTS_NAME,
-    required_cost_center: true,
-    required_statement: true,
-    show_contract_cost_center: true,
-    show_contract_field: true,
-    show_cost_center: true,
-    show_currency: true,
-    show_note: true,
-    show_credit_field: true,
-  },
-  receipts: {
     auto_gen_entries: true,
     auto_transfer_entry: true,
     code: VOUCHER_PAYMENT_CODE,
@@ -101,7 +89,24 @@ export const DEFAULT_VOUCHERS_INFO = {
     show_contract_cost_center: true,
     show_contract_field: true,
     show_cost_center: true,
+    show_currency: true,
+    show_note: true,
     show_debit_field: true,
+  },
+  receipts: {
+    auto_gen_entries: true,
+    auto_transfer_entry: true,
+    code: VOUCHER_RECEIPTS_CODE,
+    gen_entries: true,
+    generate_records: true,
+    list_name: VOUCHER_LIST_NAME,
+    name: VOUCHER_RECEIPTS_NAME,
+    required_cost_center: true,
+    required_statement: true,
+    show_contract_cost_center: true,
+    show_contract_field: true,
+    show_cost_center: true,
+    show_credit_field: true,
     show_currency: true,
     show_note: true,
   },
@@ -126,6 +131,19 @@ let SHARED_CHQ = {
   returnable_auto_gen_entries: true,
   returnable_auto_transfer_entry: true,
   returnable_gen_entries: true,
+  collection_default_date: 1,
+  collection_gen_entries: true,
+  collection_move_cost_center_credit: true,
+  collection_move_cost_center_debit: true,
+  deportable_default_date: 1,
+  deportable_move_cost_center_credit: true,
+  deportable_move_cost_center_debit: true,
+  partial_move_cost_center_credit: true,
+  partial_move_cost_center_debit: true,
+  returnable_active_operations: true,
+  returnable_default_date: 1,
+  returnable_move_cost_center_credit: true,
+  returnable_move_cost_center_debit: true,
 };
 
 export const DEFAULT_CHQ_INFO = [
@@ -413,10 +431,13 @@ async function INSERT_DEFAULT_ACCOUNTS() {
       name: item?.name,
       type: 1,
       currency_id,
+      status: item?.type,
+      level: item?.level,
     };
+    let responseAccount = null;
     if (item?.level === 0) {
-      const accountId = await insertAccount(data);
-      parent_id = final_id = accountId;
+      responseAccount = await insertAccount(data);
+      parent_id = final_id = responseAccount?.id;
       levels[0] = {
         final_id,
         parent_id,
@@ -424,13 +445,18 @@ async function INSERT_DEFAULT_ACCOUNTS() {
     } else if (item?.level > 0) {
       data.final_id = levels[item?.level - 1]?.final_id;
       data.parent_id = levels[item?.level - 1]?.parent_id;
-
-      const accountId = await insertAccount(data);
+      responseAccount = await insertAccount(data);
       levels[item?.level] = {
         final_id,
-        parent_id: accountId,
+        parent_id: responseAccount?.id,
       };
     }
+    ACCOUNT_IDS[`${item?.code}`] = responseAccount?.id;
+  }
+  if (ACCOUNT_IDS) {
+    INSERT_DEFAULT_VOUCHERS(ACCOUNT_IDS);
+    INSERT_DEFAULT_CONTRACTS(ACCOUNT_IDS);
+    INSERT_DEFAULT_BILLS(ACCOUNT_IDS);
   }
 }
 
@@ -438,7 +464,7 @@ async function insertAccount(data) {
   const response = await ApiActions.insert("account", {
     data,
   });
-  if (response?.success) return response?.record?.id;
+  if (response?.success) return response?.record;
 }
 
 // insert default BANKS
@@ -522,8 +548,15 @@ async function INSERT_DEFAULT_BANKS() {
 }
 
 // insert default VOUCHERS
-async function INSERT_DEFAULT_VOUCHERS() {
+async function INSERT_DEFAULT_VOUCHERS(ACCOUNT_IDS) {
   for (const voucher of Object.values(DEFAULT_VOUCHERS_INFO)) {
+    if (voucher.code === VOUCHER_PAYMENT_CODE) {
+    }
+
+    if (voucher.code === VOUCHER_RECEIPTS_CODE) {
+      voucher.default_account_id = ACCOUNT_IDS["131"];
+    }
+
     await ApiActions.insert("voucher_pattern", {
       data: voucher,
     });
@@ -531,8 +564,37 @@ async function INSERT_DEFAULT_VOUCHERS() {
 }
 
 // INSERT DEFAULT CONTRACTS
-export async function INSERT_DEFAULT_CONTRACTS() {
+export async function INSERT_DEFAULT_CONTRACTS(ACCOUNT_IDS) {
   for (const contract of DEFAULT_CONTRACT_PATTERN_INFO) {
+    if (contract.assets_type === SHOP_ASSET_TYPE_CODE) {
+      if (contract.type === CONTRACT_SALE_CODE) {
+        contract.default_revenue_account_id = ACCOUNT_IDS["42"];
+      } else {
+        contract.default_revenue_account_id = ACCOUNT_IDS["44"];
+      }
+    } else {
+      if (contract.type === CONTRACT_SALE_CODE) {
+        contract.default_revenue_account_id = ACCOUNT_IDS["41"];
+      } else {
+        contract.default_revenue_account_id = ACCOUNT_IDS["43"];
+      }
+    }
+    // else if (contract.assets_type === PARKING_ASSET_TYPE_CODE) {
+    //   contract.default_revenue_account_id = ACCOUNT_IDS[""];
+    // } else if (contract.assets_type === LAND_ASSET_TYPE_CODE) {
+    //   contract.default_revenue_account_id = ACCOUNT_IDS[""];
+    // }
+
+    // contract.default_commission_from_client_account_id: null,
+    // contract.default_commission_from_owner_account_id: null,
+    // contract.default_contract_price_revenue_account_id: null,
+    // contract.default_contract_ratification_revenue_account_id: null,
+    // contract.default_fee_revenue_account_id: null,
+    // contract.default_fines_revenue_account_id: null,
+
+    contract.default_discount_account_id = ACCOUNT_IDS["122"];
+    contract.default_insurance_account_id = ACCOUNT_IDS["223"];
+
     const response = await ApiActions.insert("contract_pattern", {
       data: {
         contract_type: contract.type,
@@ -550,8 +612,18 @@ export async function INSERT_DEFAULT_CONTRACTS() {
 }
 
 // INSERT DEFAULT BILLS
-export async function INSERT_DEFAULT_BILLS() {
+export async function INSERT_DEFAULT_BILLS(ACCOUNT_IDS) {
   for (const bill of DEFAULT_CHQ_INFO) {
+    // merge accounts
+    if (bill.code === CHQ_PAID_CODE) {
+    }
+
+    if (bill.code === CHQ_RECEIVED_CODE) {
+      bill.returnable_credit_account_id = ACCOUNT_IDS["122"];
+      bill.collection_credit_account_id = ACCOUNT_IDS["122"];
+      bill.default_account_id = ACCOUNT_IDS["122"];
+    }
+
     await ApiActions.insert("bill_pattern", {
       data: bill,
     });
@@ -645,12 +717,9 @@ export async function INSERT_DEFAULT_MULTIPLE_DATA() {
 
 export async function INSERT_DEFAULT_DATA() {
   await ApiActions.read("cheque");
-  INSERT_DEFAULT_VOUCHERS();
-  INSERT_DEFAULT_CONTRACTS();
-  INSERT_DEFAULT_BILLS();
-  INSERT_DEFAULT_MULTIPLE_DATA();
-  INSERT_DEFAULT_ACCOUNTS();
   INSERT_DEFAULT_BANKS();
+  INSERT_DEFAULT_MULTIPLE_DATA();
+  await INSERT_DEFAULT_ACCOUNTS();
 }
 // INSERT_DEFAULT_BILLS()
 // INSERT_DEFAULT_DATA()

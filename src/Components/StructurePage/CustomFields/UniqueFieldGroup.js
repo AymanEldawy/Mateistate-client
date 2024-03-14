@@ -16,6 +16,7 @@ import {
   CONNECT_WITH_LAWSUIT_NAME,
   CONNECT_WITH_NOTHING_CODE,
 } from "Helpers/GENERATE_STARTING_DATA";
+import { ErrorText } from "Components/Global/ErrorText";
 
 const REF_TABLES = {
   [CONNECT_WITH_CONTRACT_CODE]: CONNECT_WITH_CONTRACT_NAME,
@@ -51,7 +52,10 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
       if (response?.success) {
         const list = response?.result?.map((item) => ({
           value: item?.id,
-          label: table === CONNECT_WITH_CONTRACT_NAME?.toLocaleLowerCase() ? item?.number : item?.name,
+          label:
+            table === CONNECT_WITH_CONTRACT_NAME?.toLocaleLowerCase()
+              ? item?.number
+              : item?.name,
         }));
         setList(list);
       }
@@ -87,8 +91,9 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
           render={({ field: { onChange }, value, ref }) => {
             return (
               <Select
-                // isClearable={true}
-                className={`border rounded-md bg-none bg-transparent`}
+              menuPortalTarget={document?.body}
+              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+              className={`border rounded-md bg-none bg-transparent`}
                 classNames={{
                   control: (state) => "bg-transparent !border-none",
                   container: (state) =>
@@ -105,10 +110,9 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
             );
           }}
         />
+
         {selectNameError ? (
-          <p className="bg-red-200 mt-2 rounded text-sm text-red-500 px-2 py-1">
-            {selectNameError}
-          </p>
+          <ErrorText containerClassName="py-1">{selectNameError}</ErrorText>
         ) : null}
       </div>
       {selectedItemNumber > CONNECT_WITH_NOTHING_CODE ? (
@@ -131,6 +135,8 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
                   <Select
                     isClearable={true}
                     menuPlacement="auto"
+                    menuPortalTarget={document?.body}
+                    styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}    
                     options={list}
                     name={selectNameId}
                     className="w-full border-none"
@@ -157,10 +163,9 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
               <EyeIcon />
             </button>
           </div>
+
           {selectNameIdError ? (
-            <p className="bg-red-200 mt-2 rounded text-sm text-red-500 px-2 py-1">
-              {selectNameIdError}
-            </p>
+            <ErrorText containerClassName="py-1">{selectNameIdError}</ErrorText>
           ) : null}
         </div>
       ) : null}

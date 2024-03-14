@@ -1,8 +1,9 @@
+import { ErrorText } from "Components/Global/ErrorText";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-const Input = ({
+const Switch = ({
   labelClassName,
   label,
   containerClassName,
@@ -10,6 +11,7 @@ const Input = ({
   error,
   updatedName,
   hideLabel,
+  readOnly,
   // register,
   ...field
 }) => {
@@ -24,13 +26,13 @@ const Input = ({
           title={label}
           htmlFor={name}
           className={
-            "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize flex items-center gap-2" +
+            "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize flex items-center gap-2 " +
             labelClassName
           }
         >
           {t(label)?.replace(/_/g, " ")}
           {field?.required ? (
-            <span className="text-red-500 mx-1">*</span>
+            <span className="text-red-500  mx-1">*</span>
           ) : null}
         </label>
       ) : null}
@@ -47,9 +49,10 @@ const Input = ({
                   id={name}
                   type="checkbox"
                   className="sr-only peer"
-                  disabled={!watch(field?.disabledCondition)}
+                  disabled={!watch(field?.disabledCondition) || readOnly}
                   onChange={(e) => onChange(e.target.checked)}
                   checked={watch(updatedName || field?.name)}
+                  readOnly={readOnly}
                 />
               );
             }}
@@ -65,13 +68,9 @@ const Input = ({
           />
         ) : null}
       </div>
-      {error ? (
-        <p className="bg-red-200 mt-2 rounded text-sm text-red-500 px-2 py-1">
-          {error}
-        </p>
-      ) : null}
+      {error ? <ErrorText containerClassName="py-1">{error}</ErrorText> : null}
     </div>
   );
 };
 
-export default Input;
+export default Switch;

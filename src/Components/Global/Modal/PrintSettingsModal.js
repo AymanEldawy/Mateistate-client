@@ -1,7 +1,7 @@
 import { Button } from "Components/Global/Button";
 import Modal from "Components/Global/Modal/Modal";
 import { CloseIcon } from "Components/Icons";
-import PRINT from "Helpers/Lib/operations/global-print";
+import PRINT from "Helpers/Lib/global-print";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
