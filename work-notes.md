@@ -313,7 +313,7 @@ NOTES: complicated tasks
 
 ## New Notes 12/3/2024
 
-- [✔️] Fix get Entery Value after insert
+- [✔️] Fix get Entry Value after insert
 - [✔️] Fix Account distributive calculation
 - [✔️] Hide `observe_account_id` and `number` in Entry form
 - [✔️] Fix Open new one in `cach` and `Chq` in contract form
@@ -330,8 +330,7 @@ NOTES: complicated tasks
 - [✔️] Building Chq account when replace the `Note Recivable`
 - [✔️] update contract when termenation
 - [✔️] Building Bank account when `Collection Chq`
-
-- [] Chq Status
+- [✔️] Chq Status
 
 - [] update `useQuery calls` to sync with `number` come form `useViewList`
 - [] Update Contract table in database to continuo other data like [lawsuit status start and end date amount]

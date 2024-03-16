@@ -26,7 +26,6 @@ import {
 import { insertIntoGrid } from "Helpers/Lib/vouchers-insert";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 
 const automaticChangesOnAccount = async (name, watch, setValue) => {
   if (name === "parent_id") {
@@ -89,28 +88,37 @@ const calculatePercentage = (watch, setTotalPercentage) => {
 const AccountForm = ({ onClose, popupView }) => {
   const name = "account";
   const params = useParams();
-  const viewList = useListView({ name, defaultNumber: params?.number });
-  const { setRecordResponse, appendNewRecord } = usePopupForm();
-  const methods = useForm();
   const {
+    goToNumber,
     isLayoutUpdate,
     listOfNumbers,
     number,
+    setNumber,
+    maxLength,
     setMaxLength,
-    setListOfNumbers,
+    openConfirmation,
+    listOfData,
     setOpenConfirmation,
+    setListOfData,
+    setListOfNumbers,
     onDeleteItem,
-  } = viewList;
+  } = useListView({ name, defaultNumber: params?.number });
+  const { setRecordResponse, appendNewRecord } = usePopupForm();
+
+  const methods = useForm();
+
   const {
     reset,
     watch,
     setValue,
     formState: { isDirty, errors },
     setError,
+    handleSubmit,
     clearErrors,
   } = methods;
   const { CACHE_LIST, fields } = useRefTable(name);
   const [isLoading, setIsLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const [totalPercentage, setTotalPercentage] = useState(1);
 
   const accountQueryClient = useQuery({
@@ -122,6 +130,7 @@ const AccountForm = ({ onClose, popupView }) => {
             type: "and",
             conditions: [["number", "=", listOfNumbers[number - 1]]],
           },
+          // { type: "and", conditions: [["main_account_id", "=", data?.id]] },
         ],
       });
 
@@ -171,6 +180,29 @@ const AccountForm = ({ onClose, popupView }) => {
     });
     return () => subscription.unsubscribe();
   }, [watch]);
+
+  const onClickAddNew = () => {
+    setNumber(+maxLength + 1);
+    reset(getResetFields(name));
+    setRefresh((p) => !p);
+  };
+
+  const onDelete = async () => {
+    let [id, number] = watch(["id", "number"]);
+    // let number =
+    let res = await ApiActions.remove(name, {
+      conditions: [
+        {
+          type: "and",
+          conditions: [["id", "=", id]],
+        },
+      ],
+    });
+    if (res?.success) {
+      onDeleteItem(number);
+    }
+    setOpenConfirmation(false);
+  };
 
   const validationAccount = () => {
     let type = watch("type");
@@ -290,31 +322,72 @@ const AccountForm = ({ onClose, popupView }) => {
   };
 
   return (
-    <FormWrapperLayout
-      name={name}
-      viewList={viewList}
-      isLoading={isLoading}
-      onClose={onClose}
-      onSubmit={onSubmit}
-      popupView={popupView}
-      methods={methods}
-      itemId={watch("id")}
-      itemNumber={watch("number")}
-      disabledSubmit={
-        watch("type") === 4 &&
-        (+totalPercentage !== 100 ||
-          watch(ACCOUNT_DISTRIBUTIVE_TYPE_NAME)?.length < 2)
-      }
-    >
-      <AccountFormFields
-        key={number}
-        CACHE_LIST={CACHE_LIST}
-        fields={fields}
-        errors={errors}
-        watch={watch}
-        totalPercentage={totalPercentage}
+    <>
+      {isLoading ? <Loading withBackdrop /> : null}
+      <ConfirmModal
+        onConfirm={onDelete}
+        open={openConfirmation}
+        setOpen={setOpenConfirmation}
       />
-    </FormWrapperLayout>
+      <BlockPaper
+        containerClassName={popupView ? "z-[102] p-0" : null}
+        bodyClassName={popupView ? "!p-0" : null}
+        boxClassName={popupView ? "!shadow-none !p-0" : null}
+        layoutBodyClassName={popupView ? "!my-0" : null}
+      >
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate key={refresh}>
+            <FormHeadingTitle
+              onClose={onClose}
+              customName={
+                <span className="capitalize">
+                  {maxLength < number ? (
+                    <span className="text-red-500 ltr:mr-2 rtl:ml-2 bg-red-100 px-2 py-1 rounded-md">
+                      New
+                    </span>
+                  ) : null}
+                  {name?.replace(/_/g, " ")} number {number}
+                </span>
+              }
+            />
+
+            <AccountFormFields
+              CACHE_LIST={CACHE_LIST}
+              fields={fields}
+              errors={errors}
+              watch={watch}
+              totalPercentage={totalPercentage}
+            />
+            
+            <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
+              <FormStepPagination
+                number={number}
+                goTo={goToNumber}
+                // maxLength={maxLength}
+                maxLength={maxLength}
+                isNewOne={number > maxLength}
+                setNumber={setNumber}
+                onClickDelete={() => setOpenConfirmation(true)}
+                isArchived={watch(CONSTANT_COLUMNS_NAME.is_archived)}
+                isDeleted={watch(CONSTANT_COLUMNS_NAME.is_deleted)}
+                allowActions={watch("id")}
+                onClickAddNew={onClickAddNew}
+              />
+              <Button
+                title={maxLength >= number ? "Modify" : "Submit"}
+                classes="ltr:ml-auto rtl:mr-auto"
+                disabled={
+                  !isDirty ||
+                  (watch("type") === 4 &&
+                    (+totalPercentage !== 100 ||
+                      watch(ACCOUNT_DISTRIBUTIVE_TYPE_NAME)?.length < 2))
+                }
+              />
+            </div>
+          </form>
+        </FormProvider>
+      </BlockPaper>
+    </>
   );
 };
 

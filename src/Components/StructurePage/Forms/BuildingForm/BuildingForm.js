@@ -214,8 +214,6 @@ const BuildingForm = ({ popupView }) => {
     reset(getResetFields("building"));
   };
 
-  console.log(watch());
-
   const onSubmit = async (value) => {
     if (!isDirty) return;
 

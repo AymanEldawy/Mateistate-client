@@ -1,3 +1,4 @@
+import { CheckIcon } from "Components/Icons";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
@@ -44,7 +45,7 @@ const PAPER_OPERATIONS_SETTINGS = {
   },
 };
 
-export const ChequeStatus = ({ onOpenFormOperation }) => {
+export const ChequeStatus = ({ onOpenFormOperation, pattern, chqValues }) => {
   const { watch } = useFormContext();
 
   return (
@@ -52,9 +53,19 @@ export const ChequeStatus = ({ onOpenFormOperation }) => {
       {watch("id")
         ? Object.values(PAPER_OPERATIONS_SETTINGS)?.map((btn) => {
             // if (PATTERN_SETTINGS?.[btn.condition])
+            let preventOperation =
+              btn?.label !== "return" &&
+              pattern?.returnable_active_operations &&
+              chqValues?.return_status;
+
+            console.log(
+              "🚀 ~ ?Object.values ~ preventOperation:",
+              pattern?.returnable_active_operations,
+              chqValues?.return_status
+            );
             return (
               <button
-                // disabled={!watch("id")}
+                disabled={!watch("id") || preventOperation}
                 type="button"
                 className={`${btn.classes} disabled:bg-gray-200  flex gap-2 items-center disabled:text-gray-500 rounded-md px-4 py-2 capitalize hover:opacity-70 text-xs`}
                 onClick={() =>
@@ -63,15 +74,14 @@ export const ChequeStatus = ({ onOpenFormOperation }) => {
                     gen_entries: btn.gen_entries,
                     auto_gen_entries: btn.gen_entries,
                     status_name: btn.status_name,
-                    
                   })
                 }
               >
-                <input
-                  type="checkbox"
-                  checked={watch(btn?.status_name)}
-                  className="h-5 w-5"
-                />
+                {watch(btn?.status_name) ? (
+                  <span>
+                    <CheckIcon />
+                  </span>
+                ) : null}
                 {btn.label}
               </button>
             );

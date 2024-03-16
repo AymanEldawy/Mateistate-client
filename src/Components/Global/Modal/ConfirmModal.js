@@ -16,13 +16,14 @@ const ConfirmModal = ({ open, setOpen, outerClose, onConfirm, type, msg }) => {
   const onClickConfirm = async () => {
     setIsLoading(true);
     await onConfirm();
+    onClose();
     setIsLoading(false);
   };
 
   return (
     <>
       {isLoading ? <Loading /> : null}
-      <Modal open={open} onClose={onClose}>
+      <Modal open={open} onClose={onClose} containerClassName="z-[103]">
         <h3 className="text-red-500 text-lg mb-2 font-semibold">
           {type ? type : t("warning")}
         </h3>

@@ -19,6 +19,7 @@ const useListView = ({ name, defaultNumber, ignoreList, additional }) => {
     const getNumberList = async () => {
       let params = {
         sorts: [{ column: "number", order: "ASC", nulls: "last" }],
+        columns: ["id", "number"],
       };
 
       if (additional) {
@@ -27,7 +28,7 @@ const useListView = ({ name, defaultNumber, ignoreList, additional }) => {
           additional,
         };
       }
-      
+
       const res = await ApiActions.read(name, params);
       if (res?.success) {
         let data = res?.result;
@@ -43,6 +44,7 @@ const useListView = ({ name, defaultNumber, ignoreList, additional }) => {
         setListOfNumbers(listNumber);
         setMaxLength(res?.result?.length || 0);
         if (defaultNumber) {
+          console.log("🚀 ~ getNumberList ~ defaultNumber:", defaultNumber)
           setNumber(defaultNumber);
         } else {
           setNumber(res?.result?.length + 1 || 1);

@@ -1,5 +1,5 @@
 import { Button } from "Components/Global/Button";
-import { ChevronIcon, EyeIcon, PlusIcon } from "Components/Icons";
+import { ChevronIcon, EyeIcon, PlusIcon, TrashIcon } from "Components/Icons";
 import {
   CurrencyFieldGroup,
   Input,
@@ -11,14 +11,19 @@ import getFormByTableName from "Helpers/Forms/forms";
 import { ApiActions } from "Helpers/Lib/api";
 import { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 
 export const PartialCollectionFrom = ({
   CACHE_LIST,
   billId,
   PATTERN_SETTINGS,
   dispatchVoucherEntries,
-  oldValues,
   errors,
+  isLoading,
+  setOpenConfirmation,
+  isDeletedSuccess,
+  setPartialNumbers,
+  setIsDeletedSuccess
 }) => {
   const name = "op_partial_collection";
   const {
@@ -27,10 +32,26 @@ export const PartialCollectionFrom = ({
     reset,
     setValue,
   } = useFormContext();
-  const [isLoading, setIsLoading] = useState(false);
   const [number, setNumber] = useState(1);
   const [maxLength, setMaxLength] = useState(1);
   const [listData, setListData] = useState([]);
+
+  const partialQueryClient = useQuery({
+    queryKey: [name, billId],
+    queryFn: async () => {
+      const response = await ApiActions.read(name, {
+        conditions: [{ type: "and", conditions: [["bill_id", "=", billId]] }],
+      });
+      if (response?.success) {
+        setListData(response?.result);
+        setMaxLength(response?.result?.length);
+        setPartialNumbers(response?.result?.length);
+        let data = response?.result?.at(number - 1);
+        reset(data);
+        return data;
+      }
+    },
+  });
 
   const fields = useMemo(() => {
     let list = getFormByTableName(name);
@@ -41,29 +62,19 @@ export const PartialCollectionFrom = ({
     return hash;
   }, []);
 
-  const getPartialCollectionsData = async () => {
-    const response = await ApiActions.read(name, {
-      conditions: [{ type: "and", conditions: [["bill_id", "=", billId]] }],
-    });
-    if (response?.success) {
-      let data = response?.result;
-      setMaxLength(data?.length);
-      setListData(response?.result);
-      watch(data?.at(0));
-    }
-  };
-
   useEffect(() => {
-    if (listData?.[number - 1]) {
+    if (number <= maxLength) {
       reset(listData?.[number - 1]);
     }
   }, [number]);
 
   useEffect(() => {
-    if (isSubmitSuccessful) {
-      getPartialCollectionsData();
+    if (isSubmitSuccessful || isDeletedSuccess) {
+      console.log(isDeletedSuccess, "---");
+      partialQueryClient?.refetch();
+      setIsDeletedSuccess(false)
     }
-  }, [isSubmitSuccessful]);
+  }, [isSubmitSuccessful, isDeletedSuccess]);
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
@@ -85,16 +96,10 @@ export const PartialCollectionFrom = ({
     return () => subscription.unsubscribe();
   }, [watch]);
 
-  useEffect(() => {
-    if (!billId) return;
-    getPartialCollectionsData();
-  }, [billId]);
-
   const onClickAddNew = () => {
-    let total_sum_prev = listData?.reduce((acc, curr) => {
-      const accAmount = acc ? +acc.amount : 0;
+    let total_sum_prev = listData?.reduce((result, curr) => {
       const currAmount = curr ? +curr.amount : 0;
-      return accAmount + currAmount;
+      return result + currAmount;
     }, 0);
 
     setValue("id", null);
@@ -106,6 +111,7 @@ export const PartialCollectionFrom = ({
     setNumber(+maxLength + 1);
     setValue("number", +maxLength + 1);
   };
+  console.log(watch());
 
   return (
     <div className="md:w-[550px] w-full">
@@ -261,8 +267,7 @@ export const PartialCollectionFrom = ({
               <ChevronIcon className="rtl:rotate-90 ltr:-rotate-90 w-6 h-6 text-inherit" />
             </button>
           </div>
-          {number > +maxLength ||
-          +watch("total_value") >= +oldValues?.amount ? null : (
+          {number <= +maxLength && +watch("rest") > 0 ? (
             <button
               type="button"
               onClick={onClickAddNew}
@@ -271,13 +276,26 @@ export const PartialCollectionFrom = ({
               <PlusIcon className="w-5 h-5" />
               Add new{" "}
             </button>
-          )}
+          ) : null}
         </div>
-        <Button
-          title="Submit"
-          loading={isLoading}
-          disabled={!isDirty || isLoading}
-        />
+        <div className="flex items-center gap-4">
+          {watch("id") ? (
+            <button
+              type="button"
+              onClick={() => setOpenConfirmation(true)}
+              className={`flex items-center gap-2 px-2 py-1 rounded-md bg-red-500 text-white`}
+            >
+              <TrashIcon className="w-5 h-5" />
+              Delete
+            </button>
+          ) : null}
+
+          <Button
+            title="Submit"
+            loading={isLoading}
+            disabled={!isDirty || isLoading}
+          />
+        </div>
       </div>
     </div>
   );

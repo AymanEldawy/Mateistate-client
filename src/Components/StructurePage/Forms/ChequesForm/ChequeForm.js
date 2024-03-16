@@ -217,7 +217,6 @@ const ChequeForm = ({
       toast.error(res?.error?.detail);
     }
   };
-
   return (
     <>
       {isLoading || isSubmitting ? <Loading withBackdrop /> : null}
@@ -234,9 +233,11 @@ const ChequeForm = ({
           selectedFormOperation={selectedFormOperation}
           PATTERN_SETTINGS={PATTERN_SETTINGS}
           name={selectedFormOperation?.table || ""}
-          oldValues={watch()}
+          chqValues={watch()}
           CACHE_LIST={CACHE_LIST}
+          refetch={refetch}
         />
+        
       </Modal>
       <BlockPaper
         layoutBodyClassName={popupView ? "!m-0 !p-0" : ""}
@@ -392,7 +393,11 @@ const ChequeForm = ({
                 />
               </div>
 
-              <ChequeStatus onOpenFormOperation={onOpenFormOperation} />
+              <ChequeStatus
+                pattern={PATTERN_SETTINGS}
+                onOpenFormOperation={onOpenFormOperation}
+                chqValues={watch()}
+              />
 
               <div className="flex justify-between gap-6 items-center mt-4 border-t pt-4">
                 <FormStepPagination

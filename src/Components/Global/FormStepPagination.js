@@ -21,6 +21,7 @@ export const FormStepPagination = ({
   allowActions,
   setNumber,
   onClickAddNew,
+  hideAddNew,
 }) => {
   const [num, setNum] = useState(1);
   const [open, setOpen] = useState(false);
@@ -109,7 +110,7 @@ export const FormStepPagination = ({
               <SearchIcon className="w-5 h-5 text-gray-200" />
             </button>
           </div>
-          {number > +maxLength ? null : (
+          {number > +maxLength || hideAddNew ? null : (
             <button
               type="button"
               onClick={onClickAddNew}

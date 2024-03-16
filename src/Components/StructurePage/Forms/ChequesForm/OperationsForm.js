@@ -14,7 +14,9 @@ import {
 } from "Helpers/GENERATE_STARTING_DATA";
 import { generateEntryFromChqOperation } from "Helpers/Lib/vouchers-insert";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
-import { EyeIcon } from "Components/Icons";
+import { EyeIcon, TrashIcon } from "Components/Icons";
+import ConfirmModal from "Components/Global/Modal/ConfirmModal";
+import { updateChqStatus } from "Helpers/Lib/cheque-helpers";
 
 const getBuildingBank = async (values) => {
   let unit = "";
@@ -61,10 +63,10 @@ const mergePatternWithData = async (
   pattern,
   watch,
   setValue,
-  oldValues
+  chqValues
 ) => {
-  setValue("amount", oldValues?.amount);
-  setValue("bill_id", oldValues?.id);
+  setValue("amount", chqValues?.amount);
+  setValue("bill_id", chqValues?.id);
 
   switch (name?.toLowerCase()) {
     case "op_collection":
@@ -77,15 +79,15 @@ const mergePatternWithData = async (
         patternConfig.auto_transfer_entry = true;
 
       // rewrite using pattern code
-      // if (oldValues?.client_id) {
-      //   setValue("credit_account_id", oldValues?.client_id);
+      // if (chqValues?.client_id) {
+      //   setValue("credit_account_id", chqValues?.client_id);
       // } else {
       if (+pattern?.code === CHQ_RECEIVED_CODE) {
         setValue("credit_account_id", pattern?.collection_credit_account_id);
       }
       // }
-      // if (oldValues?.observe_account_id) {
-      //   setValue("debit_account_id", oldValues?.observe_account_id);
+      // if (chqValues?.observe_account_id) {
+      //   setValue("debit_account_id", chqValues?.observe_account_id);
       // } else {
       if (+pattern?.code === CHQ_RECEIVED_CODE) {
         setValue("debit_account_id", pattern?.collection_debit_account_id);
@@ -93,7 +95,7 @@ const mergePatternWithData = async (
 
       if (pattern?.collection_gen_entries) setValue("gen_entries", true);
       if (pattern?.collection_default_date === 2) {
-        setValue("created_at", oldValues?.due_date);
+        setValue("created_at", chqValues?.due_date);
       } else {
         setValue("created_at", new Date());
       }
@@ -105,33 +107,33 @@ const mergePatternWithData = async (
       }
 
       if (pattern?.collection_default_observe_account_is_client) {
-        setValue("credit_account_id", oldValues?.account_id);
+        setValue("credit_account_id", chqValues?.account_id);
       }
 
       if (
         pattern?.collection_move_cost_center_credit ||
         pattern?.collection_move_cost_center_debit
       ) {
-        setValue("cost_center_id", oldValues?.cost_center_id);
+        setValue("cost_center_id", chqValues?.cost_center_id);
       }
 
-      const buildingAccounts = await getBuildingBank(oldValues);
+      const buildingAccounts = await getBuildingBank(chqValues);
       setValue("debit_account_id", buildingAccounts?.bank_id);
       setValue("credit_account_id", buildingAccounts?.cheque_id);
       return;
 
     case "op_partial_collection":
-      if (oldValues?.amount) {
-        setValue("total_value", oldValues?.amount);
-        setValue("total_sum", oldValues?.amount);
-        setValue("rest", oldValues?.amount);
+      if (chqValues?.amount) {
+        setValue("total_value", chqValues?.amount);
+        setValue("total_sum", chqValues?.amount);
+        setValue("rest", chqValues?.amount);
       }
       if (pattern?.partial_credit_account_id) {
         setValue("credit_account_id", pattern?.partial_credit_account_id);
       }
 
       if (pattern?.partial_default_observe_account_is_client) {
-        setValue("credit_account_id", oldValues?.account_id);
+        setValue("credit_account_id", chqValues?.account_id);
       }
 
       if (pattern?.partial_debit_account_id) {
@@ -147,7 +149,7 @@ const mergePatternWithData = async (
         pattern?.partial_move_cost_center_debit ||
         pattern?.partial_move_cost_center_credit
       ) {
-        setValue("cost_center_id", oldValues?.cost_center_id);
+        setValue("cost_center_id", chqValues?.cost_center_id);
       }
 
       return;
@@ -158,7 +160,7 @@ const mergePatternWithData = async (
       setValue("debit_account_id", pattern?.deportable_debit_account_id);
 
       if (pattern?.collection_default_observe_account_is_client) {
-        setValue("credit_account_id", oldValues?.account_id);
+        setValue("credit_account_id", chqValues?.account_id);
       }
 
       if (pattern?.deportable_default_observe_account_is_client) {
@@ -169,11 +171,11 @@ const mergePatternWithData = async (
       }
 
       if (pattern?.deportable_default_account_is_owner) {
-        setValue("credit_account_id", oldValues?.account_id);
+        setValue("credit_account_id", chqValues?.account_id);
       }
 
       if (pattern?.deportable_default_date === 2) {
-        setValue("created_at", oldValues?.due_date);
+        setValue("created_at", chqValues?.due_date);
       } else {
         setValue("created_at", new Date());
       }
@@ -182,7 +184,7 @@ const mergePatternWithData = async (
         pattern?.deportable_move_cost_center_credit ||
         pattern?.deportable_move_cost_center_debit
       ) {
-        setValue("cost_center_id", oldValues?.cost_center_id);
+        setValue("cost_center_id", chqValues?.cost_center_id);
       }
 
       return;
@@ -192,11 +194,11 @@ const mergePatternWithData = async (
         setValue("credit_account_id", pattern?.returnable_credit_account_id);
       }
       if (pattern?.return_default_observe_account_is_client) {
-        setValue("credit_account_id", oldValues?.account_id);
+        setValue("credit_account_id", chqValues?.account_id);
       }
-      setValue("debit_account_id", oldValues?.account_id);
+      setValue("debit_account_id", chqValues?.account_id);
       // if (pattern?.returnable_default_account_is_client) {
-      //   setValue("debit_account_id", oldValues?.account_id);
+      //   setValue("debit_account_id", chqValues?.account_id);
       // }
 
       if (pattern?.returnable_debit_account_id) {
@@ -206,7 +208,7 @@ const mergePatternWithData = async (
       // if(pattern?.returnable_active_operations)
 
       if (pattern?.returnable_default_date === 2) {
-        setValue("created_at", oldValues?.due_date);
+        setValue("created_at", chqValues?.due_date);
       } else {
         setValue("created_at", new Date());
       }
@@ -219,7 +221,7 @@ const mergePatternWithData = async (
         pattern?.returnable_move_cost_center_credit ||
         pattern?.returnable_move_cost_center_debit
       )
-        setValue("cost_center_id", oldValues?.cost_center_id);
+        setValue("cost_center_id", chqValues?.cost_center_id);
 
       return;
     default:
@@ -233,31 +235,34 @@ export const OperationsForm = ({
   PATTERN_SETTINGS,
   layout,
   onClose,
-  oldValues,
+  chqValues,
   selectedFormOperation,
   CACHE_LIST,
+  refetch,
 }) => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const { fields } = useRefTable(name);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDeletedSuccess, setIsDeletedSuccess] = useState(false);
+  const [partialNumbers, setPartialNumbers] = useState(0);
   const methods = useForm({
     defaultValues: {},
   });
   const {
     getValues,
     handleSubmit,
-    formState: { errors, isDirty, dirtyFields, isSubmitting },
+    formState: { errors, isDirty, isSubmitting },
     watch,
     setValue,
     reset,
   } = methods;
-  const [isLoading, setIsLoading] = useState(false);
-
 
   useEffect(() => {
     if (
       !name ||
       !PATTERN_SETTINGS?.name ||
-      !oldValues?.id ||
+      !chqValues?.id ||
       !selectedFormOperation?.table
     )
       return;
@@ -271,18 +276,42 @@ export const OperationsForm = ({
         note: "",
       });
     };
-  }, [PATTERN_SETTINGS?.name, name, oldValues]);
+  }, [PATTERN_SETTINGS?.name, name, chqValues]);
 
   const getOperationData = async () => {
     const response = await ApiActions.read(name, {
-      conditions: [{ type: "and", conditions: [["bill_id", oldValues?.id]] }],
+      conditions: [{ type: "and", conditions: [["bill_id", chqValues?.id]] }],
     });
     let data = response?.result?.at(0);
     if (response?.success && data?.id) {
       reset(data);
     } else {
-      mergePatternWithData(name, PATTERN_SETTINGS, watch, setValue, oldValues);
+      mergePatternWithData(name, PATTERN_SETTINGS, watch, setValue, chqValues);
     }
+  };
+
+  const onDelete = async () => {
+    const response = await ApiActions.remove(name, {
+      conditions: [{ type: "and", conditions: [["id", "=", watch("id")]] }],
+    });
+    if (response?.success) {
+      setIsDeletedSuccess(true);
+      updateStatus(false);
+    }
+  };
+
+  const updateStatus = async (status) => {
+    if (
+      selectedFormOperation?.status_name === "partial_collection_status" &&
+      partialNumbers > 1
+    )
+      return;
+
+    let updates = {
+      [selectedFormOperation?.status_name]: status,
+    };
+    await updateChqStatus(updates, chqValues?.id);
+    refetch();
   };
 
   // Handle submit
@@ -310,27 +339,20 @@ export const OperationsForm = ({
       });
 
       if (res?.success) {
-        let updates = {
-          [selectedFormOperation?.status_name]: true,
-        };
-
-        await ApiActions.update("bill", {
-          conditions: [
-            { type: "and", conditions: [["id", "=", oldValues?.id]] },
-          ],
-          updates,
-        });
+        updateStatus(true);
       }
     }
 
     if (res?.success) {
       let id = watch("id") || res?.record?.id;
+
       if (id) {
         reset(res?.record);
-        toast.success("Successfully insert into " + name);
+        toast.success("Successfully inserted into " + name);
       } else {
-        toast.success(`Successfully update row: ${name} in ${name}`);
+        toast.success(`Successfully updated ${name}`);
       }
+
       if (selectedFormOperation?.pattern?.auto_gen_entries) {
         if (id) {
           await generateEntryFromChqOperation({
@@ -346,10 +368,15 @@ export const OperationsForm = ({
     }
     setIsLoading(false);
   };
-
+  console.log(partialNumbers);
   return (
     <>
       {isLoading ? <Loading withBackdrop /> : null}
+      <ConfirmModal
+        onConfirm={onDelete}
+        open={openConfirmation}
+        setOpen={setOpenConfirmation}
+      />
       <FormProvider {...methods}>
         <FormHeadingTitle
           title={name?.replace(/op_|_/g, " ")}
@@ -361,11 +388,16 @@ export const OperationsForm = ({
               errors={errors}
               fields={fields}
               CACHE_LIST={CACHE_LIST}
-              billId={oldValues?.id}
+              billId={chqValues?.id}
               PATTERN_SETTINGS={PATTERN_SETTINGS}
               dispatchVoucherEntries={dispatchVoucherEntries}
               popupView
-              oldValues={oldValues}
+              chqValues={chqValues}
+              isLoading={isLoading}
+              setOpenConfirmation={setOpenConfirmation}
+              isDeletedSuccess={isDeletedSuccess}
+              setIsDeletedSuccess={setIsDeletedSuccess}
+              setPartialNumbers={setPartialNumbers}
             />
           ) : (
             <>
@@ -394,11 +426,23 @@ export const OperationsForm = ({
                     <EyeIcon />
                   </button>
                 ) : null}
-                <Button
-                  title="Submit"
-                  loading={loading}
-                  disabled={!isDirty || isSubmitting || loading}
-                />
+                <div className="flex items-center gap-4">
+                  {watch("id") ? (
+                    <button
+                      type="button"
+                      onClick={() => setOpenConfirmation(true)}
+                      className={`flex items-center gap-2 px-2 py-1 rounded-md bg-red-500 text-white`}
+                    >
+                      <TrashIcon className="w-5 h-5" />
+                      Delete
+                    </button>
+                  ) : null}
+                  <Button
+                    title="Submit"
+                    loading={loading}
+                    disabled={!isDirty || isSubmitting || loading}
+                  />
+                </div>
               </div>
             </>
           )}
