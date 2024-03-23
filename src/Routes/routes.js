@@ -9,17 +9,18 @@ import EntryForm from "Components/StructurePage/Forms/Vouchers/Entry/EntryForm";
 import VoucherForm from "Components/StructurePage/Forms/Vouchers/Voucher/VoucherForm";
 import BuildingForm from "Components/StructurePage/Forms/BuildingForm/BuildingForm";
 import ChequeForm from "Components/StructurePage/Forms/ChequesForm/ChequeForm";
-import LedgerReport from "Pages/Report/LedgerReport/LedgerReport";
-import { ContractsReport } from "Pages/Report/ContractsReport/ContractsReport";
-import ChequeReport from "Pages/Report/ChqReport/ChequeReport";
+import LedgerReport from "Pages/Report/LedgerReport";
+import { ContractsReport } from "Pages/Report/ContractsReport";
+import ChequeReport from "Pages/Report/ChequeReport";
 import AccountForm from "Components/StructurePage/Forms/AccountForm/AccountForm";
 import UserForm from "Components/StructurePage/Forms/UserForm/UserForm";
-import PropertyMovingReport from "Pages/Report/PropertyMovingReport/PropertyMovingReport";
-import { ContractsExpiredReport } from "Pages/Report/ContractsExpiredReport/ContractsExpiredReport";
-import BuildingSchemaReport from "Pages/Report/BuildingSchemaReport/BuildingSchemaReport";
-import ContractRevenuesReport from "Pages/Report/ContractRevenuesReport/ContractRevenuesReport";
+import PropertyMovingReport from "Pages/Report/PropertyMovingReport";
+import { ContractsExpiredReport } from "Pages/Report/ContractsExpiredReport";
+import BuildingSchemaReport from "Pages/Report/BuildingSchemaReport";
+import ContractRevenuesReport from "Pages/Report/ContractRevenuesReport";
 import { DynamicForm } from "Components/StructurePage/Forms/CustomForm/DynamicForm";
-import { ContractNearToExpireReport } from "Pages/Report/ContractNearToExpireReport/ContractNearToExpireReport";
+import { ContractNearToExpireReport } from "Pages/Report/ContractNearToExpireReport";
+import ReservationPropertyForm from "Components/StructurePage/Forms/ReservationProperty/ReservationPropertyForm";
 
 const publicRoutes = [
   { path: "**", component: <NouFound /> },
@@ -60,6 +61,10 @@ const authProtectedRoutes = [
   { path: "/cheques/:code/:name/:number", component: <ChequeForm /> },
   { path: "/buildings/:number", component: <BuildingForm /> },
   { path: "/list/:name/:number", component: <DynamicForm /> },
+  {
+    path: "/reservation_property/:number",
+    component: <ReservationPropertyForm />,
+  },
   { path: "/account/:number", component: <AccountForm /> },
   { path: "/user/:number", component: <UserForm /> },
   {

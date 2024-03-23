@@ -287,3 +287,36 @@ input[type="date"]:valid {
 body table tbody td input:not(:read-only) {
   background: none !important;
 }
+
+@layer components {
+  /* .field-select-container {
+  } */
+  .field-select-container .field-select__control {
+    @apply bg-white dark:bg-neutral-700 border-2 border-neutral-300 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-500;
+  }
+
+  .field-select-container .field-select__control--is-focused {
+    @apply border-neutral-500 hover:border-neutral-500 dark:border-neutral-400 dark:hover:border-neutral-400 shadow-none;
+  }
+
+  .field-select-container .field-select__menu {
+    @apply bg-neutral-100 dark:bg-neutral-700 border-2 border-neutral-300 dark:border-neutral-600;
+  }
+
+  .field-select-container .field-select__option {
+    @apply text-neutral-600 dark:text-neutral-200 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-700 dark:hover:bg-neutral-800;
+  }
+  /* .field-select-container .field-select__option--is-focused {
+    @apply bg-neutral-200 dark:bg-neutral-800;
+  } */
+
+  .field-select-container .field-select__indicator-separator {
+    @apply bg-neutral-400;
+  }
+
+  .field-select-container .field-select__input-container,
+  .field-select-container .field-select__placeholder,
+  .field-select-container .field-select__single-value {
+    @apply text-neutral-600 dark:text-neutral-200;
+  }
+}

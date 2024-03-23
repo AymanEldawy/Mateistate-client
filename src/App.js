@@ -15,16 +15,6 @@ import PopupForm from "Components/StructurePage/Forms/CustomForm/PopupForm";
 import { VoucherEntriesViewProvider } from "Hooks/useVoucherEntriesView";
 import { VoucherView } from "Components/StructurePage/Forms/Vouchers/Voucher/VoucherView";
 import getMenu from "Helpers/menu";
-import { getLastCostCenterNumber } from "Helpers/Lib/global-insert";
-import { QueryClient } from '@tanstack/react-query';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-    },
-  },
-});
 
 function App() {
   const [mode, setMode] = useState("dark");

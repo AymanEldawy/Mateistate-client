@@ -21,7 +21,7 @@ const PatternsForm = ({ layout }) => {
   const params = useParams();
   let pattern = params?.pattern;
   const [isLoading, setIsLoading] = useState(false);
-  let name = pattern === "cheque_pattern" ? "bill_pattern" : pattern;
+  let name = pattern;
   const {
     goToNumber,
     isLayoutUpdate,

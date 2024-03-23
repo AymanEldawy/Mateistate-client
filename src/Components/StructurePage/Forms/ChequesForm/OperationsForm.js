@@ -12,11 +12,15 @@ import {
   CHQ_RECEIVED_CODE,
   CREATED_FROM_CHQ_OPERATION_CODE,
 } from "Helpers/GENERATE_STARTING_DATA";
-import { generateEntryFromChqOperation } from "Helpers/Lib/vouchers-insert";
+import {
+  deleteEntry,
+  generateEntryFromChqOperation,
+} from "Helpers/Lib/vouchers-insert";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import { EyeIcon, TrashIcon } from "Components/Icons";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import { updateChqStatus } from "Helpers/Lib/cheque-helpers";
+import { ViewEntry } from "Components/Global/ViewEntry";
 
 const getBuildingBank = async (values) => {
   let unit = "";
@@ -353,7 +357,10 @@ export const OperationsForm = ({
         toast.success(`Successfully updated ${name}`);
       }
 
-      if (selectedFormOperation?.pattern?.auto_gen_entries) {
+      if (
+        selectedFormOperation?.pattern?.auto_gen_entries ||
+        watch("gen_entries")
+      ) {
         if (id) {
           await generateEntryFromChqOperation({
             created_from_id: id,
@@ -362,13 +369,13 @@ export const OperationsForm = ({
             values: watch(),
           });
         }
-      }
+      } else deleteEntry(id);
     } else {
       toast.error(res?.error?.detail);
     }
     setIsLoading(false);
   };
-  console.log(partialNumbers);
+
   return (
     <>
       {isLoading ? <Loading withBackdrop /> : null}
@@ -410,21 +417,7 @@ export const OperationsForm = ({
               />
               <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
                 {watch("id") && PATTERN_SETTINGS?.auto_gen_entries ? (
-                  <button
-                    type="button"
-                    className="bg-blue-500 text-white px-2 py-1 rounded-md flex items-center gap-2"
-                    onClick={() =>
-                      dispatchVoucherEntries({
-                        table: "entry_main_data",
-                        grid: "entry_grid_data",
-                        ref_name: "created_from_id",
-                        id: watch("id"),
-                      })
-                    }
-                  >
-                    View Entry
-                    <EyeIcon />
-                  </button>
+                  <ViewEntry id={watch("id")} />
                 ) : null}
                 <div className="flex items-center gap-4">
                   {watch("id") ? (

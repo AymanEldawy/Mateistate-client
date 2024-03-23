@@ -12,6 +12,7 @@ import { ApiActions } from "Helpers/Lib/api";
 import { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
+import { ViewEntry } from "Components/Global/ViewEntry";
 
 export const PartialCollectionFrom = ({
   CACHE_LIST,
@@ -70,7 +71,6 @@ export const PartialCollectionFrom = ({
 
   useEffect(() => {
     if (isSubmitSuccessful || isDeletedSuccess) {
-      console.log(isDeletedSuccess, "---");
       partialQueryClient?.refetch();
       setIsDeletedSuccess(false)
     }
@@ -111,7 +111,6 @@ export const PartialCollectionFrom = ({
     setNumber(+maxLength + 1);
     setValue("number", +maxLength + 1);
   };
-  console.log(watch());
 
   return (
     <div className="md:w-[550px] w-full">
@@ -130,21 +129,7 @@ export const PartialCollectionFrom = ({
             error={errors?.gen_entries ? "Field is required" : ""}
           />
           {watch("id") && PATTERN_SETTINGS?.auto_gen_entries ? (
-            <button
-              type="button"
-              className="bg-blue-500 whitespace-nowrap text-white px-2 py-1 rounded-md flex items-center gap-2"
-              onClick={() =>
-                dispatchVoucherEntries({
-                  table: "entry_main_data",
-                  grid: "entry_grid_data",
-                  ref_name: "created_from_id",
-                  id: watch("id"),
-                })
-              }
-            >
-              View Entry
-              <EyeIcon />
-            </button>
+            <ViewEntry id={watch("id")} />
           ) : null}
         </div>
       </div>

@@ -42,7 +42,10 @@ import {
 import { FormStepPagination } from "../../../Global/FormStepPagination";
 import { Button } from "Components/Global/Button";
 import Loading from "Components/Global/Loading";
-import { generateEntryFromContract } from "Helpers/Lib/vouchers-insert";
+import {
+  deleteEntry,
+  generateEntryFromContract,
+} from "Helpers/Lib/vouchers-insert";
 import { Locked } from "Components/Global/Locked";
 import { changeRowStatus } from "Helpers/functions";
 import { resetContractFields } from "../../../../Helpers/Lib/contract-helpers";
@@ -441,7 +444,7 @@ const ContractForm = () => {
       flat_type: CONTRACTS_ASSETS_TYPE?.[searchQuery.get("flat_type")],
       ...watch("contract"),
     };
-    
+
     value[contractName].code = code;
 
     const getTheFunInsert = INSERT_FUNCTION[contractName];
@@ -458,9 +461,9 @@ const ContractForm = () => {
       let contract_id = res?.record?.id;
       setOldContracts((prev) => [...prev, watch(tabNames?.[0])]);
 
-      if (firstTabData?.gen_entries && SHOULD_UPDATES?.[tabNames?.[0]]) {
+      if (firstTabData?.gen_entrie) {
         await genEntry(contract_id || watch("contract.id"));
-      }
+      } else deleteEntry(contract_id);
 
       if (contract_id) {
         const data = await GET_UPDATE_DATE(contractName, res?.record?.id);
@@ -480,7 +483,7 @@ const ContractForm = () => {
     }
     setIsLoading(false);
   };
-  
+
   const genEntry = async (contract_id) => {
     let values = watch(contractName);
 

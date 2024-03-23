@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 const useListView = ({ name, defaultNumber, ignoreList, additional }) => {
   const params = useParams();
   const [number, setNumber] = useState(defaultNumber);
-  const [maxLength, setMaxLength] = useState(1);
+  const [maxLength, setMaxLength] = useState(0);
   const [listOfNumbers, setListOfNumbers] = useState([]);
   const [listOfData, setListOfData] = useState({});
   const [openConfirmation, setOpenConfirmation] = useState(false);
@@ -30,6 +30,7 @@ const useListView = ({ name, defaultNumber, ignoreList, additional }) => {
       }
 
       const res = await ApiActions.read(name, params);
+      console.log("🚀 ~ getNumberList ~ res:", res)
       if (res?.success) {
         let data = res?.result;
         let hashData = {};
@@ -43,12 +44,12 @@ const useListView = ({ name, defaultNumber, ignoreList, additional }) => {
         setListOfData(hashData);
         setListOfNumbers(listNumber);
         setMaxLength(res?.result?.length || 0);
-        if (defaultNumber) {
-          console.log("🚀 ~ getNumberList ~ defaultNumber:", defaultNumber)
+        if (defaultNumber && defaultNumber > 1) {
           setNumber(defaultNumber);
         } else {
           setNumber(res?.result?.length + 1 || 1);
         }
+        console.log(number, maxLength, "ldis");
       }
     };
 

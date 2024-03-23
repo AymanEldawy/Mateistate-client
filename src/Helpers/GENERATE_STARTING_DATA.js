@@ -32,6 +32,8 @@ export const CREATED_FROM_CHQ_CODE = 4;
 export const CREATED_FROM_VOUCHER_CODE = 5;
 export const CREATED_FROM_CHQ_OPERATION_CODE = 6;
 export const CREATED_FROM_CONTRACT_TERMINATION_CODE = 7;
+export const CREATED_FROM_CONTRACT_RESERVATION_CODE = 8;
+
 // Currency DEFAULT
 export const DEFAULT_CURRENCY_NAME = "United Arab Emirates Dirham";
 export const DEFAULT_CURRENCY_CODE = "AED";
@@ -624,7 +626,7 @@ export async function INSERT_DEFAULT_BILLS(ACCOUNT_IDS) {
       bill.default_account_id = ACCOUNT_IDS["122"];
     }
 
-    await ApiActions.insert("bill_pattern", {
+    await ApiActions.insert("cheque_pattern", {
       data: bill,
     });
   }

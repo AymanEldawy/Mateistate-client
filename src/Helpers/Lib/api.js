@@ -74,7 +74,7 @@ function CURD() {
   };
 
   const deleteContract = async (params) => {
-    console.log("🚀 ~ deleteContract ~ params:", params);
+    // console.log("🚀 ~ deleteContract ~ params:", params);
   };
 
   // Example Usage of deleteRecords method

@@ -25,6 +25,8 @@ const UniqueField = ({
   selectContainerClassName,
   CACHE_LIST,
   inputClassName,
+  selectClassName,
+  labelClassName,
   ...field
 }) => {
   const { dispatchForm } = usePopupForm();
@@ -41,7 +43,7 @@ const UniqueField = ({
             item?.number && !IGNORED_SHOW_NUMBER_TABLE[field?.ref_table]
               ? `${item?.internal_number || item?.number}-${
                   item?.[field?.ref_name || "name"]
-                }${item?.parent_name ? `-(${item?.parent_name})` : ''}`
+                }${item?.parent_name ? `-(${item?.parent_name})` : ""}`
               : item[field?.ref_name || "name"],
         };
       })
@@ -63,7 +65,7 @@ const UniqueField = ({
       {label && !hideLabel ? (
         <label
           title={label}
-          className="overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize"
+          className={`overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize ${labelClassName}`}
         >
           {t(label)?.replace(/_/g, " ")}
           {field?.required ? (
@@ -72,7 +74,7 @@ const UniqueField = ({
         </label>
       ) : null}
       <div
-        className={`relative flex items-center border dark:border-dark-border rounded-md ${
+        className={`relative flex items-center border dark:border-dark-border rounded-md w-full ${
           field?.disabledCondition && watch(field?.disabledCondition)
             ? "pointer-events-none"
             : ""
@@ -95,7 +97,7 @@ const UniqueField = ({
                 // menuPlacement={
                 //   field?.menuPlacement ? field?.menuPlacement : "top"
                 // }
-                className="w-full border-none"
+                className={`w-full border-none ${selectClassName}`}
                 classNames={{
                   indicatorsContainer: () => "!hidden bg-black",
                   control: (state) => `bg-transparent !border-none`,

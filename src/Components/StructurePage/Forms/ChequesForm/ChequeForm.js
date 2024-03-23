@@ -10,8 +10,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { OperationsForm } from "./OperationsForm";
 import { FormStepPagination } from "../../../Global/FormStepPagination";
-import { getLastNumberByColumn } from "Helpers/Lib/global-insert";
-import { METHODS, POPUP_ACTIONS, resetChequeFields } from "Helpers/constants";
+import { METHODS, resetChequeFields } from "Helpers/constants";
 import { ChequeStatus } from "./ChequeStatus";
 import { EyeIcon } from "Components/Icons";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
@@ -24,13 +23,16 @@ import {
 } from "Components/StructurePage/CustomFields";
 import UniqueFieldGroup from "Components/StructurePage/CustomFields/UniqueFieldGroup";
 import Loading from "Components/Global/Loading";
-import { autoMergePatternSettingsWithValues } from "Helpers/Lib/contract-helpers";
-import { generateEntryFromBill } from "Helpers/Lib/vouchers-insert";
+import {
+  deleteEntry,
+  generateEntryFromCheque,
+} from "Helpers/Lib/vouchers-insert";
 import { CREATED_FROM_CHQ_CODE } from "Helpers/GENERATE_STARTING_DATA";
 import useRefTable from "Hooks/useRefTables";
 import { removeNullValues } from "Helpers/functions";
 import useListView from "Hooks/useListView";
 import { useQuery } from "@tanstack/react-query";
+import { ViewEntry } from "Components/Global/ViewEntry";
 
 const CACHE_CHEQUE_DATA = {};
 
@@ -79,7 +81,7 @@ const ChequeForm = ({
     isLayoutUpdate,
     listOfNumbers,
   } = useListView({
-    name: "bill",
+    name: "cheque",
     additional: {
       conditions: [{ type: "and", conditions: [["type", "=", +code]] }],
     },
@@ -87,9 +89,9 @@ const ChequeForm = ({
   });
 
   useQuery({
-    queryKey: ["cheque", "bill_pattern"],
+    queryKey: ["cheque", "cheque_pattern"],
     queryFn: async () => {
-      const response = await ApiActions.read("bill_pattern", {
+      const response = await ApiActions.read("cheque_pattern", {
         conditions: [{ type: "and", conditions: [["code", "=", +code]] }],
       });
       let pattern = response?.result?.at(0);
@@ -101,7 +103,7 @@ const ChequeForm = ({
   const { isLoading, refetch } = useQuery({
     queryKey: ["cheque", name, number, code],
     queryFn: async () => {
-      const response = await ApiActions.read("bill", {
+      const response = await ApiActions.read("cheque", {
         conditions: [
           {
             type: "and",
@@ -172,12 +174,12 @@ const ChequeForm = ({
     let chq_id = watch("id");
 
     if (layout === "update" || values?.id) {
-      res = await ApiActions.update("bill", {
+      res = await ApiActions.update("cheque", {
         conditions: [{ type: "and", conditions: [["id", "=", values?.id]] }],
         updates: values,
       });
     } else {
-      res = await ApiActions.insert("bill", {
+      res = await ApiActions.insert("cheque", {
         data: values,
       });
       reset(res?.record);
@@ -205,13 +207,13 @@ const ChequeForm = ({
 
       if (values?.gen_entries || PATTERN_SETTINGS?.auto_gen_entries) {
         if (chq_id) {
-          await generateEntryFromBill({
+          await generateEntryFromCheque({
             created_from_id: chq_id,
             created_from: CREATED_FROM_CHQ_CODE,
             created_from_code: +PATTERN_SETTINGS?.code,
             values,
           });
-        }
+        } else deleteEntry(chq_id);
       }
     } else {
       toast.error(res?.error?.detail);
@@ -237,7 +239,6 @@ const ChequeForm = ({
           CACHE_LIST={CACHE_LIST}
           refetch={refetch}
         />
-        
       </Modal>
       <BlockPaper
         layoutBodyClassName={popupView ? "!m-0 !p-0" : ""}
@@ -264,21 +265,7 @@ const ChequeForm = ({
                     error={errors?.gen_entries ? "Field is required" : ""}
                   />
                   {watch("id") && PATTERN_SETTINGS?.auto_gen_entries ? (
-                    <button
-                      type="button"
-                      className="bg-blue-500 mt-4 text-white px-2 py-1 rounded-md flex items-center gap-2"
-                      onClick={() =>
-                        dispatchVoucherEntries({
-                          table: "entry_main_data",
-                          grid: "entry_grid_data",
-                          ref_name: "created_from_id",
-                          id: watch("id"),
-                        })
-                      }
-                    >
-                      View Entry
-                      <EyeIcon />
-                    </button>
+                    <ViewEntry id={watch("id")} />
                   ) : null}
                 </div>
                 <div className="flex gap-2">

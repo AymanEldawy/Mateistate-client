@@ -1,16 +1,15 @@
 import { ApiActions } from "Helpers/Lib/api";
-import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import { useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider } from "react-hook-form";
 import BlockPaper from "Components/Global/BlockPaper";
-import useListView from "Hooks/useListView";
 import { getResetFields } from "Helpers/Lib/global-reset";
 import { Button } from "Components/Global/Button";
 import { FormStepPagination } from "../../../Global/FormStepPagination";
 import { CONSTANT_COLUMNS_NAME } from "Helpers/constants";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import Loading from "Components/Global/Loading";
-import { useParams } from "react-router-dom";
+import FormTitle from "Components/Global/FormTitle";
+// const { Prompt } = "react-router-dom";
 
 const FormWrapperLayout = ({
   onClose,
@@ -24,7 +23,17 @@ const FormWrapperLayout = ({
   viewList,
   itemId,
   itemNumber,
+  steps,
+  goToStep,
+  currentIndex,
+  outerDelete,
+  setCurrentIndex,
+  tableName,
+  hidePaginationBar,
+  additionalButtons,
 }) => {
+  // const history = useHistory();
+  const [refresh, setRefresh] = useState(false);
   const {
     reset,
     handleSubmit,
@@ -41,13 +50,34 @@ const FormWrapperLayout = ({
     onDeleteItem,
   } = viewList;
 
+  // let blocker = useBlocker(
+  //   ({ currentLocation, nextLocation }) =>
+  //     isDirty && currentLocation.pathname !== nextLocation.pathname
+  // );
+
+  // React.useEffect(() => {
+  //   const unblock = history.block((location, action) => {
+  //     if (isDirty) {
+  //       return window.confirm("Navigate Back?");
+  //     }
+  //     return true;
+  //   });
+
+  //   return () => {
+  //     unblock();
+  //   };
+  // }, []);
+
   const onClickAddNew = () => {
     setNumber(+maxLength + 1);
-    reset(getResetFields(name));
+    reset(getResetFields(tableName || name));
+    if (setCurrentIndex) setCurrentIndex(0);
+    setRefresh((p) => !p);
   };
 
   const onDelete = async () => {
-    let res = await ApiActions.remove(name, {
+    if (outerDelete) return outerDelete();
+    let res = await ApiActions.remove(tableName || name, {
       conditions: [
         {
           type: "and",
@@ -63,6 +93,11 @@ const FormWrapperLayout = ({
 
   return (
     <>
+      {/* <Prompt
+        when={isDirty}
+        message="Unsaved changes detected, continue?"
+        beforeUnload={true}
+      /> */}
       {isLoading || isSubmitting ? <Loading withBackdrop /> : null}
       <ConfirmModal
         onConfirm={onDelete}
@@ -77,8 +112,11 @@ const FormWrapperLayout = ({
       >
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <FormHeadingTitle
+            <FormTitle
               onClose={onClose}
+              activeStage={currentIndex}
+              steps={steps}
+              goTo={goToStep}
               customName={
                 <span className="capitalize">
                   {maxLength < number ? (
@@ -90,27 +128,39 @@ const FormWrapperLayout = ({
                 </span>
               }
             />
-            {children}
-            <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
-              <FormStepPagination
-                number={number}
-                goTo={goToNumber}
-                // maxLength={maxLength}
-                maxLength={maxLength}
-                isNewOne={number > maxLength}
-                setNumber={setNumber}
-                onClickDelete={() => setOpenConfirmation(true)}
-                isArchived={watch(CONSTANT_COLUMNS_NAME.is_archived)}
-                isDeleted={watch(CONSTANT_COLUMNS_NAME.is_deleted)}
-                allowActions={watch("id")}
-                onClickAddNew={onClickAddNew}
-              />
-              <Button
-                title={maxLength >= number ? "Modify" : "Submit"}
-                classes="ltr:ml-auto rtl:mr-auto"
-                disabled={!isDirty || disabledSubmit}
-              />
+
+            <div key={refresh} className="mt-5">
+              {children}
             </div>
+
+            {hidePaginationBar ? null : (
+              <div
+                className={`flex justify-between gap-4 items-center mt-4 border-t pt-4`}
+              >
+                <FormStepPagination
+                  number={number}
+                  goTo={goToNumber}
+                  // maxLength={maxLength}
+                  maxLength={maxLength}
+                  isNewOne={number > maxLength}
+                  setNumber={setNumber}
+                  onClickDelete={() => setOpenConfirmation(true)}
+                  isArchived={watch(CONSTANT_COLUMNS_NAME.is_archived)}
+                  isDeleted={watch(CONSTANT_COLUMNS_NAME.is_deleted)}
+                  allowActions={watch("id")}
+                  onClickAddNew={onClickAddNew}
+                />
+
+                <div className="flex gap-2 items-center">
+                  {additionalButtons ? additionalButtons : null}
+                  <Button
+                    title={maxLength >= number ? "Modify" : "Submit"}
+                    classes="ltr:ml-auto rtl:mr-auto"
+                    disabled={!isDirty || disabledSubmit}
+                  />
+                </div>
+              </div>
+            )}
           </form>
         </FormProvider>
       </BlockPaper>

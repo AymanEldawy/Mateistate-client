@@ -17,6 +17,11 @@ export const menuData = [
     icon: <ClipboardIcon />,
     children: [
       {
+        key: "reservation_property",
+        name: "reservation property Card",
+        link: "/reservation_property/1",
+      },
+      {
         key: "Building",
         name: "Building Card",
         link: "/buildings/1",
@@ -335,8 +340,43 @@ export const menuData = [
   },
 
   {
-    key: "Reports",
-    name: "Reports",
+    key: "Accounting Reports",
+    name: "Accounting Reports",
+    link: "",
+    icon: <ToolsIcon />,
+    children: [
+      {
+        key: "Reports cheques",
+        name: "cheques report",
+        link: "/reports/cheque",
+      },
+      {
+        key: "Ledger Report",
+        name: "Ledger Report",
+        link: "/reports/ledger/",
+      },
+      {
+        key: "Revenue report",
+        name: "Revenues report",
+        subChild: [
+          {
+            key: "property Report",
+            name: "realized revenue Report",
+            link: "/reports/revenues/realized",
+          },
+          // {
+          //   key: "property Report",
+          //   name: "unrealized revenue Report",
+          //   link: "/reports/revenues/unrealized",
+          // },
+        ],
+      },
+    ],
+  },
+
+  {
+    key: "Real state Reports",
+    name: "Real state Reports",
     link: "",
     icon: <ToolsIcon />,
     children: [
@@ -362,16 +402,7 @@ export const menuData = [
           },
         ],
       },
-      {
-        key: "Reports cheques",
-        name: "cheques report",
-        link: "/reports/cheque",
-      },
-      {
-        key: "Ledger Report",
-        name: "Ledger Report",
-        link: "/reports/ledger/",
-      },
+
       {
         key: "property Report",
         name: "Property Report",
@@ -381,22 +412,6 @@ export const menuData = [
         key: "property Report",
         name: "building schema Report",
         link: "/reports/building-schema",
-      },
-      {
-        key: "Revenue report",
-        name: "Revenues report",
-        subChild: [
-          {
-            key: "property Report",
-            name: "realized revenue Report",
-            link: "/reports/revenues/realized",
-          },
-          // {
-          //   key: "property Report",
-          //   name: "unrealized revenue Report",
-          //   link: "/reports/revenues/unrealized",
-          // },
-        ],
       },
     ],
   },
@@ -524,7 +539,7 @@ async function getVouchersMenus() {
 
 // Generate dynamic Bills menu from Bills pattern
 async function getBillsMenus() {
-  const res = await ApiActions.read("bill_pattern");
+  const res = await ApiActions.read("cheque_pattern");
   let hash = {};
 
   for (const item of res?.result) {

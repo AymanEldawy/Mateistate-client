@@ -13,6 +13,7 @@ import TerminationFinesForm from "./TerminationFinesForm";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import { EyeIcon } from "Components/Icons";
 import { CONTRACT_STATUS } from "Helpers/Lib/contract-helpers";
+import { ViewEntry } from "Components/Global/ViewEntry";
 
 const ContractTerminationForm = ({
   CACHE_LIST,
@@ -82,23 +83,7 @@ const ContractTerminationForm = ({
             updatedName={`${tab}.gen_entries`}
             error={errors?.[tab]?.gen_entries ? "Field is required" : ""}
           />
-          {watch(`${tab}.id`) ? (
-            <button
-              type="button"
-              className="bg-blue-500 mt-4 text-white px-2 py-1 rounded-md flex items-center gap-2"
-              onClick={() =>
-                dispatchVoucherEntries({
-                  table: "entry_main_data",
-                  grid: "entry_grid_data",
-                  ref_name: "created_from_id",
-                  id: watch(`${tab}.id`),
-                })
-              }
-            >
-              View Entry
-              <EyeIcon />
-            </button>
-          ) : null}
+          {watch(`${tab}.id`) ? <ViewEntry id={watch("id")} /> : null}
         </div>
         <div className="grid sm:grid-cols-2 gap-4 md:gap-8 lg:gap-12 my-4">
           <div className="flex flex-col gap-4">

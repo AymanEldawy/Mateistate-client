@@ -99,7 +99,6 @@ const AccountForm = ({ onClose, popupView }) => {
     setMaxLength,
     setListOfNumbers,
     setOpenConfirmation,
-    onDeleteItem,
   } = viewList;
   const {
     reset,

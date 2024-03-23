@@ -10,6 +10,7 @@ import React, { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { ContractStatus } from "./ContractStatus";
 import { EyeIcon } from "Components/Icons";
+import { ViewEntry } from "Components/Global/ViewEntry";
 
 export const ContractFinancialForm = ({
   fields,
@@ -84,21 +85,8 @@ export const ContractFinancialForm = ({
             // values={values}
             error={errors?.[tab]?.gen_entries ? "Field is required" : ""}
           />
-          {contract_id ? (
-            <button
-              type="button"
-              className="bg-blue-500 mt-4 text-white px-2 py-1 rounded-md flex items-center gap-2"
-              onClick={() =>
-                dispatchVoucherEntries({
-                  table: "entry_main_data",
-                  grid: "entry_grid_data",
-                  ref_name: "created_from_id",
-                  id: contract_id,
-                })
-              }
-            >
-              <EyeIcon />
-            </button>
+          {contract_id && watch(`${tab}.gen_entries`) ? (
+            <ViewEntry id={contract_id} />
           ) : null}
         </div>
         <div className="flex-1 grid grid-cols-2 gap-4  mt-8">

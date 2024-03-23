@@ -509,7 +509,7 @@ export const generateBillsFromInstallment = async ({
   if (!installment_grid?.length) return;
 
   const { currency_id } = installment;
-  const responseBillPattern = await ApiActions.read("bill_pattern", {
+  const responseBillPattern = await ApiActions.read("cheque_pattern", {
     conditions: [
       { type: "and", conditions: [["code", "=", CHQ_RECEIVED_CODE]] },
     ],
@@ -545,7 +545,7 @@ export const generateBillsFromInstallment = async ({
 
   if (!bills?.length) return;
 
-  const prevGrid = await ApiActions.read("bill", {
+  const prevGrid = await ApiActions.read("cheque", {
     conditions: [
       {
         type: "and",
@@ -578,7 +578,7 @@ export const generateBillsFromInstallment = async ({
 
     if (item && prevItem) {
       delete item?.id;
-      const repUpdate = await ApiActions.update("bill", {
+      const repUpdate = await ApiActions.update("cheque", {
         conditions: [{ type: "and", conditions: [["id", "=", prevItem?.id]] }],
         updates: item,
       });
@@ -586,7 +586,7 @@ export const generateBillsFromInstallment = async ({
       if (repUpdate?.success) updatedChq.push(item?.internal_number);
     } else {
       if (item) {
-        const resInsert = await ApiActions.insert("bill", {
+        const resInsert = await ApiActions.insert("cheque", {
           data: { ...item, connect_with_id: contract_id },
         });
 
@@ -596,7 +596,7 @@ export const generateBillsFromInstallment = async ({
         }
       } else {
         deletedChq.push(item?.internal_number);
-        const resDelete = await ApiActions.remove("bill", {
+        const resDelete = await ApiActions.remove("cheque", {
           conditions: [
             { type: "and", conditions: [["id", "=", prevItem?.id]] },
           ],
@@ -623,7 +623,7 @@ export const generateBillsFromInstallment = async ({
       )
         continue;
 
-      await generateEntryFromBill({
+      await generateEntryFromCheque({
         created_from_id: chq_id,
         created_from: CREATED_FROM_CHQ_CODE,
         created_from_code: +pattern?.code,
@@ -651,7 +651,7 @@ export const generateBillsFromInstallment = async ({
 };
 
 // generate Entry From Bill
-export const generateEntryFromBill = async ({
+export const generateEntryFromCheque = async ({
   values,
   created_from,
   created_from_id,
@@ -886,4 +886,79 @@ export const generateEntryFromChqOperation = async ({
 
     return;
   }
+};
+
+// generate Entry From Reservation
+export const generateEntryFromReservation = async ({
+  values,
+  created_from,
+  created_from_id,
+  created_from_code,
+}) => {
+  let {
+    payment_amount,
+    cost_center_id,
+    credit_account_id,
+    debit_account_id,
+    currency_id,
+    currency_val,
+    note,
+    created_at,
+  } = values;
+
+  let entry = {
+    created_at,
+    currency_id: currency_id,
+    currency_val: currency_val || 1,
+    note,
+    debit: payment_amount, // cash
+    credit: payment_amount, // customer
+    difference: 0,
+    created_from,
+    created_from_id,
+    created_from_code,
+  };
+
+  // insert into Entry
+  const response = await insertIntoEntry(entry);
+
+  if (response?.id) {
+    const grid = [
+      {
+        account_id: debit_account_id,
+        observe_account_id: credit_account_id,
+        currency_id,
+        cost_center_id,
+        debit: payment_amount,
+        credit: 0,
+        note,
+      },
+
+      {
+        account_id: credit_account_id,
+        observe_account_id: debit_account_id,
+        currency_id,
+        cost_center_id,
+        debit: 0,
+        credit: payment_amount,
+        note,
+      },
+    ];
+
+    await insertIntoGrid({
+      grid,
+      itemId: response?.id,
+      tableName: "entry_main_data",
+      gridTableName: "entry_grid_data",
+      itemSearchName: "entry_main_data_id",
+    });
+
+    return;
+  }
+};
+
+export const deleteEntry = async (id) => {
+  await ApiActions.remove("entry_main_data", {
+    conditions: [{ type: "and", conditions: [["id", "=", id]] }],
+  });
 };

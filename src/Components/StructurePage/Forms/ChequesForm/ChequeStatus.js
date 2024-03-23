@@ -58,11 +58,6 @@ export const ChequeStatus = ({ onOpenFormOperation, pattern, chqValues }) => {
               pattern?.returnable_active_operations &&
               chqValues?.return_status;
 
-            console.log(
-              "🚀 ~ ?Object.values ~ preventOperation:",
-              pattern?.returnable_active_operations,
-              chqValues?.return_status
-            );
             return (
               <button
                 disabled={!watch("id") || preventOperation}

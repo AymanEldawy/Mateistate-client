@@ -12,6 +12,7 @@ const Switch = ({
   updatedName,
   hideLabel,
   readOnly,
+  switchContainerClassName,
   // register,
   ...field
 }) => {
@@ -39,7 +40,7 @@ const Switch = ({
       <div className="flex gap-4 items-center">
         <label
           title={label}
-          className="relative flex mt-2 gap-4 items-center cursor-pointer"
+          className={`relative flex mt-2 gap-4 items-center cursor-pointer ${switchContainerClassName}`}
         >
           <Controller
             name={updatedName || field.name}

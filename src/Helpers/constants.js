@@ -325,10 +325,10 @@ export const SELECT_LISTS = (listName) => {
     type: ["Debit", "Credit"],
 
     bill_connect_with: [
-      { name: [CONNECT_WITH_NOTHING_NAME], id: CONNECT_WITH_NOTHING_CODE },
-      { name: [CONNECT_WITH_CONTRACT_NAME], id: CONNECT_WITH_CONTRACT_CODE },
-      { name: [CONNECT_WITH_LAWSUIT_NAME], id: CONNECT_WITH_LAWSUIT_CODE },
-      { name: [CONNECT_WITH_BILL_NAME], id: CONNECT_WITH_BILL_CODE },
+      { name: CONNECT_WITH_NOTHING_NAME, id: CONNECT_WITH_NOTHING_CODE },
+      { name: CONNECT_WITH_CONTRACT_NAME, id: CONNECT_WITH_CONTRACT_CODE },
+      { name: CONNECT_WITH_LAWSUIT_NAME, id: CONNECT_WITH_LAWSUIT_CODE },
+      { name: CONNECT_WITH_BILL_NAME, id: CONNECT_WITH_BILL_CODE },
     ],
 
     user_type: [
@@ -389,12 +389,12 @@ export const SELECT_LISTS = (listName) => {
       // { name: "Shop", id: 3 },
       // { name: "Land", id: 4 },
       {
-        name: [APARTMENT_ASSET_TYPE_DEFAULT_NAME],
+        name: APARTMENT_ASSET_TYPE_DEFAULT_NAME,
         id: APARTMENT_ASSET_TYPE_CODE,
       },
-      { name: [PARKING_ASSET_TYPE_DEFAULT_NAME], id: PARKING_ASSET_TYPE_CODE },
-      { name: [SHOP_ASSET_TYPE_DEFAULT_NAME], id: SHOP_ASSET_TYPE_CODE },
-      { name: [LAND_ASSET_TYPE_DEFAULT_NAME], id: LAND_ASSET_TYPE_CODE },
+      { name: PARKING_ASSET_TYPE_DEFAULT_NAME, id: PARKING_ASSET_TYPE_CODE },
+      { name: SHOP_ASSET_TYPE_DEFAULT_NAME, id: SHOP_ASSET_TYPE_CODE },
+      { name: LAND_ASSET_TYPE_DEFAULT_NAME, id: LAND_ASSET_TYPE_CODE },
     ],
 
     contact_pattern_record_created_date: [
@@ -421,6 +421,18 @@ export const SELECT_LISTS = (listName) => {
       { name: CONNECT_WITH_CONTRACT_NAME, id: CONNECT_WITH_CONTRACT_CODE },
       { name: CONNECT_WITH_LAWSUIT_NAME, id: CONNECT_WITH_LAWSUIT_CODE },
       { name: CONNECT_WITH_BILL_NAME, id: CONNECT_WITH_BILL_CODE },
+    ],
+
+    termination_date: [
+      { name: "All", id: 0 },
+      { name: "", id: 1 },
+      { name: "", id: 2 },
+    ],
+
+    termination_status: [
+      { name: "All", id: 0 },
+      { name: "Terminated", id: 1 },
+      { name: "non-terminated", id: 2 },
     ],
 
     contract_status: [

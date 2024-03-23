@@ -195,7 +195,7 @@ export function generateFlatHashName(tab, setting, yIndex, xIndex) {
 // export async function getBillType(type) {
 //   if (HASH_BILLS_TYPE[type]) return HASH_BILLS_TYPE[type];
 //   else {
-//     const response = await ApiActions.read("bill_pattern");
+//     const response = await ApiActions.read("cheque_pattern");
 //     if (response?.success) {
 //       for (const item of response?.result) {
 //         HASH_BILLS_TYPE[item?.code] = item?.name;

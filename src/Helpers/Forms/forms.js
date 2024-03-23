@@ -233,6 +233,91 @@ const land = [
 */
 
 // ==== Start Cards
+const reservation_property = [
+  { label: "id", name: "id", type: "uuid", required: false },
+  { label: "created_at", name: "created_at", type: "date", required: false },
+  FIELDS_STRUCTURE.account({
+    required: true,
+  }),
+
+  {
+    label: "property_type",
+    name: "property_type",
+    type: "number",
+    required: false,
+    list: SELECT_LISTS("contact_pattern_assets_type"),
+    intValue: true,
+  },
+  {
+    label: "building_id",
+    name: "building_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "building",
+    ref_col: "id",
+  },
+  {
+    label: "property_id",
+    name: "property_id",
+    type: "uuid",
+    required: true,
+  },
+  { label: "book_date", name: "book_date", type: "date", required: false },
+  {
+    label: "end_book_date",
+    name: "end_book_date",
+    type: "date",
+    required: false,
+  },
+  { label: "note", name: "note", type: "text", required: false },
+  {
+    label: "has_payment",
+    name: "has_payment",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "reservation_expired",
+    name: "reservation_expired",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "payment_amount",
+    name: "payment_amount",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "currency_id",
+    name: "currency_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "currency",
+    ref_col: "id",
+  },
+  FIELDS_STRUCTURE.account({
+    label: "debit",
+    name: "debit_account_id",
+  }),
+  FIELDS_STRUCTURE.account({
+    label: "credit",
+    name: "credit_account_id",
+  }),
+  FIELDS_STRUCTURE.cost_center({
+    label: "debit_cost_center_id",
+    name: "debit_cost_center_id",
+  }),
+  FIELDS_STRUCTURE.cost_center({
+    label: "credit_cost_center_id",
+    name: "credit_cost_center_id",
+  }),
+];
+
 const account = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
@@ -5614,6 +5699,7 @@ const villa_group = {
 
 const FORMS = {
   // Cards
+  reservation_property,
   account,
   account_assembly,
   account_distributive,

@@ -65,7 +65,8 @@ const CustomSelect = ({
               menuPlacement="auto"
               menuPortalTarget={document?.body}
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-              className={`border rounded-md bg-none bg-transparent ${selectClassName}`}
+              className={`border rounded-md bg-none bg-transparent field-select-container ${selectClassName}`}
+              classNamePrefix="field-select"
               classNames={{
                 control: (state) => "bg-transparent !border-none",
                 container: (state) =>

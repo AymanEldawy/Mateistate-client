@@ -18,29 +18,25 @@ import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import Loading from "Components/Global/Loading";
 import { ErrorText } from "Components/Global/ErrorText";
 import useRefTable from "Hooks/useRefTables";
+import FormWrapperLayout from "../../FormWrapperLayout/FormWrapperLayout";
+import { useQuery } from "@tanstack/react-query";
 
 const EntryForm = ({ oldValue, onlyView, outerClose }) => {
   // const [number, setNumber] = useState(0)
   const name = "entry_main_data";
-  const {
-    goToNumber,
-    isLayoutUpdate,
-    listOfNumbers,
-    number,
-    setNumber,
-    maxLength,
-    setMaxLength,
-    openConfirmation,
-    setOpenConfirmation,
-    setListOfNumbers,
-    onDeleteItem,
-  } = useListView({ name, ignoreList: !!onlyView });
-  const { setVoucherInfo } = useVoucherEntriesView();
+  const viewList = useListView({ name, ignoreList: !!onlyView });
   const { CACHE_LIST } = useRefTable("entry_grid_data");
   const methods = useForm();
-  const [refresh, setRefresh] = useState(false);
   const [gridErrors, setGridErrors] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    goToNumber,
+    listOfNumbers,
+    number,
+    maxLength,
+    setMaxLength,
+    setListOfNumbers,
+  } = viewList;
 
   const {
     handleSubmit,
@@ -48,23 +44,18 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
     reset,
     setValue,
     formState: { errors },
-    unregister,
   } = methods;
 
-  const getEntryValues = async (num) => {
-    const res = await GET_UPDATE_DATE("entry", num);
-    if (res?.id) {
-      reset(res);
-    }
-    setRefresh((p) => !p);
-  };
-
-  useEffect(() => {
-    reset(getResetFields(name));
-    if (number <= maxLength) {
-      getEntryValues(listOfNumbers?.at(number - 1));
-    }
-  }, [number]);
+  const queryClientEntry = useQuery({
+    queryKey: [name, listOfNumbers?.[number - 1]],
+    queryFn: async () => {
+      if (maxLength < number) return null;
+      const res = await GET_UPDATE_DATE("entry", listOfNumbers?.[number - 1]);
+      if (res?.id) {
+        reset(res);
+      }
+    },
+  });
 
   useEffect(() => {
     if (oldValue) {
@@ -109,22 +100,6 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
 
   const gridFields = useMemo(() => getFormByTableName("entry_grid_data"), []);
 
-  const onDelete = async () => {
-    let [id, number] = watch(["id", "number"]);
-    // let number =
-    let res = await ApiActions.remove(name, {
-      conditions: [
-        {
-          type: "and",
-          conditions: [["id", "=", id]],
-        },
-      ],
-    });
-    if (res?.success) {
-      onDeleteItem(number);
-    }
-    setOpenConfirmation(false);
-  };
   const calculateDifferences = useCallback(() => {
     let grid = watch("grid");
     let credit = 0;
@@ -156,17 +131,11 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
     }
   }, []);
 
-  const onClickAddNew = () => {
-    setVoucherInfo({});
-    setNumber(+maxLength + 1);
-  };
-
   const onSubmit = async (value) => {
     if (value.difference !== 0) {
       toast.error("The Difference Amount must be equal 0");
       return;
     }
-    setIsLoading(true);
 
     if (value.difference === 0) {
       let grid = value.grid;
@@ -193,7 +162,6 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
     } else {
       toast.error("The difference value must be equal 0");
     }
-    setIsLoading(false);
   };
 
   const insertIntoGrid = async (grid, itemId) => {
@@ -213,129 +181,75 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
     }
   };
 
-
   return (
-    <>
-      {isLoading ? <Loading withBackdrop /> : null}
-      <ConfirmModal
-        onConfirm={onDelete}
-        open={openConfirmation}
-        setOpen={setOpenConfirmation}
-      />
-      <FormProvider {...methods}>
-        <BlockPaper
-          fullWidth={onlyView}
-          bodyClassName={onlyView ? "!p-0" : ""}
-          boxClassName="!shadow-none"
-          containerClassName={onlyView ? "mb-0" : ""}
-          layoutBodyClassName={onlyView ? "!my-0" : ""}
-          subTitle={
-            <>
-              {outerClose ? (
-                <button
-                  onClick={outerClose}
-                  className="h-9 w-9 rounded-full flex items-center justify-center bg-red-100 text-red-500"
-                >
-                  <CloseIcon className="w-6 h-6" />
-                </button>
-              ) : null}
-            </>
-          }
-          customTitle={
-            <>
-              {maxLength < number ? (
-                <span className="text-red-500 ltr:mr-2 rtl:ml-2 bg-red-100 px-2 py-1 rounded-md">
-                  {maxLength < number ? "New" : ""}
-                </span>
-              ) : null}
-              Entry {number || oldValue?.number}
-            </>
-          }
+    <FormWrapperLayout
+      popupView={onlyView}
+      name="Entry"
+      viewList={viewList}
+      onSubmit={onSubmit}
+      methods={methods}
+      itemId={watch("id")}
+      itemNumber={watch("number")}
+      isLoading={queryClientEntry?.isLoading}
+      onClose={outerClose}
+      tableName={name}
+      hidePaginationBar={true}
+    >
+      <div
+        className={
+          watch("is_deleted")
+            ? "filter blur-sm grayscale pointer-events-none"
+            : ""
+        }
+      >
+        <EntryHead
+          fields={fields}
+          errors={errors}
+          CACHE_LIST={CACHE_LIST}
+          layout={"update"}
+          values={watch()}
+          number={number}
+          isNewOne={+maxLength < number}
+        />
+
+        <div
+          className={`min-h-[150px] mt-4 ${
+            gridErrors ? "border border-red-500" : ""
+          }`}
         >
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            key={number || oldValue?.number}
-            noValidate
-          >
-            <div
-              className={
-                watch("is_deleted")
-                  ? "filter blur-sm grayscale pointer-events-none"
-                  : ""
-              }
-            >
-              <EntryHead
-                fields={fields}
-                errors={errors}
-                CACHE_LIST={CACHE_LIST}
-                layout={"update"}
-                values={watch()}
-                number={number}
-                isNewOne={+maxLength < number}
-              />
+          {gridErrors ? (
+            <ErrorText containerClassName="-mb-4 -mt-[1px] rounded-none">
+              {gridErrors}
+            </ErrorText>
+          ) : null}
+          <TableFields
+            key={number}
+            fields={gridFields}
+            tab="grid"
+            errors={errors}
+            withPortal
+            CACHE_LIST={CACHE_LIST}
+            increasable={onlyView || watch("created_from") ? false : true}
+            onlyView={onlyView || watch("created_from_id")}
+            rowsCount={
+              maxLength < number && !onlyView ? 5 : watch("grid")?.length
+            }
+          />
+        </div>
 
-              <div
-                className={`min-h-[150px] mt-4 ${
-                  gridErrors ? "border border-red-500" : ""
-                }`}
-              >
-                {gridErrors ? (
-                  <ErrorText containerClassName="-mb-4 -mt-[1px] rounded-none">
-                    {gridErrors}
-                  </ErrorText>
-                ) : null}
-                <TableFields
-                  key={number}
-                  fields={gridFields}
-                  tab="grid"
-                  errors={errors}
-                  withPortal
-                  CACHE_LIST={CACHE_LIST}
-                  increasable={onlyView || watch("created_from") ? false : true}
-                  onlyView={onlyView || watch("created_from_id")}
-                  rowsCount={
-                    maxLength < number && !onlyView ? 5 : watch("grid")?.length
-                  }
-                />
-              </div>
-
-              <EntryFooter
-                fields={fields}
-                errors={errors}
-                CACHE_LIST={CACHE_LIST}
-                number={number}
-                maxLength={maxLength}
-                goTo={goToNumber}
-                values={watch()}
-                onlyView={onlyView}
-                hideSubmit={watch("created_from_id")}
-              />
-            </div>
-            <div className="flex items-center mt-4 border-t pt-2 justify-between gap-4">
-              {onlyView ? null : (
-                <FormStepPagination
-                  number={number}
-                  goTo={goToNumber}
-                  maxLength={maxLength}
-                  isNewOne={+maxLength < number}
-                  onClickAddNew={onClickAddNew}
-                />
-              )}
-              {watch("created_from_id") || onlyView ? null : (
-                <Button
-                  title="Submit"
-                  disabled={
-                    watch("difference") !== 0 ||
-                    watch("grid")?.length < 2 ||
-                    (watch("debit") === 0 && watch("credit") === 0)
-                  }
-                />
-              )}
-            </div>
-          </form>
-        </BlockPaper>
-      </FormProvider>
-    </>
+        <EntryFooter
+          fields={fields}
+          errors={errors}
+          CACHE_LIST={CACHE_LIST}
+          number={number}
+          maxLength={maxLength}
+          goTo={goToNumber}
+          values={watch()}
+          onlyView={onlyView}
+          hideSubmit={watch("created_from_id")}
+        />
+      </div>
+    </FormWrapperLayout>
   );
 };
 

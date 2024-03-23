@@ -24,6 +24,7 @@ export const Fields = ({
   globalButtonsActions,
   containerClassName,
   customGrid,
+  fieldsRow,
 }) => {
   const { watch } = useFormContext();
 
@@ -93,6 +94,11 @@ export const Fields = ({
             <UniqueField
               {...field}
               key={`${field?.name}-${i}`}
+              containerClassName={
+                fieldsRow ? "grid grid-cols-2 items-center gap-2" : ""
+              }
+              labelClassName={fieldsRow ? "justify-end w-full flex" : ""}
+              selectContainerClassName={fieldsRow ? "!flex-1 w-full min-h-[20px]" : ""}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               table={field?.ref_table}
               CACHE_LIST={CACHE_LIST}
@@ -124,6 +130,11 @@ export const Fields = ({
             <Select
               {...field}
               key={`${field?.name}-${i}`}
+              containerClassName={
+                fieldsRow ? "grid grid-cols-2 items-center gap-2" : ""
+              }
+              labelClassName={fieldsRow ? "justify-end w-full flex" : ""}
+              selectClassName={fieldsRow ? "!flex-1 w-full h-[35px]" : ""}
               menuPortalTarget={document?.body}
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
@@ -201,6 +212,11 @@ export const Fields = ({
             <Input
               {...field}
               key={`${field?.name}-${i}`}
+              containerClassName={
+                fieldsRow ? "grid grid-cols-2 items-center gap-2" : ""
+              }
+              labelClassName={fieldsRow? "justify-end w-full flex !min-w-fit": ''}
+              inputClassName={fieldsRow? "!flex-1 h-[30px]": ''}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               values={values}
               tab={tab}

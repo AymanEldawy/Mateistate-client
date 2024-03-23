@@ -331,29 +331,51 @@ NOTES: complicated tasks
 - [✔️] update contract when termenation
 - [✔️] Building Bank account when `Collection Chq`
 - [✔️] Chq Status
+- [✔️] update `useQuery calls` to sync with `number` come form `useViewList`
+- [✔️] Redesign reports forms to be more smaller
+- [✔️] create book a Reality `form` | `table`
+# - [✔️] fix cache default values
 
-- [] update `useQuery calls` to sync with `number` come form `useViewList`
+### Reports
+
+- [✔️] Contract disclosure
+- [✔️] expired Contract
+- [✔️] Revenues contract
+- [✔️] near to expire Contract
+- [✔️] Cheques
+- [✔️] ledger Account
+- [✔️] Building schema
+- [✔️] Property Moving
+- [✔️] ledger cost center
+
+### new Tasks 20/3/2024
+- [] Cheques Collection
+- [] Cheques Returnable
+- [] Trial Balance
+- [] profits and losses
+- [] budget
+- [] Contract payments
+- [] Late payments
+- [] Journal
+- [] Receivables reconstruction
+- [] Apartment rental price changes
+- [] Securities contracts
+- [] Reserved units
+- [] Rented and non-rented units
+- [] Units to be evacuated
+
+
+
+
+
+## Futrue or later Tasks
+
+### Easy
 - [] Update Contract table in database to continuo other data like [lawsuit status start and end date amount]
 - [] Prevent to navigate to anthor page if the form is touched or dirty
 - [] reFetch Table inserted in CACHE_LIST
 
-
-### - [] fix cache default values
-
-### Reports
-
-- [] Contract
-- [] Completed Contract
-- [] Contracts will ending
-- [] Chq
-- [] Master
-- [] Property Status
-- [] others
-- [] trial balance
-- [] proft and cons
-
-## Futrue
-
+### Medium
 - [] Settings page
 - [] Users Permssions
 - [] scan
@@ -362,3 +384,29 @@ NOTES: complicated tasks
 - [] update Global read file with joins
 - [] watch video for `Lawsuit` and generate database tables for it
 - [] watch video for completed apartment gen checks
+
+
+
+1. Reality reports
+
+- ## Reality units reports
+- Revenue reports
+  - Earned rental income eraned
+  - saved reveunes
+- contract reports
+  - Contract report
+  - Contract deposit report
+  - contract near to expire
+  - expired contracts
+  - contract cheque reports
+  - contract payments reports
+-
+
+2. accounting reports
+
+- jornal ledger
+- general ledger
+- trail balance
+- cost center general ledger
+- const center trial balance
+- balance sheet

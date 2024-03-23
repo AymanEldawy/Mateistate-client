@@ -5,6 +5,7 @@ import {
   generateBillsFromInstallment,
   insertIntoEntry,
   insertIntoGrid,
+  deleteEntry,
 } from "./vouchers-insert";
 import {
   FLATS_TABLE_NAME,
@@ -375,7 +376,7 @@ const dynamicInsertIntoContract = async ({
               created_from_id: subItemId,
               contractFirstTabData: list[tableName],
             });
-          }
+          } else deleteEntry(subItemId);
 
           if (
             name === "contract_termination" &&
@@ -1034,6 +1035,11 @@ const INSERT_FUNCTION = {
   building: insertToBuilding,
   villa: insertToVilla,
   assets: insertToAssets,
+  // Units
+  // land
+  // apartment
+  // parking
+  // shop
 
   // rent contract
   apartment_rent_contract: insertToApartmentRentContract,

@@ -54,7 +54,7 @@ const Input = ({
           title={label}
           htmlFor={updatedName || field?.name}
           className={
-            "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize flex items-center gap-2" +
+            "overflow-hidden text-ellipsis min-w-fit text-sm font-normal whitespace-nowrap mb-1 capitalize flex items-center gap-2 " +
             labelClassName
           }
         >
@@ -72,7 +72,8 @@ const Input = ({
             return (
               <DatePicker
                 ref={ref}
-                className={`border h-[39px] w-full read-only:bg-blue-100 flex items-center gap-2 dark:read-only:bg-[#444] rounded ltr:!pl-7 rtl:!pr-7  p-1 ${inputClassName} ${
+                wrapperClassName="w-full"
+                className={`border h-[39px] w-full read-only:bg-blue-100 flex items-center gap-2 dark:read-only:bg-[#444] rounded ltr:!pl-7 rtl:!pr-7 p-1 ${inputClassName} ${
                   error ? "border-red-200 text-red-500" : ""
                 }`}
                 calendarIconClassname="!pt-[10px] -ml-1 pointer-events-none cursor-"

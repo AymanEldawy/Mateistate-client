@@ -1,27 +1,21 @@
 import { GET_UPDATE_DATE_BY_NUMBER } from "Helpers/Lib/global-read-update";
 import useFormSteps from "Hooks/useFormSteps";
 import { useCallback, useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Fields } from "../CustomForm/Fields";
-import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import { toast } from "react-toastify";
 import INSERT_FUNCTION from "Helpers/Lib/global-insert";
-import BlockPaper from "Components/Global/BlockPaper";
 import { BuildingSubSteps } from "./BuildingSubSteps";
 import { Input } from "Components/StructurePage/CustomFields";
 import getFormByTableName from "Helpers/Forms/forms";
-import { CONSTANT_COLUMNS_NAME, FLATS } from "Helpers/constants";
-import { Button } from "Components/Global/Button";
-import { PaletteIcon } from "Components/Icons";
+import { FLATS } from "Helpers/constants";
 import useListView from "Hooks/useListView";
-import { FormStepPagination } from "../../../Global/FormStepPagination";
-import { getResetFields } from "Helpers/Lib/global-reset";
 import { ApiActions } from "Helpers/Lib/api";
-import Loading from "Components/Global/Loading";
-import ConfirmModal from "Components/Global/Modal/ConfirmModal";
-
-const CACHE_DATA = {};
+import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
+import { useQuery } from "@tanstack/react-query";
+import { getResetFields } from "Helpers/Lib/global-reset";
+import { PaletteIcon } from "Components/Icons";
 
 const SUB_STEPS = [
   "building_real_estate_management",
@@ -100,22 +94,18 @@ const reCalculateFlats = (watch) => {
 };
 
 const BuildingForm = ({ popupView }) => {
+  const name = "building";
   const params = useParams();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const viewList = useListView({
+    name: "building",
+    defaultNumber: params?.number,
+  });
+  const { listOfNumbers, number, setMaxLength, setNumber } = viewList;
+  const methods = useForm({
+    defaultValues: getResetFields(name),
+  });
   const [currentSubIndex, setCurrentSubIndex] = useState(0);
-  const {
-    goToNumber,
-    isLayoutUpdate,
-    listOfNumbers,
-    maxLength,
-    number,
-    setMaxLength,
-    setNumber,
-    listOfData,
-    openConfirmation,
-    setOpenConfirmation,
-  } = useListView({ name: "building" });
 
   const {
     goTo,
@@ -128,25 +118,25 @@ const BuildingForm = ({ popupView }) => {
     formSettings,
     onDeleteItem,
   } = useFormSteps({ name: "building_group_short" });
-  const methods = useForm({
-    defaultValues: {},
-  });
   const {
     reset,
     watch,
-    formState: { isDirty },
-    handleSubmit,
+    formState: { isDirty, errors },
     setValue,
-    errors,
-    unregister,
   } = methods;
 
-  useEffect(() => {
-    if (!params?.id) {
-      setValue("building.create_into_account", true);
-      setValue("building.create_into_cost_center", true);
-    }
-  }, []);
+  const { isLoading } = useQuery({
+    queryKey: [name, listOfNumbers?.[number - 1]],
+    queryFn: async () => {
+      const data = await GET_UPDATE_DATE_BY_NUMBER.building(
+        listOfNumbers?.[number - 1]
+      );
+      if (data?.building?.id) {
+        reset(data);
+        reCalculateFlats(watch);
+      }
+    },
+  });
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
@@ -156,25 +146,6 @@ const BuildingForm = ({ popupView }) => {
     });
     return () => subscription.unsubscribe();
   }, [watch]);
-
-  useEffect(() => {
-    if (number <= maxLength) {
-      fetchData(listOfNumbers?.at(number - 1));
-    }
-  }, [number]);
-
-  const fetchData = async (num = number) => {
-    setIsLoading(true);
-    const data = await GET_UPDATE_DATE_BY_NUMBER.building(num);
-    if (data?.building?.id) {
-      CACHE_DATA[num] = data;
-      reset(data);
-      reCalculateFlats(watch);
-    } else {
-      reset(getResetFields("building"));
-    }
-    setIsLoading(false);
-  };
 
   const buildingFormValid = useCallback(() => {
     let valid = false;
@@ -208,12 +179,6 @@ const BuildingForm = ({ popupView }) => {
     }
   };
 
-  const onClickAddNew = () => {
-    setNumber(+maxLength + 1);
-    setCurrentIndex(0);
-    reset(getResetFields("building"));
-  };
-
   const onSubmit = async (value) => {
     if (!isDirty) return;
 
@@ -223,7 +188,6 @@ const BuildingForm = ({ popupView }) => {
       return;
     }
 
-    setIsLoading(true);
     const getTheFunInsert = INSERT_FUNCTION?.building;
     const res = await getTheFunInsert(value);
 
@@ -238,170 +202,123 @@ const BuildingForm = ({ popupView }) => {
         toast.error(res?.error?.detail);
       }
     }
-    setIsLoading(false);
   };
 
+  console.log(errors, "errors");
+
   return (
-    <>
-      {isLoading ? <Loading withBackdrop /> : null}
-      <ConfirmModal
-        onConfirm={onDelete}
-        open={openConfirmation}
-        setOpen={setOpenConfirmation}
-      />
-      <BlockPaper
-        containerClassName={popupView ? "z-[102] p-0" : null}
-        bodyClassName={popupView ? "!p-0" : null}
-        boxClassName={popupView ? "!shadow-none !p-0" : null}
-        layoutBodyClassName={popupView ? "!my-0" : null}
-      >
-        {/* <Prompt
-          when={isDirty}
-          message="Are you sure you want to leave? You have unsaved changes."
-        /> */}
-        <FormProvider {...methods} key={number}>
-          <form key={number} onSubmit={handleSubmit(onSubmit)} noValidate>
-            <FormHeadingTitleSteps
-              customName={
-                <span className="capitalize">
-                  {maxLength < number ? (
-                    <span className="text-red-500 ltr:mr-2 rtl:ml-2 bg-red-100 px-2 py-1 rounded-md">
-                      New
-                    </span>
-                  ) : null}
-                  {"Building"} number {number}
-                </span>
-              }
-              name={"building"}
-              steps={steps}
-              activeStage={currentIndex}
-              goTo={goTo}
-            />
-            <div className="h-5" />
-            {formSettings?.formType === "nested" ? (
-              <div className="flex gap-8 items-start">
-                <BuildingSubSteps
-                  steps={SUB_STEPS}
-                  goTo={setCurrentSubIndex}
-                  activeStage={currentSubIndex}
-                />
-                <>
-                  {currentSubIndex === 0 ? (
-                    <Fields
-                      tab={"building_real_estate_management"}
-                      fields={getFormByTableName(
-                        "building_real_estate_management"
-                      )}
-                      values={watch("building_real_estate_management")}
-                      errors={errors}
-                      CACHE_LIST={CACHE_LIST}
-                      customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                    />
-                  ) : null}
-                  {currentSubIndex === 1 ? (
-                    <Fields
-                      tab={"building_buying"}
-                      fields={getFormByTableName("building_buying")}
-                      values={watch("building_buying")}
-                      errors={errors}
-                      CACHE_LIST={CACHE_LIST}
-                      customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                    />
-                  ) : null}
-                  {currentSubIndex === 2 ? (
-                    <Input
-                      containerClassName="max-w-[300px]"
-                      name="building_editorial_entry.building_cost"
-                      type="number"
-                      updatedName={`building_editorial_entry.building_cost`}
-                      label={`building cost`}
-                      values={watch("building_editorial_entry")}
-                    />
-                  ) : null}
-                  {currentSubIndex === 3 ? (
-                    <Fields
-                      tab={"building_investment"}
-                      fields={getFormByTableName("building_investment")}
-                      values={watch("building_investment")}
-                      errors={errors}
-                      CACHE_LIST={CACHE_LIST}
-                      customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                    />
-                  ) : null}
-                  {currentSubIndex === 4 ? (
-                    <Fields
-                      tab={"building_real_estate_development"}
-                      fields={getFormByTableName(
-                        "building_real_estate_development"
-                      )}
-                      values={watch("building_real_estate_development")}
-                      errors={errors}
-                      CACHE_LIST={CACHE_LIST}
-                      customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                    />
-                  ) : null}
-                </>
-              </div>
-            ) : (
-              <>
-                <Fields
-                  tab={tab}
-                  fields={fields}
-                  values={watch()?.[tab]}
-                  errors={errors}
-                  CACHE_LIST={CACHE_LIST}
-                  customGrid={
-                    currentIndex === 3
-                      ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
-                      : ""
-                  }
-                />
-                {currentIndex === 1 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    {Object.entries(FLATS)?.map(([key, val]) => {
-                      return (
-                        <span className="bg-blue-50 rounded-md py-1 px-2 whitespace-nowrap text-blue-500 border text-center capitalize">
-                          {key?.replace("_", " ")} : {val}
-                        </span>
-                      );
-                    })}
-                  </div>
-                ) : null}
-              </>
-            )}
-            <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
-              <FormStepPagination
-                number={number}
-                goTo={goToNumber}
-                // maxLength={maxLength}
-                maxLength={maxLength}
-                isNewOne={number > maxLength}
-                setNumber={setNumber}
-                onClickDelete={onDelete}
-                isArchived={watch(CONSTANT_COLUMNS_NAME.is_archived)}
-                isDeleted={watch(CONSTANT_COLUMNS_NAME.is_deleted)}
-                allowActions={watch("building.id")}
-                onClickAddNew={onClickAddNew}
+    <FormWrapperLayout
+      name={name}
+      viewList={viewList}
+      isLoading={isLoading}
+      onSubmit={onSubmit}
+      popupView={popupView}
+      methods={methods}
+      itemId={watch("building.id")}
+      itemNumber={watch("building.number")}
+      steps={steps}
+      goToStep={goTo}
+      currentIndex={currentIndex}
+      outerDelete={onDelete}
+      setCurrentIndex={setCurrentIndex}
+      additionalButtons={
+        <Link
+          to={`/tools/${watch("building.id")}`}
+          className="bg-gray-200 dark:bg-dark-border dark:text-white rounded-md p-2 flex items-center gap-2 font-medium text-gray-700"
+        >
+          <PaletteIcon />
+          Units description
+        </Link>
+      }
+    >
+      {formSettings?.formType === "nested" ? (
+        <div className="flex gap-8 items-start">
+          <BuildingSubSteps
+            steps={SUB_STEPS}
+            goTo={setCurrentSubIndex}
+            activeStage={currentSubIndex}
+          />
+          <>
+            {currentSubIndex === 0 ? (
+              <Fields
+                tab={"building_real_estate_management"}
+                fields={getFormByTableName("building_real_estate_management")}
+                values={watch("building_real_estate_management")}
+                errors={errors}
+                CACHE_LIST={CACHE_LIST}
+                customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               />
-              {watch("building.id") ? (
-                <Link
-                  to={`/tools/${watch("building.id")}`}
-                  className="bg-gray-200 dark:bg-dark-border dark:text-white rounded-md p-2 flex items-center gap-2 font-medium text-gray-700"
-                >
-                  <PaletteIcon />
-                  Units description
-                </Link>
-              ) : null}
-              <Button
-                title={maxLength >= number ? "Modify" : "Submit"}
-                classes="ltr:ml-auto rtl:mr-auto"
-                disabled={!isDirty}
+            ) : null}
+            {currentSubIndex === 1 ? (
+              <Fields
+                tab={"building_buying"}
+                fields={getFormByTableName("building_buying")}
+                values={watch("building_buying")}
+                errors={errors}
+                CACHE_LIST={CACHE_LIST}
+                customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               />
+            ) : null}
+            {currentSubIndex === 2 ? (
+              <Input
+                containerClassName="max-w-[300px]"
+                name="building_editorial_entry.building_cost"
+                type="number"
+                updatedName={`building_editorial_entry.building_cost`}
+                label={`building cost`}
+                values={watch("building_editorial_entry")}
+              />
+            ) : null}
+            {currentSubIndex === 3 ? (
+              <Fields
+                tab={"building_investment"}
+                fields={getFormByTableName("building_investment")}
+                values={watch("building_investment")}
+                errors={errors}
+                CACHE_LIST={CACHE_LIST}
+                customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              />
+            ) : null}
+            {currentSubIndex === 4 ? (
+              <Fields
+                tab={"building_real_estate_development"}
+                fields={getFormByTableName("building_real_estate_development")}
+                values={watch("building_real_estate_development")}
+                errors={errors}
+                CACHE_LIST={CACHE_LIST}
+                customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              />
+            ) : null}
+          </>
+        </div>
+      ) : (
+        <>
+          <Fields
+            tab={tab}
+            fields={fields}
+            values={watch()?.[tab]}
+            errors={errors}
+            CACHE_LIST={CACHE_LIST}
+            customGrid={
+              currentIndex === 3
+                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+                : ""
+            }
+          />
+          {currentIndex === 1 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {Object.entries(FLATS)?.map(([key, val]) => {
+                return (
+                  <span className="bg-blue-50 rounded-md py-1 px-2 whitespace-nowrap text-blue-500 border text-center capitalize">
+                    {key?.replace("_", " ")} : {val}
+                  </span>
+                );
+              })}
             </div>
-          </form>
-        </FormProvider>
-      </BlockPaper>
-    </>
+          ) : null}
+        </>
+      )}
+    </FormWrapperLayout>
   );
 };
 

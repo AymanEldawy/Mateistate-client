@@ -151,7 +151,30 @@ const building = {
   warehouse_count: "",
 };
 
+const reservation_property = {
+  account_id: null,
+  book_date: null,
+  building_id: null,
+  created_at: null,
+  credit_account_id: null,
+  credit_cost_center_id: null,
+  currency_id: null,
+  currency_val: null,
+  debit_account_id: null,
+  debit_cost_center_id: null,
+  end_book_date: null,
+  has_payment: null,
+  id: null,
+  note: null,
+  number: null,
+  payment_amount: null,
+  property_id: null,
+  property_type: null,
+  reservation_expired: null,
+};
+
 const RESET_FIELDS = {
+  reservation_property,
   account,
   cost_center,
   bank,

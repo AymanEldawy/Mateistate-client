@@ -13,15 +13,16 @@ import { Button } from "Components/Global/Button";
 import { FormStepPagination } from "../../../../Global/FormStepPagination";
 import { METHODS } from "Helpers/constants";
 import {
+  deleteEntry,
   generateEntryFromVoucher,
   insertIntoGrid,
 } from "Helpers/Lib/vouchers-insert";
 import { CloseIcon } from "Components/Icons";
 import { CREATED_FROM_VOUCHER_CODE } from "Helpers/GENERATE_STARTING_DATA";
 import useListView from "Hooks/useListView";
-import { getResetFields } from "Helpers/Lib/global-reset";
 import useRefTable from "Hooks/useRefTables";
 import { useQuery } from "@tanstack/react-query";
+import FormWrapperLayout from "../../FormWrapperLayout/FormWrapperLayout";
 
 let CACHE_ROW_VALUE = {};
 
@@ -37,32 +38,18 @@ const VoucherForm = ({
   const name = params?.name || voucherName;
   const type = params?.type || voucherType;
   const methods = useForm();
-  const {
-    goToNumber,
-    isLayoutUpdate,
-    listOfNumbers,
-    number,
-    setNumber,
-    maxLength,
-    setMaxLength,
-    openConfirmation,
-    setOpenConfirmation,
-    listOfData,
-    setListOfData,
-    setListOfNumbers,
-  } = useListView({
+  const { CACHE_LIST } = useRefTable("voucher_grid_data");
+  const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
+  const [gridFields, setGridFields] = useState([]);
+  const viewList = useListView({
     name: "voucher_main_data",
     defaultNumber: oldValues?.number,
     additional: {
       conditions: [{ type: "and", conditions: [["voucher_type", "=", type]] }],
     },
   });
-  const { CACHE_LIST } = useRefTable("voucher_grid_data");
-  const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
-  const [gridFields, setGridFields] = useState([]);
-
+  const { listOfNumbers, number, maxLength, setMaxLength } = viewList;
   const {
-    handleSubmit,
     watch,
     reset,
     setValue,
@@ -73,10 +60,14 @@ const VoucherForm = ({
     queryKey: ["voucher_main_data", number, type],
     queryFn: async () => {
       if (maxLength < number) return null;
-      
-      const res = await GET_UPDATE_DATE("voucher", listOfNumbers?.at(number - 1), {
-        voucherType: +type,
-      });
+
+      const res = await GET_UPDATE_DATE(
+        "voucher",
+        listOfNumbers?.at(number - 1),
+        {
+          voucherType: +type,
+        }
+      );
       reset(res);
     },
   });
@@ -127,7 +118,7 @@ const VoucherForm = ({
           break;
       }
     }
-    setGridFields(newFields, " ---- ");
+    setGridFields(newFields);
   }, [PATTERN_SETTINGS, type]);
 
   useEffect(() => {
@@ -145,10 +136,6 @@ const VoucherForm = ({
     };
     getVoucherPattern();
   }, [type]);
-
-  const onClickAddNew = () => {
-    setNumber(+maxLength + 1);
-  };
 
   const calculateAmount = useCallback((row, val, column) => {
     let value = 0;
@@ -185,6 +172,8 @@ const VoucherForm = ({
   }, [watch]);
 
   const onSubmit = async () => {
+    if (!isDirty) return;
+
     let value = watch();
     let grid = watch("grid");
     delete value.grid;
@@ -193,7 +182,7 @@ const VoucherForm = ({
 
     let itemId = value.id;
 
-    if (maxLength >= number && value?.id) {
+    if (value?.id) {
       res = await ApiActions.update("voucher_main_data", {
         conditions: [{ type: "and", conditions: [["id", "=", value?.id]] }],
         updates: value,
@@ -224,11 +213,9 @@ const VoucherForm = ({
           grid,
           id: values?.id,
         });
-
-        // grid
       }
 
-      if (PATTERN_SETTINGS?.auto_gen_entries) {
+      if (PATTERN_SETTINGS?.auto_gen_entries || watch("gen_entries")) {
         // Generate A Constraint
         generateEntryFromVoucher({
           values: value,
@@ -238,7 +225,7 @@ const VoucherForm = ({
           created_from_id: itemId,
           should_update: !maxLength < number,
         });
-      }
+      } else deleteEntry(itemId);
     }
 
     if (res?.success) {
@@ -254,85 +241,48 @@ const VoucherForm = ({
   };
 
   return (
-    <>
-      <FormProvider {...methods}>
-        <BlockPaper
-          fullWidth={popupView}
-          bodyClassName={popupView ? "!p-0" : ""}
-          boxClassName={popupView ? "!shadow-none !p-0" : ""}
-          containerClassName={popupView ? "mb-0" : ""}
-          layoutBodyClassName={popupView ? "!my-0" : ""}
-          customTitle={
-            <span className="capitalize">
-              {maxLength < number ? (
-                <span className="text-red-500 ltr:mr-2 rtl:ml-2 bg-red-100 px-2 py-1 rounded-md">
-                  {maxLength < number ? "New" : ""}
-                </span>
-              ) : null}
-              {name?.replace("-", " ")} {number}
-            </span>
+    <FormWrapperLayout
+      popupView={popupView}
+      name={name}
+      viewList={viewList}
+      onSubmit={onSubmit}
+      methods={methods}
+      itemId={watch("id")}
+      itemNumber={watch("number")}
+      isLoading={queryClientNewVoucher?.isLoading}
+      onClose={outerClose}
+    >
+      <VoucherHead
+        fields={fields}
+        name={name}
+        errors={errors}
+        CACHE_LIST={CACHE_LIST}
+        PATTERN_SETTINGS={PATTERN_SETTINGS}
+      />
+      <TableFields
+        fields={gridFields}
+        tab="grid"
+        errors={errors}
+        rowsCount={watch("grid")?.length || 1}
+        CACHE_LIST={CACHE_LIST}
+        withPortal
+        rowStyles={(index) => {
+          if (PATTERN_SETTINGS?.even_table_color && index % 2 === 0) {
+            return { background: PATTERN_SETTINGS?.even_table_color };
+          } else if (PATTERN_SETTINGS?.odd_table_color && index % 2 !== 0) {
+            return { background: PATTERN_SETTINGS?.odd_table_color };
           }
-          subTitle={
-            <button
-              onClick={outerClose}
-              className="h-9 w-9 rounded-full flex items-center justify-center bg-red-100 text-red-500 "
-            >
-              <CloseIcon className="w-5 h-5 text-red-500" />
-            </button>
-          }
-        >
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <VoucherHead
-              fields={fields}
-              name={name}
-              errors={errors}
-              CACHE_LIST={CACHE_LIST}
-              PATTERN_SETTINGS={PATTERN_SETTINGS}
-            />
-            <TableFields
-              fields={gridFields}
-              tab="grid"
-              errors={errors}
-              rowsCount={watch("grid")?.length || 1}
-              CACHE_LIST={CACHE_LIST}
-              withPortal
-              rowStyles={(index) => {
-                if (PATTERN_SETTINGS?.even_table_color && index % 2 === 0) {
-                  return { background: PATTERN_SETTINGS?.even_table_color };
-                } else if (
-                  PATTERN_SETTINGS?.odd_table_color &&
-                  index % 2 !== 0
-                ) {
-                  return { background: PATTERN_SETTINGS?.odd_table_color };
-                }
-              }}
-            />
-            <VoucherFooter
-              fields={fields}
-              name={name}
-              errors={errors}
-              CACHE_LIST={CACHE_LIST}
-              isNewOne={maxLength < number}
-              PATTERN_SETTINGS={PATTERN_SETTINGS}
-            />
-            <div className="flex items-center mt-4 border-t dark:border-dark-border pt-2 justify-between gap-4">
-              <FormStepPagination
-                number={number}
-                goTo={goToNumber}
-                maxLength={maxLength}
-                isNewOne={maxLength < number}
-                onClickAddNew={onClickAddNew}
-              />
-              <Button
-                title={watch("id") ? "Modify" : "Submit"}
-                onClick={onSubmit}
-                classes={"ltr:ml-auto rtl:mr-auto"}
-              />
-            </div>
-          </form>
-        </BlockPaper>
-      </FormProvider>
-    </>
+        }}
+      />
+      <VoucherFooter
+        fields={fields}
+        name={name}
+        errors={errors}
+        CACHE_LIST={CACHE_LIST}
+        isNewOne={maxLength < number}
+        PATTERN_SETTINGS={PATTERN_SETTINGS}
+      />
+    </FormWrapperLayout>
   );
 };
 

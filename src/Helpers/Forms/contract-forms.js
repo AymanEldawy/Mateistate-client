@@ -1920,7 +1920,7 @@ const apartment_rent_contract_group = {
       fields: contract_termination,
       tab_name: "contract_termination",
     },
-    [APARTMENT_STEPS_CONTRACT.apartment_contract_receipts_numbers]: {
+    [APARTMENT_STEPS_CONTRACT.apartment_contract_terminationreceipts_numbers]: {
       fields: contract_receipt_number,
       tab_name: "contract_receipt_number",
       formType: "grid",
@@ -2359,8 +2359,8 @@ const contract_completed_reports = [
 const contract_revenue_reports = [
 
   {
-    label:' Case of contract termination',
-    name:' Case of contract termination',
+    label:' Case of termination',
+    name:' Case of termination',
     key: 'select',
     intValue: true,
     selectFirstAsDefault: true,
