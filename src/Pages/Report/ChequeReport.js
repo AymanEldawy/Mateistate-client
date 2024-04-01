@@ -1,136 +1,76 @@
 import BlockPaper from "Components/Global/BlockPaper";
 import { FormProvider, useForm } from "react-hook-form";
-import { ChequeReportsFilters } from "../../Components/ReportsComponents/ChequeReports/ChequeReportsFilters";
 import { Button } from "Components/Global/Button";
 import { ReportFilterColumns } from "../../Components/ReportsComponents/ReportFilterColumns";
-import { useEffect, useState } from "react";
-import { ApiActions } from "Helpers/Lib/api";
-import {
-  Input,
-  Select,
-  CheckboxField,
-  Switch,
-} from "Components/StructurePage/CustomFields";
+import { useMemo, useState } from "react";
+import { CheckboxField, Switch } from "Components/StructurePage/CustomFields";
 import { ReportFilterCard } from "../../Components/ReportsComponents/ReportFilterCard";
 import { ReportFilterBuildings } from "../../Components/ReportsComponents/ReportFilterBuildings";
 import { ReportFilterContractPatterns } from "../../Components/ReportsComponents/ReportFilterContractPatterns";
 import { ReportReviewField } from "Components/ReportsComponents/ReportsFields/ReportReviewField";
 import ReportSelectField from "Components/ReportsComponents/ReportsFields/ReportSelectField";
 import ReportInputField from "Components/ReportsComponents/ReportsFields/ReportInputField";
-
-const columns = [
-  {
-    label: "number",
-    name: "internal_number",
-  },
-  {
-    label: "feedback",
-    name: "feedback",
-  },
-  {
-    label: "connect_with",
-    name: "connect_with",
-  },
-  {
-    label: "amount",
-    name: "amount",
-  },
-  {
-    label: "currency_id",
-    name: "currency_id",
-  },
-  {
-    label: "observe_account_id",
-    name: "observe_account_id",
-  },
-  { label: "observe_cost_center_id", name: "observe_cost_center_id" },
-  {
-    label: "observe_account_note",
-    name: "observe_account_note",
-  },
-  {
-    label: "beneficiary_name",
-    name: "beneficiary_name",
-  },
-  {
-    label: "parking number",
-    name: "parking_id",
-  },
-  {
-    label: "shop number",
-    name: "shop_id",
-  },
-  {
-    label: "apartment number",
-    name: "apartment_id",
-  },
-  {
-    label: "due_date",
-    name: "due_date",
-  },
-  {
-    label: "end_due_date",
-    name: "end_due_date",
-  },
-  {
-    label: "without_due_date",
-    name: "without_due_date",
-  },
-  {
-    label: "bank_id",
-    name: "bank_id",
-  },
-  { label: "note1", name: "note1" },
-  { label: "note2", name: "note2" },
-
-  {
-    label: "deport_status",
-    name: "deport_status",
-  },
-  {
-    label: "collection_status",
-    name: "collection_status",
-  },
-  {
-    label: "partial_collection_status",
-    name: "partial_collection_status",
-  },
-  {
-    label: "return_status",
-    name: "return_status",
-  },
-  {
-    label: "deposit_status",
-    name: "deposit_status",
-  },
-];
+import { ReportFilterChequePattern } from "Components/ReportsComponents/ReportFilterChequePattern";
+import { getReportColumns, getReportFields } from "Helpers/Reports";
+import { ReportBetweenDateField } from "Components/ReportsComponents/ReportsFields/ReportDateField";
+import { ReportStatementField } from "Components/ReportsComponents/ReportsFields/ReportStatementField";
+import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFields";
+import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
+import useRefTable from "Hooks/useRefTables";
 
 const ChequeReport = () => {
+  const name = "cheques_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
   const [selectedColumns, setSelectedColumns] = useState({});
   const [buildingsIds, setBuildingsIds] = useState([]);
-  const [chqPatterns, setChqPatterns] = useState([]);
   const [chqIds, setChqIds] = useState({});
   const [contractIds, setContractIds] = useState({});
-
-  const getData = async () => {
-    const chqResponse = await ApiActions.read("cheque_pattern");
-    setChqPatterns(chqResponse?.result);
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
   const onSubmit = async () => {};
+  const { CACHE_LIST } = useRefTable("cheque");
+
+  const fields = useMemo(() => getReportFields(name), []);
+  const columns = useMemo(() => getReportColumns(name), []);
 
   return (
     <BlockPaper title={"Cheques Report"}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative">
           <div className="grid md:grid sm:grid-cols-2 md:grid-cols-3 gap-4 items-start">
-            <ChequeReportsFilters />
+            <ReportFilterFields title="fields">
+              <ReportFields
+                CACHE_LIST={CACHE_LIST}
+                list={!!CACHE_LIST ? CACHE_LIST?.account : []}
+                fields={fields}
+                containerClassName="!mb-0 gap-3"
+                sharedLabelClassName="w-[200px]"
+              />
+              <div className="">
+                <ReportBetweenDateField
+                  title="Due Date"
+                  date1Field={{
+                    label: "start_due_date",
+                    name: "start_due_date",
+                  }}
+                  date2Field={{
+                    label: "end_due_date",
+                    name: "end_due_date",
+                  }}
+                />
+                <ReportBetweenDateField
+                  labelClassName="w-[230px]"
+                  date1Field={{
+                    name: "start_date",
+                  }}
+                  date2Field={{
+                    name: "end_date",
+                  }}
+                />
+                {/* <ReportStatementField name="statement" title="" /> */}
+                <ReportStatementField name="paper" title="Paper" />
+                <ReportStatementField name="note" title="Note" />
+              </div>
+            </ReportFilterFields>
             <div className="grid gap-4">
               <ReportFilterBuildings
                 buildingsIds={buildingsIds}
@@ -181,21 +121,16 @@ const ChequeReport = () => {
             </div>
             <div className="grid gap-4 max-[768px]:col-span-full max-[768px]:grid-cols-2">
               <ReportFilterColumns
+                searchKey="accessorKey"
                 columns={columns}
                 selectedColumns={selectedColumns}
                 setSelectedColumns={setSelectedColumns}
                 bodyClassName="!max-h-[450px]"
               />
               <div className="grid gap-4">
-                <ReportFilterColumns
-                  containerClassName="w-full"
-                  title="Cheque Patterns"
-                  columns={chqPatterns?.map((c) => ({
-                    name: c?.id,
-                    label: c?.name,
-                  }))}
-                  selectedColumns={chqIds}
-                  setSelectedColumns={setChqIds}
+                <ReportFilterChequePattern
+                  chqIds={chqIds}
+                  setChqIds={setChqIds}
                 />
                 <div className="flex flex-col gap-2 items-start px-2">
                   <CheckboxField
@@ -228,15 +163,10 @@ const ChequeReport = () => {
                   <ReportFilterCard
                     containerClassName="w-full"
                     customTitle={
-                      <Switch
+                      <CheckboxField
+                        name="return"
+                        label="return"
                         readOnly={watch("securities_without_status")}
-                        labelClassName="!mt-0 !text-base !font-semibold"
-                        switchContainerClassName="!mt-0"
-                        containerClassName="gap-4 mb-1 !flex-row-reverse !items-center !justify-start ltr:!mr-auto"
-                        {...{
-                          label: "return",
-                          name: "return",
-                        }}
                       />
                     }
                   >
@@ -270,15 +200,10 @@ const ChequeReport = () => {
                     containerClassName="w-full"
                     bodyClassName="!grid-cols-1 w-full"
                     customTitle={
-                      <Switch
+                      <CheckboxField
+                        name="partial_collection"
+                        label="partial_collection"
                         readOnly={watch("securities_without_status")}
-                        labelClassName="!mt-0 !text-base !font-semibold"
-                        switchContainerClassName="!mt-0"
-                        containerClassName="gap-4 mb-1 !flex-row-reverse !items-center !justify-start ltr:!mr-auto"
-                        {...{
-                          label: "partial_collection",
-                          name: "partial_collection",
-                        }}
                       />
                     }
                   >

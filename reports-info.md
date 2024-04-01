@@ -274,3 +274,109 @@
 - ##### Filters
 
 ---
+
+| Key                 | value   | description                                                                                                |
+| ------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
+| case_of_termination | number  | [0] All - [1] Not expired - [2] Expired                                                                    |
+| date_by             | number  | [1] Contract Start date - [2] Contract end date - [3] contract terminated date - [4] contract created date |
+| start_date          | date    |
+| end_date            | date    |
+| start_period_date   | date    |
+| end_period_date     | date    |
+| reviewed            | boolean |
+| unreviewed          | boolean |
+| currency_id         | uuid    |
+| round_to            | number  |
+
+```
+@property case_of_termination
+@type Integer
+@value 0 | 1 | 2
+@description
+[0] All contacts
+[1] only ot expired contracts
+[2] only expired contract
+```
+
+/_
+@property date_by
+@type Integer
+@value 1 | 2 | 3 | 4
+@description
+1 Contract Start date
+2 Contract end date
+3 contract terminated date
+4 contract created date
+_/
+
+@property start_date
+@type date
+
+@property end_date
+@type date
+
+@property reviewed
+@type boolean
+@description only reviewed contract
+
+@property unreviewed
+@type boolean
+@description only unreviewed contract
+
+@property currency_id
+@type uuid
+@description only contract with currency equal `currency_id`
+
+@property round_to
+@type uuid
+@description
+0 rounded contract value to "Without rounding" example 5555.08 => 5555
+1 rounded contract value to "0"
+2 rounded contract value to "1"
+3 rounded contract value to "-1"
+4 rounded contract value to "5"
+5 rounded contract value to "-5"
+6 rounded contract value to "10"
+7 rounded contract value to "-10"
+
+## Notes
+
+(n) refer to `apartment_rent_contract` | `parking_rent_contract` | `shop_rent_contract` etc
+
+| column                        |        table         |                         description                         |
+| :---------------------------- | :------------------: | :---------------------------------------------------------: |
+| number                        |         (n)          |                       contract number                       |
+| gov_number                    |         (n)          |                                                             |
+| property_no                   |         (n)          |
+| building_id                   |       building       |
+| customer                      |       account        |
+| contract_type                 |       contract       |
+| flat_type                     |       contract       |
+| description                   |         (n)          |
+| final_price                   |         (n)          |
+| start_duration_date           |         (n)          |
+| end_duration_date             |         (n)          |
+| contract_terminated           | contract_termination |                 حالة العقد تم انهائه ام لا                  |
+| contract_termination_date     | contract_termination |             تاريخ انهاء العقد في حالة تم انهائه             |
+| contract_days                 |                      | حساب عدد ايام العقد start_duration_date - end_duration_date |
+| daily_income                  |                      |                  حساب او قيمة اليوم الواحد                  |
+| revenue_days_no               |                      |              قمية الايراد في فترة حساب الايراد              |
+| income                        |                      |               فترة حساب الايراد .. عدد الايام               |
+| collected_cheques             |        cheque        |                  جمع قيمة الشيكات المحصلة                   |
+| collected_cheques_period      |        cheque        |            قيمة الشيكات المحصلة في فترة الايراد             |
+| received_cash_payments        |  voucher_main_data   |                     قيمة الدفعة النقدية                     |
+| received_cash_payments_period |  voucher_main_data   |           الدفعات النقدية المحصلة في فترة الايراد           |
+| total_collected_amount        |                      |       جمع عدد الشيكات المحصلة مع قيمة الدفعة النقدية        |
+| total_uncollected_amount      |                      |                جمع قيمة الشيكات الغير محصلة                 |
+| customer_balance_in_contract  |                      |                  الرصيد المتبقي علي الزبون                  |
+| VAT_value                     |                      |                              -                              |
+
+اجمالي قيمة العقود بعد الحسم
+عدد ايام العقود
+اجمالي قيمة الايراد
+اجمالي ايام الايراد
+اجمالي قيمة الدفعات النقدية
+اجمالي قيمة الشيكات المحصلة
+اجمالي قيمة الشيكات الغير محصلة
+اجمالي الضريبة
+

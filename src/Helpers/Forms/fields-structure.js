@@ -1,5 +1,47 @@
 import { SELECT_LISTS, UNIQUE_REF_TABLES } from "Helpers/constants";
 
+// Fields
+const switchField = (additional) => ({
+  type: "boolean",
+  key: "switch",
+  ...additional,
+});
+
+const textField = (additional) => ({
+  type: "text",
+  required: false,
+  ...additional,
+});
+
+const dateField = (additional) => ({
+  type: "date",
+  required: false,
+  ...additional,
+});
+
+const numberField = (additional) => ({
+  type: "number",
+  required: false,
+  ...additional,
+});
+
+const selectField = (additional) => ({
+  key: "select",
+  intValue: true,
+  selectFirstAsDefault: true,
+  list: SELECT_LISTS(additional.list),
+  required: false,
+  ...additional,
+});
+
+const uniqueField = (additional) => ({
+  is_ref: true,
+  ref_id: "id",
+  ref_name: "name",
+  ...additional,
+});
+
+// Global Fields
 const currency = (additional) => ({
   label: "currency_id",
   name: "currency_id",
@@ -69,10 +111,16 @@ const account = (additional) => ({
 const cost_center = (additional) => ({
   label: "cost_center_id",
   name: "cost_center_id",
-
   is_ref: true,
   ref_table: "cost_center",
+  ...additional,
+});
 
+const bank = (additional) => ({
+  label: "bank_id",
+  name: "bank_id",
+  is_ref: true,
+  ref_table: "bank",
   ...additional,
 });
 
@@ -81,6 +129,14 @@ const client = (additional) => ({
   name: "client_id",
   is_ref: true,
   ref_table: UNIQUE_REF_TABLES.clients,
+  ...additional,
+});
+
+const suppliers = (additional) => ({
+  label: "owner_id",
+  name: "owner_id",
+  is_ref: true,
+  ref_table: UNIQUE_REF_TABLES.suppliers,
   ...additional,
 });
 
@@ -95,6 +151,15 @@ const FIELDS_STRUCTURE = {
   nationality,
   cost_center,
   client,
+  suppliers,
+  bank,
+  // Fields,
+  switchField,
+  textField,
+  dateField,
+  numberField,
+  selectField,
+  uniqueField,
 };
 
 export default FIELDS_STRUCTURE;

@@ -39,7 +39,7 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
 
   useEffect(() => {
     setChooseList(
-      SELECT_LISTS("bill_connect_with")?.map((item) => ({
+      SELECT_LISTS("cheque_connect_with")?.map((item) => ({
         value: item?.id,
         label: item?.name,
       }))

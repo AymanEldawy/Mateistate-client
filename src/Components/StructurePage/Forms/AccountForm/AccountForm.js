@@ -1,19 +1,11 @@
 import { ApiActions } from "Helpers/Lib/api";
-import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import { useEffect, useState } from "react";
 import { getLastNumberByColumn } from "../../../../Helpers/Lib/global-insert";
 import useRefTable from "Hooks/useRefTables";
-import { FormProvider, useForm } from "react-hook-form";
-import BlockPaper from "Components/Global/BlockPaper";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import useListView from "Hooks/useListView";
 import { usePopupForm } from "Hooks/usePopupForm";
-import { getResetFields } from "Helpers/Lib/global-reset";
-import { Button } from "Components/Global/Button";
-import { FormStepPagination } from "../../../Global/FormStepPagination";
-import { CONSTANT_COLUMNS_NAME } from "Helpers/constants";
-import ConfirmModal from "Components/Global/Modal/ConfirmModal";
-import Loading from "Components/Global/Loading";
 import { removeNullValues } from "Helpers/functions";
 import { AccountFormFields } from "./AccountFormFields";
 import {

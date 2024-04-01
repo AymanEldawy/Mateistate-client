@@ -39,11 +39,12 @@ const Menu = ({ menu }) => {
                   </span>
                 </button>
                 <ul
-                  className={` ${
-                    item?.children?.length > 7
-                      ? "grid grid-cols-3 min-w-[650px] items gap-2"
-                      : " flex flex-col gap-2"
-                  } opacity-0 pointer-events-none !group-hover:opacity-1 !group-hover:pointer-events-auto absolute bg-white bg_dark shadow top-[40px] py-4 rounded-md z-[99]`}
+                //  ${
+                //     item?.children?.length > 7
+                //       ? "grid grid-cols-3 min-w-[650px] items gap-1"
+                //       : " flex flex-col gap-2"
+                //   } 
+                  className={`${item?.classes} opacity-0 pointer-events-none !group-hover:opacity-1 !group-hover:pointer-events-auto absolute bg-white bg_dark shadow top-[40px] py-4 rounded-md z-[99]`}
                 >
                   {list(item.children)}
                 </ul>
@@ -73,7 +74,7 @@ const Menu = ({ menu }) => {
                 </button>
               ) : (
                 <Link
-                  className="whitespace-nowrap capitalize hover:text-blue-600 dark:hover:bg-transparent dark:hover:text-white py-2 px-4 w-full flex"
+                  className={`whitespace-nowrap capitalize hover:text-blue-600 dark:hover:bg-transparent dark:hover:text-white py-2 px-4 w-full flex ${item?.classes}`}
                   to={item?.link}
                 >
                   {t(item.name)}

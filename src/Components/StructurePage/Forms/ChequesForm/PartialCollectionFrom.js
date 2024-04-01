@@ -16,7 +16,7 @@ import { ViewEntry } from "Components/Global/ViewEntry";
 
 export const PartialCollectionFrom = ({
   CACHE_LIST,
-  billId,
+  chequeId,
   PATTERN_SETTINGS,
   dispatchVoucherEntries,
   errors,
@@ -38,10 +38,10 @@ export const PartialCollectionFrom = ({
   const [listData, setListData] = useState([]);
 
   const partialQueryClient = useQuery({
-    queryKey: [name, billId],
+    queryKey: [name, chequeId],
     queryFn: async () => {
       const response = await ApiActions.read(name, {
-        conditions: [{ type: "and", conditions: [["bill_id", "=", billId]] }],
+        conditions: [{ type: "and", conditions: [["cheque_id", "=", chequeId]] }],
       });
       if (response?.success) {
         setListData(response?.result);

@@ -511,7 +511,7 @@ export function getAssetType(name) {
 }
 
 export const getContractPayments = async (contract_id, setValue) => {
-  const chqResponse = await ApiActions.read("bill", {
+  const chqResponse = await ApiActions.read("cheque", {
     conditions: [
       { type: "and", conditions: [["connect_with_id", "=", contract_id]] },
     ],

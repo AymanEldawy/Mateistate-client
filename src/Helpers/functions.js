@@ -191,20 +191,6 @@ export function generateFlatHashName(tab, setting, yIndex, xIndex) {
   }
 }
 
-// const HASH_BILLS_TYPE = {};
-// export async function getBillType(type) {
-//   if (HASH_BILLS_TYPE[type]) return HASH_BILLS_TYPE[type];
-//   else {
-//     const response = await ApiActions.read("cheque_pattern");
-//     if (response?.success) {
-//       for (const item of response?.result) {
-//         HASH_BILLS_TYPE[item?.code] = item?.name;
-//       }
-//     }
-//     return HASH_BILLS_TYPE[type];
-//   }
-// }
-
 export const changeRowStatus = async (name, id, col, value) => {
   const response = await ApiActions.update(name, {
     conditions: [{ type: "and", conditions: [["id", "=", id]] }],

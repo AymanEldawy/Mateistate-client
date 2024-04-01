@@ -18,6 +18,7 @@ const ReportSelectField = ({
   hideLabel,
   values,
   selectClassNames,
+  selectContainerClassName,
   readOnly,
   ...field
 }) => {
@@ -62,7 +63,7 @@ const ReportSelectField = ({
               menuPlacement="auto"
               menuPortalTarget={document?.body}
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-              className={`border rounded-md bg-none bg-transparent w-full`}
+              className={`border rounded-md bg-none bg-transparent w-full ${selectContainerClassName}`}
               classNames={{
                 control: (state) => "bg-transparent !border-none",
                 container: (state) =>

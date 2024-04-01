@@ -13,7 +13,9 @@ export const ReportFilterColumns = ({
   titleClassName,
   title = "Columns",
   disabledItem,
+  searchKey = 'name'
 }) => {
+  console.log("🚀 ~ searchKey:",columns, searchKey)
   const [refresh, setRefresh] = useState(false);
 
   const onChangeFilterColumns = (e) => {
@@ -36,7 +38,7 @@ export const ReportFilterColumns = ({
     if (e.target.checked) {
       let hash = {};
       for (const col of columns) {
-        hash[col?.name] = true;
+        hash[col?.[searchKey]] = true;
       }
       setSelectedColumns(hash);
     } else {
@@ -77,10 +79,10 @@ export const ReportFilterColumns = ({
         {columns?.map((col) => (
           <Checkbox
             containerClassName={`flex items-center gap-2 !py-2 border-b dark:border-dark-border last:border-0 ${itemClassName}`}
-            name={col?.name}
-            text={col?.label?.replace(/_/g, " ")}
+            name={col?.[searchKey]}
+            text={col?.[searchKey === 'accessorKey' ? 'header' : 'label']?.replace(/_/g, " ")}
             onChange={onChangeFilterColumns}
-            checked={selectedColumns?.[col?.name]}
+            checked={selectedColumns?.[col?.[searchKey]]}
             disabled={disabledItem}
           />
         ))}

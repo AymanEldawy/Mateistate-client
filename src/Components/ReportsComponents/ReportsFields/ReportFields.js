@@ -8,6 +8,7 @@ import { useFormContext } from "react-hook-form";
 import ReportSelectField from "./ReportSelectField";
 import ReportUniqueField from "./ReportUniqueField";
 import ReportInputField from "./ReportInputField";
+import { ReportFieldBetweenValues } from "./ReportFieldBetweenValues";
 
 export const ReportFields = ({
   fields,
@@ -17,6 +18,8 @@ export const ReportFields = ({
   tab,
   containerClassName,
   sharedLabelClassName,
+  sharedInputClassName,
+  sharedContainerClassName,
 }) => {
   const { watch } = useFormContext();
 
@@ -39,6 +42,8 @@ export const ReportFields = ({
                   : errors?.[field?.name]?.type
               }
               labelClassName={sharedLabelClassName}
+              containerClassName={sharedContainerClassName}
+              inputClassName={sharedInputClassName}
             />
           );
         } else if (field?.key === "select") {
@@ -55,6 +60,8 @@ export const ReportFields = ({
                   : errors?.[field?.name]?.type
               }
               labelClassName={sharedLabelClassName}
+              containerClassName={sharedContainerClassName}
+              selectContainerClassName={sharedInputClassName}
             />
           );
         } else if (field?.key === "switch") {
@@ -67,6 +74,19 @@ export const ReportFields = ({
               values={values}
               error={errors?.[field?.name] ? "Field is required" : ""}
               labelClassName={sharedLabelClassName}
+              containerClassName={sharedContainerClassName}
+              inputClassName={sharedInputClassName}
+            />
+          );
+        } else if (field?.key === "between") {
+          return (
+            <ReportFieldBetweenValues
+              {...field}
+              key={`${field?.name}-${i}`}
+              error={errors?.[field?.name] ? "Field is required" : ""}
+              labelClassName={sharedLabelClassName}
+              containerClassName={sharedContainerClassName}
+              inputClassName={sharedInputClassName}
             />
           );
         } else {
@@ -83,6 +103,8 @@ export const ReportFields = ({
                   : errors?.[field?.name]?.type
               }
               labelClassName={sharedLabelClassName}
+              containerClassName={sharedContainerClassName}
+              inputClassName={sharedInputClassName}
             />
           );
         }

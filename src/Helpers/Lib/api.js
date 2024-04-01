@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 export const SHOULD_DELETE_ENTRY = {
   account: true,
   contract: true,
-  bill: true,
+  cheque: true,
   voucher_main_data: true,
   op_collection: true,
   op_partial_collection: true,

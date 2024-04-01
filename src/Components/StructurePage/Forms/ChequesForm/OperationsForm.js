@@ -70,7 +70,7 @@ const mergePatternWithData = async (
   chqValues
 ) => {
   setValue("amount", chqValues?.amount);
-  setValue("bill_id", chqValues?.id);
+  setValue("cheque_id", chqValues?.id);
 
   switch (name?.toLowerCase()) {
     case "op_collection":
@@ -284,7 +284,7 @@ export const OperationsForm = ({
 
   const getOperationData = async () => {
     const response = await ApiActions.read(name, {
-      conditions: [{ type: "and", conditions: [["bill_id", chqValues?.id]] }],
+      conditions: [{ type: "and", conditions: [["cheque_id", chqValues?.id]] }],
     });
     let data = response?.result?.at(0);
     if (response?.success && data?.id) {
@@ -395,7 +395,7 @@ export const OperationsForm = ({
               errors={errors}
               fields={fields}
               CACHE_LIST={CACHE_LIST}
-              billId={chqValues?.id}
+              chequeId={chqValues?.id}
               PATTERN_SETTINGS={PATTERN_SETTINGS}
               dispatchVoucherEntries={dispatchVoucherEntries}
               popupView

@@ -2,16 +2,21 @@ import getFormByTableName from "Helpers/Forms/forms";
 import { ApiActions } from "Helpers/Lib/api";
 import {
   getAccountList,
-  getAccountsChildrenByName, getCostCenterList
+  getAccountsChildrenByName,
+  getCostCenterList,
 } from "Helpers/Lib/global-read";
+import { getReportFields } from "Helpers/Reports";
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
 import { useEffect, useMemo, useState } from "react";
 
-const useRefTable = (name, params) => {
+const useRefTable = (name, type = "form") => {
   const [CACHE_LIST, setCACHE_LIST] = useState({});
   const [fieldsHash, setFieldsHash] = useState({});
 
-  const fields = useMemo(() => getFormByTableName(name), [name]);
+  const fields = useMemo(
+    () => (type !== "form" ? getReportFields(name) : getFormByTableName(name)),
+    [name]
+  );
 
   useEffect(() => {
     getRefTables();

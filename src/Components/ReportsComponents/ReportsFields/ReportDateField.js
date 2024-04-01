@@ -24,7 +24,7 @@ export const ReportBetweenDateField = ({
         labelClassName="w-[130px]"
         {...{
           label: "start_date",
-          name: "start_duration_date",
+          name: "from",
           ...date1Field,
           type: "date",
         }}
@@ -35,7 +35,7 @@ export const ReportBetweenDateField = ({
         labelClassName="w-[130px]"
         {...{
           label: "end_date",
-          name: "end_duration_date",
+          name: "to",
           ...date2Field,
           type: "date",
         }}

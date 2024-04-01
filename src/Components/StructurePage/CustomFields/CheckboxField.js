@@ -13,6 +13,7 @@ const CheckboxField = ({
   hideLabel,
   readOnly,
   // register,
+  checkboxProps = {},
   ...field
 }) => {
   const { watch } = useFormContext();
@@ -37,6 +38,7 @@ const CheckboxField = ({
                 onChange={(e) => onChange(e.target.checked)}
                 checked={watch(updatedName || field?.name)}
                 readOnly={readOnly}
+                {...checkboxProps}
               />
             );
           }}

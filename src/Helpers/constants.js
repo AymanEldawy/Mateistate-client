@@ -298,9 +298,69 @@ export const SELECT_LISTS = (listName) => {
   let list = {
     property_values_area: ["Square Feet", "Square Meter"],
 
+    contract_cycle_report_list: [
+      { id: 0, name: "All" },
+      { id: 1, name: "Contract printed" },
+      { id: 2, name: "Extenstion not printed" },
+      { id: 3, name: "Not specified" },
+    ],
+    registered_by_list: [
+      { id: 0, name: "All" },
+      { id: 1, name: "Customer" },
+      { id: 2, name: "Company" },
+    ],
+
+    contract_printed_list: [
+      { id: 0, name: "All" },
+      { id: 1, name: "Process to finish" },
+      { id: 2, name: "Done" },
+    ],
+    registered_by_list: [],
+
     filter_using: [
       { id: 1, name: "Days number" },
       { id: 2, name: "Date" },
+    ],
+
+    clearance_list: [
+      { id: 0, name: "All" },
+      { id: 1, name: "Printed" },
+      { id: 2, name: "Not Printed" },
+    ],
+    contract_input_case: [
+      { id: 0, name: "All" },
+      { id: 1, name: "New" },
+      { id: 2, name: "Renewal" },
+    ],
+    contract_status_expired: [
+      { id: 0, name: "All" },
+      { id: 1, name: "Expired" },
+      { id: 2, name: "Not Expired" },
+    ],
+    contract_date_by: [
+      { id: 0, name: "All" },
+      { id: 1, name: "Contract start date" },
+      { id: 2, name: "Contract expire date" },
+      { id: 3, name: "Terminated date" },
+      { id: 4, name: "Contract issue date" },
+      { id: 4, name: "clearance print" },
+      { id: 4, name: "Evacuate date" },
+    ],
+    contract_amount_list: [
+      { id: 0, name: "All" },
+      { id: 1, name: "With amount" },
+      { id: 2, name: "Without amount" },
+    ],
+    installment_report_list: [
+      { id: 0, name: "All" },
+      { id: 1, name: "With installments" },
+      { id: 2, name: "Without installments" },
+    ],
+
+    lawsuit_report: [
+      { id: 0, name: "All" },
+      { id: 1, name: "Lawsuit" },
+      { id: 2, name: "There is no lawsuit" },
     ],
     revenues_report_contract_termination: [
       { id: 0, name: "All" },
@@ -324,7 +384,7 @@ export const SELECT_LISTS = (listName) => {
     nationality_list,
     type: ["Debit", "Credit"],
 
-    bill_connect_with: [
+    cheque_connect_with: [
       { name: CONNECT_WITH_NOTHING_NAME, id: CONNECT_WITH_NOTHING_CODE },
       { name: CONNECT_WITH_CONTRACT_NAME, id: CONNECT_WITH_CONTRACT_CODE },
       { name: CONNECT_WITH_LAWSUIT_NAME, id: CONNECT_WITH_LAWSUIT_CODE },
@@ -363,17 +423,17 @@ export const SELECT_LISTS = (listName) => {
       { name: "Real Estate Management", id: 1 },
     ],
 
-    bill_pattern_paper_type: [
+    cheque_pattern_paper_type: [
       { name: "Paid", id: 1 },
       { name: "Received", id: 2 },
     ],
 
-    bill_pattern_default_date: [
+    cheque_pattern_default_date: [
       { name: "Operation date", id: 1 },
       { name: "Due date", id: 2 },
     ],
 
-    bill_pattern_commission_type: [
+    cheque_pattern_commission_type: [
       { name: "addition", id: 1 },
       { name: "delete", id: 2 },
     ],
@@ -465,14 +525,14 @@ export const SELECT_LISTS = (listName) => {
       { name: "Installment", id: 4 },
     ],
     contract_round_to: [
-      { name: "Without rounding", id: -1 },
-      { name: "0", id: 0 },
-      { name: "1", id: 1 },
-      { name: "-1", id: -1 },
-      { name: "5", id: 5 },
-      { name: "-5", id: -5 },
-      { name: "10", id: 10 },
-      { name: "-10", id: -10 },
+      { name: "Without rounding", id: 0 },
+      { name: "0", id: 1 },
+      { name: "1", id: 2 },
+      { name: "-1", id: 3 },
+      { name: "5", id: 4 },
+      { name: "-5", id: 5 },
+      { name: "10", id: 6 },
+      { name: "-10", id: 7 },
     ],
     chq_return_reasons: [
       { name: "Insufficient funds", id: 1 },
@@ -577,16 +637,16 @@ export const ACCOUNTING_VOUCHER_PATTERN_STEPS = {
   accounting_voucher_sms: "SMS",
 };
 
-export const BILL_PATTERN_STEPS = {
-  bill_pattern_general: "bill_pattern_general",
-  bill_pattern_deportable: "bill_pattern_deportable",
-  bill_pattern_collection: "bill_pattern_collection",
-  bill_pattern_commission: "bill_pattern_commission",
-  bill_pattern_partial_collection: "bill_pattern_partial_collection",
-  bill_pattern_endorsement: "bill_pattern_endorsement",
-  bill_pattern_return: "bill_pattern_return",
-  bill_pattern_default_statement: "bill_pattern_default_statement",
-  bill_pattern_sms: "bill_pattern_sms",
+export const CHEQUE_PATTERN_STEPS = {
+  cheque_pattern_general: "cheque_pattern_general",
+  cheque_pattern_deportable: "cheque_pattern_deportable",
+  cheque_pattern_collection: "cheque_pattern_collection",
+  cheque_pattern_commission: "cheque_pattern_commission",
+  cheque_pattern_partial_collection: "cheque_pattern_partial_collection",
+  cheque_pattern_endorsement: "cheque_pattern_endorsement",
+  cheque_pattern_return: "cheque_pattern_return",
+  cheque_pattern_default_statement: "cheque_pattern_default_statement",
+  cheque_pattern_sms: "cheque_pattern_sms",
 };
 
 const GLOBAL_CONTRACT_STEPS = {

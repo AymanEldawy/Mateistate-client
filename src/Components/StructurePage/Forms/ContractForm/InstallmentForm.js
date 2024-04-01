@@ -110,7 +110,7 @@ const generatePaymentBatches = async (
     each_number
   );
 
-  let bills = [];
+  let cheques = [];
 
   for (let i = 0; i < result.length; i++) {
     let dueDate = new Date(result[i]?.month)?.toLocaleDateString("en-UK");
@@ -119,7 +119,7 @@ const generatePaymentBatches = async (
     const note2 = `${COUNTER_CHQ_NUMBER?.[i]} Payment (${i + 1})`;
     const note1 = `received chq number ${internal_number} from mr ${client?.name} ${result[i]?.price} due date ${dueDate} end date ${endDueDate} bank name ${bank?.name}`;
 
-    bills.push({
+    cheques.push({
       internal_number,
       due_date: result[i]?.month,
       amount: result[i]?.price,
@@ -134,7 +134,7 @@ const generatePaymentBatches = async (
       [`${assetType}_id`]: watch(`${firstTab}.${assetType}_id`),
     });
   }
-  setValue("installment_grid", bills);
+  setValue("installment_grid", cheques);
 };
 
 const InstallmentForm = ({

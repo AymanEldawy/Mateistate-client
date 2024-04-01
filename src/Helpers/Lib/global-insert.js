@@ -2,7 +2,7 @@ import { ApiActions } from "./api";
 import getFormByTableName from "Helpers/Forms/forms";
 import {
   generateEntryFromTermination,
-  generateBillsFromInstallment,
+  generateChequesFromInstallment,
   insertIntoEntry,
   insertIntoGrid,
   deleteEntry,
@@ -426,7 +426,7 @@ export const insertIntoContractInstallment = async ({
   const cost_center_id = firstTabData?.cost_center_id;
 
   if (installment_id) {
-    await generateBillsFromInstallment({
+    await generateChequesFromInstallment({
       installment,
       installment_grid,
       installment_id,

@@ -498,8 +498,8 @@ export const generateEntryFromVoucher = async ({
   });
 };
 
-// generateBillsFromInstallment
-export const generateBillsFromInstallment = async ({
+// generateChequesFromInstallment
+export const generateChequesFromInstallment = async ({
   installment,
   installment_grid,
   installment_id,
@@ -509,13 +509,13 @@ export const generateBillsFromInstallment = async ({
   if (!installment_grid?.length) return;
 
   const { currency_id } = installment;
-  const responseBillPattern = await ApiActions.read("cheque_pattern", {
+  const responseChequePattern = await ApiActions.read("cheque_pattern", {
     conditions: [
       { type: "and", conditions: [["code", "=", CHQ_RECEIVED_CODE]] },
     ],
   });
 
-  const pattern = responseBillPattern?.result?.at(0);
+  const pattern = responseChequePattern?.result?.at(0);
 
   if (!pattern?.gen_entries) return;
 
@@ -524,12 +524,12 @@ export const generateBillsFromInstallment = async ({
     pattern?.default_account_id ||
     (await getAccountReceivable());
 
-  const bills = [];
+  const cheques = [];
 
   for (const item of installment_grid) {
     // let internal_number = item?.number;
     // delete item?.number;
-    bills.push({
+    cheques.push({
       ...item,
       // internal_number,
       installment_id,
@@ -543,7 +543,7 @@ export const generateBillsFromInstallment = async ({
     });
   }
 
-  if (!bills?.length) return;
+  if (!cheques?.length) return;
 
   const prevGrid = await ApiActions.read("cheque", {
     conditions: [
@@ -560,7 +560,7 @@ export const generateBillsFromInstallment = async ({
   });
 
   let prevCount = prevGrid?.result?.length || 0;
-  let currentCount = bills?.length;
+  let currentCount = cheques?.length;
 
   let length = Math.max(prevCount, currentCount);
 
@@ -569,7 +569,7 @@ export const generateBillsFromInstallment = async ({
   let updatedChq = [];
 
   for (let i = 0; i < length; i++) {
-    let item = bills?.[i];
+    let item = cheques?.[i];
     let prevItem = prevGrid?.result?.[i];
 
     if (JSON.stringify(item) === JSON.stringify(prevItem)) continue;
@@ -650,7 +650,7 @@ export const generateBillsFromInstallment = async ({
   return;
 };
 
-// generate Entry From Bill
+// generate Entry From Cheque
 export const generateEntryFromCheque = async ({
   values,
   created_from,
@@ -819,7 +819,7 @@ export const generateEntryFromTermination = async ({
   }
 };
 
-// generate Entry From Bill
+// generate Entry From Cheque operation
 export const generateEntryFromChqOperation = async ({
   values,
   created_from,

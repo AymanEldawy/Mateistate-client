@@ -1,127 +1,49 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import BlockPaper from "Components/Global/BlockPaper";
 import { ReportFilterColumns } from "../../Components/ReportsComponents/ReportFilterColumns";
 import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "Components/Global/Button";
 import { ReportFilterContractPatterns } from "../../Components/ReportsComponents/ReportFilterContractPatterns";
 import { ReportFilterBuildings } from "../../Components/ReportsComponents/ReportFilterBuildings";
-import { ContractNearToExpireReportFilter } from "../../Components/ReportsComponents/ContractNearToExpireReport/ContractNearToExpireReportFilter";
 import REPORTS from "Helpers/Lib/global-reports";
-import { useQuery } from "@tanstack/react-query";
-import { ContractPaymentsReportFilter } from "Components/ReportsComponents/ContractPaymentsReportFilter/ContractPaymentsReportFilter";
+import { CheckboxField, Switch } from "Components/StructurePage/CustomFields";
+import { ReportBetweenDateField } from "Components/ReportsComponents/ReportsFields/ReportDateField";
+import { ReportReviewField } from "Components/ReportsComponents/ReportsFields/ReportReviewField";
+import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
+import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFields";
+import useRefTable from "Hooks/useRefTables";
+import { getReportColumns, getReportFields } from "Helpers/Reports";
 
-const columns = [
-  {
-    label: "number",
-    name: "number",
-  },
-  // {
-  //   label: "gov_number",
-  //   name: "gov_number",
-  // },
-  {
-    label: "feedback",
-    name: "feedback",
-  },
-  {
-    label: "lawsuit",
-    name: "lawsuit",
-  },
-  {
-    label: "apartment_id",
-    name: "apartment_id",
-  },
-  { label: "description", name: "description" },
-  {
-    label: "lessor_id",
-    name: "lessor_id",
-  },
-  {
-    label: "status",
-    name: "status",
-  },
-  {
-    label: "building_id",
-    name: "building_id",
-  },
-
-  {
-    label: "contract_value",
-    name: "contract_value",
-  },
-  {
-    label: "discount_rate",
-    name: "discount_rate",
-  },
-  {
-    label: "discount_value",
-    name: "discount_value",
-  },
-  {
-    label: "final_price",
-    name: "final_price",
-  },
-  {
-    label: "discount_account_id",
-    name: "discount_account_id",
-  },
-  {
-    label: "previous_securing",
-    name: "previous_securing",
-  },
-  // {
-  //   label: "current_securing_percentage",
-  //   name: "current_securing_percentage",
-  // },
-  {
-    label: "current_securing_value",
-    name: "current_securing_value",
-  },
-
-  {
-    label: "start_duration_date",
-    name: "start_duration_date",
-  },
-  {
-    label: "end_duration_date",
-    name: "end_duration_date",
-  },
-  {
-    label: "paid_type",
-    name: "paid_type",
-  },
-  {
-    label: "revenue_account_id",
-    name: "revenue_account_id",
-  },
-  {
-    label: "insurance_account_id",
-    name: "insurance_account_id",
-  },
-];
-
-export const ContractNearToExpireReport = () => {
+export const ContractPaymentsReport = () => {
+  const name = "contract_payments_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
+  const { CACHE_LIST } = useRefTable(name);
   const [selectedColumns, setSelectedColumns] = useState({});
   const [buildingsIds, setBuildingsIds] = useState({});
   const [contractIds, setContractIds] = useState({});
-  // const queryClient = useQuery({
 
-  // })
+  const fields = useMemo(() => getReportFields(name), []);
+  const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
     await REPORTS.nearToExpireContract();
   };
 
   return (
-    <BlockPaper title={"Contract closest complete Report"}>
+    <BlockPaper title={"Contract Payments Report"}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative">
           <div className="grid md:grid sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8 items-start">
-            <ContractPaymentsReportFilter />
+            <ReportFilterFields title="Fields">
+              <ReportFields
+                CACHE_LIST={CACHE_LIST}
+                sharedLabelClassName="w-[200px]"
+                fields={fields}
+              />
+            </ReportFilterFields>
             <div className="grid gap-4 order-3 md:order-2 max-[768px]:col-span-full max-[768px]:grid-cols-2 w-full">
-              {/* <ReportFilterContractPatterns
+              <ReportFilterContractPatterns
                 contractIds={contractIds}
                 setContractIds={setContractIds}
                 bodyClassName="h-[250px]"
@@ -129,16 +51,66 @@ export const ContractNearToExpireReport = () => {
               <ReportFilterBuildings
                 buildingsIds={buildingsIds}
                 setBuildingsIds={setBuildingsIds}
-                bodyClassName="h-[260px]"
-              /> */}
+                bodyClassName="h-[230px]"
+              />
+              <ReportReviewField />
             </div>
-            {/* <ReportFilterColumns
+            <ReportFilterColumns
+              searchKey="accessorKey"
               columns={columns}
               selectedColumns={selectedColumns}
               setSelectedColumns={setSelectedColumns}
-              bodyClassName="h-[600px] max-[768px]:w-[768px]"
+              bodyClassName="h-[690px] max-[768px]:w-[768px]"
               containerClassName="order-2"
-            /> */}
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-4 lg:gap-8 mt-4">
+            <ReportBetweenDateField
+              customTitle={<CheckboxField name="allow_date" label="Date" />}
+              date1Field={{
+                name: "start_date",
+              }}
+              date2Field={{
+                name: "end_date",
+              }}
+              sharedProps={{
+                readOnly: !watch("allow_date"),
+              }}
+              containerClassName="!m-0"
+            />
+            <ReportBetweenDateField
+              customTitle={
+                <CheckboxField name="allow_cheques_date" label="Cheques Date" />
+              }
+              date1Field={{
+                name: "start_cheques_date",
+              }}
+              date2Field={{
+                name: "end_cheques_date",
+              }}
+              sharedProps={{
+                readOnly: !watch("allow_cheques_date"),
+              }}
+              containerClassName="!m-0"
+            />
+            <ReportBetweenDateField
+              customTitle={
+                <CheckboxField
+                  name="allow_collection_date"
+                  label="Collection Date"
+                />
+              }
+              date1Field={{
+                name: "start_collection_date",
+              }}
+              date2Field={{
+                name: "end_collection_date",
+              }}
+              sharedProps={{
+                readOnly: !watch("allow_collection_date"),
+              }}
+              containerClassName="!m-0"
+            />
           </div>
           <Button title="Show" classes="my-4 flex ltr:ml-auto rtl:mr-auto" />
           <div className="my-8 flex justify-end"></div>
@@ -147,3 +119,5 @@ export const ContractNearToExpireReport = () => {
     </BlockPaper>
   );
 };
+
+export default ContractPaymentsReport;

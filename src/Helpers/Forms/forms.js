@@ -2,7 +2,7 @@ import {
   ACCOUNTING_VOUCHER_PATTERN_STEPS,
   APARTMENT_STEPS,
   ASSETS_STEPS,
-  BILL_PATTERN_STEPS,
+  CHEQUE_PATTERN_STEPS,
   BUILDING_STEPS,
   CONTRACTS_PATTERN_STEPS,
   PARKING_STEPS,
@@ -21,51 +21,78 @@ const land = [
   FIELDS_STRUCTURE.created_at(),
   FIELDS_STRUCTURE.number(),
   FIELDS_STRUCTURE.name(),
-  { label: "type", name: "type", type: "number", required: false },
-  {
-    label: "ban",
-    name: "ban",
-    type: "boolean",
-    key: "switch",
-  },
-  { label: "land_no", name: "land_no", type: "text", required: false },
-  { label: "last_name", name: "last_name", type: "text", required: false },
-  {
+  FIELDS_STRUCTURE.numberField({
+    label: "type",
+    name: "type",
+  }),
+  FIELDS_STRUCTURE.switchField({ label: "ban", name: "ban" }),
+  FIELDS_STRUCTURE.textField({ label: "land_no", name: "land_no" }),
+  FIELDS_STRUCTURE.textField({ label: "last_name", name: "last_name" }),
+  FIELDS_STRUCTURE.uniqueField({
     label: "customer_id",
     name: "customer_id",
-    is_ref: true,
     ref_table: "account",
-  },
-  { label: "date", name: "date", type: "date", required: false },
-  { label: "city", name: "city", type: "text", required: false },
-  { label: "region", name: "region", type: "text", required: false },
-  { label: "space", name: "space", type: "text", required: false },
-  { label: "area", name: "area", type: "number", required: false },
-  { label: "area_unit", name: "area_unit", type: "text", required: false },
-  { label: "price", name: "price", type: "number", required: false },
-  { label: "license_no", name: "license_no", type: "text", required: false },
-  { label: "license", name: "license", type: "text", required: false },
+  }),
+  FIELDS_STRUCTURE.dateField({ label: "date", name: "date", type: "date" }),
+  FIELDS_STRUCTURE.textField({ label: "city", name: "city", type: "text" }),
+  FIELDS_STRUCTURE.textField({ label: "region", name: "region", type: "text" }),
+  FIELDS_STRUCTURE.textField({ label: "space", name: "space", type: "text" }),
+  FIELDS_STRUCTURE.numberField({ label: "area", name: "area", type: "number" }),
+  FIELDS_STRUCTURE.textField({
+    label: "area_unit",
+    name: "area_unit",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.numberField({
+    label: "price",
+    name: "price",
+    type: "number",
+  }),
+  FIELDS_STRUCTURE.textField({
+    label: "license_no",
+    name: "license_no",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({
+    label: "license",
+    name: "license",
+    type: "text",
+  }),
   {
     label: "license_date",
     name: "license_date",
     type: "date",
   },
-  { label: "details", name: "details", type: "text", required: false },
-  { label: "land_type", name: "land_type", type: "number", required: false },
-  { label: "side", name: "side", type: "text", required: false },
-  { label: "street_name", name: "street_name", type: "text", required: false },
+  FIELDS_STRUCTURE.textField({
+    label: "details",
+    name: "details",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.numberField({
+    label: "land_type",
+    name: "land_type",
+    type: "number",
+  }),
+  FIELDS_STRUCTURE.textField({ label: "side", name: "side", type: "text" }),
+  FIELDS_STRUCTURE.textField({
+    label: "street_name",
+    name: "street_name",
+    type: "text",
+  }),
   {
     label: "street_count",
     name: "street_count",
     type: "number",
   },
-  {
+  FIELDS_STRUCTURE.switchField({
     label: "buildble",
     name: "buildble",
-    type: "boolean",
-    key: "switch",
-  },
-  { label: "landowner", name: "landowner", type: "number", required: false },
+  }),
+  FIELDS_STRUCTURE.numberField({
+    label: "landowner",
+    name: "landowner",
+    type: "number",
+  }),
   {
     label: "begin_land_value",
     name: "begin_land_value",
@@ -194,83 +221,80 @@ const land = [
     name: "ltn_land_type",
     type: "text",
   },
-  { label: "ltn_city", name: "ltn_city", type: "text", required: false },
-  { label: "ltn_region", name: "ltn_region", type: "text", required: false },
-  { label: "ltn_space", name: "ltn_space", type: "text", required: false },
-  { label: "ltn_license", name: "ltn_license", type: "text", required: false },
-  { label: "ltn_side", name: "ltn_side", type: "text", required: false },
-  { label: "rent", name: "rent", type: "number", required: false },
-  {
+  FIELDS_STRUCTURE.textField({
+    label: "ltn_city",
+    name: "ltn_city",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({
+    label: "ltn_region",
+    name: "ltn_region",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({
+    label: "ltn_space",
+    name: "ltn_space",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({
+    label: "ltn_license",
+    name: "ltn_license",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({
+    label: "ltn_side",
+    name: "ltn_side",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.numberField({ label: "rent", name: "rent", type: "number" }),
+  FIELDS_STRUCTURE.currency({
     label: "rent_currency_id",
     name: "rent_currency_id",
-    is_ref: true,
-    ref_table: "currency",
-    ref_name: "code",
-  },
+  }),
 ];
-
-// voucher
-/*
-  { label: 'mulct_price', name: "mulct_price", type: "number", required: false },
-
-{
-  label: 'mulct_debit_id', name: "mulct_debit_id",
-  
-  
-  is_ref: true,
-  ref_table: "account",
-  
-},
-{
-  label: 'mulct_credit_id', name: "mulct_credit_id",
-  
-  
-  is_ref: true,
-  ref_table: "account",
-  
-},
-{ label: 'mulct_note', name: "mulct_note", type: "text", required: false },
-*/
-
 // ==== Start Cards
 const reservation_property = [
-  { label: "id", name: "id", type: "uuid", required: false },
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  { label: "id", name: "id", type: "uuid" },
+  FIELDS_STRUCTURE.dateField({
+    label: "created_at",
+    name: "created_at",
+    type: "date",
+  }),
   FIELDS_STRUCTURE.account({
     required: true,
   }),
 
-  {
+  FIELDS_STRUCTURE.selectField({
     label: "property_type",
     name: "property_type",
-    type: "number",
-    required: false,
     list: SELECT_LISTS("contact_pattern_assets_type"),
-    intValue: true,
-  },
-  {
+  }),
+
+  FIELDS_STRUCTURE.uniqueField({
     label: "building_id",
     name: "building_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
     ref_table: "building",
-    ref_col: "id",
-  },
+    required: true,
+  }),
+
   {
     label: "property_id",
     name: "property_id",
     type: "uuid",
     required: true,
   },
-  { label: "book_date", name: "book_date", type: "date", required: false },
+  FIELDS_STRUCTURE.dateField({
+    label: "book_date",
+    name: "book_date",
+    type: "date",
+  }),
   {
     label: "end_book_date",
     name: "end_book_date",
     type: "date",
     required: false,
   },
-  { label: "note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.textField({ label: "note", name: "note", type: "text" }),
   {
     label: "has_payment",
     name: "has_payment",
@@ -363,13 +387,21 @@ const account_distributive = [
 const lessor = [
   FIELDS_STRUCTURE.id(),
   { label: "full_name", name: "name", type: "text", required: true },
-  { label: "passport", name: "passport", type: "number", required: false },
+  FIELDS_STRUCTURE.numberField({
+    label: "passport",
+    name: "passport",
+    type: "number",
+  }),
   {
     label: "passport_expiry_date",
     name: "passport_expiry_date",
     type: "date",
   },
-  { label: "id_card", name: "id_card", type: "number", required: false },
+  FIELDS_STRUCTURE.numberField({
+    label: "id_card",
+    name: "id_card",
+    type: "number",
+  }),
   {
     label: "lessor_card",
     name: "lessor_card",
@@ -393,24 +425,44 @@ const lessor = [
     type: "text",
   },
   FIELDS_STRUCTURE.nationality(),
-  { label: "mobile", name: "mobile", type: "text", required: false },
-  { label: "fax", name: "fax", type: "text", required: false },
-  { label: "mailbox", name: "mailbox", type: "text", required: false },
-  { label: "email", name: "email", type: "text", required: false },
-  { label: "note", name: "note", type: "text", required: false },
-  { label: "role", name: "role", type: "text", required: false },
+  FIELDS_STRUCTURE.textField({ label: "mobile", name: "mobile", type: "text" }),
+  FIELDS_STRUCTURE.textField({ label: "fax", name: "fax", type: "text" }),
+  FIELDS_STRUCTURE.textField({
+    label: "mailbox",
+    name: "mailbox",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({ label: "email", name: "email", type: "text" }),
+  FIELDS_STRUCTURE.textField({ label: "note", name: "note", type: "text" }),
+  FIELDS_STRUCTURE.textField({ label: "role", name: "role", type: "text" }),
 ];
 
 const owner = [
   FIELDS_STRUCTURE.id(),
   { label: "full_name", name: "name", type: "text", required: true },
-  { label: "id_card", name: "id_card", type: "text", required: false },
-  { label: "phone", name: "phone", type: "text", required: false },
-  { label: "cell_phone", name: "cell_phone", type: "text", required: false },
-  { label: "fax", name: "fax", type: "text", required: false },
-  { label: "mailbox", name: "mailbox", type: "text", required: false },
-  { label: "email", name: "email", type: "text", required: false },
-  { label: "address", name: "address", type: "text", required: false },
+  FIELDS_STRUCTURE.textField({
+    label: "id_card",
+    name: "id_card",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({ label: "phone", name: "phone", type: "text" }),
+  FIELDS_STRUCTURE.textField({
+    label: "cell_phone",
+    name: "cell_phone",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({ label: "fax", name: "fax", type: "text" }),
+  FIELDS_STRUCTURE.textField({
+    label: "mailbox",
+    name: "mailbox",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({ label: "email", name: "email", type: "text" }),
+  FIELDS_STRUCTURE.textField({
+    label: "address",
+    name: "address",
+    type: "text",
+  }),
   FIELDS_STRUCTURE.nationality(),
 ];
 
@@ -419,19 +471,39 @@ const seller = [
   FIELDS_STRUCTURE.created_at(),
   { label: "full_name", name: "name", type: "text", required: true },
   FIELDS_STRUCTURE.nationality(),
-  { label: "id_card", name: "id_card", type: "number", required: false },
-  { label: "passport", name: "passport", type: "number", required: false },
+  FIELDS_STRUCTURE.numberField({
+    label: "id_card",
+    name: "id_card",
+    type: "number",
+  }),
+  FIELDS_STRUCTURE.numberField({
+    label: "passport",
+    name: "passport",
+    type: "number",
+  }),
   {
     label: "work_card_number",
     name: "work_card_number",
     type: "number",
   },
-  { label: "mobile", name: "mobile", type: "text", required: false },
-  { label: "cellPhone", name: "cellPhone", type: "text", required: false },
-  { label: "fax", name: "fax", type: "text", required: false },
-  { label: "mailbox", name: "mailbox", type: "text", required: false },
-  { label: "email", name: "email", type: "text", required: false },
-  { label: "address", name: "address", type: "text", required: false },
+  FIELDS_STRUCTURE.textField({ label: "mobile", name: "mobile", type: "text" }),
+  FIELDS_STRUCTURE.textField({
+    label: "cellPhone",
+    name: "cellPhone",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({ label: "fax", name: "fax", type: "text" }),
+  FIELDS_STRUCTURE.textField({
+    label: "mailbox",
+    name: "mailbox",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({ label: "email", name: "email", type: "text" }),
+  FIELDS_STRUCTURE.textField({
+    label: "address",
+    name: "address",
+    type: "text",
+  }),
   {
     label: "minimum_commission",
     name: "minimum_commission",
@@ -641,7 +713,7 @@ const cost_center = [
 ];
 
 const country = [
-  { label: "id", name: "id", type: "number", required: false },
+  FIELDS_STRUCTURE.numberField({ label: "id", name: "id", type: "number" }),
   FIELDS_STRUCTURE.created_at(),
   FIELDS_STRUCTURE.name(),
   {
@@ -670,10 +742,14 @@ const building = [
   FIELDS_STRUCTURE.id(),
   // {  label: 'number', name: "number", type: "text", required: true },
   FIELDS_STRUCTURE.name(),
-  { label: "emirate", name: "emirate", type: "text", required: false },
-  { label: "suburb", name: "suburb", type: "text", required: false },
-  { label: "area", name: "area", type: "text", required: false },
-  { label: "street", name: "street", type: "text", required: false },
+  FIELDS_STRUCTURE.textField({
+    label: "emirate",
+    name: "emirate",
+    type: "text",
+  }),
+  FIELDS_STRUCTURE.textField({ label: "suburb", name: "suburb", type: "text" }),
+  FIELDS_STRUCTURE.textField({ label: "area", name: "area", type: "text" }),
+  FIELDS_STRUCTURE.textField({ label: "street", name: "street", type: "text" }),
   {
     label: "building_number",
     name: "building_number",
@@ -1936,7 +2012,7 @@ const contract_pattern_group = {
   },
 };
 
-// ==== Start bills
+// ==== Start Cheques
 const cheque = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
@@ -1965,7 +2041,7 @@ const cheque = [
     name: "connect_with",
     key: "select",
 
-    list: SELECT_LISTS("bill_connect_with"),
+    list: SELECT_LISTS("cheque_connect_with"),
   },
   {
     label: "type",
@@ -2023,11 +2099,10 @@ const cheque = [
   //   label: "observe_account_note",
   //   name: "observe_account_note",
   // }),
-  {
+  FIELDS_STRUCTURE.textField({
     label: "beneficiary_name",
     name: "beneficiary_name",
-    type: "text",
-  },
+  }),
   {
     label: "unit number",
     name: "parking_id",
@@ -2198,17 +2273,17 @@ const cheque_short = [
   },
 ];
 
-const bill_general = [
+const cheque_general = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
   {
     label: "paper_type",
     name: "paper_type",
     key: "select",
-    list: SELECT_LISTS("bill_pattern_paper_type"),
+    list: SELECT_LISTS("cheque_pattern_paper_type"),
     required: true,
   },
-  // {  label: 'code', name: "code", type: "number", required: false },
+  // {  label: 'code', name: "code", type: "number"},
   FIELDS_STRUCTURE.name(),
   {
     label: "list_name",
@@ -2255,7 +2330,7 @@ const bill_general = [
   },
 ];
 
-const bill_deportable = [
+const cheque_deportable = [
   {
     label: "deportable",
     name: "deportable",
@@ -2318,7 +2393,7 @@ const bill_deportable = [
     label: "deportable_default_date",
     name: "deportable_default_date",
     key: "select",
-    list: SELECT_LISTS("bill_pattern_default_date"),
+    list: SELECT_LISTS("cheque_pattern_default_date"),
     intValue: true,
     selectFirstAsDefault: true,
   },
@@ -2330,7 +2405,7 @@ const bill_deportable = [
   },
 ];
 
-const bill_collection = [
+const cheque_collection = [
   {
     label: "collection",
     name: "collection",
@@ -2389,7 +2464,7 @@ const bill_collection = [
     label: "collection_default_date",
     name: "collection_default_date",
     key: "select",
-    list: SELECT_LISTS("bill_pattern_default_date"),
+    list: SELECT_LISTS("cheque_pattern_default_date"),
     intValue: true,
     selectFirstAsDefault: true,
   },
@@ -2407,7 +2482,7 @@ const bill_collection = [
   },
 ];
 
-const bill_commission = [
+const cheque_commission = [
   {
     label: "commission_amount_from_building",
     name: "commission_amount_from_building",
@@ -2442,7 +2517,7 @@ const bill_commission = [
     label: "commission_type",
     name: "commission_type",
     key: "select",
-    list: SELECT_LISTS("bill_pattern_default_date"),
+    list: SELECT_LISTS("cheque_pattern_default_date"),
     intValue: true,
     selectFirstAsDefault: true,
   },
@@ -2460,7 +2535,7 @@ const bill_commission = [
   },
 ];
 
-const bill_partial_collection = [
+const cheque_partial_collection = [
   {
     label: "partial_collection",
     name: "partial_collection",
@@ -2527,7 +2602,7 @@ const bill_partial_collection = [
   },
 ];
 
-const bill_return = [
+const cheque_return = [
   {
     label: "returnable",
     name: "returnable",
@@ -2596,7 +2671,7 @@ const bill_return = [
     label: "returnable_default_date",
     name: "returnable_default_date",
     key: "select",
-    list: SELECT_LISTS("bill_pattern_default_date"),
+    list: SELECT_LISTS("cheque_pattern_default_date"),
     intValue: true,
     selectFirstAsDefault: true,
   },
@@ -2627,7 +2702,7 @@ const bill_return = [
   },
 ];
 
-const bill_default_statement = [
+const cheque_default_statement = [
   {
     label: "statement_account",
     name: "statement_account",
@@ -2665,46 +2740,46 @@ const bill_default_statement = [
   },
 ];
 
-const bill_sms = [{ label: "sms", name: "sms", type: "text", required: false }];
+const cheque_sms = [{ label: "sms", name: "sms", type: "text" }];
 
-const bill_group = {
+const cheque_group = {
   forms: {
-    [BILL_PATTERN_STEPS.bill_pattern_general]: {
-      fields: bill_general,
-      tab_name: "bill_pattern",
+    [CHEQUE_PATTERN_STEPS.cheque_pattern_general]: {
+      fields: cheque_general,
+      tab_name: "cheque_pattern",
     },
-    [BILL_PATTERN_STEPS.bill_pattern_deportable]: {
-      fields: bill_deportable,
-      tab_name: "bill_deportable",
+    [CHEQUE_PATTERN_STEPS.cheque_pattern_deportable]: {
+      fields: cheque_deportable,
+      tab_name: "cheque_deportable",
     },
-    [BILL_PATTERN_STEPS.bill_pattern_collection]: {
-      fields: bill_collection,
-      tab_name: "bill_collection",
+    [CHEQUE_PATTERN_STEPS.cheque_pattern_collection]: {
+      fields: cheque_collection,
+      tab_name: "cheque_collection",
     },
 
-    [BILL_PATTERN_STEPS.bill_pattern_partial_collection]: {
-      fields: bill_partial_collection,
-      tab_name: "bill_partial_collection",
+    [CHEQUE_PATTERN_STEPS.cheque_pattern_partial_collection]: {
+      fields: cheque_partial_collection,
+      tab_name: "cheque_partial_collection",
     },
-    // [BILL_PATTERN_STEPS.bill_pattern_endorsement]: {
-    //   fields: bill_endorsement,
-    //   tab_name: "bill_endorsement",
+    // [CHEQUE_PATTERN_STEPS.cheque_pattern_endorsement]: {
+    //   fields: cheque_endorsement,
+    //   tab_name: "cheque_endorsement",
     // },
-    [BILL_PATTERN_STEPS.bill_pattern_return]: {
-      fields: bill_return,
-      tab_name: "bill_return",
+    [CHEQUE_PATTERN_STEPS.cheque_pattern_return]: {
+      fields: cheque_return,
+      tab_name: "cheque_return",
     },
-    [BILL_PATTERN_STEPS.bill_pattern_commission]: {
-      fields: bill_commission,
-      tab_name: "bill_commission",
+    [CHEQUE_PATTERN_STEPS.cheque_pattern_commission]: {
+      fields: cheque_commission,
+      tab_name: "cheque_commission",
     },
-    [BILL_PATTERN_STEPS.bill_pattern_default_statement]: {
-      fields: bill_default_statement,
-      tab_name: "bill_default_statement",
+    [CHEQUE_PATTERN_STEPS.cheque_pattern_default_statement]: {
+      fields: cheque_default_statement,
+      tab_name: "cheque_default_statement",
     },
-    [BILL_PATTERN_STEPS.bill_pattern_sms]: {
-      fields: bill_sms,
-      tab_name: "bill_sms",
+    [CHEQUE_PATTERN_STEPS.cheque_pattern_sms]: {
+      fields: cheque_sms,
+      tab_name: "cheque_sms",
     },
   },
 };
@@ -3129,7 +3204,7 @@ const op_return = [
     label: "connect_with_chq_id",
     name: "connect_with_chq_id",
     is_ref: true,
-    ref_table: "bill",
+    ref_table: "cheque",
     ref_name: "internal_number",
   },
   // {
@@ -5397,108 +5472,6 @@ const entry_grid_data = [
 ];
 // ==== End entry
 
-// Property moving
-const property_moving = [
-  FIELDS_STRUCTURE.client(),
-  {
-    label: "building_id",
-    name: "building_id",
-    is_ref: true,
-    ref_table: "building",
-  },
-  {
-    label: "apartment_id",
-    name: "apartment_id",
-    is_ref: true,
-    ref_table: "apartment",
-    ref_name: "apartment_no",
-  },
-  {
-    label: "shop_id",
-    name: "shop_id",
-    is_ref: true,
-    ref_table: "shop",
-    ref_name: "shop_no",
-  },
-  {
-    label: "parking_id",
-    name: "parking_id",
-    is_ref: true,
-    ref_table: "parking",
-    ref_name: "parking_no",
-  },
-  {
-    label: "villa_id",
-    name: "villa_id",
-    is_ref: true,
-    ref_table: "villa",
-    ref_name: "villa_no",
-  },
-  {
-    label: "land_id",
-    name: "land_id",
-    is_ref: true,
-    ref_table: "land",
-    ref_name: "land_no",
-  },
-];
-// Property moving
-// cheque report fields
-const cheque_report_fields = [
-  FIELDS_STRUCTURE.account(),
-  FIELDS_STRUCTURE.account({
-    label: "observe_account_id",
-    name: "observe_account_id",
-  }),
-  {
-    label: "bank_id",
-    name: "bank_id",
-    is_ref: true,
-    ref_table: "bank",
-  },
-  {
-    label: "building_id",
-    name: "building_id",
-    is_ref: true,
-    ref_table: "building",
-  },
-  {
-    label: "apartment_id",
-    name: "apartment_id",
-    is_ref: true,
-    ref_table: "apartment",
-    ref_name: "apartment_no",
-  },
-  {
-    label: "shop_id",
-    name: "shop_id",
-    is_ref: true,
-    ref_table: "shop",
-    ref_name: "shop_no",
-  },
-  {
-    label: "parking_id",
-    name: "parking_id",
-    is_ref: true,
-    ref_table: "parking",
-    ref_name: "parking_no",
-  },
-  {
-    label: "beneficiary_name",
-    name: "beneficiary_name",
-    type: "text",
-  },
-  {
-    label: "deposit",
-    name: "deposit",
-    key: "select",
-    intValue: true,
-    list: SELECT_LISTS("cheque_report_deposit"),
-    selectFirstAsDefault: true,
-  },
-];
-// cheque report fields
-
 const building_group = {
   forms: {
     [BUILDING_STEPS.building_general]: {
@@ -5730,8 +5703,6 @@ const FORMS = {
   shop: shop_group,
   villa: villa_group,
   maintenance_order,
-  property_moving,
-  cheque_report_fields,
   // Entries
   // accounting_voucher_grid_data,
   // accounting_voucher_main_data,
@@ -5748,7 +5719,7 @@ const FORMS = {
   voucher_pattern: voucher_pattern_group,
   accounting_voucher_pattern: accounting_voucher_pattern_group,
   contract_pattern: contract_pattern_group,
-  cheque_pattern: bill_group,
+  cheque_pattern: cheque_group,
   // installment
   installment,
   // operations

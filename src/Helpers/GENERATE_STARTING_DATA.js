@@ -65,15 +65,15 @@ export const SHOP_ASSET_TYPE_DEFAULT_NAME = "Shop";
 export const LAND_ASSET_TYPE_DEFAULT_NAME = "Land";
 
 // CONTRACT PATTERN DEFAULT CONSTANTS
-export const CONTRACT_RENT_CODE = 2;
 export const CONTRACT_SALE_CODE = 1;
-export const CONTRACT_RENT_APARTMENT_NAME = "Apartment Rent Contract";
-export const CONTRACT_RENT_PARKING_NAME = "Parking Rent Contract";
-export const CONTRACT_RENT_SHOP_NAME = "Shop Rent Contract";
+export const CONTRACT_RENT_CODE = 2;
 export const CONTRACT_SALE_APARTMENT_NAME = "Apartment Sale Contract";
 export const CONTRACT_SALE_PARKING_NAME = "Parking Sale Contract";
 export const CONTRACT_SALE_SHOP_NAME = "Shop Sale Contract";
 export const CONTRACT_SALE_LAND_NAME = "Apartment Sale Contract";
+export const CONTRACT_RENT_APARTMENT_NAME = "Apartment Rent Contract";
+export const CONTRACT_RENT_PARKING_NAME = "Parking Rent Contract";
+export const CONTRACT_RENT_SHOP_NAME = "Shop Rent Contract";
 
 const ACCOUNT_IDS = {};
 
@@ -458,7 +458,7 @@ async function INSERT_DEFAULT_ACCOUNTS() {
   if (ACCOUNT_IDS) {
     INSERT_DEFAULT_VOUCHERS(ACCOUNT_IDS);
     INSERT_DEFAULT_CONTRACTS(ACCOUNT_IDS);
-    INSERT_DEFAULT_BILLS(ACCOUNT_IDS);
+    INSERT_DEFAULT_CHEQUES(ACCOUNT_IDS);
   }
 }
 
@@ -613,21 +613,21 @@ export async function INSERT_DEFAULT_CONTRACTS(ACCOUNT_IDS) {
   }
 }
 
-// INSERT DEFAULT BILLS
-export async function INSERT_DEFAULT_BILLS(ACCOUNT_IDS) {
-  for (const bill of DEFAULT_CHQ_INFO) {
+// INSERT DEFAULT CHEQUES
+export async function INSERT_DEFAULT_CHEQUES(ACCOUNT_IDS) {
+  for (const cheque of DEFAULT_CHQ_INFO) {
     // merge accounts
-    if (bill.code === CHQ_PAID_CODE) {
+    if (cheque.code === CHQ_PAID_CODE) {
     }
 
-    if (bill.code === CHQ_RECEIVED_CODE) {
-      bill.returnable_credit_account_id = ACCOUNT_IDS["122"];
-      bill.collection_credit_account_id = ACCOUNT_IDS["122"];
-      bill.default_account_id = ACCOUNT_IDS["122"];
+    if (cheque.code === CHQ_RECEIVED_CODE) {
+      cheque.returnable_credit_account_id = ACCOUNT_IDS["122"];
+      cheque.collection_credit_account_id = ACCOUNT_IDS["122"];
+      cheque.default_account_id = ACCOUNT_IDS["122"];
     }
 
     await ApiActions.insert("cheque_pattern", {
-      data: bill,
+      data: cheque,
     });
   }
 }
@@ -723,5 +723,5 @@ export async function INSERT_DEFAULT_DATA() {
   INSERT_DEFAULT_MULTIPLE_DATA();
   await INSERT_DEFAULT_ACCOUNTS();
 }
-// INSERT_DEFAULT_BILLS()
+// INSERT_DEFAULT_CHEQUES()
 // INSERT_DEFAULT_DATA()

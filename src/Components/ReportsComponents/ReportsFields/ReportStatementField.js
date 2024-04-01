@@ -1,4 +1,4 @@
-import { Input, Select, Switch } from "Components/StructurePage/CustomFields";
+import { CheckboxField, Input, Select, Switch } from "Components/StructurePage/CustomFields";
 import { ReportFilterCard } from "Components/ReportsComponents/ReportFilterCard";
 import React from "react";
 import { useFormContext } from "react-hook-form";
@@ -18,15 +18,7 @@ export const ReportStatementField = ({
       containerClassName={`border-0 shadow-none p-0 mt-4 ${containerClassName}`}
       bodyClassName={bodyClassName}
       customTitle={
-        <>
-          <Switch
-            containerClassName="-mt-2"
-            {...{
-              name: `allow_${name}_statement`,
-            }}
-          />
-          <span className="capitalize">{name}</span>
-        </>
+        <CheckboxField name={`allow_${name}_statement`} label={name} />
       }
     >
       <div className="flex gap-2 items-start">

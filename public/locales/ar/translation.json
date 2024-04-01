@@ -550,7 +550,7 @@
   "begin_number": "begin_number",
   "installment_date": "installment_date",
   "installment_statement": "installment_statement",
-  "bill_pattern_id": "bill_pattern_id",
+  "cheque_pattern_id": "cheque_pattern_id",
   "statement2": "statement2",
   "debit_account_id": "debit_account_id",
   "credit_account_id": "credit_account_id",

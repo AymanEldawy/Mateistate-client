@@ -1,6 +1,5 @@
 import BlockPaper from "Components/Global/BlockPaper";
 import { Button } from "Components/Global/Button";
-import { ButtonsStepsGroup } from "Components/Global/ButtonsStepsGroup";
 import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
 import { FormStepPagination } from "Components/Global/FormStepPagination";
@@ -14,6 +13,7 @@ import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
 
 const CACHE_DATA = {};
 
@@ -60,6 +60,23 @@ const PatternsForm = ({ layout }) => {
     fields,
     CACHE_LIST,
   } = useFormSteps({ name: pattern });
+
+  const patternQueryClient = useQuery({
+    queryKey: [name, listOfNumbers?.[number - 1]],
+    queryFn: async () => {
+      const res = await ApiActions.read(name, {
+        conditions: [
+          {
+            type: "and",
+            conditions: [["number", "=", listOfNumbers[number - 1]]],
+          },
+        ],
+      });
+      let data = res?.result?.at(0);
+      reset(data);
+      return data;
+    },
+  });
 
   useEffect(() => {
     if (!number) return;
@@ -113,6 +130,10 @@ const PatternsForm = ({ layout }) => {
           ? `Successfully update row: ${values?.name} in ${pattern}`
           : "Successfully added item in " + pattern
       );
+      if (!isLayoutUpdate) {
+        setMaxLength((p) => +p + 1);
+        patternQueryClient?.refetch();
+      }
     } else {
       toast.error(res?.error?.detail);
     }
@@ -136,7 +157,7 @@ const PatternsForm = ({ layout }) => {
                       New
                     </span>
                   ) : null}
-                  {pattern?.replace(/_/g, ' ')} number {number}
+                  {pattern?.replace(/_/g, " ")} number {number}
                 </span>
               }
             />

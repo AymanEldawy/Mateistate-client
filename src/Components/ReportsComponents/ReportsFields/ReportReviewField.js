@@ -2,9 +2,12 @@ import { CheckboxField } from "Components/StructurePage/CustomFields";
 import { ReportFilterCard } from "Components/ReportsComponents/ReportFilterCard";
 import React from "react";
 
-export const ReportReviewField = () => {
+export const ReportReviewField = ({ containerClassName }) => {
   return (
-    <ReportFilterCard title="Report Review">
+    <ReportFilterCard
+      title="Review"
+      containerClassName={containerClassName}
+    >
       <CheckboxField
         {...{
           label: "reviewed_presentation",

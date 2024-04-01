@@ -655,7 +655,7 @@
   "begin_number": "Starting number",
   "installment_date": "installment date",
   "installment_statement": "installment statement",
-  "bill_pattern_id": "bill pattern name",
+  "cheque_pattern_id": "Cheque pattern name",
   "statement2": "statement2",
   "debit_account_id": "debit account name",
   "credit_account_id": "credit account name",

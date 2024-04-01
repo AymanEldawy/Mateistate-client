@@ -174,7 +174,7 @@ export const getVillaUpdate = async (id) => {
 
 export const getInstallmentData = async (contractId) => {
   const installment = await fetchData("installment", "contract_id", contractId);
-  const installment_grid = await ApiActions.read("bill", {
+  const installment_grid = await ApiActions.read("cheque", {
     conditions: [
       {
         type: "and",

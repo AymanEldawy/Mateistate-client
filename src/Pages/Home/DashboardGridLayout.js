@@ -13,10 +13,18 @@ export const DashboardGridLayout = () => {
       {/* <button onClick={loadData}>load data</button> */}
       <div className="flex-1 flex flex-col -translate-y-4 h-full gap-4">
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
-          <ReportLatest itemHref="/contracts" href="/reports/contracts" name="contract" />
+          <ReportLatest
+            itemHref="/contracts"
+            href="/reports/contracts"
+            name="contract"
+          />
         </div>
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
-          <ReportLatest itemHref="/buildings/update" href="/buildings" name="building" />
+          <ReportLatest
+            itemHref="/buildings/update"
+            href="/buildings"
+            name="building"
+          />
         </div>
       </div>
       <div className="flex-[2] flex flex-col gap-4">
@@ -53,10 +61,20 @@ export const DashboardGridLayout = () => {
       </div>
       <div className="flex-1 flex flex-col -translate-y-4 h-full gap-4">
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2  h-1/2">
-          <ReportLatest itemHref="/update/account" name="account" href="/list/account" />
+          <ReportLatest
+            itemHref="/update/account"
+            name="account"
+            href="/list/account"
+          />
         </div>
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2  h-1/2">
-          <ReportLatest itemHref="/update/cheque" colSearchName="number" name="bill" title="cheque" href="/reports/cheques" />
+          <ReportLatest
+            itemHref="/update/cheque"
+            colSearchName="number"
+            name="cheque"
+            title="cheque"
+            href="/reports/cheques"
+          />
         </div>
       </div>
     </div>
