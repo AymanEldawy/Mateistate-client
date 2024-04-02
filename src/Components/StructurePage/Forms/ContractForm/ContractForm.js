@@ -1,5 +1,3 @@
-import BlockPaper from "Components/Global/BlockPaper";
-import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
 import InstallmentForm from "./InstallmentForm";
@@ -14,7 +12,7 @@ import {
 } from "Helpers/constants";
 import useFormSteps from "Hooks/useFormSteps";
 import { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import GET_UPDATE_DATE, {
@@ -28,29 +26,28 @@ import {
   CONTRACT_STATUS,
   autoMergePatternSettingsWithValues,
   calculateContractDuration,
+  contractValidation,
   fetchAndMergeAssetInfo,
   fetchAndMergeBuildingInfo,
   fetchContractRestData,
   // filterAssetsByBuilding,
   getOldContracts,
   mergeInstallmentAndFirstTabData,
+  onChangeContractStatus,
   onWatchChangesInTab1,
   onWatchChangesInstallmentGridTab,
   onWatchChangesInstallmentTab,
   onWatchChangesTerminationTab,
 } from "Helpers/Lib/contract-helpers";
-import { FormStepPagination } from "../../../Global/FormStepPagination";
-import { Button } from "Components/Global/Button";
-import Loading from "Components/Global/Loading";
 import {
   deleteEntry,
   generateEntryFromContract,
 } from "Helpers/Lib/vouchers-insert";
 import { Locked } from "Components/Global/Locked";
-import { changeRowStatus } from "Helpers/functions";
-import { resetContractFields } from "../../../../Helpers/Lib/contract-helpers";
 import ContractTerminationForm from "./ContractTerminationForm";
 import { useQuery } from "@tanstack/react-query";
+import useListView from "Hooks/useListView";
+import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 
 const SHOULD_UPDATES = {};
 const CACHE_BUILDING_ASSETS = {};
@@ -94,26 +91,25 @@ const ContractForm = () => {
   const code = searchQuery.get("code");
   const assetType = searchQuery.get("flat_type")?.toLowerCase();
   const contractName = `${assetType}_${type}_contract`;
-  const [number, setNumber] = useState(+searchQuery.get("number") || 1);
   const [isLoading, setIsLoading] = useState(false);
   const [shouldRefresh, setShouldRefresh] = useState(false);
   const [openInstallmentForm, setOpenInstallmentForm] = useState(false);
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
-  const [maxLength, setMaxLength] = useState(0);
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const [oldContracts, setOldContracts] = useState([]);
-  const method = useForm({
-    defaultValues: resetContractFields(),
+  const methods = useForm();
+  const viewList = useListView({
+    name: contractName,
+    defaultNumber: params?.number,
   });
-
-  console.log(number);
+  const { setMaxLength, setNumber, number, maxLength } = viewList;
   const {
     handleSubmit,
     watch,
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isDirty },
     setValue,
     reset,
-  } = method;
+  } = methods;
 
   const {
     currentIndex,
@@ -155,14 +151,14 @@ const ContractForm = () => {
     queryFn: async () => {
       const lastNumber = await getLastNumberByColumn("contract", "code", +code);
       setMaxLength(+lastNumber);
-      setNumber(+lastNumber);
+      setNumber(+lastNumber + 1);
       if (!watch("contract.number")) {
         setValue(`${tabNames?.[0]}.number`, number);
       }
     },
   });
 
-  useQuery({
+  const contractQueryClient = useQuery({
     queryKey: ["contract", contractName, code, number],
     queryFn: async () => {
       if (!number || !code || +number > +maxLength) return;
@@ -322,6 +318,16 @@ const ContractForm = () => {
     // setShouldRefresh((p) => !p);
   }, [number, code, type, assetType, maxLength, PATTERN_SETTINGS?.id]);
 
+  const globalButtonsActions = (action) => {
+    switch (action) {
+      case ACTIONS.OPEN_INSTALLMENT_FORM:
+        setOpenInstallmentForm(true);
+        return;
+      default:
+        return;
+    }
+  };
+
   const onClickRenew = async () => {
     let newDate = new Date(watch(`${contractName}.end_duration_date`));
     setValue(
@@ -329,13 +335,12 @@ const ContractForm = () => {
       new Date(newDate.setDate(newDate.getDate() + 1))
     );
 
-    const { first_installment_date, end_duration_date } =
-      await calculateContractDuration(
-        contractName,
-        watch,
-        setValue,
-        SHOULD_UPDATES
-      );
+    const { end_duration_date } = await calculateContractDuration(
+      contractName,
+      watch,
+      setValue,
+      SHOULD_UPDATES
+    );
     let contract = watch("contract");
     let firstTabData = watch(contractName);
 
@@ -359,67 +364,13 @@ const ContractForm = () => {
     setCurrentIndex(0);
   };
 
-  const onClickAddNewContract = () => {
-    setNumber(+maxLength + 1);
-    reset({
-      defaultValues: resetContractFields(),
-    });
-  };
-
-  const onChangeContractStatus = async (col) => {
-    let id = watch("contract.id");
-    if (!id) return;
-    let value = watch(`contract.${col}`);
-
-    const response = await changeRowStatus("contract", id, col, !value);
-    if (response?.success) setValue(`contract.${col}`, !value);
-  };
-
-  const globalButtonsActions = (action) => {
-    switch (action) {
-      case ACTIONS.OPEN_INSTALLMENT_FORM:
-        setOpenInstallmentForm(true);
-        return;
-      default:
-        return;
-    }
-  };
-
-  const goToNumber = (num) => {
-    if (num > maxLength) {
-      // setShouldRefresh((p) => !p);
-    }
-    setNumber(num);
-  };
-
-  const contractValidation = () => {
-    const values = watch(tabNames?.[0]);
-    const contract = watch("contract");
-    let isValid = true;
-
-    if (contract.current_securing_value && !contract.insurance_account_id) {
-      isValid = false;
-      toast.error(`Insurance account is Required`);
-    }
-    if (contract.discount_value && !contract.discount_account_id) {
-      isValid = false;
-      toast.error(`Discount account is Required`);
-    }
-    if (!contract.contract_value) {
-      isValid = false;
-      toast.error(`Contract value is required`);
-    }
-
-    return isValid;
-  };
-
   // Handel Submit
   const onSubmit = async (value) => {
     if (!isDirty) {
       return;
     }
 
-    if (!contractValidation()) return;
+    if (!contractValidation(watch("contract"))) return;
     setIsLoading(true);
 
     SHOULD_UPDATES[contractName] = true;
@@ -514,160 +465,116 @@ const ContractForm = () => {
   };
 
   return (
-    <>
-      {isLoading ? (
-        <Loading withBackdrop logo={isSubmitting ? false : true} />
+    <FormWrapperLayout
+      tableName="contract"
+      name={contractName}
+      viewList={viewList}
+      isLoading={isLoading || contractQueryClient?.isLoading}
+      onSubmit={onSubmit}
+      methods={methods}
+      steps={steps}
+      goToStep={goTo}
+      currentIndex={currentIndex}
+      outerDelete={() =>
+        onChangeContractStatus(
+          CONSTANT_COLUMNS_NAME.is_deleted,
+          watch,
+          setValue
+        )
+      }
+      setCurrentIndex={setCurrentIndex}
+    >
+      {openInstallmentForm && watch(`contract.contract_value`) ? (
+        <InstallmentForm
+          assetType={assetType}
+          CACHE_LIST={CACHE_LIST}
+          onClose={() => setOpenInstallmentForm(false)}
+          firstTab={tabNames[0]}
+          contract_id={watch(`contract.id`)}
+          openInstallmentForm={openInstallmentForm}
+          errors={errors}
+        />
       ) : null}
-      <div>
-        <FormProvider {...method}>
-          {openInstallmentForm && watch(`contract.contract_value`) ? (
-            <InstallmentForm
-              assetType={assetType}
-              CACHE_LIST={CACHE_LIST}
-              onClose={() => setOpenInstallmentForm(false)}
-              firstTab={tabNames[0]}
-              contract_id={watch(`contract.id`)}
-              openInstallmentForm={openInstallmentForm}
-              errors={errors}
+
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative">
+        <div
+          className={`relative ${
+            watch("contract.is_archived") || watch("contract.is_deleted")
+              ? "bg-gray-200 pointer-events-none"
+              : ""
+          }`}
+        >
+          {watch("contract.is_archived") || watch("contract.is_deleted") ? (
+            <Locked
+              isArchived={watch("contract.is_archived")}
+              isDeleted={watch("contract.is_deleted")}
             />
           ) : null}
-
-          <BlockPaper>
-            <FormHeadingTitleSteps
-              customName={
-                <span className="capitalize">
-                  {maxLength < number ? (
-                    <span className="text-red-500 ltr:mr-2 rtl:ml-2 bg-red-100 px-2 py-1 rounded-md">
-                      New
-                    </span>
-                  ) : null}
-                  {name?.replace(/_/g, " ")} number {number}
-                </span>
-              }
-              steps={steps}
-              goTo={goTo}
-              activeStage={currentIndex}
-            />
-            <div className="h-5" />
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              noValidate
-              className="relative"
-            >
-              <div
-                className={`relative ${
-                  watch("contract.is_archived") || watch("contract.is_deleted")
-                    ? "bg-gray-200 pointer-events-none"
-                    : ""
-                }`}
-              >
-                {watch("contract.is_archived") ||
-                watch("contract.is_deleted") ? (
-                  <Locked
-                    isArchived={watch("contract.is_archived")}
-                    isDeleted={watch("contract.is_deleted")}
-                  />
-                ) : null}
-                {formSettings?.formType === "grid" ? (
-                  <div>
-                    <TableFields
-                      tab={tab}
-                      errors={errors}
-                      formSettings={formSettings}
-                      CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
-                      fields={fields}
-                      values={watch()?.[tab]}
-                    />
-                  </div>
-                ) : (
-                  <>
-                    {formSettings?.formType === "view" ? (
-                      <ContractPayments
-                        contract_id={watch(`contract.id`)}
+          {formSettings?.formType === "grid" ? (
+            <div>
+              <TableFields
+                tab={tab}
+                errors={errors}
+                formSettings={formSettings}
+                CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
+                fields={fields}
+                values={watch()?.[tab]}
+              />
+            </div>
+          ) : (
+            <>
+              {formSettings?.formType === "view" ? (
+                <ContractPayments
+                  contract_id={watch(`contract.id`)}
+                  CACHE_LIST={CACHE_LIST}
+                  firstTabData={{
+                    ...watch("contract"),
+                    ...watch(tabNames?.[0]),
+                  }}
+                  assetType={assetType}
+                />
+              ) : (
+                <>
+                  {currentIndex === 0 && tab ? (
+                    <div key={number}>
+                      <ContractFinancialForm
+                        number={number}
+                        fields={fields}
+                        tab={tab}
+                        values={watch()?.[tab]}
+                        errors={errors}
                         CACHE_LIST={CACHE_LIST}
-                        firstTabData={{
-                          ...watch("contract"),
-                          ...watch(tabNames?.[0]),
-                        }}
+                        globalButtonsActions={globalButtonsActions}
+                        contract_id={watch(`contract.id`)}
+                        dispatchVoucherEntries={dispatchVoucherEntries}
+                        layout={number <= maxLength}
                         assetType={assetType}
                       />
-                    ) : (
-                      <>
-                        {currentIndex === 0 && tab ? (
-                          <div key={number}>
-                            <ContractFinancialForm
-                              number={number}
-                              fields={fields}
-                              tab={tab}
-                              values={watch()?.[tab]}
-                              errors={errors}
-                              CACHE_LIST={CACHE_LIST}
-                              globalButtonsActions={globalButtonsActions}
-                              contract_id={watch(`contract.id`)}
-                              dispatchVoucherEntries={dispatchVoucherEntries}
-                              layout={number <= maxLength}
-                              assetType={assetType}
-                            />
-                          </div>
-                        ) : tab === "contract_termination" ? (
-                          <ContractTerminationForm
-                            CACHE_LIST={CACHE_LIST}
-                            tab={tab}
-                            onClickRenew={onClickRenew}
-                            SHOULD_UPDATES={SHOULD_UPDATES}
-                          />
-                        ) : (
-                          <Fields
-                            fields={fields}
-                            tab={tab}
-                            values={watch()?.[tab]}
-                            errors={errors}
-                            CACHE_LIST={CACHE_LIST}
-                            globalButtonsActions={globalButtonsActions}
-                          />
-                        )}
-                      </>
-                    )}
-                  </>
-                )}
-              </div>
-
-              <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
-                <FormStepPagination
-                  number={number}
-                  goTo={goToNumber}
-                  maxLength={maxLength}
-                  isNewOne={number > maxLength}
-                  setNumber={setNumber}
-                  onClickArchive={() =>
-                    onChangeContractStatus(CONSTANT_COLUMNS_NAME.is_archived)
-                  }
-                  onClickDelete={() =>
-                    onChangeContractStatus(CONSTANT_COLUMNS_NAME.is_deleted)
-                  }
-                  isArchived={watch(
-                    `contract.${CONSTANT_COLUMNS_NAME.is_archived}`
+                    </div>
+                  ) : tab === "contract_termination" ? (
+                    <ContractTerminationForm
+                      CACHE_LIST={CACHE_LIST}
+                      tab={tab}
+                      onClickRenew={onClickRenew}
+                      SHOULD_UPDATES={SHOULD_UPDATES}
+                    />
+                  ) : (
+                    <Fields
+                      fields={fields}
+                      tab={tab}
+                      values={watch()?.[tab]}
+                      errors={errors}
+                      CACHE_LIST={CACHE_LIST}
+                      globalButtonsActions={globalButtonsActions}
+                    />
                   )}
-                  isDeleted={watch(
-                    `contract.${CONSTANT_COLUMNS_NAME.is_deleted}`
-                  )}
-                  allowActions={watch("contract.id")}
-                  onClickAddNew={onClickAddNewContract}
-                />
-
-                <Button
-                  title={maxLength >= number ? "Modify" : "Submit"}
-                  classes="ltr:ml-auto rtl:mr-auto"
-                  disabled={
-                    Object.keys(SHOULD_UPDATES).length === 0 || !isDirty
-                  }
-                />
-              </div>
-            </form>
-          </BlockPaper>
-        </FormProvider>
-      </div>
-    </>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      </form>
+    </FormWrapperLayout>
   );
 };
 

@@ -3,6 +3,34 @@ import {
   GET_NEW_VOUCHER_ENTRY_GRID,
 } from "Helpers/constants";
 
+export const contract = {
+  building_id: null,
+  client_id: null,
+  contract_duration: null,
+  contract_value: null,
+  current_securing_percentage: null,
+  current_securing_value: null,
+  description: null,
+  discount_account_id: null,
+  discount_rate: null,
+  discount_value: null,
+  feedback: null,
+  final_price: null,
+  insurance_account_id: null,
+  lawsuit: null,
+  lessor_id: null,
+  paid_type: null,
+  previous_securing: null,
+  shop_id: null,
+  parking_id: null,
+  apartment_id: null,
+  end_duration_date: null,
+  gen_entries: true,
+  revenue_account_id: null,
+  start_duration_date: null,
+  status: 1,
+};
+
 const account = {
   final_id: null,
   name: undefined,
@@ -174,6 +202,7 @@ const reservation_property = {
 };
 
 const RESET_FIELDS = {
+  contract,
   reservation_property,
   account,
   cost_center,

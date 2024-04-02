@@ -1,6 +1,7 @@
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
-import { getCacheRowData } from "Helpers/functions";
+import { changeRowStatus, getCacheRowData } from "Helpers/functions";
 import { fetchData } from "./global-read-update";
+import { toast } from "react-toastify";
 
 const { ApiActions } = require("./api");
 
@@ -544,30 +545,30 @@ export const fetchContractRestData = async (index, tabs, watch, setValue) => {
   }
 };
 
-export const resetContractFields = () => ({
-  building_id: null,
-  client_id: null,
-  contract_duration: null,
-  contract_value: null,
-  current_securing_percentage: null,
-  current_securing_value: null,
-  description: null,
-  discount_account_id: null,
-  discount_rate: null,
-  discount_value: null,
-  feedback: null,
-  final_price: null,
-  insurance_account_id: null,
-  lawsuit: null,
-  lessor_id: null,
-  paid_type: null,
-  previous_securing: null,
-  shop_id: null,
-  parking_id: null,
-  apartment_id: null,
-  end_duration_date: null,
-  gen_entries: true,
-  revenue_account_id: null,
-  start_duration_date: null,
-  status: 1,
-});
+export const onChangeContractStatus = async (col, watch, setValue) => {
+  let id = watch("contract.id");
+  if (!id) return;
+  let value = watch(`contract.${col}`);
+
+  const response = await changeRowStatus("contract", id, col, !value);
+  if (response?.success) setValue(`contract.${col}`, !value);
+};
+
+export const contractValidation = (contract) => {
+  let isValid = true;
+
+  if (contract.current_securing_value && !contract.insurance_account_id) {
+    isValid = false;
+    toast.error(`Insurance account is Required`);
+  }
+  if (contract.discount_value && !contract.discount_account_id) {
+    isValid = false;
+    toast.error(`Discount account is Required`);
+  }
+  if (!contract.contract_value) {
+    isValid = false;
+    toast.error(`Contract value is required`);
+  }
+
+  return isValid;
+};

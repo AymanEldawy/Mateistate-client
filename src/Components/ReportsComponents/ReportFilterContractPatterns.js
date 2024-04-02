@@ -3,11 +3,18 @@ import React, { useEffect, useState } from "react";
 import { ReportFilterColumns } from "./ReportFilterColumns";
 import { useFormContext } from "react-hook-form";
 
-export const ReportFilterContractPatterns = ({ contractIds, setContractIds, bodyClassName, containerClassName }) => {
+export const ReportFilterContractPatterns = ({
+  contractIds,
+  setContractIds,
+  bodyClassName,
+  containerClassName,
+}) => {
   const { watch } = useFormContext();
   const [contractPatterns, setContractPatterns] = useState([]);
   const getData = async () => {
-    const contractResponse = await ApiActions.read("contract_pattern");
+    const contractResponse = await ApiActions.read("contract_pattern", {
+      columns: ["code", "name", "id"],
+    });
     setContractPatterns(contractResponse?.result);
   };
 
@@ -19,7 +26,7 @@ export const ReportFilterContractPatterns = ({ contractIds, setContractIds, body
     <ReportFilterColumns
       title="Contract Patterns"
       columns={contractPatterns?.map((c) => ({
-        name: c?.id,
+        name: c?.code,
         label: c?.name,
       }))}
       disabledItem={watch("linked_contract_only")}
