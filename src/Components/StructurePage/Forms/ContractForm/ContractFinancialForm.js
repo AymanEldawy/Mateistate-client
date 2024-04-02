@@ -20,9 +20,6 @@ export const ContractFinancialForm = ({
   CACHE_LIST,
   globalButtonsActions,
   contract_id,
-  firstTab,
-  dispatchVoucherEntries,
-  layout,
   assetType,
   number,
 }) => {
@@ -63,15 +60,15 @@ export const ContractFinancialForm = ({
             updatedName={`${tab}.gov_number`}
             // values={values}
             tab={tab}
-            error={errors?.[tab]?.gov_number ? "Field is required" : ""}
+            error={errors?.contract?.gov_number ? "Field is required" : ""}
           />
         </div>
         <div className="flex items-end gap-4 justify-end">
           <Switch
             {...fieldsHash?.feedback}
-            updatedName={`${tab}.feedback`}
+            updatedName={`contract.feedback`}
             // values={values}
-            error={errors?.[tab]?.feedback ? "Field is required" : ""}
+            error={errors?.contract?.feedback ? "Field is required" : ""}
           />
           <Switch
             {...fieldsHash?.lawsuit}
@@ -81,17 +78,18 @@ export const ContractFinancialForm = ({
           />
           <Switch
             {...fieldsHash?.gen_entries}
-            updatedName={`${tab}.gen_entries`}
+            updatedName={`contract.gen_entries`}
             // values={values}
-            error={errors?.[tab]?.gen_entries ? "Field is required" : ""}
+            error={errors?.contract?.gen_entries ? "Field is required" : ""}
           />
-          {contract_id && watch(`${tab}.gen_entries`) ? (
+          {contract_id && watch(`contract.gen_entries`) ? (
             <ViewEntry id={contract_id} />
           ) : null}
         </div>
         <div className="flex-1 grid grid-cols-2 gap-4  mt-8">
           {["client_id", "building_id", `${assetType}_id`, "lessor_id"]?.map(
             (field, i) => {
+              let tabName = i > 1 ? tab : "contract";
               let name = field?.replace("_id", "");
               let table = name;
               if (field === "client_id") {
@@ -102,12 +100,12 @@ export const ContractFinancialForm = ({
                 <UniqueField
                   key={`${field}-${i}-${number}`}
                   {...fieldsHash?.[field]}
-                  updatedName={`${tab}.${field}`}
+                  updatedName={`${tabName}.${field}`}
                   table={table}
                   CACHE_LIST={CACHE_LIST}
                   list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
                   // values={values}
-                  error={errors?.[tab]?.[field] ? "Field is required" : ""}
+                  error={errors?.[tabName]?.[field] ? "Field is required" : ""}
                 />
               );
             }
@@ -127,10 +125,10 @@ export const ContractFinancialForm = ({
             <UniqueField
               // containerClassName="w-[250px]"
               inputClassName={
-                watch(`${tab}.revenue_account_id`) ? "bg-blue-100" : ""
+                watch(`contract.revenue_account_id`) ? "bg-blue-100" : ""
               }
               {...fieldsHash?.revenue_account_id}
-              updatedName={`${tab}.revenue_account_id`}
+              updatedName={`contract.revenue_account_id`}
               table={"account"}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
@@ -142,10 +140,10 @@ export const ContractFinancialForm = ({
             <UniqueField
               // containerClassName="w-[250px]"
               inputClassName={
-                watch(`${tab}.discount_account_id`) ? "bg-blue-100" : ""
+                watch(`contract.discount_account_id`) ? "bg-blue-100" : ""
               }
               {...fieldsHash?.discount_account_id}
-              updatedName={`${tab}.discount_account_id`}
+              updatedName={`contract.discount_account_id`}
               table={"account"}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
@@ -157,10 +155,10 @@ export const ContractFinancialForm = ({
             <UniqueField
               // containerClassName="w-[250px]"
               inputClassName={
-                watch(`${tab}.insurance_account_id`) ? "bg-blue-100" : ""
+                watch(`contract.insurance_account_id`) ? "bg-blue-100" : ""
               }
               {...fieldsHash?.insurance_account_id}
-              updatedName={`${tab}.insurance_account_id`}
+              updatedName={`contract.insurance_account_id`}
               table={"account"}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
@@ -182,9 +180,9 @@ export const ContractFinancialForm = ({
           <Input
             key={`${field}-${i}-${number}`}
             {...fieldsHash?.[field]}
-            updatedName={`${tab}.${field}`}
+            updatedName={`contract.${field}`}
             // values={values}
-            tab={tab}
+            tab="contract"
             inputClassName={field === "final_price" ? "bg-blue-100" : ""}
             readOnly={field === "final_price"}
             error={errors?.[tab]?.[field] ? "Field is required" : ""}
@@ -194,11 +192,11 @@ export const ContractFinancialForm = ({
       <div className={`grid grid-cols-4 gap-8 items-end mt-8`}>
         <Select
           {...fieldsHash?.status}
-          updatedName={`${tab}.status`}
+          updatedName={`contract.status`}
           // values={values}
           tab={tab}
           error={errors?.[tab]?.status ? "Field is required" : ""}
-          value={watch(`${tab}.status`)}
+          value={watch(`contract.status`)}
         />
         {[
           "previous_securing",
@@ -208,16 +206,16 @@ export const ContractFinancialForm = ({
           <Input
             key={`${field}-${i}-${number}`}
             {...fieldsHash?.[field]}
-            updatedName={`${tab}.${field}`}
+            updatedName={`contract.${field}`}
             // values={values}
-            tab={tab}
-            error={errors?.[tab]?.[field] ? "Field is required" : ""}
+            tab="contract"
+            error={errors?.contract?.[field] ? "Field is required" : ""}
           />
         ))}
       </div>
       <div
         className={`grid ${
-          watch(`${tab}.paid_type`) === 4 ? "grid-cols-5" : "grid-cols-4"
+          watch(`contract.paid_type`) === 4 ? "grid-cols-5" : "grid-cols-4"
         }  gap-4 items-end mt-8`}
       >
         <Select
@@ -246,13 +244,13 @@ export const ContractFinancialForm = ({
 
         <Select
           {...fieldsHash?.paid_type}
-          updatedName={`${tab}.paid_type`}
+          updatedName={`contract.paid_type`}
           // values={values}
           tab={tab}
           error={errors?.[tab]?.paid_type ? "Field is required" : ""}
-          value={watch(`${tab}.paid_type`)}
+          value={watch(`contract.paid_type`)}
         />
-        {watch(`${tab}.paid_type`) === 4 ? (
+        {watch(`contract.paid_type`) === 4 ? (
           <Button
             disabled={!contract_id}
             type="button"

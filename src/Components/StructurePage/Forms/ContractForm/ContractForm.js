@@ -106,6 +106,7 @@ const ContractForm = () => {
     defaultValues: resetContractFields(),
   });
 
+  console.log(number);
   const {
     handleSubmit,
     watch,
@@ -257,7 +258,10 @@ const ContractForm = () => {
         default:
       }
 
-      if (name?.indexOf(tabNames?.[0]) !== -1) {
+      if (
+        name?.indexOf(tabNames?.[0]) !== -1 ||
+        name?.indexOf('contract.') !== -1
+      ) {
         onWatchChangesInTab1(
           name?.split(".")?.at(-1),
           watch(name),
@@ -297,13 +301,7 @@ const ContractForm = () => {
           case "bank_id":
           case "end_due_date": {
             SHOULD_UPDATES.installment = true;
-            onWatchChangesInstallmentGridTab(
-              name,
-              setValue,
-              watch,
-              CACHE_LIST,
-              tabNames?.[0]
-            );
+            onWatchChangesInstallmentGridTab(name, setValue, watch, CACHE_LIST);
             break;
           }
           default:
@@ -352,9 +350,9 @@ const ContractForm = () => {
     contract.contracts_number_current = contractNumbers || 2;
     contract.status = CONTRACT_STATUS.RENEWdD;
 
-    firstTabData.previous_securing = firstTabData?.current_securing_value;
-    firstTabData.current_securing_percentage = 0;
-    firstTabData.current_securing_value = 0;
+    contract.previous_securing = contract?.current_securing_value;
+    contract.current_securing_percentage = 0;
+    contract.current_securing_value = 0;
 
     firstTabData.end_duration_date = end_duration_date;
     reset({ contract, [contractName]: firstTabData });
@@ -397,16 +395,18 @@ const ContractForm = () => {
 
   const contractValidation = () => {
     const values = watch(tabNames?.[0]);
+    const contract = watch("contract");
     let isValid = true;
-    if (values?.current_securing_value && !values?.insurance_account_id) {
+
+    if (contract.current_securing_value && !contract.insurance_account_id) {
       isValid = false;
       toast.error(`Insurance account is Required`);
     }
-    if (values?.discount_value && !values?.discount_account_id) {
+    if (contract.discount_value && !contract.discount_account_id) {
       isValid = false;
       toast.error(`Discount account is Required`);
     }
-    if (!values?.contract_value) {
+    if (!contract.contract_value) {
       isValid = false;
       toast.error(`Contract value is required`);
     }
@@ -438,19 +438,20 @@ const ContractForm = () => {
       }
     }
 
-    let contract = {
-      code: +code,
-      status: watch(`${tabNames?.[0]}.status`),
-      flat_type: CONTRACTS_ASSETS_TYPE?.[searchQuery.get("flat_type")],
-      ...watch("contract"),
-    };
+    setValue("contract.code", +code);
+    setValue(
+      "contract.flat_type",
+      CONTRACTS_ASSETS_TYPE?.[searchQuery.get("flat_type")]
+    );
 
-    value[contractName].code = code;
+    value[contractName][
+      `${searchQuery.get("flat_type")?.toLocaleLowerCase()}_kind`
+    ] = code;
 
     const getTheFunInsert = INSERT_FUNCTION[contractName];
     const res = await getTheFunInsert({
       ...value,
-      contract,
+      contract: watch("contract"),
       tabName: tabNames?.[0],
       layout: number <= maxLength,
       SHOULD_UPDATES,
@@ -461,16 +462,20 @@ const ContractForm = () => {
       let contract_id = res?.record?.id;
       setOldContracts((prev) => [...prev, watch(tabNames?.[0])]);
 
-      if (firstTabData?.gen_entrie) {
+      if (watch("contract.gen_entries")) {
         await genEntry(contract_id || watch("contract.id"));
       } else deleteEntry(contract_id);
 
       if (contract_id) {
         const data = await GET_UPDATE_DATE(contractName, res?.record?.id);
         reset(data);
-        await mergeInstallmentAndFirstTabData(firstTabData, setValue);
+        await mergeInstallmentAndFirstTabData(
+          watch("contract"),
+          firstTabData,
+          setValue
+        );
 
-        if (firstTabData?.paid_type === 4) {
+        if (watch("contract.paid_type") === 4) {
           setOpenInstallmentForm(true);
         }
 
@@ -486,12 +491,13 @@ const ContractForm = () => {
 
   const genEntry = async (contract_id) => {
     let values = watch(contractName);
+    let contract = watch("contract");
 
     const assetsTypeNumber = CACHE_LIST?.[assetType]?.find(
       (c) => c?.id === values?.[`${assetType}_id`]
     )?.[`${assetType}_no`];
     const buildingNumber = CACHE_LIST?.building?.find(
-      (c) => c?.id === values?.building_id
+      (c) => c?.id === contract?.building_id
     )?.name;
 
     if (!contract_id) return;
@@ -502,7 +508,7 @@ const ContractForm = () => {
       assetsTypeNumber,
       buildingNumber,
       contractNumber: number,
-      values: values,
+      values: { ...contract, ...values },
       should_update: SHOULD_UPDATES?.[tabNames?.[0]],
       commission: watch("contract_commission"),
     });
@@ -515,7 +521,7 @@ const ContractForm = () => {
       ) : null}
       <div>
         <FormProvider {...method}>
-          {openInstallmentForm && watch(`${tabNames?.[0]}.contract_value`) ? (
+          {openInstallmentForm && watch(`contract.contract_value`) ? (
             <InstallmentForm
               assetType={assetType}
               CACHE_LIST={CACHE_LIST}
@@ -580,7 +586,10 @@ const ContractForm = () => {
                       <ContractPayments
                         contract_id={watch(`contract.id`)}
                         CACHE_LIST={CACHE_LIST}
-                        firstTabData={watch(tabNames?.[0])}
+                        firstTabData={{
+                          ...watch("contract"),
+                          ...watch(tabNames?.[0]),
+                        }}
                         assetType={assetType}
                       />
                     ) : (

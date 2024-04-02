@@ -104,13 +104,13 @@ export async function fetchAndMergeBuildingInfo(
       data?.owner_account_id
     );
     setValue("contract_commission.commission_account_id", data?.revenue_id);
-    setValue(`${firstTab}.revenue_account_id`, data?.revenue_id);
+    setValue(`contract.revenue_account_id`, data?.revenue_id);
     setValue(
-      `${firstTab}.discount_account_id`,
+      `contract.discount_account_id`,
       response?.result?.at(0)?.building_discount_account_id
     );
     setValue(
-      `${firstTab}.insurance_account_id`,
+      `contract.insurance_account_id`,
       response?.result?.at(0)?.building_insurance_account_id
     );
   }
@@ -129,30 +129,12 @@ export async function fetchAndMergeAssetInfo(
 
   if (response?.success) {
     let data = response?.result?.at(0);
+    setValue(`contract.lawsuit`, data?.has_lawsuit);
     setValue(`${tabName}.description`, data?.description);
-    // setValue(`${tabName}.property_area`, data?.property_type);
-    setValue(`${tabName}.lawsuit`, data?.has_lawsuit);
     setValue(`${tabName}.cost_center_id`, data?.cost_center_id);
+    // setValue(`${tabName}.property_area`, data?.property_type);
     // setValue(`${tabNames[1]}.contract_value`, data?.has_lawsuit);
   }
-}
-
-export async function fetchAndMergeClientInfo(
-  accountId,
-  setValue,
-  firstTab,
-  SHOULD_UPDATES
-) {
-  const response = await ApiActions.read("user", {
-    conditions: [{ type: "and", conditions: [["account_id", "=", accountId]] }],
-  });
-
-  // if (response?.success) {
-  //   let data = response?.result?.at(0);
-  //   setValue(`${firstTab}.nationality`, data?.nationality);
-  //   setValue(`${firstTab}.work_phone`, data?.work_phone);
-  //   setValue(`${firstTab}.phono`, data?.personal_phone);
-  // }
 }
 
 export function onWatchChangesInTab1(
@@ -166,15 +148,15 @@ export function onWatchChangesInTab1(
   switch (name) {
     case "discount_rate":
     case "contract_value": {
-      let discount = watch(`${tabNames}.discount_rate`) || 0;
-      let price = watch(`${tabNames}.contract_value`);
+      let discount = watch(`contract.discount_rate`) || 0;
+      let price = watch(`contract.contract_value`);
       let finalPrice = price - (discount / 100) * price;
       let discountValue = price - finalPrice;
 
-      setValue(`${tabNames}.final_price`, finalPrice);
+      setValue(`contract.final_price`, finalPrice);
       setValue("installment.total_amount", price);
       if (discount)
-        setValue(`${tabNames}.discount_value`, discountValue?.toFixed(2));
+        setValue(`contract.discount_value`, discountValue?.toFixed(2));
       SHOULD_UPDATES.installment = true;
 
       // if Contract has Real state management
@@ -188,10 +170,10 @@ export function onWatchChangesInTab1(
       return;
     }
     case "current_securing_percentage": {
-      let price = watch(`${tabNames}.contract_value`);
-      let rate = watch(`${tabNames}.current_securing_percentage`);
+      let price = watch(`contract.contract_value`);
+      let rate = watch(`contract.current_securing_percentage`);
       let finalPrice = price - (rate / 100) * price;
-      setValue(`${tabNames}.current_securing_value`, price - finalPrice);
+      setValue(`contract.current_securing_value`, price - finalPrice);
       return;
     }
 
@@ -248,8 +230,12 @@ export const calculateContractDuration = async (
   return { end_duration_date, first_installment_date };
 };
 
-export async function mergeInstallmentAndFirstTabData(firstTabData, setValue) {
-  let total = firstTabData?.contract_value;
+export async function mergeInstallmentAndFirstTabData(
+  contractData,
+  firstTabData,
+  setValue
+) {
+  let total = contractData?.contract_value;
   let date = firstTabData?.start_duration_date;
 
   if (total) {
@@ -263,13 +249,7 @@ export async function mergeInstallmentAndFirstTabData(firstTabData, setValue) {
   }
 }
 
-export function onWatchChangesInstallmentTab(
-  name,
-  value,
-  setValue,
-  tabNames,
-  watch
-) {
+export function onWatchChangesInstallmentTab(name, value, setValue, watch) {
   switch (name) {
     case "total_amount":
       let first_batch = watch(`installment.first_batch`) || 0;
@@ -293,13 +273,7 @@ export function onWatchChangesInstallmentTab(
   }
 }
 
-export function onWatchChangesInstallmentGridTab(
-  name,
-  setValue,
-  watch,
-  cache,
-  firstTab
-) {
+export function onWatchChangesInstallmentGridTab(name, setValue, watch, cache) {
   let row = name?.split(".").slice(0, 2).join(".");
   let note1 = ``;
 
@@ -311,7 +285,7 @@ export function onWatchChangesInstallmentGridTab(
     case "bank_id":
     case "end_due_date":
       const number = watch(`${row}.internal_number`);
-      const clientId = watch(`${firstTab}.client_id`);
+      const clientId = watch(`contract.client_id`);
       const amount = watch(`${row}.amount`);
 
       const dueDate = new Date(watch(`${row}.due_date`)).toLocaleDateString(
@@ -344,21 +318,21 @@ export async function autoMergePatternSettingsWithValues(
 ) {
   if (pattern?.default_revenue_account_id)
     setValue(
-      `${tabs?.[0]}.revenue_account_id`,
+      `contract.revenue_account_id`,
       pattern?.default_revenue_account_id
     );
   if (pattern?.default_insurance_account_id)
     setValue(
-      `${tabs?.[0]}.insurance_account_id`,
+      `contract.insurance_account_id`,
       pattern?.default_insurance_account_id
     );
   if (pattern?.default_discount_account_id)
     setValue(
-      `${tabs?.[0]}.discount_account_id`,
+      `contract.discount_account_id`,
       pattern?.default_discount_account_id
     );
   if (pattern?.gen_entries)
-    setValue(`${tabs?.[0]}.gen_entries`, pattern?.gen_entries);
+    setValue(`contract.gen_entries`, pattern?.gen_entries);
 }
 
 export const onWatchChangesTerminationTab = (
@@ -380,7 +354,7 @@ export const onWatchChangesTerminationTab = (
           termination_date = new Date();
           setValue("contract_termination.termination_date", termination_date);
         }
-        let price = watch(`${firstTab}.contract_value`);
+        let price = watch(`contract.contract_value`);
         let start = watch(`${firstTab}.start_duration_date`);
         let end = watch(`${firstTab}.end_duration_date`);
         let { totalPrice, restPrice } = calculateModifiedPrice(
@@ -440,14 +414,6 @@ function calculateModifiedPrice(price, startDate, endDate, terminationDate) {
 
   return { totalPrice, restPrice };
 }
-
-export const isContractValid = (watch, tabNames, assetType) => {
-  let isValid = true;
-
-  // if (!watch(`${tabNames[0]}.contract_value`)) isValid = false;
-
-  return isValid;
-};
 
 // functions
 export function dividePrice(

@@ -1,5 +1,4 @@
 import { CONTRACT_STATUS_NAMES } from "Helpers/Lib/contract-helpers";
-import { CONSTANT_COLUMNS_NAME } from "Helpers/constants";
 import React, { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";

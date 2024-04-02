@@ -124,7 +124,7 @@ export const ContractPayments = ({
     date.setMonth(date.getMonth() + watch("installment.each_number"));
 
     let clientName = CACHE_LIST.account?.find(
-      (c) => c?.id === firstTabData?.client_id
+      (c) => c?.id === watch('contract.client_id')
     )?.name;
     let due_date = new Date().toLocaleDateString("en-UK");
     let bankName = CACHE_LIST.bank?.find(
@@ -142,7 +142,7 @@ export const ContractPayments = ({
         installment_id: watch("installment.id"),
         connect_with: CONNECT_WITH_CONTRACT_CODE,
         connect_with_id: contract_id,
-        account_id: firstTabData?.client_id,
+        account_id: watch("contract.client_id"),
         observe_account_id: watch("installment_grid.0.observe_account_id"),
         cost_center_id: watch("installment_grid.0.cost_center_id"),
         observe_cost_center_id: watch("installment_grid.0.cost_center_id"),
@@ -150,7 +150,8 @@ export const ContractPayments = ({
         due_date: new Date(),
         end_due_date: new Date(date),
         bank_id: watch("installment.bank_id"),
-        internal_number: +watch("installment_grid")?.at(-1)?.internal_number + 1 || null,
+        internal_number:
+          +watch("installment_grid")?.at(-1)?.internal_number + 1 || null,
         note2: `${COUNTER_CHQ_NUMBER?.[len - 1]} Payment (${len})`,
       },
     });
@@ -161,7 +162,7 @@ export const ContractPayments = ({
     const account_cash_id = await getAccountCash();
 
     let clientName = CACHE_LIST.account?.find(
-      (c) => c?.id === firstTabData?.client_id
+      (c) => c?.id === watch("contract.client_id")
     )?.name;
     let due_date = new Date().toLocaleDateString("en-UK");
     let bankName = CACHE_LIST.bank?.find(
@@ -184,7 +185,7 @@ export const ContractPayments = ({
         note,
         grid: [
           {
-            account_id: firstTabData?.client_id,
+            account_id: watch('contract.client_id'),
             cost_center_id: watch("installment_grid.0.cost_center_id"),
             note,
           },

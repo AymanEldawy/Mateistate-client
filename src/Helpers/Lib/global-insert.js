@@ -374,7 +374,7 @@ const dynamicInsertIntoContract = async ({
               // created_from_code:
               values,
               created_from_id: subItemId,
-              contractFirstTabData: list[tableName],
+              contractFirstTabData: { ...data?.contract, ...list[tableName] },
             });
           } else deleteEntry(subItemId);
 

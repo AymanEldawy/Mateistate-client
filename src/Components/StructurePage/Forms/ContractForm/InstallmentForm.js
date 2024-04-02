@@ -92,13 +92,13 @@ const generatePaymentBatches = async (
   const installments_numbers = watch("installment.installments_numbers");
   const begin_number = watch("installment.begin_number");
   const beneficiary_name = watch("installment.beneficiary_name");
-  const account_id = watch(`${firstTab}.client_id`);
+  const account_id = watch(`contract.client_id`);
   const observe_account_id =
-    (await getAccountReceivable(watch(`${firstTab}.building_id`))) ||
-    watch(`${firstTab}.revenue_account_id`);
+    (await getAccountReceivable(watch(`contract.building_id`))) ||
+    watch(`contract.revenue_account_id`);
   const bank_id = watch("installment.bank_id");
   const client = CACHE_LIST?.[UNIQUE_REF_TABLES.clients]?.find(
-    (c) => c.id === watch(`${firstTab}.client_id`)
+    (c) => c.id === watch(`contract.client_id`)
   );
   const bank = CACHE_LIST?.bank?.find((c) => c.id === bank_id);
 
@@ -154,7 +154,11 @@ const InstallmentForm = ({
 
   useEffect(() => {
     if (openInstallmentForm && !watch("installment.total_amount")) {
-      mergeInstallmentAndFirstTabData(watch(firstTab), setValue);
+      mergeInstallmentAndFirstTabData(
+        watch("contract"),
+        watch(firstTab),
+        setValue
+      );
     }
   }, [openInstallmentForm]);
 
@@ -170,10 +174,11 @@ const InstallmentForm = ({
         calculateChqAmount(watch, setError, setTotalChqAmount, clearErrors);
       }
 
-      if(name === 'installment.first_batch') {
-        setTotalChqAmount(watch('installment.rest_amount') - watch('installment.first_batch'))
+      if (name === "installment.first_batch") {
+        setTotalChqAmount(
+          watch("installment.rest_amount") - watch("installment.first_batch")
+        );
       }
-      
     });
     return () => subscription.unsubscribe();
   }, [watch("")]);
@@ -187,7 +192,7 @@ const InstallmentForm = ({
     const installmentData = watch("installment");
     const installmentGridData = watch("installment_grid");
     const clientName = CACHE_LIST?.[UNIQUE_REF_TABLES.clients]?.find(
-      (c) => c.id === watch(`${firstTab}.client_id`)
+      (c) => c.id === watch(`contract.client_id`)
     )?.name;
 
     const bankName = CACHE_LIST?.bank?.find(
@@ -195,7 +200,7 @@ const InstallmentForm = ({
     )?.name;
 
     const buildingNumber = CACHE_LIST?.building?.find(
-      (c) => c.id === watch(`${firstTab}.building_id`)
+      (c) => c.id === watch(`contract.building_id`)
     )?.number;
 
     const assetsNumber = CACHE_LIST?.[assetType]?.find(
@@ -212,7 +217,7 @@ const InstallmentForm = ({
       installment: installmentData,
       installment_grid: installmentGridData,
       contract_id,
-      firstTabData: watch(firstTab),
+      firstTabData: { ...watch(firstTab), ...watch("contract") },
       note,
     });
 
@@ -298,7 +303,13 @@ const InstallmentForm = ({
             }`}
             type="button"
             onClick={() => {
-              generatePaymentBatches(firstTab, watch, setValue, CACHE_LIST, assetType);
+              generatePaymentBatches(
+                firstTab,
+                watch,
+                setValue,
+                CACHE_LIST,
+                assetType
+              );
               setTotalChqAmount(watch("installment.rest_amount"));
             }}
           />
