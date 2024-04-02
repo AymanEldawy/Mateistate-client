@@ -260,7 +260,7 @@ const ContractForm = () => {
 
       if (
         name?.indexOf(tabNames?.[0]) !== -1 ||
-        name?.indexOf('contract.') !== -1
+        name?.indexOf("contract.") !== -1
       ) {
         onWatchChangesInTab1(
           name?.split(".")?.at(-1),
@@ -277,7 +277,6 @@ const ContractForm = () => {
           name?.split(".")?.at(-1),
           watch(name),
           setValue,
-          tabNames[1],
           watch
         );
       }
