@@ -71,14 +71,14 @@ const EarningRentalIncomeEarnedReport = () => {
               </ReportFilterCard>
 
               <ReportBetweenDateField
-                title="Revenue calculation period"
+                title="Revenue calculation revenue"
                 date1Field={{
-                  label: "start_period_date",
-                  name: "start_period_date",
+                  label: "start_revenue_date",
+                  name: "start_revenue_date",
                 }}
                 date2Field={{
-                  label: "end_period_date",
-                  name: "end_period_date",
+                  label: "end_revenue_date",
+                  name: "end_revenue_date",
                 }}
               />
               <ReportReviewField />
