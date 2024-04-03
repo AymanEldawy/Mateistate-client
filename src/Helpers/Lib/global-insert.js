@@ -269,6 +269,17 @@ const insertToAssets = async (data) =>
     data,
   });
 
+const getNewContractNumber = async (code) => {
+  const contractRes = await ApiActions.read("contract", {
+    conditions: [{ type: "and", conditions: [["code", "=", code]] }],
+    limit: 1,
+    sorts: [{ column: "internal_number", order: "DESC", nulls: "last" }],
+    columns: ["internal_number"],
+  });
+
+  return +contractRes?.response?.at(0)?.internal_number + 1 || 1;
+};
+
 // Dynamic insert into Contract and other relation tables
 /**
  *
@@ -303,8 +314,10 @@ const dynamicInsertIntoContract = async ({
 
   if (!contract_id) {
     // Insert into contract or update
+    const internal_number =  await getNewContractNumber(data?.contract?.code)
     response = await ApiActions.insert("contract", {
       data: {
+        internal_number,
         ...data?.contract,
         contract_type: contractType,
       },
@@ -374,7 +387,7 @@ const dynamicInsertIntoContract = async ({
               // created_from_code:
               values,
               created_from_id: subItemId,
-              contractFirstTabData: { ...data?.contract, ...list[tableName] },
+              contractFirstTabData: data?.contract,
             });
           } else deleteEntry(subItemId);
 

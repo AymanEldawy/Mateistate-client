@@ -369,12 +369,36 @@ const leased_units_report = [
     label: "description",
     name: "description",
   }),
+  {
+    key: "between",
+    label: "Rent_value",
+    field1Props: {
+      type: "number",
+      name: "rent_form",
+    },
+    field2Props: {
+      type: "number",
+      name: "rent_to",
+    },
+  },
   FIELDS_STRUCTURE.uniqueField({
     label: "area_unit",
     name: "area_unit",
     ref_table: "property_values",
     ref_name: "area",
   }),
+  {
+    key: "between",
+    label: "area_value",
+    field1Props: {
+      type: "number",
+      name: "area_form",
+    },
+    field2Props: {
+      type: "number",
+      name: "area_to",
+    },
+  },
 
   // ...shared_leased_report,
 
@@ -1263,17 +1287,17 @@ const vat_bills_report = [
     ],
   }),
   FIELDS_STRUCTURE.textField({
-    label:'class',
-    name:'class',
+    label: "class",
+    name: "class",
   }),
   FIELDS_STRUCTURE.switchField({
-    label:'show_details',
-    name:'show_details',
+    label: "show_details",
+    name: "show_details",
   }),
   FIELDS_STRUCTURE.switchField({
-    label:'repeat_information_for_each_pen',
-    name:'repeat_information_for_each_pen',
-  })
+    label: "repeat_information_for_each_pen",
+    name: "repeat_information_for_each_pen",
+  }),
 ];
 
 const REPORTS_STRUCTURE = {

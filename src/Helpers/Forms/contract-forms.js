@@ -1616,7 +1616,7 @@ const apartment_rent_contract_group = {
   forms: {
     [APARTMENT_STEPS_CONTRACT.apartment_contract_general]: {
       fields: apartment_rent_contract,
-      tab_name: "apartment_rent_contract",
+      tab_name: "contract",
     },
     [APARTMENT_STEPS_CONTRACT.apartment_contract_payments]: {
       fields: [],
@@ -1671,7 +1671,7 @@ const shop_rent_contract_group = {
   forms: {
     [SHOP_STEPS_CONTRACT.shop_contract_general]: {
       fields: shop_rent_contract,
-      tab_name: "shop_rent_contract",
+      tab_name: "contract",
     },
     [SHOP_STEPS_CONTRACT.shop_contract_payments]: {
       fields: [],
@@ -1719,7 +1719,7 @@ const parking_rent_contract_group = {
   forms: {
     [PARKING_STEPS_CONTRACT.parking_contract_general]: {
       fields: parking_rent_contract,
-      tab_name: "parking_rent_contract",
+      tab_name: "contract",
     },
     [PARKING_STEPS_CONTRACT.parking_contract_payments]: {
       fields: [],
@@ -1762,7 +1762,7 @@ const apartment_sale_contract_group = {
   forms: {
     [APARTMENT_STEPS_CONTRACT.apartment_contract_general]: {
       fields: apartment_sale_contract,
-      tab_name: "apartment_sale_contract",
+      tab_name: "contract",
     },
     [APARTMENT_STEPS_CONTRACT.apartment_contract_payments]: {
       fields: [],
@@ -1807,7 +1807,10 @@ const apartment_sale_contract_group = {
 
 const shop_sale_contract_group = {
   forms: {
-    [SHOP_STEPS_CONTRACT.shop_contract_general]: { fields: shop_sale_contract },
+    [SHOP_STEPS_CONTRACT.shop_contract_general]: {
+      fields: shop_sale_contract,
+      tab_name: "contract",
+    },
     [SHOP_STEPS_CONTRACT.shop_contract_payments]: {
       fields: [],
       tab_name: "",
@@ -1853,7 +1856,7 @@ const parking_sale_contract_group = {
   forms: {
     [PARKING_STEPS_CONTRACT.parking_contract_general]: {
       fields: parking_sale_contract,
-      tab_name: "parking_sale_contract",
+      tab_name: "contract",
     },
     [PARKING_STEPS_CONTRACT.parking_contract_payments]: {
       fields: [],
@@ -1889,7 +1892,10 @@ const parking_sale_contract_group = {
 
 const land_sale_contract_group = {
   forms: {
-    [LAND_STEPS_CONTRACT.land_contract_general]: { fields: land_sale_contract },
+    [LAND_STEPS_CONTRACT.land_contract_general]: {
+      fields: land_sale_contract,
+      tab_name: "contract",
+    },
     [LAND_STEPS_CONTRACT.land_contract_payments]: {
       fields: [],
       tab_name: "",

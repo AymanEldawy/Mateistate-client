@@ -1,9 +1,8 @@
 import { CONTRACT_STATUS_NAMES } from "Helpers/Lib/contract-helpers";
-import React, { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-export const ContractStatus = ({ contract_id, tab }) => {
+export const ContractStatus = ({ contract_id }) => {
   const { t } = useTranslation();
   const { watch } = useFormContext();
   if (!contract_id) return;

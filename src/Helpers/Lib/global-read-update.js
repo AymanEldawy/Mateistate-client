@@ -280,15 +280,15 @@ export const getContractUpdate = async (id) => {
 const getApartmentRentContract = async (id) => {
   // const contract = await fetchData("contract", "id", id);
   const contractGroup = await getContractUpdate(id);
-  const apartment_rent_contract = await fetchData(
-    "apartment_rent_contract",
-    "contract_id",
-    id
-  );
+  // const apartment_rent_contract = await fetchData(
+  //   "apartment_rent_contract",
+  //   "contract_id",
+  //   id
+  // );
 
   const groupData = {
     ...contractGroup,
-    apartment_rent_contract: apartment_rent_contract?.result?.at(0),
+    // apartment_rent_contract: apartment_rent_contract?.result?.at(0),
   };
 
   return groupData;
@@ -297,15 +297,15 @@ const getApartmentRentContract = async (id) => {
 const getShopRentContract = async (id) => {
   // const contract = await fetchData("contract", "id", id);
   const contractGroup = await getContractUpdate(id);
-  const shop_rent_contract = await fetchData(
-    "shop_rent_contract",
-    "contract_id",
-    id
-  );
+  // const shop_rent_contract = await fetchData(
+  //   "shop_rent_contract",
+  //   "contract_id",
+  //   id
+  // );
 
   const groupData = {
     ...contractGroup,
-    shop_rent_contract: shop_rent_contract?.result?.at(0),
+    // shop_rent_contract: shop_rent_contract?.result?.at(0),
   };
 
   return groupData;
@@ -314,11 +314,11 @@ const getShopRentContract = async (id) => {
 const getParkingRentContract = async (id) => {
   // const contract = await fetchData("contract", "id", id);
   const contractGroup = await getContractUpdate(id);
-  const parking = await fetchData("parking_rent_contract", "contract_id", id);
+  // const parking = await fetchData("parking_rent_contract", "contract_id", id);
 
   const groupData = {
     ...contractGroup,
-    parking_rent_contract: parking?.result?.at(0),
+    // parking_rent_contract: parking?.result?.at(0),
   };
 
   return groupData;
@@ -327,15 +327,15 @@ const getParkingRentContract = async (id) => {
 const getApartmentSaleContract = async (id) => {
   // const contract = await fetchData("contract", "id", id);
   const contractGroup = await getContractUpdate(id);
-  const apartment_sale_contract = await fetchData(
-    "apartment_rent_contract",
-    "contract_id",
-    id
-  );
+  // const apartment_sale_contract = await fetchData(
+  //   "apartment_rent_contract",
+  //   "contract_id",
+  //   id
+  // );
 
   const groupData = {
     ...contractGroup,
-    apartment_sale_contract: apartment_sale_contract?.result?.at(0),
+    // apartment_sale_contract: apartment_sale_contract?.result?.at(0),
   };
 
   return groupData;
@@ -343,15 +343,15 @@ const getApartmentSaleContract = async (id) => {
 const getShopSaleContract = async (id) => {
   // const contract = await fetchData("contract", "id", id);
   const contractGroup = await getContractUpdate(id);
-  const shop_sale_contract = await fetchData(
-    "shop_rent_contract",
-    "contract_id",
-    id
-  );
+  // const shop_sale_contract = await fetchData(
+  //   "shop_rent_contract",
+  //   "contract_id",
+  //   id
+  // );
 
   const groupData = {
     ...contractGroup,
-    shop_sale_contract: shop_sale_contract?.result?.at(0),
+    // shop_sale_contract: shop_sale_contract?.result?.at(0),
   };
 
   return groupData;
@@ -465,7 +465,9 @@ export default async function GET_UPDATE_DATE(name, id, params) {
   }
 }
 
-export async function getContractData(name, number, code) {
+export async function getContractData(number, code) {
+  console.log("🚀 ~ getContractData ~ code:", code)
+  console.log("🚀 ~ getContractData ~ number:", number)
   const contractResponse = await ApiActions.read("contract", {
     conditions: [
       { type: "and", conditions: [["code", "=", code]] },
@@ -473,15 +475,15 @@ export async function getContractData(name, number, code) {
     ],
   });
 
-  const response = await ApiActions.read(name, {
-    conditions: [
-      {
-        type: "and",
-        conditions: [["contract_id", "=", contractResponse?.result?.at(0)?.id]],
-      },
-    ],
-  });
-  return response;
+  // const response = await ApiActions.read(name, {
+  //   conditions: [
+  //     {
+  //       type: "and",
+  //       conditions: [["contract_id", "=", contractResponse?.result?.at(0)?.id]],
+  //     },
+  //   ],
+  // });
+  return contractResponse;
 }
 
 export async function getBuildingByNumber(number) {

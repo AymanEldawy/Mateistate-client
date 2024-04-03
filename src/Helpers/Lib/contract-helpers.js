@@ -69,12 +69,7 @@ export const CONTRACT_STATUS = {
   RENEWdD: 4,
 };
 
-export async function fetchAndMergeBuildingInfo(
-  buildingId,
-  setValue,
-  firstTab,
-  SHOULD_UPDATES
-) {
+export async function fetchAndMergeBuildingInfo(buildingId, setValue) {
   const response = await ApiActions.read("building", {
     conditions: [{ type: "and", conditions: [["id", "=", buildingId]] }],
   });
@@ -85,7 +80,7 @@ export async function fetchAndMergeBuildingInfo(
   });
   if (response?.success) {
     let data = response?.result?.at(0);
-    setValue(`${firstTab}.lessor_id`, data?.lessor_id);
+    setValue(`contract.lessor_id`, data?.lessor_id);
   }
 
   // commission_from_owner_note
@@ -117,12 +112,7 @@ export async function fetchAndMergeBuildingInfo(
   }
 }
 
-export async function fetchAndMergeAssetInfo(
-  asset,
-  assetId,
-  setValue,
-  tabName
-) {
+export async function fetchAndMergeAssetInfo(asset, assetId, setValue) {
   let flatType = getAssetType(asset);
   const response = await ApiActions.read(flatType, {
     conditions: [{ type: "and", conditions: [["id", "=", assetId]] }],
@@ -131,21 +121,12 @@ export async function fetchAndMergeAssetInfo(
   if (response?.success) {
     let data = response?.result?.at(0);
     setValue(`contract.lawsuit`, data?.has_lawsuit);
-    setValue(`${tabName}.description`, data?.description);
-    setValue(`${tabName}.cost_center_id`, data?.cost_center_id);
-    // setValue(`${tabName}.property_area`, data?.property_type);
-    // setValue(`${tabNames[1]}.contract_value`, data?.has_lawsuit);
+    setValue(`contract.description`, data?.description);
+    setValue(`contract.cost_center_id`, data?.cost_center_id);
   }
 }
 
-export function onWatchChangesInTab1(
-  name,
-  value,
-  setValue,
-  tabNames,
-  watch,
-  SHOULD_UPDATES
-) {
+export function onWatchChangesInTab1(name, setValue, watch, SHOULD_UPDATES) {
   switch (name) {
     case "discount_rate":
     case "contract_value": {
@@ -180,7 +161,7 @@ export function onWatchChangesInTab1(
 
     case "start_duration_date":
     case "contract_duration":
-      calculateContractDuration(tabNames, watch, setValue, SHOULD_UPDATES);
+      calculateContractDuration(watch, setValue, SHOULD_UPDATES);
       return;
     default:
       return;
@@ -188,13 +169,12 @@ export function onWatchChangesInTab1(
 }
 
 export const calculateContractDuration = async (
-  tabName,
   watch,
   setValue,
   SHOULD_UPDATES
 ) => {
-  let duration = watch(`${tabName}.contract_duration`);
-  let start = watch(`${tabName}.start_duration_date`);
+  let duration = watch(`contract.contract_duration`);
+  let start = watch(`contract.start_duration_date`);
   let date = new Date(start);
 
   // change first installment date value
@@ -227,16 +207,12 @@ export const calculateContractDuration = async (
     default:
       break;
   }
-  setValue(`${tabName}.end_duration_date`, end_duration_date);
+  setValue(`contract.end_duration_date`, end_duration_date);
   return { end_duration_date, first_installment_date };
 };
 
-export async function mergeInstallmentAndFirstTabData(
-  contractData,
-  firstTabData,
-  setValue
-) {
-  let total = contractData?.contract_value;
+export async function mergeInstallmentAndFirstTabData(firstTabData, setValue) {
+  let total = firstTabData?.contract_value;
   let date = firstTabData?.start_duration_date;
 
   if (total) {
@@ -336,13 +312,7 @@ export async function autoMergePatternSettingsWithValues(
     setValue(`contract.gen_entries`, pattern?.gen_entries);
 }
 
-export const onWatchChangesTerminationTab = (
-  name,
-  value,
-  watch,
-  setValue,
-  firstTab
-) => {
+export const onWatchChangesTerminationTab = (name, value, watch, setValue) => {
   switch (name) {
     // start_duration_date
     // end_duration_date
@@ -356,8 +326,8 @@ export const onWatchChangesTerminationTab = (
           setValue("contract_termination.termination_date", termination_date);
         }
         let price = watch(`contract.contract_value`);
-        let start = watch(`${firstTab}.start_duration_date`);
-        let end = watch(`${firstTab}.end_duration_date`);
+        let start = watch(`contract.start_duration_date`);
+        let end = watch(`contract.end_duration_date`);
         let { totalPrice, restPrice } = calculateModifiedPrice(
           price,
           start,
@@ -501,16 +471,8 @@ export const getContractPayments = async (contract_id, setValue) => {
   setValue("voucher_grid", vouchersResponse?.result);
 };
 
-export const getOldContracts = async (setOldContracts, type) => {
-  const response = await ApiActions.read("contract", {
-    joins: [
-      {
-        type: "leftJoin",
-        table: type,
-        conditions: { "contract.id": `${type}.contract_id` },
-      },
-    ],
-  });
+export const getOldContracts = async (setOldContracts) => {
+  const response = await ApiActions.read("contract");
 
   if (response?.success) {
     setOldContracts(response?.result);

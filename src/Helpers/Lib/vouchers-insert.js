@@ -406,7 +406,6 @@ export const generateEntryFromContract = async ({
     difference,
     created_from: CREATED_FROM_CONTRACT_CODE,
     created_from_id: contractId,
-    should_update,
   });
 
   let entry_main_data_id = response?.id;

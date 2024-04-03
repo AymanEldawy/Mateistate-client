@@ -1,5 +1,5 @@
 import { ApiActions } from "Helpers/Lib/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider } from "react-hook-form";
 import BlockPaper from "Components/Global/BlockPaper";
 import { getResetFields } from "Helpers/Lib/global-reset";
@@ -9,6 +9,7 @@ import { CONSTANT_COLUMNS_NAME } from "Helpers/constants";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import Loading from "Components/Global/Loading";
 import FormTitle from "Components/Global/FormTitle";
+import { useLocation } from "react-router-dom";
 // const { Prompt } = "react-router-dom";
 
 const FormWrapperLayout = ({
@@ -33,6 +34,7 @@ const FormWrapperLayout = ({
   additionalButtons,
 }) => {
   // const history = useHistory();
+  const location = useLocation();
   const [refresh, setRefresh] = useState(false);
   const {
     reset,
@@ -67,6 +69,9 @@ const FormWrapperLayout = ({
   //     unblock();
   //   };
   // }, []);
+  useEffect(() => {
+    reset(getResetFields(tableName || name));
+  }, [location?.pathname]);
 
   const onClickAddNew = () => {
     setNumber(+maxLength + 1);

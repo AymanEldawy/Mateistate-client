@@ -17,7 +17,7 @@ import { ReportStatementField } from "Components/ReportsComponents/ReportsFields
 import { CheckboxField } from "Components/StructurePage/CustomFields";
 
 const REPORT_OPTIONS = [
-  "Show_merged_shops_and_flats",
+  "show_merged_shops_and_flats",
   "consider_assembled_units_in_as_leased",
   "hide_assembled_unit",
   "consider_assembled_flats_that_contract_has_been_terminated",

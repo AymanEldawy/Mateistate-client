@@ -79,7 +79,6 @@ const installmentValidation = (watch, setError) => {
 };
 
 const generatePaymentBatches = async (
-  firstTab,
   watch,
   setValue,
   CACHE_LIST,
@@ -131,7 +130,7 @@ const generatePaymentBatches = async (
       cost_center_id: watch("cost_center_id"),
       note1,
       note2,
-      [`${assetType}_id`]: watch(`${firstTab}.${assetType}_id`),
+      [`${assetType}_id`]: watch(`contract.${assetType}_id`),
     });
   }
   setValue("installment_grid", cheques);
@@ -142,7 +141,6 @@ const InstallmentForm = ({
   CACHE_LIST,
   onClose,
   contract_id,
-  firstTab,
   openInstallmentForm,
   assetType,
 }) => {
@@ -154,11 +152,7 @@ const InstallmentForm = ({
 
   useEffect(() => {
     if (openInstallmentForm && !watch("installment.total_amount")) {
-      mergeInstallmentAndFirstTabData(
-        watch("contract"),
-        watch(firstTab),
-        setValue
-      );
+      mergeInstallmentAndFirstTabData(watch("contract"), setValue);
     }
   }, [openInstallmentForm]);
 
@@ -204,7 +198,7 @@ const InstallmentForm = ({
     )?.number;
 
     const assetsNumber = CACHE_LIST?.[assetType]?.find(
-      (c) => c.id === watch(`${firstTab}.${assetType}_id`)
+      (c) => c.id === watch(`contract.${assetType}_id`)
     )?.[`${assetType}_no`];
 
     let note = `received first payment from mr ${clientName} due date ${new Date(
@@ -217,7 +211,7 @@ const InstallmentForm = ({
       installment: installmentData,
       installment_grid: installmentGridData,
       contract_id,
-      firstTabData: { ...watch(firstTab), ...watch("contract") },
+      firstTabData: watch("contract"),
       note,
     });
 
@@ -303,13 +297,7 @@ const InstallmentForm = ({
             }`}
             type="button"
             onClick={() => {
-              generatePaymentBatches(
-                firstTab,
-                watch,
-                setValue,
-                CACHE_LIST,
-                assetType
-              );
+              generatePaymentBatches(watch, setValue, CACHE_LIST, assetType);
               setTotalChqAmount(watch("installment.rest_amount"));
             }}
           />

@@ -51,12 +51,7 @@ const PaymentsGridButton = ({
   );
 };
 
-export const ContractPayments = ({
-  contract_id,
-  CACHE_LIST,
-  firstTabData,
-  assetType,
-}) => {
+export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const { watch, setValue } = useFormContext();
   const [selectedChqRows, setSelectedChqRows] = useState({});
@@ -72,7 +67,6 @@ export const ContractPayments = ({
       ),
     []
   );
-
 
   useEffect(() => {
     if (recordResponse?.table === CHQ_RECEIVED_NAME) {
@@ -124,7 +118,7 @@ export const ContractPayments = ({
     date.setMonth(date.getMonth() + watch("installment.each_number"));
 
     let clientName = CACHE_LIST.account?.find(
-      (c) => c?.id === watch('contract.client_id')
+      (c) => c?.id === watch("contract.client_id")
     )?.name;
     let due_date = new Date().toLocaleDateString("en-UK");
     let bankName = CACHE_LIST.bank?.find(
@@ -146,7 +140,7 @@ export const ContractPayments = ({
         observe_account_id: watch("installment_grid.0.observe_account_id"),
         cost_center_id: watch("installment_grid.0.cost_center_id"),
         observe_cost_center_id: watch("installment_grid.0.cost_center_id"),
-        [`${assetType}_id`]: firstTabData?.[`${assetType}_id`],
+        [`${assetType}_id`]: watch(`contract.${assetType}_id`),
         due_date: new Date(),
         end_due_date: new Date(date),
         bank_id: watch("installment.bank_id"),
@@ -185,7 +179,7 @@ export const ContractPayments = ({
         note,
         grid: [
           {
-            account_id: watch('contract.client_id'),
+            account_id: watch("contract.client_id"),
             cost_center_id: watch("installment_grid.0.cost_center_id"),
             note,
           },

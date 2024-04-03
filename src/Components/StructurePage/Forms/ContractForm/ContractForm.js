@@ -99,10 +99,15 @@ const ContractForm = () => {
   const [oldContracts, setOldContracts] = useState([]);
   const methods = useForm();
   const viewList = useListView({
-    name: contractName,
+    name: "contract",
     defaultNumber: params?.number,
+    additional: {
+      conditions: [{ type: "and", conditions: [["code", "=", +code]] }],
+    },
   });
-  const { setMaxLength, setNumber, number, maxLength } = viewList;
+  const { setMaxLength, setNumber, number, maxLength, listOfNumbers } =
+    viewList;
+  console.log("🚀 ~ ContractForm ~ listOfNumbers:", listOfNumbers);
   const {
     handleSubmit,
     watch,
@@ -142,7 +147,7 @@ const ContractForm = () => {
   // fetch Old Contract
   useQuery({
     queryKey: ["old_contracts"],
-    queryFn: () => getOldContracts(setOldContracts, contractName),
+    queryFn: () => getOldContracts(setOldContracts),
   });
 
   // Fetch Last contract number
@@ -152,23 +157,23 @@ const ContractForm = () => {
       const lastNumber = await getLastNumberByColumn("contract", "code", +code);
       setMaxLength(+lastNumber);
       setNumber(+lastNumber + 1);
-      if (!watch("contract.number")) {
-        setValue(`${tabNames?.[0]}.number`, number);
+      if (!watch("contract.internal_number")) {
+        setValue(`contract.internal_number`, number);
       }
     },
   });
 
   const contractQueryClient = useQuery({
-    queryKey: ["contract", contractName, code, number],
+    queryKey: ["contract", code, number],
     queryFn: async () => {
       if (!number || !code || +number > +maxLength) return;
-      const response = await getContractData(contractName, number, code);
+      const response = await getContractData(listOfNumbers[number - 1], code);
 
       if (response?.result?.length) {
         const res = await getContractUpdate(
           response?.result?.at(0)?.contract_id
         );
-        let data = { ...res, [contractName]: response?.result?.at(0) };
+        let data = { ...res, contract: response?.result?.at(0) };
 
         reset(data);
         return data;
@@ -178,7 +183,7 @@ const ContractForm = () => {
 
   // Fetch Rest contract data
   useQuery({
-    queryKey: ["contract", contractName, currentIndex, tab, number],
+    queryKey: ["contract", currentIndex, tab, number],
     queryFn: () => {
       if (currentIndex > 2 && watch("contract.id")) {
         fetchContractRestData(currentIndex, tabNames, watch, setValue);
@@ -222,25 +227,14 @@ const ContractForm = () => {
       if (type) SHOULD_UPDATES[tab] = true;
 
       switch (name) {
-        case `${tabNames?.[0]}.${assetType}_id`:
+        case `contract.${assetType}_id`:
           if (watch(name)) {
-            fetchAndMergeAssetInfo(
-              assetType,
-              watch(name),
-              setValue,
-              tabNames?.[0]
-            );
+            fetchAndMergeAssetInfo(assetType, watch(name), setValue);
           }
           break;
-        case `${tabNames?.[0]}.building_id`:
+        case `contract.building_id`:
           if (watch(name)) {
-            fetchAndMergeBuildingInfo(
-              watch(name),
-              setValue,
-              tabNames?.[0],
-              SHOULD_UPDATES
-            );
-
+            fetchAndMergeBuildingInfo(watch(name), setValue);
             filterAssetsByBuilding(
               watch(name),
               assetType,
@@ -248,21 +242,16 @@ const ContractForm = () => {
               setCACHE_LIST,
               oldContracts
             );
-            setValue(`${tabNames[0]}.${assetType}_id`, null);
+            setValue(`contract.${assetType}_id`, null);
           }
           break;
         default:
       }
 
-      if (
-        name?.indexOf(tabNames?.[0]) !== -1 ||
-        name?.indexOf("contract.") !== -1
-      ) {
+      if (name?.indexOf("contract.") !== -1) {
         onWatchChangesInTab1(
           name?.split(".")?.at(-1),
-          watch(name),
           setValue,
-          tabNames[0],
           watch,
           SHOULD_UPDATES
         );
@@ -282,8 +271,7 @@ const ContractForm = () => {
           name?.split(".")?.at(-1),
           watch(name),
           watch,
-          setValue,
-          tabNames[0]
+          setValue
         );
       }
 
@@ -329,23 +317,19 @@ const ContractForm = () => {
   };
 
   const onClickRenew = async () => {
-    let newDate = new Date(watch(`${contractName}.end_duration_date`));
+    let newDate = new Date(watch(`contract.end_duration_date`));
     setValue(
-      `${contractName}.start_duration_date`,
+      `contract.start_duration_date`,
       new Date(newDate.setDate(newDate.getDate() + 1))
     );
 
     const { end_duration_date } = await calculateContractDuration(
-      contractName,
       watch,
       setValue,
       SHOULD_UPDATES
     );
     let contract = watch("contract");
-    let firstTabData = watch(contractName);
 
-    delete firstTabData.id;
-    delete firstTabData.number;
     delete contract.id;
     delete contract.number;
 
@@ -358,8 +342,8 @@ const ContractForm = () => {
     contract.current_securing_percentage = 0;
     contract.current_securing_value = 0;
 
-    firstTabData.end_duration_date = end_duration_date;
-    reset({ contract, [contractName]: firstTabData });
+    contract.end_duration_date = end_duration_date;
+    reset({ contract });
     setNumber(+maxLength + 1);
     setCurrentIndex(0);
   };
@@ -373,17 +357,12 @@ const ContractForm = () => {
     if (!contractValidation(watch("contract"))) return;
     setIsLoading(true);
 
-    SHOULD_UPDATES[contractName] = true;
-
     if (SHOULD_UPDATES.installment) {
       SHOULD_UPDATES.installment_grid = true;
     }
 
     for (const key in value) {
-      if (
-        !SHOULD_UPDATES?.[key] &&
-        (key !== "contract" || key !== contractName)
-      ) {
+      if (!SHOULD_UPDATES?.[key] && key !== "contract") {
         delete value?.[key];
       }
     }
@@ -394,23 +373,19 @@ const ContractForm = () => {
       CONTRACTS_ASSETS_TYPE?.[searchQuery.get("flat_type")]
     );
 
-    value[contractName][
-      `${searchQuery.get("flat_type")?.toLocaleLowerCase()}_kind`
-    ] = code;
-
     const getTheFunInsert = INSERT_FUNCTION[contractName];
     const res = await getTheFunInsert({
       ...value,
       contract: watch("contract"),
-      tabName: tabNames?.[0],
+      tabName: contractName,
       layout: number <= maxLength,
       SHOULD_UPDATES,
     });
 
     if (res?.success) {
-      let firstTabData = watch(tabNames?.[0]);
+      let firstTabData = watch("contract");
       let contract_id = res?.record?.id;
-      setOldContracts((prev) => [...prev, watch(tabNames?.[0])]);
+      setOldContracts((prev) => [...prev, firstTabData]);
 
       if (watch("contract.gen_entries")) {
         await genEntry(contract_id || watch("contract.id"));
@@ -419,11 +394,7 @@ const ContractForm = () => {
       if (contract_id) {
         const data = await GET_UPDATE_DATE(contractName, res?.record?.id);
         reset(data);
-        await mergeInstallmentAndFirstTabData(
-          watch("contract"),
-          firstTabData,
-          setValue
-        );
+        await mergeInstallmentAndFirstTabData(watch("contract"), setValue);
 
         if (watch("contract.paid_type") === 4) {
           setOpenInstallmentForm(true);
@@ -440,11 +411,10 @@ const ContractForm = () => {
   };
 
   const genEntry = async (contract_id) => {
-    let values = watch(contractName);
     let contract = watch("contract");
 
     const assetsTypeNumber = CACHE_LIST?.[assetType]?.find(
-      (c) => c?.id === values?.[`${assetType}_id`]
+      (c) => c?.id === contract?.[`${assetType}_id`]
     )?.[`${assetType}_no`];
     const buildingNumber = CACHE_LIST?.building?.find(
       (c) => c?.id === contract?.building_id
@@ -458,11 +428,12 @@ const ContractForm = () => {
       assetsTypeNumber,
       buildingNumber,
       contractNumber: number,
-      values: { ...contract, ...values },
-      should_update: SHOULD_UPDATES?.[tabNames?.[0]],
+      values: contract,
       commission: watch("contract_commission"),
     });
   };
+
+  console.log(watch());
 
   return (
     <FormWrapperLayout
@@ -489,7 +460,6 @@ const ContractForm = () => {
           assetType={assetType}
           CACHE_LIST={CACHE_LIST}
           onClose={() => setOpenInstallmentForm(false)}
-          firstTab={tabNames[0]}
           contract_id={watch(`contract.id`)}
           openInstallmentForm={openInstallmentForm}
           errors={errors}
@@ -527,10 +497,6 @@ const ContractForm = () => {
                 <ContractPayments
                   contract_id={watch(`contract.id`)}
                   CACHE_LIST={CACHE_LIST}
-                  firstTabData={{
-                    ...watch("contract"),
-                    ...watch(tabNames?.[0]),
-                  }}
                   assetType={assetType}
                 />
               ) : (
