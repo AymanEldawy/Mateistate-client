@@ -28,7 +28,6 @@ const ChangesFlatsSalePricingReport = () => {
     await REPORTS.nearToExpireContract();
   };
 
-  console.log(watch());
 
   return (
     <>

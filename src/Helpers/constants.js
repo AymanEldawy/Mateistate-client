@@ -304,6 +304,14 @@ export const SELECT_LISTS = (listName) => {
       { id: 2, name: "Extenstion not printed" },
       { id: 3, name: "Not specified" },
     ],
+
+    termination_date_options: [
+      { id: 0, name: "All" },
+      { id: 0, name: "Smaller than contract end date" },
+      { id: 0, name: "Bigger than contract end date" },
+      { id: 0, name: "Equal than contract end date" },
+    ],
+
     registered_by_list: [
       { id: 0, name: "All" },
       { id: 1, name: "Customer" },
@@ -362,10 +370,16 @@ export const SELECT_LISTS = (listName) => {
       { id: 1, name: "Lawsuit" },
       { id: 2, name: "There is no lawsuit" },
     ],
+
+    lawsuit_status_report: [
+      { id: 0, name: "All" },
+      { id: 1, name: "Expired" },
+      { id: 2, name: "Not Expired" },
+    ],
     revenues_report_contract_termination: [
       { id: 0, name: "All" },
-      { id: 1, name: "Not finished" },
-      { id: 2, name: "completed" },
+      { id: 1, name: "Contract Not Terminated" },
+      { id: 2, name: "Terminated" },
     ],
 
     revenues_report_date: [
@@ -518,6 +532,14 @@ export const SELECT_LISTS = (listName) => {
       { name: "Custom", id: 4 },
     ],
 
+    contract_payment_methods: [
+      { id: 0, name: "All" },
+      { id: 1, name: "Cash" },
+      { id: 2, name: "Installments" },
+      { id: 3, name: "By plan" },
+      { id: 4, name: "Credit" },
+    ],
+
     contract_paid_type: [
       { name: "Cash", id: 1 },
       { name: "Plan", id: 2 },
@@ -594,6 +616,8 @@ export const ASSETS_STEPS = {
 export const PARKING_STEPS = {
   parking_general: "parking_general",
   parking_price: "parking_price",
+  parking_rental_price: "parking_rental_price",
+  parking_selling_price: "parking_selling_price",
   parking_pictures: "parking_pictures",
 };
 
@@ -601,7 +625,7 @@ export const SHOP_STEPS = {
   shop_general: "shop_general",
   shop_fixed_assets: "shop_fixed_assets",
   shop_pictures: "shop_pictures",
-  shop_rent_price: "shop_rent_price",
+  shop_rental_price: "shop_rental_price",
   shop_selling_price: "shop_selling_price",
 };
 

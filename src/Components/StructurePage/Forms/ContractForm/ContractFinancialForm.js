@@ -3,6 +3,7 @@ import {
   Input,
   Select,
   Switch,
+  Textarea,
   UniqueField,
 } from "Components/StructurePage/CustomFields";
 import { ACTIONS, UNIQUE_REF_TABLES } from "Helpers/constants";
@@ -58,7 +59,7 @@ export const ContractFinancialForm = ({
             {...fieldsHash?.gov_number}
             updatedName={`contract.gov_number`}
             // values={values}
-            tab={'contract'}
+            tab={"contract"}
             error={errors?.contract?.gov_number ? "Field is required" : ""}
           />
         </div>
@@ -113,7 +114,7 @@ export const ContractFinancialForm = ({
             updatedName={`contract.description`}
             containerClassName=" col-span-full"
             // values={values}
-            tab={'contract'}
+            tab={"contract"}
             error={errors?.contract?.description ? "Field is required" : ""}
           />
         </div>
@@ -162,7 +163,9 @@ export const ContractFinancialForm = ({
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
               // values={values}
               error={
-                errors?.contract?.insurance_account_id ? "Field is required" : ""
+                errors?.contract?.insurance_account_id
+                  ? "Field is required"
+                  : ""
               }
             />
           </div>
@@ -192,7 +195,7 @@ export const ContractFinancialForm = ({
           {...fieldsHash?.status}
           updatedName={`contract.status`}
           // values={values}
-          tab={'contract'}
+          tab={"contract"}
           error={errors?.contract?.status ? "Field is required" : ""}
           value={watch(`contract.status`)}
         />
@@ -220,7 +223,7 @@ export const ContractFinancialForm = ({
           {...fieldsHash?.contract_duration}
           updatedName={`contract.contract_duration`}
           // values={values}
-          tab={'contract'}
+          tab={"contract"}
           error={errors?.contract?.contract_duration ? "Field is required" : ""}
           value={watch(`contract.contract_duration`)}
         />
@@ -228,14 +231,16 @@ export const ContractFinancialForm = ({
           {...fieldsHash?.start_duration_date}
           updatedName={`contract.start_duration_date`}
           // values={values}
-          tab={'contract'}
-          error={errors?.contract?.start_duration_date ? "Field is required" : ""}
+          tab={"contract"}
+          error={
+            errors?.contract?.start_duration_date ? "Field is required" : ""
+          }
         />
         <Input
           {...fieldsHash?.end_duration_date}
           updatedName={`contract.end_duration_date`}
           // values={values}
-          tab={'contract'}
+          tab={"contract"}
           error={errors?.contract?.end_duration_date ? "Field is required" : ""}
           readOnly={watch(`contract.contract_duration`) < 4}
         />
@@ -244,7 +249,7 @@ export const ContractFinancialForm = ({
           {...fieldsHash?.paid_type}
           updatedName={`contract.paid_type`}
           // values={values}
-          tab={'contract'}
+          tab={"contract"}
           error={errors?.contract?.paid_type ? "Field is required" : ""}
           value={watch(`contract.paid_type`)}
         />
@@ -258,7 +263,15 @@ export const ContractFinancialForm = ({
           />
         ) : null}
       </div>
-      <ContractStatus contract_id={contract_id} tab={'contract'} />
+      <Textarea
+        {...fieldsHash?.note}
+        containerClassName="mt-4"
+        updatedName={`contract.note`}
+        tab={"contract"}
+        error={errors?.contract?.note ? "Field is required" : ""}
+        value={watch(`contract.note`)}
+      />
+      <ContractStatus contract_id={contract_id} tab={"contract"} />
     </div>
   );
 };

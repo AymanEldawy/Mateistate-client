@@ -31,7 +31,7 @@ export const ReportStatementField = ({
             name: `${name}_statement_type`,
             list: [
               { id: 1, name: "Contains" },
-              { id: 2, name: "Non-Contains" },
+              { id: 2, name: "Not-contains" },
             ],
           }}
         />

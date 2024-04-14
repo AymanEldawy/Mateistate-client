@@ -33,7 +33,7 @@ const SheetReport = ({ name }) => {
     await REPORTS.nearToExpireContract();
   };
 
-  console.log(watch());
+  console.log({ filters: watch() });
 
   return (
     <>

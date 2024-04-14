@@ -4,7 +4,6 @@ import { ReportFilterColumns } from "../../Components/ReportsComponents/ReportFi
 import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "Components/Global/Button";
 import REPORTS from "Helpers/Lib/global-reports";
-import { ReportFilterBuildings } from "Components/ReportsComponents/ReportFilterBuildings";
 import { ReportFilterContractPatterns } from "Components/ReportsComponents/ReportFilterContractPatterns";
 import useRefTable from "Hooks/useRefTables";
 import { getReportColumns, getReportFields } from "Helpers/Reports";
@@ -12,7 +11,6 @@ import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFie
 import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
 import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
 import { ReportBetweenDateField } from "Components/ReportsComponents/ReportsFields/ReportDateField";
-import ReportInputField from "Components/ReportsComponents/ReportsFields/ReportInputField";
 import { CheckboxField } from "Components/StructurePage/CustomFields";
 import { ReportReviewField } from "Components/ReportsComponents/ReportsFields/ReportReviewField";
 
@@ -33,7 +31,8 @@ const ContractsDepositReport = () => {
     await REPORTS.nearToExpireContract();
   };
 
-  console.log(watch());
+  console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
+
 
   return (
     <>

@@ -253,15 +253,8 @@ const share_contract_vat = [
 
 const share_contract_columns = [
   { header: "collected cheques", accessorKey: "collected_cheques" },
-  {
-    header: "collected cheques period",
-    accessorKey: "collected_cheques_period",
-  },
   { header: "received cash payments", accessorKey: "received_cash_payments" },
-  {
-    header: "received cash payments period",
-    accessorKey: "received_cash_payments_period",
-  },
+
   { header: "total collected amount", accessorKey: "total_collected_amount" },
   {
     header: "total uncollected amount",
@@ -274,8 +267,8 @@ const contract_reports = [
   // @table => contract
   { header: "Property type", accessorKey: "flat_type" },
   { header: "Contract type", accessorKey: "contract_type" },
-  { header: "Previous contracts No.", accessorKey: "contracts_number_prev" },
-  { header: "Current contracts No.", accessorKey: "contracts_number_current" },
+  { header: "Previous contracts No", accessorKey: "contracts_number_prev" },
+  { header: "Current contracts No", accessorKey: "contracts_number_current" },
 
   ...share_contract,
   { header: "Property No", accessorKey: "unit_id" },
@@ -325,6 +318,14 @@ const contract_reports = [
     header: "Related parking contracts",
     accessorKey: "related_parking_contracts_count",
   },
+  {
+    header: "received cash payments period",
+    accessorKey: "received_cash_payments_period",
+  },
+  {
+    header: "collected cheques period",
+    accessorKey: "collected_cheques_period",
+  },
   ...share_contract_columns,
   // Calculations
 
@@ -343,9 +344,9 @@ const contract_reports = [
 // building_id	apartment_no	floor_no	description	category	area	area_unit	view	bathroom_count	balcony_count	has_lawsuit	main_cost_center_id	cost_center_id	property_type	water_meter	electricity_meter	statement	x_index	y_index	room_count	property_values_id	hex	cost_price	amount_paid	cost_currency_id	note	apartment_kind	row_index	asset_hash	number	internal_number
 
 const leased_units_report = [
-  { header: "Property No.", accessorKey: "apartment_no" },
+  { header: "Property No", accessorKey: "property_no" },
   { header: "Floor", accessorKey: "floor" },
-  { header: "Property type", accessorKey: "apartment_kind" },
+  { header: "Property type", accessorKey: "property_kind" },
   { header: "Building", accessorKey: "building_id" },
   { header: "Description", accessorKey: "description" },
   { header: "Class", accessorKey: "class" },
@@ -366,10 +367,10 @@ const leased_units_report = [
   },
   { header: "Total security deposit", accessorKey: "total_securing_value" },
 
-  // { header: "Water meter No.", accessorKey: "Water meter No." },
-  // { header: "Electricity meter No.", accessorKey: "Electricity meter No." },
-  // { header: "Bathroom No.", accessorKey: "Bathroom No." },
-  // { header: "Balcony No.", accessorKey: "Balcony No." },
+  // { header: "Water meter No", accessorKey: "Water meter No" },
+  // { header: "Electricity meter No", accessorKey: "Electricity meter No" },
+  // { header: "Bathroom No", accessorKey: "Bathroom No" },
+  // { header: "Balcony No", accessorKey: "Balcony No" },
   ...share_contract,
   ...share_contract_columns,
   ...share_contract_vat,
@@ -387,7 +388,7 @@ const leased_units_report = [
 ];
 
 const leased_parking_report = [
-  { header: "Property No", accessorKey: "apartment_no" },
+  { header: "Property No", accessorKey: "parking_no" },
   { header: "Property type", accessorKey: "parking_kind" },
   { header: "Building", accessorKey: "building_id" },
   { header: "Description", accessorKey: "description" },
@@ -414,9 +415,9 @@ const leased_parking_report = [
   { header: "Current contract deposit", accessorKey: "current_securing_value" },
   { header: "Total security deposit", accessorKey: "total_securing_value" },
 
-  ...share_contract,
-  ...share_contract_columns,
-  ...share_contract_vat,
+  // ...share_contract,
+  // ...share_contract_columns,
+  // ...share_contract_vat,
 
   { header: "lawsuit", accessorKey: "lawsuit" },
   { header: "feedback", accessorKey: "feedback" },
@@ -434,7 +435,7 @@ const leased_lands_report = [
   // { header: "Contract starting date", accessorKey: "Contract starting date" },
   // { header: "Contract expiry date", accessorKey: "Contract expiry date" },
   { header: "Customer", accessorKey: "customer" },
-  // { header: "Phone No.", accessorKey: "PhoneNo" },
+  // { header: "Phone No", accessorKey: "PhoneNo" },
   // { header: "Customer nationality", accessorKey: "Customer nationality" },
   { header: "Area", accessorKey: "area" },
   { header: "Unit", accessorKey: "unit" },
@@ -471,7 +472,7 @@ const leased_villas_report = [
   // { header: "Contract starting date", accessorKey: "Contract starting date" },
   // { header: "Contract expiry date", accessorKey: "Contract expiry date" },
   { header: "Customer", accessorKey: "customer" },
-  // { header: "Phone No.", accessorKey: "PhoneNo" },
+  // { header: "Phone No", accessorKey: "PhoneNo" },
   // { header: "Customer nationality", accessorKey: "Customer nationality" },
   { header: "Area", accessorKey: "area" },
   { header: "Unit", accessorKey: "unit" },
@@ -518,7 +519,7 @@ const reserved_units_report = [
   { header: "unit type", accessorKey: "unit_type" },
   { header: "customer", accessorKey: "customer" },
   { header: "property", accessorKey: "property" },
-  { header: "business no", accessorKey: "business_no" },
+  // { header: "business no", accessorKey: "business_no" },
   { header: "booking date", accessorKey: "booking_date" },
   {
     header: "booking termination_date",
@@ -556,183 +557,128 @@ const contracts_deposit_report = [
 ];
 
 const contract_expired_reports = [
+  { accessorKey: "contract_number", header: "Contract No" },
+  { accessorKey: "customer", header: "Customer" },
+  { accessorKey: "building", header: "Building" },
+  { accessorKey: "owner", header: "Owner" },
+  { accessorKey: "lessor", header: "Lessor" },
+  { accessorKey: "property_no", header: "Flat / Shop No" },
+  { accessorKey: "flat_type", header: "Type" },
+  { accessorKey: "floor", header: "Floor" },
+  { accessorKey: "description", header: "Description" },
+  { accessorKey: "from", header: "From Date" },
+  { accessorKey: "to", header: "To date" },
+  { accessorKey: "since_day", header: "Since / Day" },
+  { accessorKey: "contract_amount", header: "Contract amount" },
+  { accessorKey: "property_details", header: "Property details" },
+  { accessorKey: "contract_details", header: "Contract details" },
   {
-    header: "number",
-    accessorKey: "number",
+    accessorKey: "flat_contract_linked_to_parking",
+    header: "Flat contract linked to parking",
   },
+  {
+    accessorKey: "contracts_in_previous_years",
+    header: "Contracts No. in previous years",
+  },
+  { accessorKey: "current_contracts_no", header: "Current contracts No" },
+  { accessorKey: "contracts_total_no", header: "Contracts total No" },
+  {
+    accessorKey: "increased_percentage_of_current_contract",
+    header: "Increased percentage of current contract",
+  },
+  {
+    accessorKey: "increased_value_on_current_contract",
+    header: "Increased value on current contract",
+  },
+  {
+    accessorKey: "contract_value_after_increased",
+    header: "Contract value after Increased",
+  },
+  { accessorKey: "lawsuit", header: "Lawsuit" },
+  { accessorKey: "print_warning", header: "Print warning" },
+  { accessorKey: "warning_printed", header: "Warning printed" },
+  { accessorKey: "warn_printing_date", header: "Warn printing date" },
+  {
+    accessorKey: "number_of_times_printing",
+    header: "Number of times printing",
+  },
+  { accessorKey: "has_lawsuit", header: "has lawsuit" },
+  // { accessorKey: "إرسال SMS /Email", header: "إرسال SMS /Email" },
+  // { accessorKey: "SMS", header: "SMS" },
+  // { accessorKey: "Ltn SMS", header: "Ltn SMS" },
+  // { accessorKey: "SMS sent result", header: "SMS sent result" },
   // {
-  //   header: "gov_number",
-  //   accessorKey: "gov_number",
+  //   accessorKey: "SMS was sent successfully",
+  //   header: "SMS was sent successfully",
   // },
-  {
-    header: "feedback",
-    accessorKey: "feedback",
-  },
-  {
-    header: "lawsuit",
-    accessorKey: "lawsuit",
-  },
-  {
-    header: "apartment_id",
-    accessorKey: "apartment_id",
-  },
-  { header: "description", accessorKey: "description" },
-  {
-    header: "lessor_id",
-    accessorKey: "lessor_id",
-  },
-  {
-    header: "status",
-    accessorKey: "status",
-  },
-  {
-    header: "building_id",
-    accessorKey: "building_id",
-  },
-
-  {
-    header: "contract_value",
-    accessorKey: "contract_value",
-  },
-  {
-    header: "discount_rate",
-    accessorKey: "discount_rate",
-  },
-  {
-    header: "discount_value",
-    accessorKey: "discount_value",
-  },
-  {
-    header: "final_price",
-    accessorKey: "final_price",
-  },
-  {
-    header: "discount_account_id",
-    accessorKey: "discount_account_id",
-  },
-  {
-    header: "previous_securing",
-    accessorKey: "previous_securing",
-  },
   // {
-  //   header: "current_securing_percentage",
-  //   accessorKey: "current_securing_percentage",
+  //   accessorKey: "Number of times send SMS",
+  //   header: "Number of times send SMS",
   // },
-  {
-    header: "current_securing_value",
-    accessorKey: "current_securing_value",
-  },
-
-  {
-    header: "start_duration_date",
-    accessorKey: "start_duration_date",
-  },
-  {
-    header: "end_duration_date",
-    accessorKey: "end_duration_date",
-  },
-  {
-    header: "paid_type",
-    accessorKey: "paid_type",
-  },
-  {
-    header: "revenue_account_id",
-    accessorKey: "revenue_account_id",
-  },
-  {
-    header: "insurance_account_id",
-    accessorKey: "insurance_account_id",
-  },
 ];
 
 const contract_near_to_expire_report = [
   {
-    header: "number",
-    accessorKey: "number",
+    accessorKey: "contract_number",
+    header: "Contract No",
   },
+  { accessorKey: "customer", header: "Customer" },
+  { accessorKey: "building", header: "Building" },
+  { accessorKey: "owner", header: "Owner" },
+  { accessorKey: "lessor", header: "Lessor" },
+  { accessorKey: "property_no", header: "Flat / Shop No" },
+  { accessorKey: "flat_type", header: "Type" },
+  { accessorKey: "floor", header: "Floor" },
+  { accessorKey: "description", header: "Description" },
+  { accessorKey: "from", header: "From Date" },
+  { accessorKey: "to", header: "To date" },
+  { accessorKey: "since_day", header: "Since / Day" },
+  { accessorKey: "contract_amount", header: "Contract amount" },
+  { accessorKey: "property_details", header: "Property details" },
+  { accessorKey: "contract_details", header: "Contract details" },
+  {
+    accessorKey: "flat_contract_linked_to_parking",
+    header: "Flat contract linked to parking",
+  },
+  {
+    accessorKey: "contracts_in_previous_years",
+    header: "Contracts No. in previous years",
+  },
+  { accessorKey: "current_contracts_no", header: "Current contracts No" },
+  { accessorKey: "contracts_total_no", header: "Contracts total No" },
+  {
+    accessorKey: "increased_percentage_of_current_contract",
+    header: "Increased percentage of current contract",
+  },
+  {
+    accessorKey: "increased_value_on_current_contract",
+    header: "Increased value on current contract",
+  },
+  {
+    accessorKey: "contract_value_after_increased",
+    header: "Contract value after Increased",
+  },
+  { accessorKey: "lawsuit", header: "Lawsuit" },
+  { accessorKey: "print_warning", header: "Print warning" },
+  { accessorKey: "warning_printed", header: "Warning printed" },
+  { accessorKey: "warn_printing_date", header: "Warn printing date" },
+  {
+    accessorKey: "number_of_times_printing",
+    header: "Number of times printing",
+  },
+  { accessorKey: "has_lawsuit", header: "has lawsuit" },
+  // { accessorKey: "إرسال SMS /Email", header: "إرسال SMS /Email" },
+  // { accessorKey: "SMS", header: "SMS" },
+  // { accessorKey: "Ltn SMS", header: "Ltn SMS" },
+  // { accessorKey: "SMS sent result", header: "SMS sent result" },
   // {
-  //   header: "gov_number",
-  //   accessorKey: "gov_number",
+  //   accessorKey: "SMS was sent successfully",
+  //   header: "SMS was sent successfully",
   // },
-  {
-    header: "feedback",
-    accessorKey: "feedback",
-  },
-  {
-    header: "lawsuit",
-    accessorKey: "lawsuit",
-  },
-  {
-    header: "apartment_id",
-    accessorKey: "apartment_id",
-  },
-  { header: "description", accessorKey: "description" },
-  {
-    header: "lessor_id",
-    accessorKey: "lessor_id",
-  },
-  {
-    header: "status",
-    accessorKey: "status",
-  },
-  {
-    header: "building_id",
-    accessorKey: "building_id",
-  },
-
-  {
-    header: "contract_value",
-    accessorKey: "contract_value",
-  },
-  {
-    header: "discount_rate",
-    accessorKey: "discount_rate",
-  },
-  {
-    header: "discount_value",
-    accessorKey: "discount_value",
-  },
-  {
-    header: "final_price",
-    accessorKey: "final_price",
-  },
-  {
-    header: "discount_account_id",
-    accessorKey: "discount_account_id",
-  },
-  {
-    header: "previous_securing",
-    accessorKey: "previous_securing",
-  },
   // {
-  //   header: "current_securing_percentage",
-  //   accessorKey: "current_securing_percentage",
+  //   accessorKey: "Number of times send SMS",
+  //   header: "Number of times send SMS",
   // },
-  {
-    header: "current_securing_value",
-    accessorKey: "current_securing_value",
-  },
-
-  {
-    header: "start_duration_date",
-    accessorKey: "start_duration_date",
-  },
-  {
-    header: "end_duration_date",
-    accessorKey: "end_duration_date",
-  },
-  {
-    header: "paid_type",
-    accessorKey: "paid_type",
-  },
-  {
-    header: "revenue_account_id",
-    accessorKey: "revenue_account_id",
-  },
-  {
-    header: "insurance_account_id",
-    accessorKey: "insurance_account_id",
-  },
 ];
 
 const contract_payments_report = [
@@ -897,7 +843,7 @@ const leased_property_activity_report = [
   { accessorKey: "contract_type", header: "contract type" },
   { accessorKey: "from_date", header: "from date" },
   { accessorKey: "to_date", header: "to date" },
-  { accessorKey: "currency_id", header: "currency id" },
+  // { accessorKey: "currency_id", header: "currency id" },
   { accessorKey: "client_id", header: "client_id" },
   { accessorKey: "total_empty_days", header: "total empty days" },
   { accessorKey: "feedback", header: "feedback" },
@@ -947,7 +893,7 @@ const customer_account_statement_report = [
   { header: "Customer card No", accessorKey: "customer_card_no" },
   // { header: "Nationality", accessorKey: "Nationality" },
   // { header: "Latin nationality", accessorKey: "Latin nationality" },
-  // { header: "Phone No.", accessorKey: "Phone No." },
+  // { header: "Phone No", accessorKey: "Phone No" },
   // { header: "Mobile", accessorKey: "Mobile" },
   // { header: "Customer address", accessorKey: "Customer address" },
   // { header: "Latin address", accessorKey: "Latin address" },
@@ -996,23 +942,22 @@ const customer_account_statement_report = [
 
 const contract_cheque_report = [
   { header: "Floor", accessorKey: "floor" },
-  { header: "Property type", accessorKey: "property_type" },
+  // { header: "Property type", accessorKey: "property_type" },
   { header: "Description", accessorKey: "description" },
   { header: "Building", accessorKey: "building" },
   { header: "Owner", accessorKey: "owner" },
-  { header: "Emirate", accessorKey: "emirate" },
   { header: "Customer", accessorKey: "customer" },
   // { header: "Mobile", accessorKey: "mobile" },
   // { header: "Customer nationality", accessorKey: "customer nationality" },
   { header: "Contract type", accessorKey: "contract_type" },
-  { header: "Property No.", accessorKey: "property_no" },
+  { header: "Property No", accessorKey: "property_no" },
   { header: "Lessor", accessorKey: "lessor" },
   // { header: "Salesman", accessorKey: "Salesman" },
-  { header: "Contract No.", accessorKey: "contract_no" },
+  { header: "Contract No", accessorKey: "contract_no" },
   { header: "Contract amount", accessorKey: "contract_value" },
   {
     header: "Discounted contract amount ",
-    accessorKey: "final_price ",
+    accessorKey: "final_price",
   },
   { header: "Contract deposit", accessorKey: "contract_deposit" },
   {
@@ -1028,12 +973,9 @@ const contract_cheque_report = [
     accessorKey: "contract_termination_date",
   },
   { header: "Received cash payments", accessorKey: "received_cash_payments" },
-  {
-    header: "الدفعات المقبوضة ضمن الفترة",
-    accessorKey: "الدفعات المقبوضة ضمن الفترة",
-  },
+  // { header: "Received cash payments_collect_period", accessorKey: "received_cash_payments_collect_period" },
   { header: "Cheque type", accessorKey: "cheque_type" },
-  { header: "Cheque No.", accessorKey: "cheque_no" },
+  { header: "Cheque No", accessorKey: "cheque_no" },
   { header: "Sequence cheque", accessorKey: "sequence_cheque" },
   { header: "Cheque value", accessorKey: "cheque_value" },
   { header: "Value received", accessorKey: "value_received" },
@@ -1054,10 +996,10 @@ const contract_cheque_report = [
   { header: "Contract input case", accessorKey: "contract_input_case" },
   { header: "Contract note", accessorKey: "contract_note" },
   { header: "Notes", accessorKey: "notes" },
-  { header: "Notes 2", accessorKey: "notes 2" },
+  { header: "Notes 2", accessorKey: "notes2" },
   // { header: "Purpose of rent", accessorKey: "Purpose of rent" },
-  { header: "Previous contracts No.", accessorKey: "previous_contracts_no" },
-  { header: "Current contracts No.", accessorKey: "current_contracts_no" },
+  { header: "Previous contracts No", accessorKey: "previous_contracts_no" },
+  { header: "Current contracts No", accessorKey: "current_contracts_no" },
   { header: "Lawsuit", accessorKey: "lawsuit" },
   { header: "feedback", accessorKey: "feedback" },
   { header: "Automatically renewed", accessorKey: "automatically_renewed" },
@@ -1077,7 +1019,7 @@ const sold_units_report = [
   { header: "area_name", accessorKey: "area_name" },
   { header: "Contract type", accessorKey: "contract_type" },
   { header: "Lessor", accessorKey: "lessor" },
-  { header: "Contract No.", accessorKey: "contract_no" },
+  { header: "Contract No", accessorKey: "contract_no" },
   { header: "Contract amount", accessorKey: "contract_value" },
   { header: "Contract status", accessorKey: "contract_status" },
   ...share_contract_columns,

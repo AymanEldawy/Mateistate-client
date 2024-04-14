@@ -30,7 +30,6 @@ const useListView = ({ name, defaultNumber, ignoreList, additional }) => {
       }
 
       const res = await ApiActions.read(name, params);
-      console.log("🚀 ~ getNumberList ~ res:", res)
       if (res?.success) {
         let data = res?.result;
         let hashData = {};
@@ -49,7 +48,6 @@ const useListView = ({ name, defaultNumber, ignoreList, additional }) => {
         } else {
           setNumber(res?.result?.length + 1 || 1);
         }
-        console.log(number, maxLength, "ldis");
       }
     };
 

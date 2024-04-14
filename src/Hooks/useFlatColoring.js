@@ -133,6 +133,7 @@ export const FlatColoringProvider = ({ children }) => {
           hex: hex,
           row_index: selectedColor,
           asset_hash: indexHash,
+          // floor_no: selectedColor + 1,
         },
       },
     }));

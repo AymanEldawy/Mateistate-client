@@ -37,7 +37,8 @@ const CreditorsAgesReport = () => {
 
   const onSubmit = (value) => {};
 
-  console.log(watch());
+  console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
+
   return (
     <BlockPaper title={name}>
       <FormProvider {...methods}>

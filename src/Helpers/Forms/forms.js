@@ -1479,7 +1479,12 @@ const apartment = [
     label: "has_lawsuit",
     name: "has_lawsuit",
     type: "checkbox",
-
+    key: "switch",
+  },
+  {
+    label: "blocked",
+    name: "blocked",
+    type: "checkbox",
     key: "switch",
   },
   FIELDS_STRUCTURE.cost_center({
@@ -1644,6 +1649,7 @@ const apartment_rental_price = [
     name: "apartment_id",
     is_ref: true,
     ref_table: "apartment",
+    hide_in_form: true
   },
   {
     label: "date",
@@ -1656,6 +1662,7 @@ const apartment_rental_price = [
     type: "number",
   },
   FIELDS_STRUCTURE.currency({ hideValue: true }),
+  FIELDS_STRUCTURE.note(),
 ];
 
 const apartment_selling_price = [
@@ -1665,6 +1672,7 @@ const apartment_selling_price = [
     name: "apartment_id",
     is_ref: true,
     ref_table: "apartment",
+    hide_in_form: true,
   },
   {
     label: "date",
@@ -1677,6 +1685,7 @@ const apartment_selling_price = [
     type: "number",
   },
   FIELDS_STRUCTURE.currency({ hideValue: true }),
+  FIELDS_STRUCTURE.note(),
 ];
 // ==== End apartment
 
@@ -4546,6 +4555,12 @@ const parking = [
     type: "checkbox",
     key: "switch",
   },
+  {
+    label: "blocked",
+    name: "blocked",
+    type: "checkbox",
+    key: "switch",
+  },
   FIELDS_STRUCTURE.cost_center(),
   FIELDS_STRUCTURE.cost_center({
     label: "main_cost_center_id",
@@ -4782,6 +4797,12 @@ const shop = [
     key: "switch",
   },
   {
+    label: "blocked",
+    name: "blocked",
+    type: "checkbox",
+    key: "switch",
+  },
+  {
     label: "customer_id",
     name: "customer_id",
     is_ref: true,
@@ -4871,14 +4892,19 @@ const shop_pictures = [
   },
 ];
 
-const shop_rent_price = [
+const shop_rental_price = [
   FIELDS_STRUCTURE.id(),
-  FIELDS_STRUCTURE.created_at(),
   {
     label: "shop_id",
     name: "shop_id",
     is_ref: true,
     ref_table: "shop",
+    hide_in_form: true,
+  },
+  {
+    label: "date",
+    name: "date",
+    type: "date",
   },
   {
     label: "price",
@@ -4886,33 +4912,22 @@ const shop_rent_price = [
     type: "number",
   },
   FIELDS_STRUCTURE.currency({ hideValue: true }),
-  {
-    label: "cost_price",
-    name: "cost_price",
-    type: "number",
-  },
-  {
-    label: "cost_currency_id",
-    name: "cost_currency_id",
-    is_ref: true,
-    ref_table: "currency",
-    ref_name: "code", // unknown table
-  },
-  {
-    label: "rent",
-    name: "rent",
-    type: "number",
-  },
+  FIELDS_STRUCTURE.note(),
 ];
 
 const shop_selling_price = [
   FIELDS_STRUCTURE.id(),
-  FIELDS_STRUCTURE.created_at(),
   {
     label: "shop_id",
     name: "shop_id",
     is_ref: true,
     ref_table: "shop",
+    hide_in_form: true,
+  },
+  {
+    label: "date",
+    name: "date",
+    type: "date",
   },
   {
     label: "price",
@@ -4920,21 +4935,56 @@ const shop_selling_price = [
     type: "number",
   },
   FIELDS_STRUCTURE.currency({ hideValue: true }),
-  {
-    label: "sale",
-    name: "sale",
-    type: "number",
-  },
-  {
-    label: "sale_currency_id",
-    name: "sale_currency_id",
-    is_ref: true,
-    ref_table: "currency",
-    ref_name: "code",
-  },
+  FIELDS_STRUCTURE.note(),
 ];
 
-// ==== End Shop
+const parking_rental_price = [
+  FIELDS_STRUCTURE.id(),
+  {
+    label: "parking_id",
+    name: "parking_id",
+    is_ref: true,
+    ref_table: "parking",
+    hide_in_form: true,
+  },
+  {
+    label: "date",
+    name: "date",
+    type: "date",
+  },
+  {
+    label: "price",
+    name: "price",
+    type: "number",
+  },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
+  FIELDS_STRUCTURE.note(),
+];
+
+const parking_selling_price = [
+  FIELDS_STRUCTURE.id(),
+  {
+    label: "parking_id",
+    name: "parking_id",
+    is_ref: true,
+    ref_table: "parking",
+    hide_in_form: true,
+  },
+  {
+    label: "date",
+    name: "date",
+    type: "date",
+  },
+  {
+    label: "price",
+    name: "price",
+    type: "number",
+  },
+  FIELDS_STRUCTURE.currency({ hideValue: true }),
+  FIELDS_STRUCTURE.note(),
+];
+
+// ==== End parking
 // ==== Start Villa
 const villa = [
   FIELDS_STRUCTURE.id(),
@@ -5603,9 +5653,15 @@ const assets_card_group = {
 const parking_group = {
   forms: {
     [PARKING_STEPS.parking_general]: { fields: parking, tab_name: "parking" },
-    [PARKING_STEPS.parking_price]: {
-      fields: parking_price,
-      tab_name: "parking_price",
+    [PARKING_STEPS.parking_rental_price]: {
+      fields: parking_rental_price,
+      tab_name: "parking_rental_price",
+      formType: "grid",
+    },
+    [PARKING_STEPS.parking_selling_price]: {
+      fields: parking_selling_price,
+      tab_name: "parking_selling_price",
+      formType: "grid",
     },
     [PARKING_STEPS.parking_pictures]: {
       fields: parking_pictures,
@@ -5625,13 +5681,15 @@ const shop_group = {
       fields: shop_pictures,
       tab_name: "shop_pictures",
     },
-    [SHOP_STEPS.shop_rent_price]: {
-      fields: shop_rent_price,
-      tab_name: "shop_rent_price",
+    [SHOP_STEPS.shop_rental_price]: {
+      fields: shop_rental_price,
+      tab_name: "shop_rental_price",
+      formType: "grid",
     },
     [SHOP_STEPS.shop_selling_price]: {
       fields: shop_selling_price,
       tab_name: "shop_selling_price",
+      formType: "grid",
     },
   },
 };

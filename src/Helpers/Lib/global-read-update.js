@@ -466,8 +466,6 @@ export default async function GET_UPDATE_DATE(name, id, params) {
 }
 
 export async function getContractData(number, code) {
-  console.log("🚀 ~ getContractData ~ code:", code)
-  console.log("🚀 ~ getContractData ~ number:", number)
   const contractResponse = await ApiActions.read("contract", {
     conditions: [
       { type: "and", conditions: [["code", "=", code]] },

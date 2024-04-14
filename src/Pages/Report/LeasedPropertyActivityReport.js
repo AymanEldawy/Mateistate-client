@@ -21,7 +21,7 @@ const property_columns = [
 const LeasedPropertyActivityReport = () => {
   const name = "leased_property_activity_report";
   const methods = useForm();
-  const { handleSubmit } = methods;
+  const { handleSubmit, watch } = methods;
   const { CACHE_LIST } = useRefTable(name);
   const [selectedColumns, setSelectedColumns] = useState({});
   const [selectedPropertyColumns, setSelectedPropertyColumns] = useState({});
@@ -30,6 +30,12 @@ const LeasedPropertyActivityReport = () => {
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = (value) => {};
+
+  console.log({
+    filters: watch(),
+    columns: Object.keys(selectedColumns),
+    properties: Object.keys(selectedPropertyColumns),
+  });
 
   return (
     <BlockPaper title={"Property moving Report"}>

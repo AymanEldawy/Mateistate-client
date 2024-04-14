@@ -28,7 +28,7 @@ const LeasedVillasReport = () => {
     await REPORTS.nearToExpireContract();
   };
 
-  console.log(watch());
+  console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
 
   return (
     <>

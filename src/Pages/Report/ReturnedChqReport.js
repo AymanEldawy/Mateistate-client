@@ -1,19 +1,13 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { LedgerFilters } from "../../Components/ReportsComponents/LedgerReport/LedgerFilters";
+import { useMemo, useState } from "react";
 import BlockPaper from "Components/Global/BlockPaper";
 import { ReportFilterColumns } from "../../Components/ReportsComponents/ReportFilterColumns";
 import { Button } from "Components/Global/Button";
 import { FormProvider, useForm } from "react-hook-form";
-import { ApiActions } from "Helpers/Lib/api";
-import { CheckboxField } from "Components/StructurePage/CustomFields";
-import { ReportFilterCard } from "Components/ReportsComponents/ReportFilterCard";
-import ReportInputField from "Components/ReportsComponents/ReportsFields/ReportInputField";
 import { ReportBetweenDateField } from "Components/ReportsComponents/ReportsFields/ReportDateField";
 import { ReportFilterChequePattern } from "Components/ReportsComponents/ReportFilterChequePattern";
 import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFields";
 import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
 import useRefTable from "Hooks/useRefTables";
-import getFormByTableName from "Helpers/Forms/forms";
 import { getReportColumns, getReportFields } from "Helpers/Reports";
 import { ReportStatementField } from "Components/ReportsComponents/ReportsFields/ReportStatementField";
 import ReportSelectField from "Components/ReportsComponents/ReportsFields/ReportSelectField";
@@ -33,8 +27,14 @@ const ReturnedChqReport = () => {
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
+    console.log({
+      columns: Object.keys(selectedColumns),
+      filters: watch(),
+      buildings: Object.keys(buildingsIds),
+    });
+
   const onSubmit = (value) => {};
-  console.log(CACHE_LIST, "CACHE_LIST");
+
   return (
     <BlockPaper title={name}>
       <FormProvider {...methods}>

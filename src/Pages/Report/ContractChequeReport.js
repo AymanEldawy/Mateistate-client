@@ -12,14 +12,12 @@ import { ReportReviewField } from "Components/ReportsComponents/ReportsFields/Re
 import { ReportFilterCard } from "Components/ReportsComponents/ReportFilterCard";
 import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFields";
 import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
-import ReportSelectField from "Components/ReportsComponents/ReportsFields/ReportSelectField";
-import { SELECT_LISTS } from "Helpers/constants";
 import { CheckboxField } from "Components/StructurePage/CustomFields";
 
 const ContractChequeReport = () => {
   const name = "contract_cheque_report";
   const methods = useForm();
-  const { handleSubmit } = methods;
+  const { handleSubmit, watch } = methods;
   const { CACHE_LIST } = useRefTable(name);
   const [selectedColumns, setSelectedColumns] = useState({});
   const [buildingsIds, setBuildingsIds] = useState({});
@@ -27,6 +25,8 @@ const ContractChequeReport = () => {
 
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
+
+  console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
 
   const onSubmit = async () => {};
 

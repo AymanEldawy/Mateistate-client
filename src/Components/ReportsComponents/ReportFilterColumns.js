@@ -15,7 +15,6 @@ export const ReportFilterColumns = ({
   disabledItem,
   searchKey = 'name'
 }) => {
-  console.log("🚀 ~ searchKey:",columns, searchKey)
   const [refresh, setRefresh] = useState(false);
 
   const onChangeFilterColumns = (e) => {

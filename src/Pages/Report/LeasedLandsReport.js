@@ -28,11 +28,16 @@ const LeasedLandsReport = () => {
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
+  console.log({
+    columns: Object.keys(selectedColumns),
+    filters: watch(),
+  });
   const onSubmit = async (value) => {
     await REPORTS.nearToExpireContract();
   };
 
-  console.log(watch());
+  console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
+
 
   return (
     <>

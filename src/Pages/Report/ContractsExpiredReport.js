@@ -28,6 +28,8 @@ const ContractsExpiredReport = () => {
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
+  console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
+
   const onSubmit = async (value) => {};
 
   return (

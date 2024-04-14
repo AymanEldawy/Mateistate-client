@@ -190,6 +190,12 @@ const collection_cheque_report = [
 //contract_reports
 const contract_reports = [
   FIELDS_STRUCTURE.client(),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "property_type",
+    name: "property_type",
+    ref_table: "property_values",
+    ref_name: "description",
+  }),
   { label: "description", name: "description", type: "text", required: false },
   {
     label: "paid_type",
@@ -210,18 +216,18 @@ const contract_reports = [
     name: "contract_status",
     list: SELECT_LISTS("contract_status_expired"),
   }),
+  FIELDS_STRUCTURE.selectField({
+    label: "payment_method",
+    name: "payment_method",
+    list: SELECT_LISTS("contract_payment_methods"),
+  }),
 
   {
     label: "contract_termination",
     name: "contract_termination",
     key: "select",
     intValue: true,
-    list: [
-      { id: 0, name: "All" },
-      { id: "", name: "" },
-      { id: "", name: "" },
-      { id: "", name: "" },
-    ],
+    list: SELECT_LISTS("revenues_report_contract_termination"),
   },
 
   {
@@ -231,21 +237,8 @@ const contract_reports = [
     intValue: true,
     list: [
       { id: 0, name: "All" },
-      { id: "", name: "" },
-      { id: "", name: "" },
-      { id: "", name: "" },
-    ],
-  },
-  {
-    label: "contract_enter_status",
-    name: "contract_enter_status",
-    key: "select",
-    intValue: true,
-    list: [
-      { id: 0, name: "All" },
-      { id: "", name: "" },
-      { id: "", name: "" },
-      { id: "", name: "" },
+      { id: 1, name: "New" },
+      { id: 2, name: "Renewal" },
     ],
   },
 
@@ -256,40 +249,52 @@ const contract_reports = [
     intValue: true,
     list: [
       { id: 0, name: "All" },
-      { id: "", name: "" },
-      { id: "", name: "" },
-      { id: "", name: "" },
+      { id: 1, name: "Printed" },
+      { id: 2, name: "Not printed" },
     ],
   },
-  FIELDS_STRUCTURE.account(),
   {
-    label: "date",
-    name: "date",
+    label: "blocked_units",
+    name: "blocked_units",
     key: "select",
     intValue: true,
     list: [
       { id: 0, name: "All" },
-      { id: "", name: "" },
-      { id: "", name: "" },
-      { id: "", name: "" },
+      { id: 1, name: "Blocked" },
+      { id: 2, name: "Unblocked" },
     ],
   },
-  {
+
+  FIELDS_STRUCTURE.account(),
+  FIELDS_STRUCTURE.selectField({
+    label: "termination_date",
+    name: "termination_date",
+    list: SELECT_LISTS("termination_date_options"),
+  }),
+  FIELDS_STRUCTURE.selectField({
+    label: "date_by",
+    name: "date_by",
+    list: SELECT_LISTS("contract_date_by"),
+  }),
+  FIELDS_STRUCTURE.selectField({
     label: "lawsuit",
     name: "lawsuit",
-    key: "select",
-    intValue: true,
-    list: [
-      { id: 0, name: "All" },
-      { id: "", name: "" },
-      { id: "", name: "" },
-      { id: "", name: "" },
-    ],
-  },
+    list: SELECT_LISTS("lawsuit_report"),
+  }),
+  FIELDS_STRUCTURE.selectField({
+    label: "lawsuit_status",
+    name: "lawsuit_status",
+    list: SELECT_LISTS("lawsuit_status_report"),
+  }),
   FIELDS_STRUCTURE.selectField({
     label: "installments",
     name: "installments",
     list: SELECT_LISTS("installment_report_list"),
+  }),
+  FIELDS_STRUCTURE.selectField({
+    label: "contract_amount",
+    name: "contract_amount",
+    list: SELECT_LISTS("contract_amount_list"),
   }),
 ];
 
@@ -429,8 +434,8 @@ const leased_units_report = [
 
 const leased_parking_report = [
   FIELDS_STRUCTURE.textField({
-    label: "property_no",
-    name: "property_no",
+    label: "parking_no",
+    name: "parking_no",
   }),
 
   FIELDS_STRUCTURE.textField({
@@ -895,7 +900,7 @@ const contract_cheque_report = [
   FIELDS_STRUCTURE.selectField({
     label: "payment_method",
     name: "payment_method",
-    list: SELECT_LISTS("contract_paid_type"),
+    list: SELECT_LISTS("contract_payment_methods"),
   }),
   FIELDS_STRUCTURE.uniqueField({
     label: "lessor_id",
@@ -1113,7 +1118,7 @@ const services_contracts_report = [
   FIELDS_STRUCTURE.selectField({
     label: "payment_method",
     name: "payment_method",
-    list: SELECT_LISTS("contract_paid_type"),
+    list: SELECT_LISTS("contract_payment_methods"),
   }),
   FIELDS_STRUCTURE.selectField({
     label: "contract_status",
@@ -1125,6 +1130,7 @@ const services_contracts_report = [
     name: "termination_status",
     list: SELECT_LISTS("termination_status"),
   }),
+
   FIELDS_STRUCTURE.selectField({
     label: "contract_input_case",
     name: "contract_input_case",
@@ -1147,12 +1153,7 @@ const services_contracts_report = [
   FIELDS_STRUCTURE.selectField({
     label: "termination_date",
     name: "termination_date",
-    list: [
-      { id: 0, name: "All" },
-      { id: 0, name: "Smaller than contract end date" },
-      { id: 0, name: "Bigger than contract end date" },
-      { id: 0, name: "Equal than contract end date" },
-    ],
+    list: SELECT_LISTS("termination_date_options"),
   }),
   FIELDS_STRUCTURE.selectField({
     label: "date_by",

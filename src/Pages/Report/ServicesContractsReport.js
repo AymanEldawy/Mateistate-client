@@ -29,6 +29,12 @@ const ServicesContractsReport = () => {
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
+  console.log({
+    columns: Object.keys(selectedColumns),
+    filters: watch(),
+    buildings: Object.keys(buildingsIds),
+  });
+
   const onSubmit = async (value) => {
     await REPORTS.nearToExpireContract();
   };
@@ -78,7 +84,7 @@ const ServicesContractsReport = () => {
                       <CheckboxField name="allow_date" label="Date" />
                     }
                     sharedProps={{
-                      readOnly: !watch('allow_date')
+                      readOnly: !watch("allow_date"),
                     }}
                   />
                   <ReportReviewField />

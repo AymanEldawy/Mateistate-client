@@ -132,6 +132,7 @@ const contract = [
     key: "switch",
     required: false,
   },
+  FIELDS_STRUCTURE.note()
 ];
 
 const contract_commission = [

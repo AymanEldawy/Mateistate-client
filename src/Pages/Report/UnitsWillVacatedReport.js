@@ -43,7 +43,12 @@ const UnitsWillVacatedReport = () => {
     await REPORTS.nearToExpireContract();
   };
 
-  console.log(watch());
+  console.log({
+    buildings: Object.keys(buildingsIds),
+    contracts: Object.keys(contractIds),
+    columns: Object.keys(selectedColumns),
+    filters: watch(),
+  });
 
   return (
     <>

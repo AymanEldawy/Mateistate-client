@@ -29,7 +29,7 @@ const CollectionChqReport = () => {
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = (value) => {};
-  console.log(CACHE_LIST, "CACHE_LIST");
+
   return (
     <BlockPaper title={name}>
       <FormProvider {...methods}>

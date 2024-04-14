@@ -75,7 +75,6 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
     clearErrors,
   } = methods;
 
-  console.log(watch());
   const { CACHE_LIST, fields } = useRefTable(name);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState([]);
@@ -115,6 +114,7 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
     });
     return () => subscription.unsubscribe();
   }, [watch]);
+  
 
   // Handel Submit
   const onSubmit = async (value) => {

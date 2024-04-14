@@ -28,10 +28,7 @@ const ToolsColColor = ({
 
   const { watch } = useFormContext();
 
-  let tabSettings = useMemo(
-    () => FLAT_PROPERTY_TABS[tabName],
-    [tabName]
-  );
+  let tabSettings = useMemo(() => FLAT_PROPERTY_TABS[tabName], [tabName]);
 
   useEffect(() => {
     if (inputRef?.current) {
@@ -41,7 +38,8 @@ const ToolsColColor = ({
 
   const itemHash = generateFlatHashName(tabName, tabSettings, yIndex, xIndex);
 
-  const itemData = flatsDetails?.[tabName]?.asset_hash || flatsDetails?.[tabName]?.[itemHash];
+  const itemData =
+    flatsDetails?.[tabName]?.asset_hash || flatsDetails?.[tabName]?.[itemHash];
   const flatName = tabSettings?.no;
   const itemValue = flatsDetails?.[tabName]?.[itemHash]?.[flatName] || itemHash;
   const itemColor = watch("grid")?.[itemData?.row_index]?.hex || itemData?.hex;
@@ -78,6 +76,7 @@ const ToolsColColor = ({
                 name: itemValue,
                 x_index: xIndex,
                 y_index: yIndex,
+                floor_no: xIndex + 1,
               });
           }}
           style={{

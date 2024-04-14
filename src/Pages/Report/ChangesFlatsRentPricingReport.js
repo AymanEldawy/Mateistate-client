@@ -32,7 +32,10 @@ const ChangesFlatsRentPricingReport = () => {
     await REPORTS.nearToExpireContract();
   };
 
-  console.log(watch());
+  console.log({
+    filters: watch(),
+    columns: columns?.map((c) => c?.accessorKey),
+  });
 
   return (
     <>

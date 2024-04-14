@@ -40,10 +40,16 @@ const LeasedUnitsReport = () => {
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
-    await REPORTS.nearToExpireContract();
+    console.log({
+      columns: Object.keys(selectedColumns),
+      filters: watch(),
+      buildings: Object.keys(buildingsIds),
+    });
+    // await REPORTS.nearToExpireContract();
   };
 
-  console.log(watch());
+  console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
+
 
   return (
     <>
@@ -94,12 +100,12 @@ const LeasedUnitsReport = () => {
               </div>
             </div>
             <div className="my-8 flex justify-end"></div>
-          </form>
           <Button
             onClick={() => setOpenReportResults(true)}
             title="Show"
             classes="my-4 flex ltr:ml-auto rtl:mr-auto"
           />
+          </form>
         </FormProvider>
       </BlockPaper>
       <ReportResultsWrapper

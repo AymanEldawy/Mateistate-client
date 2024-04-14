@@ -32,6 +32,8 @@ const ContractsReport = () => {
     await REPORTS.nearToExpireContract();
   };
 
+  console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
+
   return (
     <>
       <BlockPaper title={"Contract Report"}>

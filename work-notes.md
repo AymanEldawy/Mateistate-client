@@ -334,6 +334,7 @@ NOTES: complicated tasks
 - [✔️] update `useQuery calls` to sync with `number` come form `useViewList`
 - [✔️] Redesign reports forms to be more smaller
 - [✔️] create book a Reality `form` | `table`
+
 # - [✔️] fix cache default values
 
 ### Reports
@@ -349,6 +350,7 @@ NOTES: complicated tasks
 - [✔️] ledger cost center
 
 ### new Tasks 20/3/2024
+
 - [] Cheques Collection
 - [] Cheques Returnable
 - [] Trial Balance
@@ -364,18 +366,16 @@ NOTES: complicated tasks
 - [] Rented and non-rented units
 - [] Units to be evacuated
 
-
-
-
-
 ## Futrue or later Tasks
 
 ### Easy
+
 - [] Update Contract table in database to continuo other data like [lawsuit status start and end date amount]
 - [] Prevent to navigate to anthor page if the form is touched or dirty
 - [] reFetch Table inserted in CACHE_LIST
 
 ### Medium
+
 - [] Settings page
 - [] Users Permssions
 - [] scan
@@ -384,8 +384,6 @@ NOTES: complicated tasks
 - [] update Global read file with joins
 - [] watch video for `Lawsuit` and generate database tables for it
 - [] watch video for completed apartment gen checks
-
-
 
 1. Reality reports
 
@@ -410,3 +408,20 @@ NOTES: complicated tasks
 - cost center general ledger
 - const center trial balance
 - balance sheet
+
+## Report notes
+
+- [] Complete all reports in notion
+- [] Complete all reports view results
+- [] Report Operations & froms
+- [] Report Print
+
+## Latest notes
+- [✔️] add property floor in tools page
+- [✔️] rediesng shop and parking and apartment forms & tabls sturcture
+- [] lawsuit videos
+- [] contract status dynamic but apartmnt status manual
+- [] chq form opertation disabled
+- [] account assembly and distributive in entry
+- [] contracts sales in database
+- [] add new key in table `reservation_property` called `payment_method`

@@ -44,6 +44,7 @@ export const ToolsTabsTable = ({
           name: itemHash,
           x_index: i,
           y_index: y,
+          floor_no: y + 1,
         };
         onInsertColor(tabName, itemHash, additional);
       } else {
@@ -55,13 +56,13 @@ export const ToolsTabsTable = ({
   const onSelectAllVertical = (e, y, x) => {
     const { tabName } = selectedTab;
     for (let i = 0; i < x; i++) {
-      
       let itemHash = generateFlatHashName(tabName, selectedTab, y, i);
       if (e.target.checked) {
         let additional = {
           name: itemHash,
           x_index: y,
           y_index: i + 1,
+          floor_no: i + 1,
         };
         onInsertColor(tabName, itemHash, additional);
       } else {

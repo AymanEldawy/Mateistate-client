@@ -107,7 +107,7 @@ const ContractForm = () => {
   });
   const { setMaxLength, setNumber, number, maxLength, listOfNumbers } =
     viewList;
-  console.log("🚀 ~ ContractForm ~ listOfNumbers:", listOfNumbers);
+
   const {
     handleSubmit,
     watch,
@@ -432,8 +432,6 @@ const ContractForm = () => {
       commission: watch("contract_commission"),
     });
   };
-
-  console.log(watch());
 
   return (
     <FormWrapperLayout
