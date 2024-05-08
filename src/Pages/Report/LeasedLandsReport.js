@@ -15,6 +15,7 @@ import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportF
 import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
 import { ReportStatementField } from "Components/ReportsComponents/ReportsFields/ReportStatementField";
 import { CheckboxField } from "Components/StructurePage/CustomFields";
+import { token } from "Helpers/Lib/api";
 
 const LeasedLandsReport = () => {
   const name = "leased_lands_report";
@@ -32,9 +33,31 @@ const LeasedLandsReport = () => {
     columns: Object.keys(selectedColumns),
     filters: watch(),
   });
-  const onSubmit = async (value) => {
-    await REPORTS.nearToExpireContract();
-  };
+
+    const onSubmit = async () => {
+      console.log('called');
+      const res = await fetch(
+        `http://localhost:4000/report/land-leased-report`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-token": token,
+            Authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsIn0.p5UuhOyn4nTAvmo8feVPpDuqm_pLTvIgD5XXH9JcMzM",
+            "ngrok-skip-browser-warning": "1",
+          },
+          body: JSON.stringify({
+            columns: Object.keys(selectedColumns),
+            filters: watch(),
+            // buildings: Object.keys(buildingsIds),
+          }),
+        }
+      );
+      const json = await res.json();
+
+      console.log("🚀 ~ onSubmit ~ res:", json);
+    };
 
   console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
 
@@ -80,12 +103,12 @@ const LeasedLandsReport = () => {
               </div>
             </div>
             <div className="my-8 flex justify-end"></div>
-          </form>
           <Button
             onClick={() => setOpenReportResults(true)}
             title="Show"
             classes="my-4 flex ltr:ml-auto rtl:mr-auto"
           />
+          </form>
         </FormProvider>
       </BlockPaper>
       <ReportResultsWrapper

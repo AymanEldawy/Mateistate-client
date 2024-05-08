@@ -1,15 +1,15 @@
 export const useLocalStorage = () => {
-  const localForms = localStorage.getItem("MATEI_TABLES");
-  const tables = JSON.parse(localForms) || {};
-  const getTable = (tableName) => tables?.[tableName];
+  const localForms = localStorage.getItem("MATEI_REPORTS");
+  const report = JSON.parse(localForms) || {};
+  const getReport = (tableName) => report?.[tableName];
 
-  const setTable = (tableName, columns) => {
-    tables[tableName] = columns;
-    localStorage.setItem("MATEI_TABLES", JSON.stringify(tables));
+  const setReport = (tableName, columns) => {
+    report[tableName] = columns;
+    localStorage.setItem("MATEI_REPORTS", JSON.stringify(report));
   };
 
   return {
-    getTable,
-    setTable,
+    getReport,
+    setReport,
   };
 };

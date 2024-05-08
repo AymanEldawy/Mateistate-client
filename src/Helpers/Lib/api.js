@@ -15,15 +15,26 @@ export const SHOULD_DELETE_ENTRY = {
   contract_termination: true,
 };
 
+export const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZmMDdiYWE0LTllN2MtNDE4YS1hOWUwLTEzMTA5YzQ0NjVmNiIsImlhdCI6MTcxMzA5MzE1NCwiZXhwIjoxODcwODgxMTU0fQ.PWEWbgaHGxK-DdLurU_y5yCa34lmjxhLkoH9popbjoM";
 
 function CURD() {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZmMDdiYWE0LTllN2MtNDE4YS1hOWUwLTEzMTA5YzQ0NjVmNiIsImlhdCI6MTcwOTMxMjcyMywiZXhwIjoxODY3MTAwNzIzfQ.mO3u3EkSpCaOtzGHJS_cjZb7fj_5SgIMLDoLgnxMI68";
-  // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI0NTVjN2VjLTMwOGItNGNiYi05MWQ0LWIwYjQ4MTdmM2Y1MSIsImlhdCI6MTcwNDIyMzY3MywiZXhwIjoxODYyMDExNjczfQ.ctpe7dG7a-wJo3NBMQ-e_ORSGjCLBxzYAWltBYR65Fs";
-  // const baseURL = "http://203.161.62.124:3000";
   const baseURL = "http://localhost:4000";
   const matieStateClient = new MatieStateClient(baseURL, token);
 
+  // Example Usage of getReport method
+  const report = async (reportName, params) => {
+    try {
+      const getReportResponse = await matieStateClient.getReport(
+        reportName,
+        params
+      );
+      return getReportResponse;
+    } catch (error) {
+      console.error("Error Getting report:", error);
+      return error;
+    }
+  };
   // Example Usage of createRecord method
   const insert = async (tableName, params) => {
     try {
@@ -135,6 +146,7 @@ function CURD() {
     remove,
     search,
     getById,
+    report,
   };
 }
 

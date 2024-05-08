@@ -7,10 +7,9 @@ import {
   UniqueField,
 } from "Components/StructurePage/CustomFields";
 import { ACTIONS, UNIQUE_REF_TABLES } from "Helpers/constants";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { ContractStatus } from "./ContractStatus";
-import { EyeIcon } from "Components/Icons";
 import { ViewEntry } from "Components/Global/ViewEntry";
 
 export const ContractFinancialForm = ({
@@ -22,6 +21,7 @@ export const ContractFinancialForm = ({
   contract_id,
   assetType,
   number,
+  contractType,
 }) => {
   const { watch } = useFormContext();
 
@@ -216,35 +216,65 @@ export const ContractFinancialForm = ({
       </div>
       <div
         className={`grid ${
-          watch(`contract.paid_type`) === 4 ? "grid-cols-5" : "grid-cols-4"
+          watch(`contract.paid_type`) === 4 && contractType === "rent"
+            ? "grid-cols-5"
+            : "grid-cols-4"
         }  gap-4 items-end mt-8`}
       >
-        <Select
-          {...fieldsHash?.contract_duration}
-          updatedName={`contract.contract_duration`}
-          // values={values}
-          tab={"contract"}
-          error={errors?.contract?.contract_duration ? "Field is required" : ""}
-          value={watch(`contract.contract_duration`)}
-        />
-        <Input
-          {...fieldsHash?.start_duration_date}
-          updatedName={`contract.start_duration_date`}
-          // values={values}
-          tab={"contract"}
-          error={
-            errors?.contract?.start_duration_date ? "Field is required" : ""
-          }
-        />
-        <Input
-          {...fieldsHash?.end_duration_date}
-          updatedName={`contract.end_duration_date`}
-          // values={values}
-          tab={"contract"}
-          error={errors?.contract?.end_duration_date ? "Field is required" : ""}
-          readOnly={watch(`contract.contract_duration`) < 4}
-        />
-
+        {contractType === "rent" ? (
+          <>
+            <Select
+              {...fieldsHash?.contract_duration}
+              updatedName={`contract.contract_duration`}
+              // values={values}
+              tab={"contract"}
+              error={
+                errors?.contract?.contract_duration ? "Field is required" : ""
+              }
+              value={watch(`contract.contract_duration`)}
+            />
+            <Input
+              {...fieldsHash?.start_duration_date}
+              updatedName={`contract.start_duration_date`}
+              // values={values}
+              tab={"contract"}
+              error={
+                errors?.contract?.start_duration_date ? "Field is required" : ""
+              }
+            />
+            <Input
+              {...fieldsHash?.end_duration_date}
+              updatedName={`contract.end_duration_date`}
+              // values={values}
+              tab={"contract"}
+              error={
+                errors?.contract?.end_duration_date ? "Field is required" : ""
+              }
+              readOnly={watch(`contract.contract_duration`) < 4}
+            />
+          </>
+        ) : (
+          <>
+            <Input
+              {...fieldsHash?.issue_date}
+              updatedName={`contract.issue_date`}
+              // values={values}
+              tab={"contract"}
+              error={errors?.contract?.issue_date ? "Field is required" : ""}
+            />
+            <Input
+              {...fieldsHash?.property_delivery_date}
+              updatedName={`contract.property_delivery_date`}
+              // values={values}
+              tab={"contract"}
+              error={
+                errors?.contract?.property_delivery_date
+                  ? "Field is required"
+                  : ""
+              }
+            />
+          </>
+        )}
         <Select
           {...fieldsHash?.paid_type}
           updatedName={`contract.paid_type`}

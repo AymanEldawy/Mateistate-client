@@ -14,8 +14,9 @@ import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFie
 import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
 import ReportSelectField from "Components/ReportsComponents/ReportsFields/ReportSelectField";
 import { SELECT_LISTS } from "Helpers/constants";
+import REPORTS from "Helpers/Lib/global-reports";
+import { token } from "Helpers/Lib/api";
 
-;
 const EarningRentalIncomeEarnedReport = () => {
   const name = "earning_rental_income_earned_report";
   const methods = useForm();
@@ -28,14 +29,47 @@ const EarningRentalIncomeEarnedReport = () => {
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
-  const onSubmit = async () => {
-    console.log({
-      buildings: Object.keys(buildingsIds),
-      contracts: Object.keys(contractIds),
-      columns: Object.keys(selectedColumns),
-      filters: watch(),
-    });
-  };
+  // const onSubmit = async () => {
+  //   console.log({
+  //     buildings: Object.keys(buildingsIds),
+  //     contracts: Object.keys(contractIds),
+  //     columns: Object.keys(selectedColumns),
+  //     filters: watch(),
+  //   });
+  //   const fn = REPORTS?.[name];
+  //   const response = await fn({
+  //     buildings: Object.keys(buildingsIds),
+  //     contracts: Object.keys(contractIds),
+  //     columns: Object.keys(selectedColumns),
+  //     filters: watch(),
+  //   });
+  //   console.log("🚀 ~ onSubmit ~ response:", response);
+  // };
+    const onSubmit = async () => {
+      const res = await fetch(
+        `http://localhost:4000/report/contract`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-token": token,
+            Authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsIn0.p5UuhOyn4nTAvmo8feVPpDuqm_pLTvIgD5XXH9JcMzM",
+            "ngrok-skip-browser-warning": "1",
+          },
+          body: JSON.stringify({
+            columns: Object.keys(selectedColumns),
+            filters: watch(),
+            contracts: Object.keys(contractIds),
+            buildings: Object.keys(buildingsIds),
+          }),
+        }
+      );
+      const json = await res.json();
+
+      console.log("🚀 ~ onSubmit ~ res:", json);
+    };
+
 
   return (
     <BlockPaper title={name}>

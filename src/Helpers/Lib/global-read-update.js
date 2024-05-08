@@ -126,14 +126,14 @@ export const getShopUpdate = async (id) => {
   const shop = await fetchData("shop", "id", id);
   const shop_fixed_assets = await fetchData("shop_fixed_assets", "id", id);
   const shop_pictures = await fetchData("shop_pictures,", "id", id);
-  const shop_rent_price = await fetchData("shop_rent_price", "id", id);
+  const shop_rental_price = await fetchData("shop_rental_price", "id", id);
   const shop_selling_price = await fetchData("shop_selling_price", "id", id);
 
   const groupData = {
     shop: shop?.result?.at(0),
     shop_fixed_assets: shop_fixed_assets?.result?.at(0),
     shop_pictures: shop_pictures?.result?.at(0),
-    shop_rent_price: shop_rent_price?.result?.at(0),
+    shop_rental_price: shop_rental_price?.result?.at(0),
     shop_selling_price: shop_selling_price?.result?.at(0),
   };
 
@@ -155,7 +155,7 @@ export const getVillaUpdate = async (id) => {
     id
   );
   const villa_pictures = await fetchData("villa_pictures", "id", id);
-  const villa_rent_price = await fetchData("villa_rent_price", "id", id);
+  const villa_rental_price = await fetchData("villa_rental_price", "id", id);
   const villa_selling_price = await fetchData("villa_selling_price", "id", id);
 
   const groupData = {
@@ -165,7 +165,7 @@ export const getVillaUpdate = async (id) => {
     villa_exterior_details: villa_exterior_details?.result?.at(0),
     villa_interior_details: villa_interior_details?.result?.at(0),
     villa_pictures: villa_pictures?.result?.at(0),
-    villa_rent_price: villa_rent_price?.result?.at(0),
+    villa_rental_price: villa_rental_price?.result?.at(0),
     villa_selling_price: villa_selling_price?.result?.at(0),
   };
 
@@ -494,10 +494,21 @@ export async function getBuildingByNumber(number) {
   }
 }
 
+export async function getLawsuitByNumber(number) {
+  const response = await ApiActions.read("lawsuit", {
+    conditions: [{ type: "and", conditions: [["number", "=", number]] }],
+  });
+  // let lawsuitId = response?.result?.at(0)?.id;
+  // if (response?.success && lawsuitId) {
+  //   return await getBuildingUpdate(lawsuitId);
+  // }
+}
+
 export const getDataByNumber = async ({ name, number, reset }) => {
   const response = await ApiActions.read();
 };
 
 export const GET_UPDATE_DATE_BY_NUMBER = {
   building: getBuildingByNumber,
+  lawsuit: getLawsuitByNumber,
 };

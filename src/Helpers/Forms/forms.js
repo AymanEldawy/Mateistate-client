@@ -12,6 +12,7 @@ import {
   USER_STEPS,
   VILLA_STEPS,
   VOUCHER_PATTERN_STEPS,
+  LAWSUIT_STEPS,
 } from "Helpers/constants";
 import { CONTRACTS_FORM } from "./contract-forms";
 import FIELDS_STRUCTURE from "./fields-structure";
@@ -254,7 +255,6 @@ const land = [
 ];
 // ==== Start Cards
 const reservation_property = [
-  { label: "id", name: "id", type: "uuid" },
   FIELDS_STRUCTURE.dateField({
     label: "created_at",
     name: "created_at",
@@ -274,6 +274,7 @@ const reservation_property = [
     label: "building_id",
     name: "building_id",
     ref_table: "building",
+    hideAdd:true,
     required: true,
   }),
 
@@ -302,6 +303,11 @@ const reservation_property = [
     key: "switch",
     required: false,
   },
+  FIELDS_STRUCTURE.selectField({
+    label: "payment_method",
+    name: "payment_method",
+    list: [], // update future
+  }),
   {
     label: "reservation_expired",
     name: "reservation_expired",
@@ -614,9 +620,10 @@ const user_general = [
     type: "text",
   },
   {
-    label: "personal_phone",
-    name: "personal_phone",
+    label: "phone",
+    name: "phone",
     type: "text",
+    required: true
   },
   {
     label: "fax",
@@ -713,7 +720,6 @@ const cost_center = [
 ];
 
 const country = [
-  FIELDS_STRUCTURE.numberField({ label: "id", name: "id", type: "number" }),
   FIELDS_STRUCTURE.created_at(),
   FIELDS_STRUCTURE.name(),
   {
@@ -742,6 +748,11 @@ const building = [
   FIELDS_STRUCTURE.id(),
   // {  label: 'number', name: "number", type: "text", required: true },
   FIELDS_STRUCTURE.name(),
+  FIELDS_STRUCTURE.textField({
+    label: "city",
+    name: "city",
+    type: "text",
+  }),
   FIELDS_STRUCTURE.textField({
     label: "emirate",
     name: "emirate",
@@ -959,6 +970,7 @@ const building_editorial_entry = [
     name: "building_id",
     is_ref: true,
     ref_table: "building",
+    hideAdd:true,
 
     hide_in_form_add: true,
   },
@@ -976,6 +988,7 @@ const building_investment = [
     name: "building_id",
     is_ref: true,
     ref_table: "building",
+    hideAdd:true,
 
     hide_in_form_add: true,
   },
@@ -1052,6 +1065,7 @@ const building_pictures = [
     name: "building_id",
     is_ref: true,
     ref_table: "building",
+    hideAdd:true,
 
     hide_in_form_add: true,
   },
@@ -1087,6 +1101,7 @@ const building_real_estate_development = [
     name: "building_id",
     is_ref: true,
     ref_table: "building",
+    hideAdd:true,
 
     hide_in_form_add: true,
   },
@@ -1129,6 +1144,7 @@ const building_real_estate_management = [
     name: "building_id",
     is_ref: true,
     ref_table: "building",
+    hideAdd:true,
 
     hide_in_form_add: true,
   },
@@ -1140,6 +1156,7 @@ const building_default_accounts = [
     name: "building_id",
     is_ref: true,
     ref_table: "building",
+    hideAdd:true,
 
     hide_in_form_add: true,
   },
@@ -1420,6 +1437,7 @@ const apartment = [
     required: true,
     is_ref: true,
     ref_table: "building",
+    hideAdd:true,
   },
   {
     label: "apartment_no",
@@ -1463,6 +1481,11 @@ const apartment = [
   {
     label: "view",
     name: "view",
+    type: "text",
+  },
+  {
+    label: "class",
+    name: "class",
     type: "text",
   },
   {
@@ -1649,7 +1672,7 @@ const apartment_rental_price = [
     name: "apartment_id",
     is_ref: true,
     ref_table: "apartment",
-    hide_in_form: true
+    hide_in_form: true,
   },
   {
     label: "date",
@@ -2803,7 +2826,7 @@ const installment = [
     name: "contract_id",
     is_ref: true,
     ref_table: "contract",
-
+    hideAdd: true,
     hide_in_form: true,
   },
   {
@@ -3917,228 +3940,6 @@ const assets_shipping = [
 ];
 
 // ==== End Assets
-// ==== Start lawsuit
-const lawsuit = [
-  FIELDS_STRUCTURE.id(),
-  FIELDS_STRUCTURE.created_at(),
-  {
-    label: "number",
-    name: "number",
-    type: "number",
-
-    hide_in_form: true,
-  },
-  {
-    label: "type",
-    name: "type",
-    type: "number",
-  },
-  {
-    label: "contract_id",
-    name: "contract_id",
-    is_ref: true,
-    ref_table: "contract",
-  },
-  {
-    label: "start_date",
-    name: "start_date",
-    type: "date",
-  },
-  {
-    label: "lawsuit_no",
-    name: "lawsuit_no",
-    type: "text",
-  },
-  {
-    label: "open_date",
-    name: "open_date",
-    type: "date",
-  },
-  {
-    label: "exec_date",
-    name: "exec_date",
-    type: "date",
-  },
-  {
-    label: "stop_exec",
-    name: "stop_exec",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "stop_exec_date",
-    name: "stop_exec_date",
-    type: "date",
-  },
-  {
-    label: "stop_exec_note",
-    name: "stop_exec_note",
-    type: "text",
-  },
-  {
-    label: "stop_pay_date",
-    name: "stop_pay_date",
-    type: "date",
-  },
-  {
-    label: "quittance_date",
-    name: "quittance_date",
-    type: "date",
-  },
-  {
-    label: "quittance_electricity_date",
-    name: "quittance_electricity_date",
-    type: "date",
-  },
-  {
-    label: "rent",
-    name: "rent",
-    type: "number",
-  },
-  {
-    label: "is_ended",
-    name: "is_ended",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "end_date",
-    name: "end_date",
-    type: "date",
-  },
-  {
-    label: "exe_no",
-    name: "exe_no",
-    type: "text",
-  },
-  FIELDS_STRUCTURE.currency(),
-  // {
-  //   label: "currency_val",
-  //   name: "currency_val",
-  //   defaultValue: 1,
-  //   type: "number",
-  //
-  // },
-  {
-    label: "lawyer_rent",
-    name: "lawyer_rent",
-    type: "number",
-  },
-  {
-    label: "lawyer_rent_date",
-    name: "lawyer_rent_date",
-    type: "date",
-  },
-  {
-    label: "lawyer_entry",
-    name: "lawyer_entry",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "lawyer_debit_account_id",
-    name: "lawyer_debit_account_id",
-    is_ref: true,
-    ref_table: "account",
-  },
-  {
-    label: "lawyer_credit_account_id",
-    name: "lawyer_credit_account_id",
-    is_ref: true,
-    ref_table: "account",
-  },
-  {
-    label: "lawyer_note",
-    name: "lawyer_note",
-    type: "text",
-  },
-  {
-    label: "maintenance_rent",
-    name: "maintenance_rent",
-    type: "number",
-  },
-  {
-    label: "maintenance_rent_date",
-    name: "maintenance_rent_date",
-    type: "date",
-  },
-  {
-    label: "maintenance_entry",
-    name: "maintenance_entry",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "maintenance_debit_account_id",
-    name: "maintenance_debit_account_id",
-    is_ref: true,
-    ref_table: "account",
-  },
-  {
-    label: "maintenance_credit_account_id",
-    name: "maintenance_credit_account_id",
-    is_ref: true,
-    ref_table: "account",
-  },
-  {
-    label: "maintenance_note",
-    name: "maintenance_note",
-    type: "text",
-  },
-  {
-    label: "furniture",
-    name: "furniture",
-    type: "number",
-  },
-  {
-    label: "furniture_date",
-    name: "furniture_date",
-    type: "date",
-  },
-  {
-    label: "furniture_entry",
-    name: "furniture_entry",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "furniture_debit_account_id",
-    name: "furniture_debit_account_id",
-    is_ref: true,
-    ref_table: "account",
-  },
-  {
-    label: "furniture_credit_account_id",
-    name: "furniture_credit_account_id",
-    is_ref: true,
-    ref_table: "account",
-  },
-  {
-    label: "furniture_note",
-    name: "furniture_note",
-    type: "text",
-  },
-  FIELDS_STRUCTURE.note(),
-  {
-    label: "entry_id1",
-    name: "entry_id1",
-    is_ref: true,
-    ref_table: "entry1", // unknown table
-  },
-  {
-    label: "entry_id2",
-    name: "entry_id2",
-    is_ref: true,
-    ref_table: "entry2", // unknown table
-  },
-  {
-    label: "entry_id3",
-    name: "entry_id3",
-    is_ref: true,
-    ref_table: "entry3", // unknown table
-  },
-];
-// ==== End lawsuit
 
 // ==== Start maintenance_order
 const maintenance_order = [
@@ -4504,6 +4305,7 @@ const parking = [
     name: "building_id",
     is_ref: true,
     ref_table: "building",
+    hideAdd:true,
   },
   {
     label: "parking_no",
@@ -4700,6 +4502,7 @@ const shop = [
     name: "building_id",
     is_ref: true,
     ref_table: "building",
+    hideAdd:true,
   },
   {
     label: "floor_no",
@@ -5311,7 +5114,7 @@ const villa_pictures = [
   },
 ];
 
-const villa_rent_price = [
+const villa_rental_price = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
   {
@@ -5522,6 +5325,452 @@ const entry_grid_data = [
 ];
 // ==== End entry
 
+// Lawsuit start
+const lawsuit = [
+  { label: "created_at", name: "created_at", type: "date", hide_in_form: true },
+  { label: "number", name: "number", type: "number", hide_in_form: true },
+  {
+    label: "contract_id",
+    name: "contract_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "contract",
+    hideAdd: true,
+    ref_col: "id",
+    ref_col: "id",
+  },
+  { label: "lawsuit_no", name: "lawsuit_no", type: "text", required: false },
+  { label: "note", name: "note", type: "text", required: false },
+  {
+    label: "opened_lawsuit_date",
+    name: "opened_lawsuit_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "building_id",
+    name: "building_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "building",
+    hideAdd: true,
+    ref_col: "id",
+  },
+  {
+    label: "unit_id",
+    name: "unit_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "unit",
+    ref_col: "id",
+  },
+  {
+    label: "client_id",
+    name: "client_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "client",
+    ref_col: "id",
+  },
+  {
+    label: "status",
+    name: "status",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "legal_department_date",
+    name: "legal_department_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "refrain_date",
+    name: "refrain_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "municipality_clearance_date",
+    name: "municipality_clearance_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "electricity_clearance_date",
+    name: "electricity_clearance_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "latest_rent_certified_contract",
+    name: "latest_rent_certified_contract",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "implementation_number",
+    name: "implementation_number",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "implementation_date",
+    name: "implementation_date",
+    type: "date",
+    required: false,
+  },
+];
+
+const lawsuit_expenses = [
+  {
+    label: "registration_date",
+    name: "registration_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "recovered_from_client",
+    name: "recovered_from_client",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "receipt_number",
+    name: "receipt_number",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "receipt_date",
+    name: "receipt_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "receipt_value",
+    name: "receipt_value",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "issuing_entity",
+    name: "issuing_entity",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "receipt_statement",
+    name: "receipt_statement",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "statement_unification",
+    name: "statement_unification",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "currency_id",
+    name: "currency_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "currency",
+    ref_col: "id",
+  },
+  {
+    label: "currency_val",
+    name: "currency_val",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "debit_account_id",
+    name: "debit_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "debit_account",
+    ref_col: "id",
+  },
+  {
+    label: "credit_account_id",
+    name: "credit_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "credit_account",
+    ref_col: "id",
+  },
+  {
+    label: "debit_cost_center_id",
+    name: "debit_cost_center_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "debit_cost_center",
+    ref_col: "id",
+  },
+  {
+    label: "credit_cost_center_id",
+    name: "credit_cost_center_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "credit_cost_center",
+    ref_col: "id",
+  },
+  {
+    label: "debit_statement",
+    name: "debit_statement",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "credit_statement",
+    name: "credit_statement",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "gen_entries",
+    name: "gen_entries",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  { label: "user", name: "user", type: "text", required: false },
+  {
+    label: "refunded_from_customer",
+    name: "refunded_from_customer",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  { label: "statement", name: "statement", type: "text", required: false },
+];
+
+const lawsuit_expenses_pictures = [
+  {
+    label: "picture",
+    name: "picture",
+    key: "image",
+    multiple: true,
+    type: "text",
+    required: false,
+  },
+];
+
+const lawsuit_internal_expenses = [
+  {
+    label: "currency_id",
+    name: "currency_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "currency",
+    ref_col: "id",
+  },
+  {
+    label: "currency_val",
+    name: "currency_val",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "lawyer_gen_entries",
+    name: "lawyer_gen_entries",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "lawyer_amount",
+    name: "lawyer_amount",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "lawyer_debit_account_id",
+    name: "lawyer_debit_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "lawyer_debit_account",
+    ref_col: "id",
+  },
+  {
+    label: "lawyer_credit_account_id",
+    name: "lawyer_credit_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "lawyer_credit_account",
+    ref_col: "id",
+  },
+  {
+    label: "lawyer_statement",
+    name: "lawyer_statement",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "maintenance_gen_entries",
+    name: "maintenance_gen_entries",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "maintenance_amount",
+    name: "maintenance_amount",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "maintenance_debit_account_id",
+    name: "maintenance_debit_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "maintenance_debit_account",
+    ref_col: "id",
+  },
+  {
+    label: "maintenance_credit_account_id",
+    name: "maintenance_credit_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "maintenance_credit_account",
+    ref_col: "id",
+  },
+  {
+    label: "maintenance_statement",
+    name: "maintenance_statement",
+    type: "text",
+    required: false,
+  },
+  {
+    label: "furniture_gen_entries",
+    name: "furniture_gen_entries",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "furniture_amount",
+    name: "furniture_amount",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "furniture_debit_account_id",
+    name: "furniture_debit_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "furniture_debit_account",
+    ref_col: "id",
+  },
+  {
+    label: "furniture_credit_account_id",
+    name: "furniture_credit_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "furniture_credit_account",
+    ref_col: "id",
+  },
+  {
+    label: "furniture_statement",
+    name: "furniture_statement",
+    type: "text",
+    required: false,
+  },
+];
+
+const lawsuit_status = [
+  { label: "date", name: "date", type: "date", required: false },
+  { label: "status", name: "status", type: "text", required: false },
+  { label: "statement", name: "statement", type: "text", required: false },
+  { label: "user", name: "user", type: "text", required: false },
+  {
+    label: "printed",
+    name: "printed",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+];
+
+const lawsuit_termination = [
+  {
+    label: "implementation_suspended",
+    name: "implementation_suspended",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "implementation_suspended_date",
+    name: "implementation_suspended_date",
+    type: "date",
+    required: false,
+  },
+  { label: "statement", name: "statement", type: "text", required: false },
+  {
+    label: "lawsuit_terminated",
+    name: "lawsuit_terminated",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "lawsuit_terminated_date",
+    name: "lawsuit_terminated_date",
+    type: "date",
+    required: false,
+  },
+];
+
+// Lawsuit end
+
+const lawsuit_group = {
+  forms: {
+    [LAWSUIT_STEPS.lawsuit]: {
+      fields: lawsuit,
+      tab_name: "lawsuit",
+    },
+    [LAWSUIT_STEPS.lawsuit_status]: {
+      fields: lawsuit_status,
+      tab_name: "lawsuit_status",
+    },
+    [LAWSUIT_STEPS.lawsuit_expenses]: {
+      fields: lawsuit_expenses,
+      tab_name: "lawsuit_expenses",
+      formType: "nested",
+    },
+    [LAWSUIT_STEPS.lawsuit_internal_expenses]: {
+      fields: lawsuit_internal_expenses,
+      tab_name: "lawsuit_internal_expenses",
+    },
+    [LAWSUIT_STEPS.lawsuit_termination]: {
+      fields: lawsuit_termination,
+      tab_name: "lawsuit_termination",
+    },
+  },
+};
+
 const building_group = {
   forms: {
     [BUILDING_STEPS.building_general]: {
@@ -5717,9 +5966,9 @@ const villa_group = {
       fields: villa_pictures,
       tab_name: "villa_pictures",
     },
-    [VILLA_STEPS.villa_rent_price]: {
-      fields: villa_rent_price,
-      tab_name: "villa_rent_price",
+    [VILLA_STEPS.villa_rental_price]: {
+      fields: villa_rental_price,
+      tab_name: "villa_rental_price",
     },
     [VILLA_STEPS.villa_selling_price]: {
       fields: villa_selling_price,
@@ -5746,6 +5995,9 @@ const FORMS = {
   materials,
   material_group,
   assets_group,
+  lawsuit_group,
+  lawsuit_expenses,
+  lawsuit_expenses_pictures,
   user: user_group,
   assets: assets_card_group,
   apartment: apartment_group,

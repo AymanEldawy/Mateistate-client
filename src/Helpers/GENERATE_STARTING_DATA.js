@@ -4,6 +4,8 @@ const { ApiActions } = require("./Lib/api");
 
 export const USER_CUSTOMER_CODE = 1;
 export const USER_SUPPLIER_CODE = 2;
+export const USER_SUPERVISOR_CODE = 3;
+export const USER_EMPLOYEE_CODE = 4;
 
 export const ACCOUNT_NORMAL_TYPE_CODE = 1;
 export const ACCOUNT_CLOSING_TYPE_CODE = 2;

@@ -19,6 +19,8 @@ import {
   SHOP_ASSET_TYPE_CODE,
   SHOP_ASSET_TYPE_DEFAULT_NAME,
   USER_CUSTOMER_CODE,
+  USER_EMPLOYEE_CODE,
+  USER_SUPERVISOR_CODE,
   USER_SUPPLIER_CODE,
 } from "./GENERATE_STARTING_DATA";
 
@@ -408,6 +410,8 @@ export const SELECT_LISTS = (listName) => {
     user_type: [
       { name: "Customer", id: USER_CUSTOMER_CODE },
       { name: "Supplier", id: USER_SUPPLIER_CODE },
+      { name: "Supervisor", id: USER_SUPERVISOR_CODE },
+      { name: "Employee", id: USER_EMPLOYEE_CODE },
     ],
 
     account_type: [
@@ -582,6 +586,15 @@ export const USER_STEPS = {
   user_files: "user_files",
 };
 
+export const LAWSUIT_STEPS = {
+  lawsuit: "lawsuit",
+  lawsuit_expenses: "lawsuit_expenses",
+  lawsuit_expenses_pictures: "lawsuit_expenses_pictures",
+  lawsuit_internal_expenses: "lawsuit_internal_expenses",
+  lawsuit_status: "lawsuit_status",
+  lawsuit_termination: "lawsuit_termination",
+};
+
 export const BUILDING_STEPS = {
   building_general: "building_general",
   building_units: "building_units",
@@ -636,7 +649,7 @@ export const VILLA_STEPS = {
   villa_exterior_details: "villa_exterior_details",
   villa_interior_details: "villa_interior_details",
   villa_pictures: "villa_pictures",
-  villa_rent_price: "villa_rent_price",
+  villa_rental_price: "villa_rental_price",
   villa_selling_price: "villa_selling_price",
 };
 
@@ -974,6 +987,8 @@ export const CONSTANT_COLUMNS_NAME = {
 export const UNIQUE_REF_TABLES = {
   clients: "CLIENTS",
   suppliers: "SUPPLIERS",
+  supervisor: "SUPERVISOR",
+  employee: "EMPLOYEE",
 };
 
 export const FLATS = {

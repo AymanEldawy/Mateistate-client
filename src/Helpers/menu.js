@@ -200,7 +200,7 @@ export const menuData = [
       {
         key: "lawsuit",
         name: "Lawsuit",
-        link: "/list/lawsuit",
+        link: "/lawsuit/1",
       },
       {
         key: "Owners Associations Fees",

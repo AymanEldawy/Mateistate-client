@@ -74,7 +74,7 @@ const user = {
   nationality: null,
   passport_expiry: null,
   passport_number: null,
-  personal_phone: null,
+  phone: null,
   profession: null,
   sponsor: null,
   sponsor_data: null,

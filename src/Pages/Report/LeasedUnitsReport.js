@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import BlockPaper from "Components/Global/BlockPaper";
 import { ReportFilterColumns } from "../../Components/ReportsComponents/ReportFilterColumns";
 import { FormProvider, useForm } from "react-hook-form";
@@ -15,6 +15,9 @@ import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportF
 import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
 import { ReportStatementField } from "Components/ReportsComponents/ReportsFields/ReportStatementField";
 import { CheckboxField } from "Components/StructurePage/CustomFields";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { ApiActions, token } from "Helpers/Lib/api";
 
 const REPORT_OPTIONS = [
   "show_merged_shops_and_flats",
@@ -39,17 +42,26 @@ const LeasedUnitsReport = () => {
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
-  const onSubmit = async (value) => {
-    console.log({
-      columns: Object.keys(selectedColumns),
-      filters: watch(),
-      buildings: Object.keys(buildingsIds),
+  const onSubmit = async () => {
+    const res = await fetch(`http://localhost:4000/report/unit-leased-report`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+        Authorization:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsIn0.p5UuhOyn4nTAvmo8feVPpDuqm_pLTvIgD5XXH9JcMzM",
+        "ngrok-skip-browser-warning": "1",
+      },
+      body: JSON.stringify({
+        columns: Object.keys(selectedColumns),
+        filters: watch(),
+        buildings: Object.keys(buildingsIds),
+      }),
     });
-    // await REPORTS.nearToExpireContract();
+    const json = await res.json()
+
+    console.log("🚀 ~ onSubmit ~ res:", json);
   };
-
-  console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
-
 
   return (
     <>
@@ -100,11 +112,11 @@ const LeasedUnitsReport = () => {
               </div>
             </div>
             <div className="my-8 flex justify-end"></div>
-          <Button
-            onClick={() => setOpenReportResults(true)}
-            title="Show"
-            classes="my-4 flex ltr:ml-auto rtl:mr-auto"
-          />
+            <Button
+              onClick={() => setOpenReportResults(true)}
+              title="Show"
+              classes="my-4 flex ltr:ml-auto rtl:mr-auto"
+            />
           </form>
         </FormProvider>
       </BlockPaper>

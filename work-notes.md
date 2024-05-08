@@ -419,9 +419,15 @@ NOTES: complicated tasks
 ## Latest notes
 - [✔️] add property floor in tools page
 - [✔️] rediesng shop and parking and apartment forms & tabls sturcture
+- [✔️] contracts sales in database
 - [] lawsuit videos
 - [] contract status dynamic but apartmnt status manual
 - [] chq form opertation disabled
 - [] account assembly and distributive in entry
-- [] contracts sales in database
-- [] add new key in table `reservation_property` called `payment_method`
+- [] add new key in table `reservation_property` called `payment_method` <!-- update futrue -->
+
+
+## App Notes
+- طلب الاخلاء من خلال التطبيق
+- هل الموبايل اساسي
+- انواع الحسابات جميعها بتكون في الحسابات العادية 

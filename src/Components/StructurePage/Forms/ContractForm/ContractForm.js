@@ -86,7 +86,6 @@ export async function filterAssetsByBuilding(
 const ContractForm = () => {
   const params = useParams();
   const [searchQuery] = useSearchParams();
-  const name = params?.name;
   const type = params?.type;
   const code = searchQuery.get("code");
   const assetType = searchQuery.get("flat_type")?.toLowerCase();
@@ -513,6 +512,7 @@ const ContractForm = () => {
                         dispatchVoucherEntries={dispatchVoucherEntries}
                         layout={number <= maxLength}
                         assetType={assetType}
+                        contractType={type}
                       />
                     </div>
                   ) : tab === "contract_termination" ? (

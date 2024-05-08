@@ -92,139 +92,166 @@
  * @class
  */
 class MatieStateClient {
-	/**
-	 * Creates an instance of MatieStateClient.
-	 *
-	 * @constructor
-	 * @param {string} baseURL - The base URL of the Fastify API.
-	 * @param {string} token - The Token for authentication.
-	 */
-	constructor(baseURL, token) {
-		/** @private @type {string} */
-		this.m_baseURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL;
-		/** @private @type {string} */
-		this.m_token = token;
-	}
+  /**
+   * Creates an instance of MatieStateClient.
+   *
+   * @constructor
+   * @param {string} baseURL - The base URL of the Fastify API.
+   * @param {string} token - The Token for authentication.
+   */
+  constructor(baseURL, token) {
+    /** @private @type {string} */
+    this.m_baseURL = baseURL.endsWith("/") ? baseURL.slice(0, -1) : baseURL;
+    /** @private @type {string} */
+    this.m_token = token;
+  }
+	
+  async getReport(reportName, data) {
+    try {
+      const response = await fetch(`${this.m_baseURL}/report/${reportName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-token": this.m_token,
+        },
+        body: JSON.stringify(data),
+      });
 
-	/**
-	 * Creates a record in the specified table.
-	 *
-	 * @async
-	 * @param {string} tableName - The name of the target table.
-	 * @param {CreateRecordRequestBody} data - The data to be inserted into the table.
-	 * @returns {Promise<CreateRecordResponse>} - A Promise that resolves to the API response.
-	 * @throws {ErrorResponse} - An object representing an error response in case of failure.
-	 */
-	async createRecord(tableName, data) {
-		try {
-			const response = await fetch(`${this.m_baseURL}/create/${tableName}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'x-token': this.m_token,
-				},
-				body: JSON.stringify(data),
-			});
-
+			console.log(response,'response');
 			if (!response.ok) {
-				throw await response.json();
-			}
+        throw await response.json();
+      }
 
-			return response.json();
-		} catch (error) {
-			throw { success: false, message: 'Error creating record', error };
-		}
-	}
+      console.log(response, "res---");
+      return response.json();
+    } catch (error) {
+      throw {
+        success: false,
+        message: "Error Failed to retrieve report",
+        error,
+      };
+    }
+  }
 
-	/**
-	 * Reads records from the specified table based on the provided criteria.
-	 *
-	 * @async
-	 * @param {string} tableName - The name of the target table.
-	 * @param {ReadRecordRequestBody} data - The criteria for reading records.
-	 * @returns {Promise<ReadRecordResponse>} - A Promise that resolves to the API response.
-	 * @throws {ErrorResponse} - An object representing an error response in case of failure.
-	 */
-	async readRecords(tableName, data) {
-		try {
-			const response = await fetch(`${this.m_baseURL}/read/${tableName}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'x-token': this.m_token,
-				},
-				body: JSON.stringify(data),
-			});
+  /**
+   * Creates a record in the specified table.
+   *
+   * @async
+   * @param {string} tableName - The name of the target table.
+   * @param {CreateRecordRequestBody} data - The data to be inserted into the table.
+   * @returns {Promise<CreateRecordResponse>} - A Promise that resolves to the API response.
+   * @throws {ErrorResponse} - An object representing an error response in case of failure.
+   */
+  async createRecord(tableName, data) {
+    try {
+      const response = await fetch(`${this.m_baseURL}/create/${tableName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-token": this.m_token,
+        },
+        body: JSON.stringify(data),
+      });
 
-			if (!response.ok) {
-				throw await response.json();
-			}
+      if (!response.ok) {
+        throw await response.json();
+      }
 
-			return response.json();
-		} catch (error) {
-			throw { success: false, message: 'Error reading records', error };
-		}
-	}
+      return response.json();
+    } catch (error) {
+      throw { success: false, message: "Error creating record", error };
+    }
+  }
 
-	/**
-	 * Updates records in the specified table based on the provided criteria.
-	 *
-	 * @async
-	 * @param {string} tableName - The name of the target table.
-	 * @param {UpdateRecordRequestBody} data - The criteria and updates for updating records.
-	 * @returns {Promise<UpdateRecordResponse>} - A Promise that resolves to the API response.
-	 * @throws {ErrorResponse} - An object representing an error response in case of failure.
-	 */
-	async updateRecords(tableName, data) {
-		try {
-			const response = await fetch(`${this.m_baseURL}/update/${tableName}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'x-token': this.m_token,
-				},
-				body: JSON.stringify(data),
-			});
+  /**
+   * Reads records from the specified table based on the provided criteria.
+   *
+   * @async
+   * @param {string} tableName - The name of the target table.
+   * @param {ReadRecordRequestBody} data - The criteria for reading records.
+   * @returns {Promise<ReadRecordResponse>} - A Promise that resolves to the API response.
+   * @throws {ErrorResponse} - An object representing an error response in case of failure.
+   */
+  async readRecords(tableName, data) {
+    try {
+      const response = await fetch(`${this.m_baseURL}/read/${tableName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-token": this.m_token,
+        },
+        body: JSON.stringify(data),
+      });
 
-			if (!response.ok) {
-				throw await response.json();
-			}
+      if (!response.ok) {
+        throw await response.json();
+      }
 
-			return response.json();
-		} catch (error) {
-			throw { success: false, message: 'Error updating records', error };
-		}
-	}
+      return response.json();
+    } catch (error) {
+      throw { success: false, message: "Error reading records", error };
+    }
+  }
 
-	/**
-	 * Deletes records from the specified table based on the provided criteria.
-	 *
-	 * @async
-	 * @param {string} tableName - The name of the target table.
-	 * @param {DeleteRecordRequestBody} data - The criteria for deleting records.
-	 * @returns {Promise<DeleteRecordResponse>} - A Promise that resolves to the API response.
-	 * @throws {ErrorResponse} - An object representing an error response in case of failure.
-	 */
-	async deleteRecords(tableName, data) {
-		try {
-			const response = await fetch(`${this.m_baseURL}/delete/${tableName}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'x-token': this.m_token,
-				},
-				body: JSON.stringify(data),
-			});
+  /**
+   * Updates records in the specified table based on the provided criteria.
+   *
+   * @async
+   * @param {string} tableName - The name of the target table.
+   * @param {UpdateRecordRequestBody} data - The criteria and updates for updating records.
+   * @returns {Promise<UpdateRecordResponse>} - A Promise that resolves to the API response.
+   * @throws {ErrorResponse} - An object representing an error response in case of failure.
+   */
+  async updateRecords(tableName, data) {
+    try {
+      const response = await fetch(`${this.m_baseURL}/update/${tableName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-token": this.m_token,
+        },
+        body: JSON.stringify(data),
+      });
 
-			if (!response.ok) {
-				throw await response.json();
-			}
+      if (!response.ok) {
+        throw await response.json();
+      }
 
-			return response.json();
-		} catch (error) {
-			throw { success: false, message: 'Error deleting records', error };
-		}
-	}
+      return response.json();
+    } catch (error) {
+      throw { success: false, message: "Error updating records", error };
+    }
+  }
+
+  /**
+   * Deletes records from the specified table based on the provided criteria.
+   *
+   * @async
+   * @param {string} tableName - The name of the target table.
+   * @param {DeleteRecordRequestBody} data - The criteria for deleting records.
+   * @returns {Promise<DeleteRecordResponse>} - A Promise that resolves to the API response.
+   * @throws {ErrorResponse} - An object representing an error response in case of failure.
+   */
+  async deleteRecords(tableName, data) {
+    try {
+      const response = await fetch(`${this.m_baseURL}/delete/${tableName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-token": this.m_token,
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw await response.json();
+      }
+
+      return response.json();
+    } catch (error) {
+      throw { success: false, message: "Error deleting records", error };
+    }
+  }
 }
 
 export default MatieStateClient;

@@ -1,4 +1,4 @@
-export const BuildingSubSteps = ({ steps, activeStage, goTo }) => {
+export const SubStepsList = ({ steps, activeStage, goTo }) => {
   return (
     <div className="flex flex-col min-w-[250px] shadow text-left mb-8 bg-blue-100 dark:bg-dark-bg border-t border-gray-100 dark:border-dark-border overflow-auto">
       {steps?.map((step, index) => (

@@ -195,6 +195,8 @@ const dynamicInsertIntoMultiStepsTable = async ({
 };
 
 // Insert to Building and other relation tables
+const insetIntoLawsuit = async (data) => {};
+// Insert to Building and other relation tables
 const insertToBuilding = async (data) => {
   let buildingId = null;
   const response = await dynamicInsertIntoMultiStepsTable({
@@ -314,7 +316,8 @@ const dynamicInsertIntoContract = async ({
 
   if (!contract_id) {
     // Insert into contract or update
-    const internal_number =  await getNewContractNumber(data?.contract?.code)
+    const internal_number = await getNewContractNumber(data?.contract?.code);
+    console.log("🚀 ~ internal_number:", internal_number);
     response = await ApiActions.insert("contract", {
       data: {
         internal_number,
@@ -338,6 +341,7 @@ const dynamicInsertIntoContract = async ({
 
   if (contract_id) {
     for (const name in list) {
+      if (name === tableName) continue;
       if (list[name]) {
         let values = list?.[name];
 
@@ -1007,20 +1011,27 @@ const insertToUser = async (data) => {
     (c) => c.id === +data?.card_type
   )?.name;
 
-  if (!type) return;
-
-  const account = await getInsertAccountTrigger(`${type}s`);
-  account.name = data?.name;
-
-  // automatic insert a new account in suppliers or customers before insert the user
-  const accountResponse = await ApiActions.insert("account", { data: account });
-
-  if (accountResponse?.success) {
-    // insert the USER after connect it with the inserted ACCOUNT
+  if (data?.card_type > 2) {
     const userResponse = await ApiActions.insert("user", {
-      data: { ...data, account_id: accountResponse?.record?.id },
+      data,
     });
     return userResponse;
+  } else {
+    const account = await getInsertAccountTrigger(`${type}s`);
+    account.name = data?.name;
+
+    // automatic insert a new account in suppliers or customers before insert the user
+    const accountResponse = await ApiActions.insert("account", {
+      data: account,
+    });
+
+    if (accountResponse?.success) {
+      // insert the USER after connect it with the inserted ACCOUNT
+      const userResponse = await ApiActions.insert("user", {
+        data: { ...data, account_id: accountResponse?.record?.id },
+      });
+      return userResponse;
+    }
   }
 };
 
@@ -1048,6 +1059,7 @@ const INSERT_FUNCTION = {
   building: insertToBuilding,
   villa: insertToVilla,
   assets: insertToAssets,
+  lawsuit: insetIntoLawsuit,
   // Units
   // land
   // apartment

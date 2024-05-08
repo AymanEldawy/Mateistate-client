@@ -6,7 +6,6 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Fields } from "../CustomForm/Fields";
 import { toast } from "react-toastify";
 import INSERT_FUNCTION from "Helpers/Lib/global-insert";
-import { BuildingSubSteps } from "./BuildingSubSteps";
 import { Input } from "Components/StructurePage/CustomFields";
 import getFormByTableName from "Helpers/Forms/forms";
 import { FLATS } from "Helpers/constants";
@@ -16,6 +15,7 @@ import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
 import { PaletteIcon } from "Components/Icons";
+import { SubStepsList } from './../CustomForm/SubStepsList';
 
 const SUB_STEPS = [
   "building_real_estate_management",
@@ -233,7 +233,7 @@ const BuildingForm = ({ popupView }) => {
     >
       {formSettings?.formType === "nested" ? (
         <div className="flex gap-8 items-start">
-          <BuildingSubSteps
+          <SubStepsList
             steps={SUB_STEPS}
             goTo={setCurrentSubIndex}
             activeStage={currentSubIndex}

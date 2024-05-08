@@ -53,6 +53,7 @@ import {
   CreditorsAgesReport,
   VATBillsReport,
 } from "Pages/Report";
+import LawsuitForm from "Components/StructurePage/Forms/LawsuitForm/LawsuitForm";
 
 const publicRoutes = [
   { path: "**", component: <NouFound /> },
@@ -239,7 +240,7 @@ const authProtectedRoutes = [
     path: "/contracts/:type/:name",
     component: <ContractForm layout="update" />,
   },
-
+  { path: "/lawsuit/:number", component: <LawsuitForm /> },
   // Chart forms
   { path: "/chart/:name", component: <Chart /> },
 ];

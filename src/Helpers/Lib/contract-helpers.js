@@ -213,7 +213,7 @@ export const calculateContractDuration = async (
 
 export async function mergeInstallmentAndFirstTabData(firstTabData, setValue) {
   let total = firstTabData?.contract_value;
-  let date = firstTabData?.start_duration_date;
+  let date = firstTabData?.start_duration_date || firstTabData?.property_delivery_date;
 
   if (total) {
     setValue("installment.total_amount", total);
