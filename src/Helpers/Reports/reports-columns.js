@@ -1265,6 +1265,48 @@ const vat_bills_report = [
   { header: "property no", accessorKey: "property_no" },
 ];
 
+const warehouse_report = [
+  { header: "created at", accessorKey: "created_at" },
+  { header: "barcode", accessorKey: "barcode" },
+  { header: "name", accessorKey: "name" },
+  { header: "description", accessorKey: "description" },
+  { header: "category_id", accessorKey: "category_name" },
+  { header: "purchasing_price", accessorKey: "purchasing_price" },
+  { header: "selling_price", accessorKey: "selling_price" },
+  { header: "currency_id", accessorKey: "currency_id" },
+  { header: "currency_value", accessorKey: "currency_value" },
+  { header: "note", accessorKey: "note" },
+  { header: "is_available", accessorKey: "is_available" },
+];
+
+const complaints_report = [
+  { header: "number", accessorKey: "number" },
+  { header: "start_date", accessorKey: "start_date" },
+  { header: "end_date", accessorKey: "end_date" },
+  { header: "building_id", accessorKey: "building_id" },
+  { header: "unit_id", accessorKey: "unit_id" },
+  { header: "unit_type", accessorKey: "unit_type" },
+  { header: "is_default", accessorKey: "is_default" },
+  { header: "is_paid", accessorKey: "is_paid" },
+  { header: "total", accessorKey: "total" },
+  { header: "code", accessorKey: "code" },
+  { header: "status", accessorKey: "status" },
+  { header: "contract_id", accessorKey: "contract_id" },
+  { header: "payment_method", accessorKey: "payment_method" },
+  { header: "customer_user_id", accessorKey: "customer_user_id" },
+  { header: "phone", accessorKey: "phone" },
+  { header: "approved", accessorKey: "approved" },
+  { header: "returned", accessorKey: "returned" },
+  { header: "title", accessorKey: "title" },
+  { header: "description", accessorKey: "description" },
+  { header: "category", accessorKey: "category" },
+  { header: "worker", accessorKey: "worker" },
+  { header: "worker_status", accessorKey: "worker_status" },
+  { header: "worker_rate", accessorKey: "worker_rate" },
+  { header: "has_material", accessorKey: "has_material" },
+  { header: "lack_reason_count", accessorKey: "lack_reason_count" },
+];
+
 const REPORTS_COLUMNS = {
   cheques_report,
   due_note_paper_report,
@@ -1309,9 +1351,12 @@ const REPORTS_COLUMNS = {
   //
   changes_flats_rent_pricing_report,
   changes_flats_sale_pricing_report: changes_flats_rent_pricing_report,
-
   // Manger reports
   manger_cheques_report,
+
+  // Maintenances
+  complaints_report,
+  warehouse_report,
 };
 
 export default function getReportColumns(name) {

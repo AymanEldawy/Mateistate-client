@@ -73,24 +73,9 @@ export async function fetchAndMergeBuildingInfo(buildingId, setValue) {
   const response = await ApiActions.read("building", {
     conditions: [{ type: "and", conditions: [["id", "=", buildingId]] }],
   });
-  const res = await ApiActions.read("building_real_estate_management", {
-    conditions: [
-      { type: "and", conditions: [["building_id", "=", buildingId]] },
-    ],
-  });
   if (response?.success) {
     let data = response?.result?.at(0);
     setValue(`contract.lessor_id`, data?.lessor_id);
-  }
-
-  // commission_from_owner_note
-  // commission_from_owner_percentage
-  // commission_from_owner_value
-  // commission_note
-  // commission_value
-
-  if (res?.success) {
-    let data = res?.result?.at(0);
     setValue(
       "contract_commission.commission_percentage",
       data?.commission_rate
@@ -103,11 +88,11 @@ export async function fetchAndMergeBuildingInfo(buildingId, setValue) {
     setValue(`contract.revenue_account_id`, data?.revenue_id);
     setValue(
       `contract.discount_account_id`,
-      response?.result?.at(0)?.building_discount_account_id
+      data?.building_discount_account_id
     );
     setValue(
       `contract.insurance_account_id`,
-      response?.result?.at(0)?.building_insurance_account_id
+      data?.building_insurance_account_id
     );
   }
 }

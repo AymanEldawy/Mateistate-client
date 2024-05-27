@@ -10,6 +10,8 @@ import { removeNullValues } from "Helpers/functions";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import getFormByTableName from "Helpers/Forms/forms";
 
 const FormSingular = ({ name, onClose }) => {
   const params = useParams();
@@ -124,7 +126,19 @@ const FormSingular = ({ name, onClose }) => {
         errors={errors}
         CACHE_LIST={CACHE_LIST}
         fields={fields}
+        customGrid={
+          name === "owner_expenses" ? "grid-cols-2 md:grid-cols-3" : ""
+        }
       />
+      {name === "owner_expenses" ? (
+        <TableFields
+          increasable={false}
+          rowsCount={1}
+          CACHE_LIST={CACHE_LIST}
+          errors={errors}
+          fields={getFormByTableName("owner_expenses_grid")}
+        />
+      ) : null}
     </FormWrapperLayout>
   );
 };

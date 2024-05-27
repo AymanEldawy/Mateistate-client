@@ -19,6 +19,7 @@ const CustomSelect = ({
   values,
   selectClassNames,
   readOnly,
+  tab,
   ...field
 }) => {
   const { name } = field;
@@ -80,7 +81,11 @@ const CustomSelect = ({
               value={list?.find(
                 (c) => c?.value === +watch(updatedName || field?.name)
               )}
-              isDisabled={readOnly}
+              isDisabled={
+                (field?.disabledWhenKeyValid &&
+                  watch(field?.disabledWhenKeyValid)) ||
+                readOnly
+              }
               noOptionsMessage={() =>
                 field?.allowInsert ? (
                   <span className="text-sm">

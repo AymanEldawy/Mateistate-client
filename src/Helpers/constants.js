@@ -19,9 +19,11 @@ import {
   SHOP_ASSET_TYPE_CODE,
   SHOP_ASSET_TYPE_DEFAULT_NAME,
   USER_CUSTOMER_CODE,
-  USER_EMPLOYEE_CODE,
+  USER_WORKER_CODE,
   USER_SUPERVISOR_CODE,
   USER_SUPPLIER_CODE,
+  VILLA_ASSET_TYPE_CODE,
+  VILLA_ASSET_TYPE_DEFAULT_NAME,
 } from "./GENERATE_STARTING_DATA";
 
 export const SHOULD_DELETE_COST_CENTER = {
@@ -298,6 +300,36 @@ export const CONTRACTS_ASSETS_TYPE = {
 
 export const SELECT_LISTS = (listName) => {
   let list = {
+    tenants_package: [
+      { id: 1, name: "Full package" },
+      { id: 2, name: "Maintenance" },
+      { id: 3, name: "Alaqarie" },
+    ],
+    complaint_paid: [
+      { id: 0, name: "All" },
+      { id: 1, name: "paid" },
+      { id: 2, name: "free" },
+    ],
+    complaint_status: [
+      { id: 0, name: "All" },
+      { id: 1, name: "pending" },
+      { id: 2, name: "underway" },
+      { id: 3, name: "done" },
+      { id: 4, name: "closed" },
+    ],
+    worker_status: [
+      { id: 0, name: "All" },
+      { id: 1, name: "received" },
+      { id: 2, name: "in progress" },
+      { id: 3, name: "completed" },
+    ],
+
+    complaint_approved: [
+      { id: 0, name: "All" },
+      { id: 1, name: "approved" },
+      { id: 2, name: "non approve" },
+    ],
+
     property_values_area: ["Square Feet", "Square Meter"],
 
     contract_cycle_report_list: [
@@ -411,7 +443,7 @@ export const SELECT_LISTS = (listName) => {
       { name: "Customer", id: USER_CUSTOMER_CODE },
       { name: "Supplier", id: USER_SUPPLIER_CODE },
       { name: "Supervisor", id: USER_SUPERVISOR_CODE },
-      { name: "Employee", id: USER_EMPLOYEE_CODE },
+      { name: "Employee", id: USER_WORKER_CODE },
     ],
 
     account_type: [
@@ -473,6 +505,7 @@ export const SELECT_LISTS = (listName) => {
       { name: PARKING_ASSET_TYPE_DEFAULT_NAME, id: PARKING_ASSET_TYPE_CODE },
       { name: SHOP_ASSET_TYPE_DEFAULT_NAME, id: SHOP_ASSET_TYPE_CODE },
       { name: LAND_ASSET_TYPE_DEFAULT_NAME, id: LAND_ASSET_TYPE_CODE },
+      { name: VILLA_ASSET_TYPE_DEFAULT_NAME, id: VILLA_ASSET_TYPE_CODE },
     ],
 
     contact_pattern_record_created_date: [
@@ -586,6 +619,14 @@ export const USER_STEPS = {
   user_files: "user_files",
 };
 
+export const SERVICE_STEPS = {
+  service: "service",
+  service_customer_request: "service_customer_request",
+  service_lack_reason: "service_lack_reason",
+  service_material: "service_material",
+  service_worker: "service_worker",
+};
+
 export const LAWSUIT_STEPS = {
   lawsuit: "lawsuit",
   lawsuit_expenses: "lawsuit_expenses",
@@ -612,8 +653,16 @@ export const APARTMENT_STEPS = {
   apartment_general: "apartment_general",
   apartment_pictures: "apartment_pictures",
   property_values: "property_values",
+  apartment_accumulate: "apartment_accumulate",
   apartment_rental_price: "apartment_rental_price",
   apartment_selling_price: "apartment_selling_price",
+};
+
+export const LAND_STEPS = {
+  land_general: "land_general",
+  land_accumulate: "land_accumulate",
+  land_rental_price: "land_rental_price",
+  land_selling_price: "land_selling_price",
 };
 
 export const ASSETS_STEPS = {
@@ -628,7 +677,7 @@ export const ASSETS_STEPS = {
 
 export const PARKING_STEPS = {
   parking_general: "parking_general",
-  parking_price: "parking_price",
+  parking_accumulate: "parking_accumulate",
   parking_rental_price: "parking_rental_price",
   parking_selling_price: "parking_selling_price",
   parking_pictures: "parking_pictures",
@@ -636,6 +685,7 @@ export const PARKING_STEPS = {
 
 export const SHOP_STEPS = {
   shop_general: "shop_general",
+  shop_accumulate: "shop_accumulate",
   shop_fixed_assets: "shop_fixed_assets",
   shop_pictures: "shop_pictures",
   shop_rental_price: "shop_rental_price",

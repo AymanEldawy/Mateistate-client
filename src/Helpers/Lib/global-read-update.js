@@ -7,39 +7,7 @@ export const fetchData = async (table, col, id) => {
 };
 
 export const getBuildingUpdate = async (id) => {
-  const promises = [
-    fetchData("building", "id", id),
-    fetchData("building_buying", "building_id", id),
-    fetchData("building_editorial_entry", "building_id", id),
-    fetchData("building_investment", "building_id", id),
-    fetchData("building_pictures", "building_id", id),
-    fetchData("building_real_estate_development", "building_id", id),
-    fetchData("building_real_estate_management", "building_id", id),
-  ];
-
-  const [
-    building,
-    building_buying,
-    building_editorial_entry,
-    building_investment,
-    building_pictures,
-    building_real_estate_development,
-    building_real_estate_management,
-  ] = await Promise.all(promises);
-
-  const groupData = {
-    building: building?.result?.at(0),
-    building_buying: building_buying?.result?.at(0),
-    building_editorial_entry: building_editorial_entry?.result?.at(0),
-    building_investment: building_investment?.result?.at(0),
-    building_pictures: building_pictures?.result,
-    building_real_estate_development:
-      building_real_estate_development?.result?.at(0),
-    building_real_estate_management:
-      building_real_estate_management?.result?.at(0),
-  };
-
-  return groupData;
+  return await fetchData("building", "id", id);
 };
 
 export const getApartmentUpdate = async (id) => {
@@ -504,11 +472,49 @@ export async function getLawsuitByNumber(number) {
   // }
 }
 
-export const getDataByNumber = async ({ name, number, reset }) => {
-  const response = await ApiActions.read();
-};
+export async function getServiceUpdate(id) {
+  const promises = [
+    fetchData("service", "id", id),
+    fetchData("service_customer_request", "service_id", id),
+    fetchData("service_lack_reason", "service_id", id),
+    fetchData("service_material", "service_id", id),
+    fetchData("service_worker", "service_id", id),
+  ];
+
+  const [
+    service,
+    service_customer_request,
+    service_lack_reason,
+    service_material,
+    service_worker,
+  ] = await Promise.all(promises);
+
+  const groupData = {
+    service: service?.result?.at(0),
+    service_customer_request: service_customer_request?.result?.at(0),
+    service_lack_reason: service_lack_reason?.result,
+    service_material: service_material?.result,
+    service_worker: service_worker?.result,
+  };
+
+  return groupData;
+}
+
+export async function getServiceByNumber(number, code) {
+  const response = await ApiActions.read("service", {
+    conditions: [
+      { type: "and", conditions: [["number", "=", number]] },
+      { type: "and", conditions: [["code", "=", code]] },
+    ],
+  });
+  let serviceId = response?.result?.at(0)?.id;
+  if (response?.success && serviceId) {
+    return await getServiceUpdate(serviceId);
+  }
+}
 
 export const GET_UPDATE_DATE_BY_NUMBER = {
   building: getBuildingByNumber,
   lawsuit: getLawsuitByNumber,
+  service: getServiceByNumber,
 };

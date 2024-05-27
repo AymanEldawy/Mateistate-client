@@ -10,6 +10,7 @@ import { FLAT_PROPERTY_TABS, FLAT_PROPERTY_TYPES } from "./constants";
 export const SERVER_URL = `https://matiestate-server.vercel.app`;
 // export const SERVER_URL = `https://matiestate-server.vercel.app`;
 
+
 export function exitFullscreen() {
   if (document.exitFullscreen) {
     document.exitFullscreen();
@@ -131,14 +132,16 @@ export async function getInsertAccountTrigger(name, conditions) {
     parent_id
   );
 
+  console.log("🚀 ~ getInsertAccountTrigger ~ parentAccountData:", parentAccountData)
   // get default currency id
   const currencyResponse = await ApiActions.read("currency", {
     conditions: [
       { type: "and", conditions: [["code", "=", DEFAULT_CURRENCY_CODE]] },
     ],
   });
-
+  
   let internal_number = +parentAccountData?.internal_number + 1;
+  console.log("🚀 ~ getInsertAccountTrigger ~ internal_number:", internal_number)
   let level = +parentAccountData?.level || 0;
 
   let account = {

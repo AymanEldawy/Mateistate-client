@@ -158,11 +158,13 @@ const FormWrapperLayout = ({
 
                 <div className="flex gap-2 items-center">
                   {additionalButtons ? additionalButtons : null}
-                  <Button
-                    title={maxLength >= number ? "Modify" : "Submit"}
-                    classes="ltr:ml-auto rtl:mr-auto"
-                    disabled={!isDirty || disabledSubmit}
-                  />
+                  {onSubmit ? (
+                    <Button
+                      title={maxLength >= number ? "Modify" : "Submit"}
+                      classes="ltr:ml-auto rtl:mr-auto"
+                      disabled={!isDirty || disabledSubmit}
+                    />
+                  ) : null}
                 </div>
               </div>
             )}

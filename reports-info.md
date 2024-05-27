@@ -30,5 +30,92 @@
 
 ## Columns
 
-| col | table | description |
-| --- | ----- | ----------- |
+Note: (n) one of theme `apartment` `shop` `parking` `land` `villa`
+
+| col               | table                    | description                                                                                |
+| ----------------- | ------------------------ | ------------------------------------------------------------------------------------------ |
+| number            | service                  |
+| start_date        | service                  |
+| end_date          | service                  |
+| building          | building                 |
+| unit_no           | (n)                      |
+| unit_type         | (n)                      |
+| is_default        | service                  |
+| is_paid           | service                  |
+| total             | service                  |
+| code              | service                  |
+| status            | service                  |
+| contract_id       | contract                 |
+| payment_method    | service_customer_request |
+| customer_user     | user                     |
+| phone             | service_customer_request |
+| approved          | service_customer_request |
+| returned          | service_customer_request |
+| title             | service_worker           |
+| description       | service_worker           |
+| category          | service_worker           |
+| worker            | user                     |
+| worker_status     | service_worker           |
+| worker_rate       | service_worker           |
+| has_material      | service_material         | if in `service_material` true                                                              |
+| lack_reason_count | service_lack_reason      | the count of records in table `service_lack_reason` that has `server_id` equal `server.id` |
+
+## Columns
+
+| col              | table     | description |
+| ---------------- | --------- | ----------- |
+| created_at       | materials |
+| barcode          | materials |
+| name             | materials |
+| description      | materials |
+| category_name    | category  |
+| purchasing_price | materials |
+| selling_price    | materials |
+| currency_id      | currency  |
+| currency_value   | materials |
+| note             | materials |
+| is_available     | materials |
+
+## Filters
+
+- name
+- category `category.id`
+- material_group `materia_group.id`
+- @property `purchasing_price` purchasing_form purchasing_to purchasing between
+- @property `selling_price` sale_form sale_to sale between
+- available
+- @property date `form` `to`
+
+
+
+
+
+
+<!--  -->
+Time 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##
+ترتيب ابجدي
+في حالة شركة مختلفة انشاء 
+في حالة عمل

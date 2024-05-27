@@ -1301,6 +1301,107 @@ const vat_bills_report = [
   }),
 ];
 
+// warehouse report reports fields
+const warehouse_report = [
+  FIELDS_STRUCTURE.textField({
+    label: "name",
+    name: "name",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "category",
+    name: "category",
+    ref_name: "category",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "material_group",
+    name: "material_group",
+    ref_name: "material_group",
+  }),
+  {
+    key: "between",
+    label: "purchasing_price",
+    field1Props: {
+      type: "number",
+      name: "purchasing_form",
+    },
+    field2Props: {
+      type: "number",
+      name: "purchasing_to",
+    },
+  },
+  {
+    key: "between",
+    label: "selling_price",
+    field1Props: {
+      type: "number",
+      name: "sale_form",
+    },
+    field2Props: {
+      type: "number",
+      name: "sale_to",
+    },
+  },
+
+  FIELDS_STRUCTURE.switchField({
+    label: "available",
+    name: "available",
+  }),
+];
+
+const complaints_report = [
+  FIELDS_STRUCTURE.uniqueField({
+    label: "worker",
+    name: "worker",
+    ref_name: UNIQUE_REF_TABLES.employee,
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "contract",
+    name: "contract",
+    ref_name: "contract",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "building",
+    name: "building",
+    ref_name: "building",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "category",
+    name: "category",
+    ref_name: "category",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "problem",
+    name: "problem",
+    ref_name: "category_problem",
+  }),
+  FIELDS_STRUCTURE.note({
+    label: "category_problem",
+    name: "category_problem",
+  }),
+  FIELDS_STRUCTURE.note(),
+  FIELDS_STRUCTURE.selectField({
+    label: "complaint status",
+    name: "complaint status",
+    list: SELECT_LISTS("complaint_status"),
+  }),
+  FIELDS_STRUCTURE.selectField({
+    label: "worker status",
+    name: "worker status",
+    list: SELECT_LISTS("worker_status"),
+  }),
+  FIELDS_STRUCTURE.selectField({
+    label: "paid status",
+    name: "paid status",
+    list: SELECT_LISTS("complaint_paid"),
+  }),
+  FIELDS_STRUCTURE.selectField({
+    label: "complaint_approved",
+    name: "complaint_approved",
+    list: SELECT_LISTS("complaint_approved"),
+  }),
+
+];
+
 const REPORTS_STRUCTURE = {
   contract_payments_report,
   returned_cheque_report,
@@ -1347,6 +1448,10 @@ const REPORTS_STRUCTURE = {
 
   // Mangers reports
   manger_cheques_report,
+
+  // Maintenances
+  warehouse_report,
+  complaints_report,
 };
 
 export default function getReportFields(name) {

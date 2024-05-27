@@ -13,9 +13,9 @@ export const ToolsTabsTableForm = ({ errors, row }) => {
   const [fields, setFields] = useState([]);
 
   const getBuildingOwning = async () => {
-    const res = await ApiActions.read("building_real_estate_management", {
+    const res = await ApiActions.read("building", {
       conditions: [
-        { type: "and", conditions: [["building_id", "=", row?.id]] },
+        { type: "and", conditions: [["id", "=", row?.id]] },
       ],
     });
     if (res?.result?.length) {

@@ -1005,7 +1005,14 @@ const updateUnits = async (unit, data, unitId) => {
 
 // insert To User
 const insertToUser = async (data) => {
-  if (data?.id) return; // if is UPDATE ignore
+  if (data?.id) {
+    const res = await ApiActions.update("user", {
+      conditions: [{ type: "and", conditions: [["id", "=", data?.id]] }],
+      updates: data,
+    });
+
+    return res;
+  } // if is UPDATE ignore
 
   let type = SELECT_LISTS("user_type")?.find(
     (c) => c.id === +data?.card_type

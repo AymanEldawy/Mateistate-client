@@ -87,6 +87,7 @@ const UniqueField = ({
           render={({ field: { onChange }, fieldState, formState }) => {
             return (
               <Select
+                isDisabled={field?.readOnly}
                 isClearable={true}
                 options={list}
                 menuPortalTarget={document?.body}

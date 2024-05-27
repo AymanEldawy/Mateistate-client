@@ -5,7 +5,7 @@ const { ApiActions } = require("./Lib/api");
 export const USER_CUSTOMER_CODE = 1;
 export const USER_SUPPLIER_CODE = 2;
 export const USER_SUPERVISOR_CODE = 3;
-export const USER_EMPLOYEE_CODE = 4;
+export const USER_WORKER_CODE = 4;
 
 export const ACCOUNT_NORMAL_TYPE_CODE = 1;
 export const ACCOUNT_CLOSING_TYPE_CODE = 2;
@@ -57,14 +57,18 @@ export const VOUCHER_LIST_NAME = "Vouchers";
 // CONTRACT PATTERN DEFAULT CONSTANTS
 export const CONTRACT_RENT_LIST_NAME = "Contract Rent";
 export const CONTRACT_SALE_LIST_NAME = "Contract Sale";
+
 export const APARTMENT_ASSET_TYPE_CODE = 1;
 export const PARKING_ASSET_TYPE_CODE = 2;
 export const SHOP_ASSET_TYPE_CODE = 3;
 export const LAND_ASSET_TYPE_CODE = 4;
+export const VILLA_ASSET_TYPE_CODE = 5;
+
 export const APARTMENT_ASSET_TYPE_DEFAULT_NAME = "Apartment";
 export const PARKING_ASSET_TYPE_DEFAULT_NAME = "Parking";
 export const SHOP_ASSET_TYPE_DEFAULT_NAME = "Shop";
 export const LAND_ASSET_TYPE_DEFAULT_NAME = "Land";
+export const VILLA_ASSET_TYPE_DEFAULT_NAME = "Villa";
 
 // CONTRACT PATTERN DEFAULT CONSTANTS
 export const CONTRACT_SALE_CODE = 1;

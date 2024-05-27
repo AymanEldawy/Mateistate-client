@@ -27,7 +27,7 @@ const UserForm = ({
   const viewList = useListView({ name, defaultNumber: params?.number });
   const { goTo, currentIndex, steps, fields, CACHE_LIST, setCurrentIndex } =
     useFormSteps({ name });
-  const { listOfNumbers, number, setMaxLength } = viewList;
+  const { listOfNumbers, number, setMaxLength, isLayoutUpdate } = viewList;
 
   const { appendNewRecord } = usePopupForm();
   const methods = useForm();
@@ -61,6 +61,7 @@ const UserForm = ({
 
   // Handel Submit
   const onSubmit = async (value) => {
+    console.log("called f3");
     if (!isDirty) return;
 
     const res = await INSERT_FUNCTION.user(removeNullValues(value));
@@ -70,9 +71,12 @@ const UserForm = ({
     }
 
     if (res?.success) {
-      toast.success("Successfully added item in " + name);
+      toast.success(
+        `Successfully ${isLayoutUpdate ? "updated" : "inserted"} item in  ` +
+          name
+      );
       if (!!refetchData) refetchData();
-      if (layout !== "update") {
+      if (!isLayoutUpdate) {
         setMaxLength((prev) => +prev + 1);
         await appendNewRecord(res);
       }

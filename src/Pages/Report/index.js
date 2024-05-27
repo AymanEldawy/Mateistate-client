@@ -35,4 +35,5 @@ export { default as ChangesFlatsRentPricingReport } from "./ChangesFlatsRentPric
 export { default as ChangesFlatsSalePricingReport } from "./ChangesFlatsSalePricingReport";
 export { default as UnitConditionConstructionReport } from "./UnitConditionConstructionReport";
 export { default as MangerChequeReport } from "./MangerChequeReport";
+export { default as WarehouseReport } from "./WarehouseReport";
 export { default as VATBillsReport } from "./VATBillsReport";

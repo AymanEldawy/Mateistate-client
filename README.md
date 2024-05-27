@@ -14,24 +14,49 @@
 [done] [2] ignore override debit and observeAcGuid
 [done] [3] Unique AcGuid entry
 
-
-
-
-
-
-
-
-
 # Today tasks
+
 [done] [1] table head color
 [done] [2] NO property with updates
 [done] [3] select with two dimensions
 [done] [4] structure of data
+
 <!-- testEntry -->
 
 [done] [4] hourglass icon
 [done] [4] fix autofill credit & debit
 
+# Tomorrow Tasks
 
-# Tomorrow Tasks 
 [todo] [1] allow tools updates
+
+# New tables
+
+## expenses_card
+
+| key    | type | description |
+| ------ | ---- | ----------- |
+| number |      |
+| name   |      |
+| note   |      |
+
+## expenses_types
+
+| key            | type | description |
+| -------------- | ---- | ----------- |
+| number         |      |
+| date           |      |
+| receipt_number |      |
+| building_id    |      |
+| owner_id       |      |
+| note           |      |
+| row_date           |      |
+| account_id     |      |
+| amount         |      |
+| row_note           |      |
+| row_receipt_number |      |
+
+## expenses_types
+
+| key | type | description |
+| --- | ---- | ----------- |

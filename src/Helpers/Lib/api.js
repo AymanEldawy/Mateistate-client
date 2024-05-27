@@ -1,5 +1,6 @@
 // Example Usage of MatieStateClient
 
+import Cookies from "js-cookie";
 import MatieStateClient from "./MatieStateClient";
 import { toast } from "react-toastify";
 
@@ -17,14 +18,26 @@ export const SHOULD_DELETE_ENTRY = {
 
 export const token =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZmMDdiYWE0LTllN2MtNDE4YS1hOWUwLTEzMTA5YzQ0NjVmNiIsImlhdCI6MTcxMzA5MzE1NCwiZXhwIjoxODcwODgxMTU0fQ.PWEWbgaHGxK-DdLurU_y5yCa34lmjxhLkoH9popbjoM";
+// "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkYmEzOTI3LTAzYzMtNGI3OC1iZTMwLTE4MGJhNDRjNmE1YiIsImlhdCI6MTcxNTY5MDYyMSwiZXhwIjoxODczNDc4NjIxfQ.tkAPbUv1XYqW4tgER01HMo9Fiit-7LxEc7_sGZ765Pg";
 
 function CURD() {
-  const baseURL = "http://localhost:4000";
+  const baseURL = "http://localhost:5000";
+  // const baseURL = "http://203.161.62.124:3000/";
   const matieStateClient = new MatieStateClient(baseURL, token);
 
   // Example Usage of getReport method
   const report = async (reportName, params) => {
     try {
+      const tenant_id = Cookies.get("tenant_id");
+      if (tenant_id) {
+        params = {
+          ...params,
+          conditions: [
+            ...params?.conditions,
+            { type: "and", conditions: [["tenant_id", "=", tenant_id]] },
+          ],
+        };
+      }
       const getReportResponse = await matieStateClient.getReport(
         reportName,
         params
@@ -40,7 +53,13 @@ function CURD() {
     try {
       const createRecordResponse = await matieStateClient.createRecord(
         tableName,
-        params
+        {
+          ...params,
+          data: {
+            ...params?.data,
+            tenant_id: Cookies.get("tenant_id"),
+          },
+        }
       );
       return createRecordResponse;
     } catch (error) {
@@ -52,6 +71,18 @@ function CURD() {
   // Example Usage of readRecords method
   const read = async (tableName, params = {}) => {
     try {
+      const tenant_id = Cookies.get("tenant_id");
+      console.log(params, "called");
+      if (tenant_id) {
+        params = {
+          ...params,
+          conditions: [
+            ...(params?.conditions || []),
+            { type: "and", conditions: [["tenant_id", "=", tenant_id]] },
+          ],
+        };
+      }
+
       const readRecordResponse = await matieStateClient.readRecords(
         tableName,
         params
@@ -120,10 +151,10 @@ function CURD() {
   // Search Example Usage of readRecords method
   const search = async (tableName, params = {}) => {
     try {
-      const readRecordResponse = await matieStateClient.readRecords(
-        tableName,
-        params
-      );
+      const readRecordResponse = await matieStateClient.readRecords(tableName, {
+        ...params,
+        tenant_id: Cookies.get("tenant_id"),
+      });
       return readRecordResponse;
     } catch (error) {
       console.error("Error reading records:", error);

@@ -1,6 +1,6 @@
 import Chart from "Pages/Chart/Chart";
 import Home from "Pages/Home/Home";
-import Login from "Pages/Login/Login";
+import Login from "Pages/Auth/Login";
 import Tools from "Pages/Tools/Tools";
 import NouFound from "Pages/NouFound/NouFound";
 import ContractForm from "Components/StructurePage/Forms/ContractForm/ContractForm";
@@ -52,8 +52,11 @@ import {
   ContractCycleReport,
   CreditorsAgesReport,
   VATBillsReport,
+  WarehouseReport,
 } from "Pages/Report";
 import LawsuitForm from "Components/StructurePage/Forms/LawsuitForm/LawsuitForm";
+import ComplaintsReport from "Pages/Report/ComplaintsReport";
+import ServiceForm from "Components/StructurePage/Forms/ServiceForm/ServiceForm";
 
 const publicRoutes = [
   { path: "**", component: <NouFound /> },
@@ -68,6 +71,14 @@ const authProtectedRoutes = [
   { path: "/tools/:id", component: <Tools /> },
 
   // Reports
+  {
+    path: "/reports/warehouse-report",
+    component: <WarehouseReport />,
+  },
+  {
+    path: "/reports/complaints-report",
+    component: <ComplaintsReport />,
+  },
   {
     path: "/reports/lease-units-report",
     component: <LeasedUnitsReport />,
@@ -229,7 +240,9 @@ const authProtectedRoutes = [
   // Main forms
   { path: "/cheques/:code/:name/:number", component: <ChequeForm /> },
   { path: "/buildings/:number", component: <BuildingForm /> },
+  { path: "/maintenances/:code/:number", component: <ServiceForm /> },
   { path: "/list/:name/:number", component: <DynamicForm /> },
+  { path: "/tools/:name/:number", component: <DynamicForm /> },
   {
     path: "/reservation_property/:number",
     component: <ReservationPropertyForm />,

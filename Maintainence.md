@@ -1,7 +1,7 @@
 # API endpoints
 
 ---
-
+1
 ## Home page for owner
 
 - `units` get all units for current or logged in owner
@@ -195,14 +195,14 @@ Future
 | price        | float | default is `0` - `0` meaning it's free |
 | status       | bool  | available or not available             |
 
-
 # Administrations
 
 ##
+
 POST `/supervisor/getRequestDetails`
 @param request_id required
 
-res: 
+res:
 id
 number
 created_at
@@ -222,23 +222,33 @@ approved
 employee(id,name)
 service_attachment(attachment, type)[]
 
-
-
-
 # Administrations
 
 ##
+
 PATCH `/supervisor/updateRequestDetails`
 @param request_id required
 @param data{} required
 
+"data": {
+"selected_date1": date,
+"selected_date2": date,
+"selected_date3": date,
+"approved": bool
+}
 
-  "data": {
-    "selected_date1": date,
-    "selected_date2": date,
-    "selected_date3": date,
-    "approved": bool
-  }
+
+
+# Generic
+
+POST `/ownerUnits`
+@param owner_account_id
+
+
+res:
+id
+number
+created_at
 
 
 
@@ -258,48 +268,382 @@ unit_id(id,name)
 category_id(id,name)
 user_account_id(id, name, phone, avatar)
 
+{
+"id": uuid,
+"number": ing,
+"created_at": date,
+"start_date": date,
+"end_date": date,
+"contract_id": {
+"id": uuid,
+"name": string,
+},
+"building_id": {
+"id": uuid,
+"name": string,
+},
+"unit_id": {
+"id": uuid,
+"name": string,
+},
+"category_id": {
+"id": uuid,
+"name": string,
+},
+"title": string,
+"description": string,
+"status": int,
+"payment_method": int,
+"is_paid": boolean,
+"total": int,
+"approved": boolean,
+"employee": {
+"id": uuid,
+"name": string,
+},
+"service_attachment": [
+{
+"attachment": string,
+"type": string
+},
+{
+"attachment": string,
+"type": string
+}
+]
+}
+
+# Administrations
+
+POST `/supervisor/technicians`
+
+@params name optional
+user(id,name, avatar)
+category(id, name)
+employee_rate(id, rating)
+
+# Customer
+
+POST `/customer/getAllCustomerServices`
+
+@params user_id required
+
+res
+data: [
+id: uuid,
+title: string,
+description: string,
+status: int max is 4,
+]
+
+POST `/customer/getAllCategories`
+
+Note parent_id is null
+
+res
+data: [
+id: uuid,
+name: string,
+image: string,
+]
+
+POST `/customer/getAllCustomerContractCount`
+@params user_id required
+
+POST `/customer/getAllCustomerChequesCount`
+@params user_id required
+
+POST `/customer/getDefaultServicesByCategory`
+
+Note: default `service` is all `services` have `is_default` column is TRUE
+
+@param category_id required
+
+res:
+id
+number
+created_at
+category(id, name),
+title
+description,
+status
+service_attachment(id, attachment, type)
+
+POST `/customer/addOrder`
+
+@params data
+
+---
+
+POST `/contracts`
+@params [key] required
+@params [value] required
+
+res:
+id,
+number,
+contract_type,
+start_duration_date,
+end_duration_date,
+
+
+
+POST `/getUnitDetails`
+@params unit_id required
+
+POST `/units`
+@params building_id required
+
+res: 
+{
+  id: uuid,
+  number: int,
+  unit_type: int,
+  unit_no: string,
+}
+
+
+POST `/getContractDetails`
+@params contract_id required
+
+res:
+id,
+number,
+contract_type,
+start_duration_date,
+end_duration_date,
+client(id, name, phone, nationality)
+
+
+POST `/getContractCash`
+@params contract_id required
+
+res:
+id: uuid,
+number: int,
+contract_type: int,
+cash:{
+  first_batch: float,
+  other_batches: float,
+}
+
+POST `/getContractCheque`
+@params contract_id required
+res:
+id: uuid,
+number: int,
+contract_type: int,
+cheques {
+  collected: float
+  uncollected:  float
+}
+
+
+# evacuation_request
+
+| key             | type | description             |
+| --------------- | ---- | ----------------------- |
+| id              |      |
+| created_at      |      |
+| description     | text |
+| evacuation_date | date |
+| contract_id     | uuid | ref table is `contract` |
+| user_account_id | uuid | ref table is `contract` |
+
+# evacuation_request_fine
+
+| key                   | type  | description                       |
+| --------------------- | ----- | --------------------------------- |
+| id                    |       |
+| created_at            |       |
+| reason                | text  |
+| note                  | text  |
+| amount                | float |
+| evacuation_request_id | uuid  | ref table is `evacuation_request` |
+
+POST `/customer/getDefaultServicesByCategory`
+
+Note: default `service` is all `services` have `is_default` column is TRUE
+
+res:
+id
+number
+created_at
+category(id, name),
+title
+description,
+status
+service_attachment(id, attachment, type)
+
+POST `/customer/rateWorker`
+
+@params user_id required
+@params data required
+
+res
+status true
+message: useful message
+
+POST `/uploadAttachment`
+
+@params files[] required
+@type `contract` || `user` || `building` || `avatar` required
+@main_id `contract_id` || `user_id` || `building_id` required
+
+res:
+success: true,
+paths: urls[]
+message: useful message
+
+starting from table `service`
+
+foreign keys
+
+category_id -> category.id
+user_account_id -> user.account_id
+unit_type -> 1`apartment` 2`parking` 3`shop` 4`land` 5`villa`
+unit_id -> `apartment.id` `land.id` `parking.id` `shop.id` `villa.id`
+
+# Note
+
+request service for all unit leased or non leased
+
+- There are two types of request `by customer` `by supervisor`
+- customer request
+  1. customer can rate
+  2. customer can paid
+
+# evacuation_request_fine
+
+| key                   | type  | description                       |
+| --------------------- | ----- | --------------------------------- |
+| id                    |       |
+| created_at            |       |
+| reason                | text  |
+| note                  | text  |
+| amount                | float |
+| evacuation_request_id | uuid  | ref table is `evacuation_request` |
+
+# service
+
+| key         | type  | description                                                              |
+| ----------- | ----- | ------------------------------------------------------------------------ |
+| id          | uuid  |
+| number      | int   | sequence number or auto increment                                        |
+| created_at  | date  |
+| start_date  | date  |
+| end_date    | date  |                                                                          |
+| building_id | uuid  | ref table is `building`                                                  |
+| unit_id     | uuid  | ref table is dynamic and will be on of them `apartment` `parking` `shop` |
+| unit_type   | int   | `apartment` `parking` `shop` `land` `villa`                              |
+| is_default  | bool  | the default and free services inserted by admin                          |
+| is_paid     | bool  | `free` or `paid`                                                         |
+| total       | float |
+| code        | int   | 1-> `request by customer` 2-> `request by supervisor`                    |
+
+## service_customer_request
+
+| key              | type        | description                                                         |
+| ---------------- | ----------- | ------------------------------------------------------------------- |
+| id               | uuid        |
+| number           | int         | sequence number or auto increment                                   |
+| contract_id      | uuid        | ref table is `contract`                                             |
+| payment_method   | int or bool | 1->`cash` or 2-> `card`                                             |
+| customer_user_id | uuid        | ref table is `user`                                                 |
+| phone            | text        | the customer phone                                                  |
+| approved         | bool        | when the `supervisor` is accept the request                         |
+| returned         | bool        | when the `customer` reject the date and the date isn't good for him |
+| service_id       | uuid        | ref table is `service`                                              |
+
+## service_worker
+
+| key            | type | description                                      |
+| -------------- | ---- | ------------------------------------------------ |
+| id             | uuid |
+| title          | text |
+| description    | text |
+| category_id    | uuid | ref table is `category`                          |
+| worker_user_id | uuid | ref table is `user`                              |
+| status         | int  | 1->`pending` 2->`underway` 3->`done` 4->`closed` |
+| service_id     | uuid | ref table is `service`                           |
+
+# service_material
+
+| key        | type | description             |
+| ---------- | ---- | ----------------------- |
+| id         | uuid |                         |
+| number     | int  |                         |
+| created_at | uuid |                         |
+| service_id | uuid | ref table is `service`  |
+| materia_id | uuid | ref table is `material` |
+| price      |      |                         |
+
+## service_rate
+
+| key              | type | description            |
+| ---------------- | ---- | ---------------------- |
+| id               |      |
+| created_at       |      |
+| description      | text |
+| rating           | int  |
+| service_id       | uuid | ref table is `service` |
+| customer_user_id | uuid | ref table is `user`    |
+
+user `in_vacation`
+user `in_vacation`
+\_ma
+
+
 
 {
-  "id": uuid,
-  "number": ing,
-  "created_at": date,
-  "start_date": date,
-  "end_date": date,
-  "contract_id": {
-    "id": uuid,
-    "name": string,
-  },
-  "building_id": {
-    "id": uuid,
-    "name": string,
-  },
-  "unit_id": {
-    "id": uuid,
-    "name": string,
-  },
-  "category_id": {
-    "id": uuid,
-    "name": string,
-  },
-  "title": string,
-  "description": string,
-  "status": int,
-  "payment_method": int,
-  "is_paid": boolean,
-  "total": int,
-  "approved": boolean,
-  "employee": {
-    "id": uuid,
-    "name": string,
-  },
-  "service_attachment": [
-    {
-      "attachment": string,
-      "type": string
-    },
-    {
-      "attachment": string,
-      "type": string
-    }
-  ]
+occupancy: int |,
+collections: int |,
+checks_collected: int |,
+returned_checks: int |,
+uncollected_checks: int |,
 }
+
+
+
+# Dropdowns
+## screen collections (cheques)
+### status
+  - all          0
+  - collected    1
+  - uncollected  3
+  - returned     2
+### date
+  - newest 1
+  - oldest 2
+
+## screen collections (cash)
+### date
+  - newest 1
+  - oldest 2
+
+
+## screen contracts
+### status
+  - all 0
+  - expired 1
+  - not expired 2
+
+### date
+  - newest 1
+  - oldest 2
+
+### contract status
+  - close to completion 0
+  - finished            1
+  - mast                2
+
+### expired over
+  - 30 days
+  - 60 days
+  - 90 days
+  - (n) more
+
+## screen units
+  - ALL       0
+  - Occupied  1
+  - Empty     2

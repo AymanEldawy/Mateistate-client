@@ -427,7 +427,70 @@ NOTES: complicated tasks
 - [] add new key in table `reservation_property` called `payment_method` <!-- update futrue -->
 
 
-## App Notes
-- طلب الاخلاء من خلال التطبيق
-- هل الموبايل اساسي
-- انواع الحسابات جميعها بتكون في الحسابات العادية 
+
+## required TODOS
+
+- [✔️] Reports Supervisor Maintaines
+- [✔️] Reports Customer Maintaines
+- [✔️] Materials group
+- [✔️] Materials 
+- [✔️] category 
+- [✔️] evacuation_request 
+- [] worker report time - rate - services
+- [] worker card
+- [] supervisor card
+- [] services order page 
+- [] services materials page 
+- [] all requests with tenant_id
+- [] admin-> create tanent 
+- [] admin-> menu 
+
+
+
+
+
+- []
+بطاقة مشرف و عامل 
+تحدد ساعات العمل و الاجازات و متاح و غير متاح الخ 
+
+
+
+
+
+
+
+## 
+دليل المستودعات
+التصنيفات
+الاداوات 
+مجانية و غير مجانية
+
+موجودة وخارجية 
+
+
+- عامل الصيانة
+
+
+
+سعر شراء 
+سعر بيع 
+
+ملاحظات 
+
+امكانية 
+
+امكانية ااضافة مواد خارجية 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

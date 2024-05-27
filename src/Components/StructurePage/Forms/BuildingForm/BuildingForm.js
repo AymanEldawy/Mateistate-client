@@ -241,9 +241,9 @@ const BuildingForm = ({ popupView }) => {
           <>
             {currentSubIndex === 0 ? (
               <Fields
-                tab={"building_real_estate_management"}
+                tab={"building"}
                 fields={getFormByTableName("building_real_estate_management")}
-                values={watch("building_real_estate_management")}
+                values={watch()}
                 errors={errors}
                 CACHE_LIST={CACHE_LIST}
                 customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
@@ -251,9 +251,9 @@ const BuildingForm = ({ popupView }) => {
             ) : null}
             {currentSubIndex === 1 ? (
               <Fields
-                tab={"building_buying"}
+                tab={"building"}
                 fields={getFormByTableName("building_buying")}
-                values={watch("building_buying")}
+                values={watch()}
                 errors={errors}
                 CACHE_LIST={CACHE_LIST}
                 customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
@@ -262,18 +262,18 @@ const BuildingForm = ({ popupView }) => {
             {currentSubIndex === 2 ? (
               <Input
                 containerClassName="max-w-[300px]"
-                name="building_editorial_entry.building_cost"
+                name="building.building_cost"
                 type="number"
-                updatedName={`building_editorial_entry.building_cost`}
+                updatedName={`building.building_cost`}
                 label={`building cost`}
-                values={watch("building_editorial_entry")}
+                values={watch()}
               />
             ) : null}
             {currentSubIndex === 3 ? (
               <Fields
-                tab={"building_investment"}
+                tab={"building"}
                 fields={getFormByTableName("building_investment")}
-                values={watch("building_investment")}
+                values={watch()}
                 errors={errors}
                 CACHE_LIST={CACHE_LIST}
                 customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
@@ -281,9 +281,9 @@ const BuildingForm = ({ popupView }) => {
             ) : null}
             {currentSubIndex === 4 ? (
               <Fields
-                tab={"building_real_estate_development"}
+                tab={"building"}
                 fields={getFormByTableName("building_real_estate_development")}
-                values={watch("building_real_estate_development")}
+                values={watch()}
                 errors={errors}
                 CACHE_LIST={CACHE_LIST}
                 customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
