@@ -78,7 +78,7 @@ const Input = ({
                 }`}
                 calendarIconClassname="!pt-[10px] -ml-1 pointer-events-none cursor-"
                 showIcon
-                selected={value ? new Date(value) : ""}
+                selected={value instanceof Date ? new Date(value) : ""}
                 icon={
                   <span>
                     <CalenderIcon className="h-5 w-5" />

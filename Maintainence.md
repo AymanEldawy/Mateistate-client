@@ -616,26 +616,34 @@ uncollected_checks: int |,
   - newest 1
   - oldest 2
 
+### type
+  - apartment 1
+  - parking 2
+  - shop 3
+### type_id
+  - `uuid` to search in type table
+  
+
 ## screen collections (cash)
 ### date
   - newest 1
   - oldest 2
 
 
-## screen contracts
 ### status
   - all 0
   - expired 1
   - not expired 2
+## screen contracts
 
 ### date
   - newest 1
   - oldest 2
 
 ### contract status
-  - close to completion 0
-  - finished            1
-  - mast                2
+  - close to completion 1
+  - finished            2
+  - mast                3
 
 ### expired over
   - 30 days
@@ -647,3 +655,65 @@ uncollected_checks: int |,
   - ALL       0
   - Occupied  1
   - Empty     2
+
+
+
+# Notifications Messages
+## SuperVisor
+- onReceivedOrder       عند استلام الطلب
+- onStartingOrder       عند بداية الطلب
+- onPausedOrder         عند توقف الطلب لفترة
+- onCompletedOrder      عند اكتمال الطلب
+- onRequestedMaterials  عند طلب ماتريالز او اداوت
+- onReceivedEvacuation عند استلام طلب اخلاء
+## Worker
+- onReceivedOrder       عند تعيينه لطلب ما
+- onCompletedOrder      عند اكتمال الطلب
+- onRateWorker          عند تققيمه
+## Customer
+- onRequestedOrder      عند اضافة طلب
+- onApprovedOrder       عند الموافقة علي الطلب
+- onReturnedOrder       عند رجوع الطلب (عدم الموافقة و يجب تعديله)
+- onRejectedOrder       عند رجوع الطلب (عدم الموافقة و يجب تعديله)
+- onCompletedOrder      عند اكتمال الطلب
+- onContractCloseToCompletion  عند اقتراب العقد من النهاية
+- onRequestedEvacuation عند استلام طلب اخلاء
+- onAcceptedRequestEvacuation عند قبول طلب اخلاء
+- onRejectedRequestEvacuation عند قبول طلب اخلاء
+
+
+
+
+
+للمشرف
+عند استلام الطلب: تم استلام طلبك بنجاح. يرجى المتابعة مع العمال لبدء التنفيذ.
+عند بداية الطلب: تم بدء تنفيذ الطلب بنجاح. سيتم إبلاغك بأي تطورات جديدة.
+عند توقف الطلب لفترة: تم توقيف الطلب مؤقتًا. يرجى التنسيق مع العمال لاستئناف التنفيذ.
+عند اكتمال الطلب: تم اكتمال الطلب بنجاح. شكرًا لجهودكم، لا تترددوا في طلب المزيد.
+عند طلب مواد أو أدوات: تم طلب المواد أو الأدوات بنجاح. سيتم توفيرها في أقرب وقت ممكن.
+عند استلام طلب الإخلاء: تم استلام طلب الإخلاء بنجاح. الرجاء اتخاذ الإجراءات اللازمة على الفور.
+للعامل
+عند تعيينه لطلب ما: لقد تم تعيينك للعمل على طلب جديد. يرجى البدء في التنفيذ والتواصل مع المشرف إذا كانت هناك أية استفسارات.
+عند اكتمال الطلب: تم اكتمال الطلب بنجاح. شكرًا على جهودكم، يرجى الانتقال إلى الطلب التالي.
+عند تقييمه: يرجى تقييم العمل الذي قمت به. نقدر ملاحظاتكم لتحسين الخدمة في المستقبل.
+للعميل
+عند طلب الخدمة: تم طلب الخدمة بنجاح. سنقوم بمراجعة الطلب وتقديم التأكيد في أقرب وقت ممكن.
+عند الموافقة على الطلب: تمت الموافقة على طلبك بنجاح. سيتم بدء تنفيذ الخدمة في الحال.
+عند رفض الطلب والحاجة إلى تعديله: تم رفض الطلب لاستكمال المعلومات أو التعديلات. الرجاء التواصل لإجراء التغييرات اللازمة.
+عند اكتمال الطلب: تم اكتمال الطلب بنجاح. يرجى التحقق وتأكيد استلام الخدمة.
+عند اقتراب انتهاء العقد: العقد يقترب من النهاية. يرجى الاتصال لمناقشة التجديد أو تعديل الخدمات.
+عند طلب الإخلاء: تم طلب الإخلاء بنجاح. سنقوم بالتنسيق لترتيب العملية بأسرع وقت ممكن.
+عند قبول طلب الإخلاء: تم قبول طلب الإخلاء بنجاح. سنقوم باتخاذ الإجراءات اللازمة للتنفيذ في أقرب وقت ممكن.
+
+
+
+## Flow (customer service)
+starting form customer he can starting the request by choose the 
+
+
+
+
+## service order
+1. Customer starting the order 
+  title, description, time 
+2. supervisor recevied the order 

@@ -117,12 +117,10 @@ class MatieStateClient {
         body: JSON.stringify(data),
       });
 
-			console.log(response,'response');
 			if (!response.ok) {
         throw await response.json();
       }
 
-      console.log(response, "res---");
       return response.json();
     } catch (error) {
       throw {

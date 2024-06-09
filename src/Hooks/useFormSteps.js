@@ -69,7 +69,7 @@ const useFormSteps = ({ name }) => {
 
       if (field?.ref_table === "account") {
         hash.account = await getAccountList();
-        continue;
+        continue; 
       }
 
       if (field?.ref_table === UNIQUE_REF_TABLES.clients) {

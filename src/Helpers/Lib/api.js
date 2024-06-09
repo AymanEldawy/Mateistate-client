@@ -3,6 +3,7 @@
 import Cookies from "js-cookie";
 import MatieStateClient from "./MatieStateClient";
 import { toast } from "react-toastify";
+import { v4 as uuidv4 } from 'uuid';
 
 export const SHOULD_DELETE_ENTRY = {
   account: true,
@@ -21,8 +22,8 @@ export const token =
 // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkYmEzOTI3LTAzYzMtNGI3OC1iZTMwLTE4MGJhNDRjNmE1YiIsImlhdCI6MTcxNTY5MDYyMSwiZXhwIjoxODczNDc4NjIxfQ.tkAPbUv1XYqW4tgER01HMo9Fiit-7LxEc7_sGZ765Pg";
 
 function CURD() {
-  const baseURL = "http://localhost:5000";
-  // const baseURL = "http://203.161.62.124:3000/";
+  // const baseURL = "http://localhost:5000";
+  const baseURL = "http://203.161.62.124:5000/";
   const matieStateClient = new MatieStateClient(baseURL, token);
 
   // Example Usage of getReport method
@@ -57,6 +58,7 @@ function CURD() {
           ...params,
           data: {
             ...params?.data,
+            id: uuidv4(),
             tenant_id: Cookies.get("tenant_id"),
           },
         }
@@ -72,7 +74,6 @@ function CURD() {
   const read = async (tableName, params = {}) => {
     try {
       const tenant_id = Cookies.get("tenant_id");
-      console.log(params, "called");
       if (tenant_id) {
         params = {
           ...params,
@@ -116,7 +117,6 @@ function CURD() {
   };
 
   const deleteContract = async (params) => {
-    // console.log("🚀 ~ deleteContract ~ params:", params);
   };
 
   // Example Usage of deleteRecords method

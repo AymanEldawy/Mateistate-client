@@ -1035,10 +1035,10 @@ export const CONSTANT_COLUMNS_NAME = {
 };
 
 export const UNIQUE_REF_TABLES = {
-  clients: "CLIENTS",
-  suppliers: "SUPPLIERS",
-  supervisor: "SUPERVISOR",
-  employee: "EMPLOYEE",
+  clients: "clients",
+  suppliers: "suppliers",
+  supervisor: "supervisor",
+  employee: "employee",
 };
 
 export const FLATS = {

@@ -15,6 +15,7 @@ import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import { v4 as uuidv4 } from "uuid";
 
 const ServiceForm = ({ popupView }) => {
   const name = "service";
@@ -38,7 +39,7 @@ const ServiceForm = ({ popupView }) => {
     CACHE_LIST,
     formSettings,
     onDeleteItem,
-  } = useFormSteps({ name });
+  } = useFormSteps({ name: "service_customer" });
   const { reset, watch } = methods;
 
   const { isLoading } = useQuery({
@@ -67,6 +68,43 @@ const ServiceForm = ({ popupView }) => {
     }
   };
 
+  const onSubmit = async (value) => {
+    if (watch("service.id")) {
+      const response = await ApiActions.update("service", {
+        conditions: [
+          { type: "and", conditions: [["id", "=", value?.service?.id]] },
+        ],
+        updates: value?.service,
+      });
+
+      if (response?.success) {
+        await ApiActions.update("service_customer_request", {
+          conditions: [
+            {
+              type: "and",
+              conditions: [["id", "=", value?.service_customer_request?.id]],
+            },
+          ],
+          updates: value?.service_customer_request,
+        });
+      }
+    } else {
+      const response = await ApiActions.insert("service", {
+        data: { id: uuidv4(), created_at: new Date(), ...value?.service },
+      });
+
+      if (response?.success) {
+        await ApiActions.insert("service_customer_request", {
+          data: {
+            id: uuidv4(),
+            ...value?.service_customer_request,
+            service_id: watch("service.id") || response?.record?.id,
+          },
+        });
+      }
+    }
+  };
+
   return (
     <FormWrapperLayout
       name={name}
@@ -80,6 +118,7 @@ const ServiceForm = ({ popupView }) => {
       goToStep={goTo}
       currentIndex={currentIndex}
       outerDelete={onDelete}
+      onSubmit={onSubmit}
     >
       {formSettings?.formType === "grid" ? (
         <TableFields

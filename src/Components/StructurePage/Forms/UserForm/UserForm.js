@@ -48,7 +48,6 @@ const UserForm = ({
           },
         ],
       });
-      console.log("🚀 ~ queryFn: ~ res:", res);
       reset(res?.result?.at(0));
     },
   });
@@ -61,7 +60,6 @@ const UserForm = ({
 
   // Handel Submit
   const onSubmit = async (value) => {
-    console.log("called f3");
     if (!isDirty) return;
 
     const res = await INSERT_FUNCTION.user(removeNullValues(value));

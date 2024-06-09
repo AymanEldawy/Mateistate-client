@@ -1279,6 +1279,15 @@ const warehouse_report = [
   { header: "is_available", accessorKey: "is_available" },
 ];
 
+const worker_report = [
+  { header: "name", accessorKey: "name" },
+  { header: "orders", accessorKey: "orders" },
+  { header: "category", accessorKey: "category" },
+  { header: "total_hours", accessorKey: "total_hours" },
+  { header: "status", accessorKey: "status" },
+  { header: "rate", accessorKey: "rate" },
+];
+
 const complaints_report = [
   { header: "number", accessorKey: "number" },
   { header: "start_date", accessorKey: "start_date" },
@@ -1306,6 +1315,18 @@ const complaints_report = [
   { header: "has_material", accessorKey: "has_material" },
   { header: "lack_reason_count", accessorKey: "lack_reason_count" },
 ];
+
+
+const owner_expenses_report = [
+  { header: "date", accessorKey: "date" },
+  { header: "building", accessorKey: "building" },
+  { header: "owner", accessorKey: "owner" },
+  { header: "account", accessorKey: "account" },
+  { header: "amount", accessorKey: "amount" },
+  { header: "note", accessorKey: "note" },
+
+]
+
 
 const REPORTS_COLUMNS = {
   cheques_report,
@@ -1357,6 +1378,10 @@ const REPORTS_COLUMNS = {
   // Maintenances
   complaints_report,
   warehouse_report,
+  worker_report,
+
+  // owner expenses report
+  owner_expenses_report
 };
 
 export default function getReportColumns(name) {

@@ -33,14 +33,14 @@ export const getVouchers = async (id, conditions = {}) => {
 
 export const getCostCenterList = async () => {
   const response = await ApiActions.read("cost_center", {
-    joins: [
-      {
-        type: "leftJoin",
-        table: "cost_center as parent",
-        conditions: { "cost_center.parent_id": "parent.id" },
-      },
-    ],
-    columns: ["cost_center.*", "parent.name as parent_name"],
+    // joins: [
+    //   {
+    //     type: "leftJoin",
+    //     table: "cost_center as parent",
+    //     conditions: { "cost_center.parent_id": "parent.id" },
+    //   },
+    // ],
+    // columns: ["cost_center.*", "parent.name as parent_name"],
   });
   return response?.result?.filter((c) => c?.parent_id);
 };

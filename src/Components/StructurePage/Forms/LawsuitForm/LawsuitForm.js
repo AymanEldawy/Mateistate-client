@@ -103,7 +103,6 @@ const LawsuitForm = ({ popupView }) => {
     }
   };
 
-  console.log(errors, "errors");
 
   return (
     <FormWrapperLayout

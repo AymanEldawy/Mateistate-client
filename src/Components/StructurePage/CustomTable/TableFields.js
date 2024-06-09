@@ -64,7 +64,7 @@ const TableFields = ({
 
   return (
     <>
-      <div className={`relative overflow-x-auto mt-4 ${containerClassName}`}>
+      <div className={`relative mt-4 ${containerClassName}`}>
         <table
           className={`border-collapse w-full text-sm text-left text-gray-500 dark:text-gray-400 border dark:border-dark-border rounded-md  ${tableClassName} ${
             tableError ? "!border-red-500" : ""
@@ -209,7 +209,7 @@ const TableFields = ({
                                       ? CACHE_LIST?.[field?.ref_table]
                                       : []
                                   }
-                                  readOnly={onlyView}
+                                  readOnly={onlyView || field?.readOnly}
                                 />
                               ) : (
                                 <>
@@ -236,7 +236,7 @@ const TableFields = ({
                                           ? "Field is required"
                                           : ""
                                       }
-                                      readOnly={onlyView}
+                                      readOnly={onlyView || field?.readOnly}
                                     />
                                   ) : (
                                     <>
@@ -305,7 +305,9 @@ const TableFields = ({
                                             inputClassName={`
                                               border-0 !rounded-none 
                                             `}
-                                            readOnly={onlyView}
+                                            readOnly={
+                                              onlyView || field?.readOnly
+                                            }
                                             withPortal={withPortal}
                                           />
                                         </>

@@ -132,7 +132,6 @@ export async function getInsertAccountTrigger(name, conditions) {
     parent_id
   );
 
-  console.log("🚀 ~ getInsertAccountTrigger ~ parentAccountData:", parentAccountData)
   // get default currency id
   const currencyResponse = await ApiActions.read("currency", {
     conditions: [
@@ -141,7 +140,6 @@ export async function getInsertAccountTrigger(name, conditions) {
   });
   
   let internal_number = +parentAccountData?.internal_number + 1;
-  console.log("🚀 ~ getInsertAccountTrigger ~ internal_number:", internal_number)
   let level = +parentAccountData?.level || 0;
 
   let account = {

@@ -1139,15 +1139,7 @@ const shop_rent_contract = [
   },
 ];
 const parking_rent_contract = [
-  {
-    label: "parking_id",
-    name: "parking_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "parking",
-    ref_name: "parking_no",
-  },
+  ...contract,
   { label: "description", name: "description", type: "text", required: false },
   {
     label: "lessor_id",
@@ -1166,20 +1158,15 @@ const parking_rent_contract = [
     list: SELECT_LISTS("contract_status"),
     required: false,
   },
+
   {
-    label: "car_plate_no",
-    name: "car_plate_no",
-    type: "text",
-    required: false,
-  },
-  { label: "card_no", name: "card_no", type: "text", required: false },
-  { label: "car_color", name: "car_color", type: "text", required: false },
-  { label: "car_type", name: "car_type", type: "text", required: false },
-  {
-    label: "related_contract",
-    name: "related_contract",
+    label: "parking_id",
+    name: "parking_id",
     type: "uuid",
-    required: false,
+    required: true,
+    is_ref: true,
+    ref_table: "parking",
+    ref_name: "parking_no",
   },
   {
     label: "contract_duration",
@@ -1203,6 +1190,71 @@ const parking_rent_contract = [
     required: true,
   },
 ];
+// const parking_rent_contract = [
+//   {
+//     label: "parking_id",
+//     name: "parking_id",
+//     type: "uuid",
+//     required: true,
+//     is_ref: true,
+//     ref_table: "parking",
+//     ref_name: "parking_no",
+//   },
+//   { label: "description", name: "description", type: "text", required: false },
+//   {
+//     label: "lessor_id",
+//     name: "lessor_id",
+//     type: "uuid",
+//     required: false,
+//     is_ref: true,
+//     ref_table: "lessor",
+//   },
+//   {
+//     label: "status",
+//     name: "status",
+//     key: "select",
+//     intValue: true,
+//     selectFirstAsDefault: true,
+//     list: SELECT_LISTS("contract_status"),
+//     required: false,
+//   },
+//   {
+//     label: "car_plate_no",
+//     name: "car_plate_no",
+//     type: "text",
+//     required: false,
+//   },
+//   { label: "card_no", name: "card_no", type: "text", required: false },
+//   { label: "car_color", name: "car_color", type: "text", required: false },
+//   { label: "car_type", name: "car_type", type: "text", required: false },
+//   {
+//     label: "related_contract",
+//     name: "related_contract",
+//     type: "uuid",
+//     required: false,
+//   },
+//   {
+//     label: "contract_duration",
+//     name: "contract_duration",
+//     key: "select",
+//     required: true,
+//     intValue: true,
+//     list: SELECT_LISTS("contract_duration"),
+//     allowInsert: true,
+//   },
+//   {
+//     label: "start_duration_date",
+//     name: "start_duration_date",
+//     type: "date",
+//     required: true,
+//   },
+//   {
+//     label: "end_duration_date",
+//     name: "end_duration_date",
+//     type: "date",
+//     required: true,
+//   },
+// ];
 
 // contract rent
 const apartment_rent_contract_group = {

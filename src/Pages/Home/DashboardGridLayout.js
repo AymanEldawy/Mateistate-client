@@ -1,10 +1,11 @@
-import { INSERT_DEFAULT_DATA } from "Helpers/GENERATE_STARTING_DATA";
+import { INSERT_DEFAULT_DATA, insertIntoNotification } from "Helpers/GENERATE_STARTING_DATA";
 import { ReportCount } from "./ReportCount";
 import { ReportLatest } from "./ReportLatest";
 
 export const DashboardGridLayout = () => {
 
   const loadData  = async () => {
+    // await insertIntoNotification()
     await INSERT_DEFAULT_DATA()
   }
 

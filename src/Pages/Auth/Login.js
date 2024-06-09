@@ -1,14 +1,13 @@
-import axios from "axios";
-
 import wallpaper from "Assets/Images/wallpaper.jpg";
 import { Button } from "Components/Global/Button";
-import { SERVER_URL } from "Helpers/functions";
 import { Input } from "Components/StructurePage/CustomFields";
 import { FormProvider, useForm } from "react-hook-form";
 import { ApiActions } from "Helpers/Lib/api";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const methods = useForm();
   const {
     formState: { errors, isDirty },
@@ -18,7 +17,6 @@ const Login = () => {
 
   const onSubmit = async () => {
     if (!isDirty) return;
-    console.log("called");
     const res = await ApiActions.read("admins", {
       conditions: [
         { type: "and", conditions: [["email", "=", watch("email")]] },
@@ -28,21 +26,22 @@ const Login = () => {
 
     if (res?.success) {
       let data = res?.result?.at(0);
-      if (data?.role === 1) {
-        const response = await ApiActions.read("tenants", {
-          conditions: [
-            { type: "and", conditions: [["admin_id", "=", data?.id]] },
-          ],
-          columns: ["id"],
-        });
-        Cookies.set("tenant_id", response?.result?.at(0)?.id, {
-          expires: 7,
-        });
-      }
+      // if (data?.role === 0) {
+      const response = await ApiActions.read("tenants", {
+        conditions: [
+          { type: "and", conditions: [["admin_id", "=", data?.id]] },
+        ],
+        columns: ["id"],
+      });
+      Cookies.set("tenant_id", response?.result?.at(0)?.id, {
+        expires: 7,
+      });
       Cookies.set("user_admin", JSON.stringify(data), {
         expires: 7,
       });
-      window?.location?.pathname('/')
+      navigate("/");
+      // window?.location?.replace('/')
+      // }
     }
   };
 
@@ -65,6 +64,7 @@ const Login = () => {
               <div className="mt-4" />
               <Input label="Password" type="password" name="password" />
               <Button
+                type="submit"
                 classes="mt-8 block w-full text-green-500"
                 title="Login"
               />

@@ -1,14 +1,6 @@
 import { SELECT_LISTS, UNIQUE_REF_TABLES } from "Helpers/constants";
 import FIELDS_STRUCTURE from "../Forms/fields-structure";
 
-//
-//
-//
-//
-//
-//
-//
-
 const contract_payments_report = [
   FIELDS_STRUCTURE.account(),
   FIELDS_STRUCTURE.account({
@@ -1399,7 +1391,53 @@ const complaints_report = [
     name: "complaint_approved",
     list: SELECT_LISTS("complaint_approved"),
   }),
+];
 
+const worker_report = [
+  FIELDS_STRUCTURE.uniqueField({
+    label: "worker",
+    name: "worker",
+    ref_name: UNIQUE_REF_TABLES.employee,
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "contract",
+    name: "contract",
+    ref_name: "contract",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "building",
+    name: "building",
+    ref_name: "building",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "category",
+    name: "category",
+    ref_name: "category",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "problem",
+    name: "problem",
+    ref_name: "category_problem",
+  }),
+  {
+    key: "between",
+    label: "hour_from",
+    field1Props: {
+      type: "number",
+      name: "form",
+    },
+    field2Props: {
+      type: "number",
+      name: "to",
+    },
+  },
+];
+
+const owner_expenses_report = [
+  FIELDS_STRUCTURE.uniqueField({
+    name: "owner",
+    ref_table: "owner",
+  }),
 ];
 
 const REPORTS_STRUCTURE = {
@@ -1448,10 +1486,12 @@ const REPORTS_STRUCTURE = {
 
   // Mangers reports
   manger_cheques_report,
+  owner_expenses_report,
 
   // Maintenances
   warehouse_report,
   complaints_report,
+  worker_report,
 };
 
 export default function getReportFields(name) {

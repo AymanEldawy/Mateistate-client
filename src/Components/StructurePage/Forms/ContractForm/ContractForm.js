@@ -107,8 +107,8 @@ const ContractForm = () => {
   const { setMaxLength, setNumber, number, maxLength, listOfNumbers } =
     viewList;
 
-  const {
-    handleSubmit,
+    const {
+      handleSubmit,
     watch,
     formState: { errors, isDirty },
     setValue,
@@ -142,7 +142,7 @@ const ContractForm = () => {
       autoMergePatternSettingsWithValues(pattern, watch, setValue, tabNames);
     },
   });
-
+  
   // fetch Old Contract
   useQuery({
     queryKey: ["old_contracts"],

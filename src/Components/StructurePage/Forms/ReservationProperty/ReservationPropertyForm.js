@@ -4,7 +4,6 @@ import useRefTable from "Hooks/useRefTables";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import useListView from "Hooks/useListView";
-import { usePopupForm } from "Hooks/usePopupForm";
 import { removeNullValues } from "Helpers/functions";
 import { CREATED_FROM_CONTRACT_RESERVATION_CODE } from "Helpers/GENERATE_STARTING_DATA";
 import { useQuery } from "@tanstack/react-query";
@@ -78,8 +77,7 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
   const { CACHE_LIST, fields } = useRefTable(name);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState([]);
-
-  console.log(number, maxLength, "--s");
+console.log(fields,'-f');
   const reservationQueryClient = useQuery({
     queryKey: [name, listOfNumbers?.[number - 1]],
     queryFn: async () => {

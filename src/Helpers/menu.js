@@ -111,19 +111,19 @@ export const menuData = [
         name: "owner expenses",
         subChild: [
           {
-            key: "expenses types",
-            name: "expenses types",
-            link: "/list/expenses_types/1",
+            key: "owner expenses types",
+            name: "owner expenses types",
+            link: "/list/owner_expenses_types/1",
           },
           {
             key: "owner expenses card",
             name: "owner expenses card",
-            link: "/list/owner_expenses/1",
+            link: "/owner_expenses/1",
           },
           {
             key: "owner expenses report",
             name: "owner expenses report",
-            link: "/report/owner-expenses-report",
+            link: "/reports/owner-expenses-report",
           },
         ],
       },
@@ -533,6 +533,11 @@ export const menuData = [
         key: "Maintenance orders report",
         name: "Maintenance orders report",
         link: "/reports/complaints-report",
+      },
+      {
+        key: "Workers report",
+        name: "Workers report",
+        link: "/reports/worker-report",
       },
 
       {

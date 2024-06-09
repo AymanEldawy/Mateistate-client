@@ -13,10 +13,10 @@ const UserBar = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <button
         type="button"
-        className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+        className="flex w-full mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
         id="user-menu-button"
         aria-expanded="true"
         data-dropdown-toggle="user-dropdown"

@@ -37,3 +37,5 @@ export { default as UnitConditionConstructionReport } from "./UnitConditionConst
 export { default as MangerChequeReport } from "./MangerChequeReport";
 export { default as WarehouseReport } from "./WarehouseReport";
 export { default as VATBillsReport } from "./VATBillsReport";
+export { default as WorkerReport } from "./WorkerReport";
+export { default as OwnerExpensesReport } from "./OwnerExpensesReport";

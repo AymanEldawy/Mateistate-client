@@ -152,7 +152,7 @@ const FormWrapperLayout = ({
                   onClickDelete={() => setOpenConfirmation(true)}
                   isArchived={watch(CONSTANT_COLUMNS_NAME.is_archived)}
                   isDeleted={watch(CONSTANT_COLUMNS_NAME.is_deleted)}
-                  allowActions={watch("id")}
+                  // allowActions={watch("id")}
                   onClickAddNew={onClickAddNew}
                 />
 

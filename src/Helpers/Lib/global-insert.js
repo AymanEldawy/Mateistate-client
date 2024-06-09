@@ -198,22 +198,28 @@ const dynamicInsertIntoMultiStepsTable = async ({
 const insetIntoLawsuit = async (data) => {};
 // Insert to Building and other relation tables
 const insertToBuilding = async (data) => {
+  if (data?.building) {
+    delete data?.building;
+  }
   let buildingId = null;
-  const response = await dynamicInsertIntoMultiStepsTable({
-    tableName: "building",
+  const response = await ApiActions.insert("building", {
     data,
   });
+  // const response = await dynamicInsertIntoMultiStepsTable({
+  //   tableName: "building",
+  //   data,
+  // });
 
   if (response?.success) {
-    buildingId = data?.building?.id || response?.record?.id;
+    buildingId = data?.id || response?.record?.id;
 
     let responseCostCenterId = null;
     let responseAccountId = null;
 
-    if (data?.building?.building_account_id) {
+    if (data?.building_account_id) {
     } else {
       let accountData = await getInsertAccountTrigger("Buildings");
-      accountData.name = data?.building?.name;
+      accountData.name = data?.name;
 
       const responseAccount = await ApiActions.insert("account", {
         data: accountData,
@@ -221,7 +227,7 @@ const insertToBuilding = async (data) => {
       responseAccountId = responseAccount?.record?.id;
     }
 
-    if (data?.building?.main_cost_center_id) {
+    if (data?.main_cost_center_id) {
     } else {
       let lastCostCenterNumber = await getLastCostCenterNumber();
       let internal_number = lastCostCenterNumber
@@ -231,7 +237,7 @@ const insertToBuilding = async (data) => {
       const responseCostCenter = await ApiActions.insert("cost_center", {
         data: {
           internal_number,
-          name: data?.building?.name,
+          name: data?.name,
         },
       });
       responseCostCenterId = responseCostCenter?.record?.id;
@@ -239,11 +245,11 @@ const insertToBuilding = async (data) => {
 
     let buildingUpdates = {};
 
-    if (!data?.building?.main_cost_center_id && responseCostCenterId) {
+    if (!data?.main_cost_center_id && responseCostCenterId) {
       buildingUpdates.main_cost_center_id = responseCostCenterId;
     }
 
-    if (!data?.building?.building_account_id && responseAccountId) {
+    if (!data?.building_account_id && responseAccountId) {
       buildingUpdates.building_account_id = responseAccountId;
     }
 
@@ -279,7 +285,9 @@ const getNewContractNumber = async (code) => {
     columns: ["internal_number"],
   });
 
-  return +contractRes?.response?.at(0)?.internal_number + 1 || 1;
+  return contractRes?.response?.at(0)?.internal_number
+    ? +contractRes?.response?.at(0)?.internal_number + 1
+    : 1;
 };
 
 // Dynamic insert into Contract and other relation tables
@@ -317,12 +325,11 @@ const dynamicInsertIntoContract = async ({
   if (!contract_id) {
     // Insert into contract or update
     const internal_number = await getNewContractNumber(data?.contract?.code);
-    console.log("🚀 ~ internal_number:", internal_number);
     response = await ApiActions.insert("contract", {
       data: {
-        internal_number,
         ...data?.contract,
         contract_type: contractType,
+        internal_number: internal_number || Math.floor(Math.random() * 100),
       },
     });
     contract_id = response?.record?.id;
@@ -816,7 +823,7 @@ export const getLastCostCenterNumber = async () => {
   for (const item of response?.result) {
     if (item?.number > bigNumber && !item?.parent_id) bigNumber = item?.number;
   }
-  return +bigNumber;
+  return bigNumber ? +bigNumber : 1;
 };
 
 export const getCostCenterNumberById = async (id) => {

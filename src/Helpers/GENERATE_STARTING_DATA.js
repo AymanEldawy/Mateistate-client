@@ -1,6 +1,15 @@
 const { ApiActions } = require("./Lib/api");
 
 // Account & Users Codes
+export const TENANT_ID = "051d7650-694b-423c-85d1-3871ce861830";
+
+export const USERS = [
+  "50a1763d-1547-4406-8c4b-6fde32b2824f", //local
+  // "14f28e9c-5765-4eab-a6a3-3ec584bc51f6", //server
+  // "7ac1f54e-4fa5-4694-8698-c36be01d8d6f", //server
+  // "7b7238c4-ffec-48be-9f23-17de58839d51", //server
+  // "76440e18-679a-4d6a-805f-9c738b05d27d", //server
+];
 
 export const USER_CUSTOMER_CODE = 1;
 export const USER_SUPPLIER_CODE = 2;
@@ -724,10 +733,51 @@ export async function INSERT_DEFAULT_MULTIPLE_DATA() {
 }
 
 export async function INSERT_DEFAULT_DATA() {
-  await ApiActions.read("cheque");
+  // await ApiActions.read("cheque");
   INSERT_DEFAULT_BANKS();
   INSERT_DEFAULT_MULTIPLE_DATA();
   await INSERT_DEFAULT_ACCOUNTS();
 }
 // INSERT_DEFAULT_CHEQUES()
 // INSERT_DEFAULT_DATA()
+
+// Define the notification schema
+const notificationSchema = {
+  title: String,
+  description: String,
+  url: String,
+  status: Boolean,
+};
+
+// Function to generate a random string
+function randomString(length) {
+  const chars =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+// Generate 50 notification objects
+export async function insertIntoNotification() {
+  for (let i = 0; i < 100; i++) {
+    await ApiActions.insert("notification", {
+      data: {
+        title: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+        description: randomString(
+          Math.floor(Math.random() * (100 - 50 + 1)) + 50
+        ),
+        url: `https://example.com/${randomString(
+          Math.floor(Math.random() * (10 - 5 + 1)) + 5
+        )}`,
+        tenant_id: TENANT_ID,
+        user_id: USERS[Math.floor(Math.random() * USERS?.length)],
+        status: i % 2 === 0,
+      },
+    });
+  }
+}
+
+// insertIntoNotification();

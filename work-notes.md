@@ -436,54 +436,29 @@ NOTES: complicated tasks
 - [✔️] Materials 
 - [✔️] category 
 - [✔️] evacuation_request 
-- [] worker report time - rate - services
+- [✔️] worker report time - rate - services
+
 - [] worker card
 - [] supervisor card
-- [] services order page 
-- [] services materials page 
-- [] all requests with tenant_id
-- [] admin-> create tanent 
-- [] admin-> menu 
+- [✔️] services order page 
+- [✔️] services materials page 
+- [✔️] all requests with tenant_id
+- [✔️] admin-> create tanent 
 
 
+## Database 
+- shop & apartment more details
+- handle dupllicate and not null  
 
+
+- [] test all actions
+- [] lawsuit card
+- [] service card
 
 
 - []
 بطاقة مشرف و عامل 
 تحدد ساعات العمل و الاجازات و متاح و غير متاح الخ 
-
-
-
-
-
-
-
-## 
-دليل المستودعات
-التصنيفات
-الاداوات 
-مجانية و غير مجانية
-
-موجودة وخارجية 
-
-
-- عامل الصيانة
-
-
-
-سعر شراء 
-سعر بيع 
-
-ملاحظات 
-
-امكانية 
-
-امكانية ااضافة مواد خارجية 
-
-
-
-
 
 
 

@@ -1,6 +1,4 @@
 import { ApiActions } from "Helpers/Lib/api";
-import { Fields } from "./Fields";
-import INSERT_FUNCTION from "../../../../Helpers/Lib/global-insert";
 import useRefTable from "Hooks/useRefTables";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -12,8 +10,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import getFormByTableName from "Helpers/Forms/forms";
+import { Fields } from "../CustomForm/Fields";
+import { insertIntoGrid } from "Helpers/Lib/vouchers-insert";
 
-const FormSingular = ({ name, onClose }) => {
+const OwnerExpensesForm = () => {
+  const name = "owner_expenses";
   const params = useParams();
   const viewList = useListView({ name, defaultNumber: params?.number });
   const { setRecordResponse, appendNewRecord } = usePopupForm();
@@ -51,65 +52,82 @@ const FormSingular = ({ name, onClose }) => {
         ],
       });
       if (data?.success) {
-        reset(data?.result?.at(0));
+        const ownerDetailsRes = await ApiActions.read(
+          `owner_expenses_details`,
+          {
+            conditions: [
+              {
+                type: "and",
+                conditions: [
+                  ["owner_expenses_id", "=", data?.result?.at(0)?.id],
+                ],
+              },
+            ],
+          }
+        );
+        reset({
+          owner_expenses: data?.result?.at(0),
+          owner_expenses_details: ownerDetailsRes?.result
+        });
+      } else {
+        const ownerTypesRes = await ApiActions.read(`owner_expenses_types`);
+        if (ownerTypesRes?.success) {
+          let owner_expenses_details = [];
+          for (const item of ownerTypesRes?.result) {
+            owner_expenses_details.push({
+              owner_expenses_types_id: item?.id,
+            });
+          }
+          reset({
+            owner_expenses_details,
+          });
+        }
       }
     },
   });
-  console.log(fields,'f');
 
   // Handel Submit
   const onSubmit = async (value) => {
     if (!isDirty) return;
 
-    let values = removeNullValues(value);
-
     let res = null;
 
     if (isLayoutUpdate) {
       res = await ApiActions.update(name, {
-        conditions: [{ type: "and", conditions: [["id", "=", watch("id")]] }],
-        updates: values,
+        conditions: [
+          { type: "and", conditions: [["id", "=", watch(`${name}.id`)]] },
+        ],
+        updates: watch(name),
       });
     } else {
-      if (INSERT_FUNCTION?.[name]) {
-        const getTheFunInsert = INSERT_FUNCTION[name];
-        res = await getTheFunInsert(values);
-      } else {
-        res = await ApiActions.insert(name, {
-          data: values,
-        });
-      }
+      res = await ApiActions.insert(name, {
+        data: watch(name),
+      });
     }
 
     if (res?.success) {
       toast.success(
         isLayoutUpdate
-          ? `Successfully update row: ${values?.name} in ${name}`
+          ? `Successfully update row: ${name} in ${name}`
           : "Successfully added item in " + name
       );
 
       if (!isLayoutUpdate) {
         let record = res?.record;
-        setListOfData((prev) => ({
-          ...prev,
-          [record?.number]: record,
-        }));
         setListOfNumbers((prev) => [...prev, record?.number]);
       }
-
-      if (!!setRecordResponse) {
-        setRecordResponse({ table: name, response: res });
-      }
-
-      if (!isLayoutUpdate) {
-        setMaxLength((prev) => +prev + 1);
-        await appendNewRecord(res);
-        reset();
-      }
+      insertIntoGrid({
+        grid: watch("owner_expenses_details"),
+        gridTableName: "owner_expenses_details",
+        itemId: res?.record?.id || watch(`${name}.id`),
+        itemSearchName: "owner_expenses_id",
+      });
     } else {
       toast.error(res?.error?.detail);
     }
   };
+
+  console.log(watch());
 
   return (
     <FormWrapperLayout
@@ -120,9 +138,9 @@ const FormSingular = ({ name, onClose }) => {
       itemId={watch("id")}
       itemNumber={watch("number")}
       isLoading={isLoading}
-      onClose={onClose}
     >
       <Fields
+        tab="owner_expenses"
         values={watch()}
         errors={errors}
         CACHE_LIST={CACHE_LIST}
@@ -131,17 +149,16 @@ const FormSingular = ({ name, onClose }) => {
           name === "owner_expenses" ? "grid-cols-2 md:grid-cols-3" : ""
         }
       />
-      {name === "owner_expenses" ? (
-        <TableFields
-          increasable={false}
-          rowsCount={1}
-          CACHE_LIST={CACHE_LIST}
-          errors={errors}
-          fields={getFormByTableName("owner_expenses_details")}
-        />
-      ) : null}
+      <TableFields
+        tab={"owner_expenses_details"}
+        increasable={false}
+        rowsCount={watch("owner_expenses_details")?.length}
+        CACHE_LIST={CACHE_LIST}
+        errors={errors}
+        fields={getFormByTableName("owner_expenses_details")}
+      />
     </FormWrapperLayout>
   );
 };
 
-export default FormSingular;
+export default OwnerExpensesForm;

@@ -31,54 +31,54 @@ const calculateFlats = (name, watch) => {
     case "apartment_count":
     case "apartment_floor":
       FLATS.apartment_count =
-        watch("building.apartment_count") * watch("building.apartment_floor");
+        watch("apartment_count") * watch("apartment_floor");
       return;
     case "penthouse_count":
     case "penthouse_floor":
       FLATS.penthouse_count =
-        watch("building.penthouse_count") * watch("building.penthouse_floor");
+        watch("penthouse_count") * watch("penthouse_floor");
 
       return;
     case "parking_count":
     case "parking_floor":
       FLATS.parking_count =
-        watch("building.parking_count") * watch("building.parking_floor");
+        watch("parking_count") * watch("parking_floor");
 
       return;
     case "mezzanine_count":
     case "mezzanine_floor":
       FLATS.mezzanine_count =
-        watch("building.mezzanine_count") * watch("building.mezzanine_floor");
+        watch("mezzanine_count") * watch("mezzanine_floor");
 
       return;
     case "office_count":
     case "office_floor":
       FLATS.office_count =
-        watch("building.office_count") * watch("building.office_floor");
+        watch("office_count") * watch("office_floor");
 
       return;
     case "store_count":
-      FLATS.store_count = watch("building.store_count");
+      FLATS.store_count = watch("store_count");
       return;
 
     case "shop_count":
-      FLATS.shop_count = watch("building.shop_count");
+      FLATS.shop_count = watch("shop_count");
 
       return;
     case "warehouse_count":
-      FLATS.warehouse_count = watch("building.warehouse_count");
+      FLATS.warehouse_count = watch("warehouse_count");
 
       return;
     case "service_apartments":
-      FLATS.service_apartments = watch("building.service_apartments");
+      FLATS.service_apartments = watch("service_apartments");
 
       return;
     case "drivers_apartments":
-      FLATS.drivers_apartments = watch("building.drivers_apartments");
+      FLATS.drivers_apartments = watch("drivers_apartments");
 
       return;
     case "underground_parking":
-      let underground_parking = watch("building.underground_parking");
+      let underground_parking = watch("underground_parking");
       FLATS.underground_parking = underground_parking;
 
       return;
@@ -131,8 +131,9 @@ const BuildingForm = ({ popupView }) => {
       const data = await GET_UPDATE_DATE_BY_NUMBER.building(
         listOfNumbers?.[number - 1]
       );
-      if (data?.building?.id) {
-        reset(data);
+      console.log('called', data);
+      if (data?.success) {
+        reset(data?.result?.at(0));
         reCalculateFlats(watch);
       }
     },
@@ -140,9 +141,8 @@ const BuildingForm = ({ popupView }) => {
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
-      if (name?.indexOf("building.") !== -1) {
-        calculateFlats(name, watch, setValue);
-      }
+      console.log(name, type, value);
+      calculateFlats(name, watch, setValue);
     });
     return () => subscription.unsubscribe();
   }, [watch]);
@@ -150,6 +150,7 @@ const BuildingForm = ({ popupView }) => {
   const buildingFormValid = useCallback(() => {
     let valid = false;
     for (const flat in FLATS) {
+      console.log(FLATS?.[flat]);
       if (FLATS?.[flat]) valid = true;
     }
     return valid;
@@ -194,7 +195,6 @@ const BuildingForm = ({ popupView }) => {
     if (res?.success) {
       if (res?.record?.id) navigate(`/tools/${res?.record?.id}`);
       toast.success("Successfully added item in Building");
-      reset();
     } else {
       if (res?.constraint?.indexOf('building_name_key"') !== -1) {
         toast.error(`Field to insert Building, Name is already exist.`);
@@ -204,7 +204,7 @@ const BuildingForm = ({ popupView }) => {
     }
   };
 
-  console.log(errors, "errors");
+  // console.log(watch(), "watch");
 
   return (
     <FormWrapperLayout
@@ -214,8 +214,8 @@ const BuildingForm = ({ popupView }) => {
       onSubmit={onSubmit}
       popupView={popupView}
       methods={methods}
-      itemId={watch("building.id")}
-      itemNumber={watch("building.number")}
+      itemId={watch("id")}
+      itemNumber={watch("number")}
       steps={steps}
       goToStep={goTo}
       currentIndex={currentIndex}
@@ -223,7 +223,7 @@ const BuildingForm = ({ popupView }) => {
       setCurrentIndex={setCurrentIndex}
       additionalButtons={
         <Link
-          to={`/tools/${watch("building.id")}`}
+          to={`/tools/${watch("id")}`}
           className="bg-gray-200 dark:bg-dark-border dark:text-white rounded-md p-2 flex items-center gap-2 font-medium text-gray-700"
         >
           <PaletteIcon />
@@ -241,7 +241,7 @@ const BuildingForm = ({ popupView }) => {
           <>
             {currentSubIndex === 0 ? (
               <Fields
-                tab={"building"}
+                tab={''}
                 fields={getFormByTableName("building_real_estate_management")}
                 values={watch()}
                 errors={errors}
@@ -251,7 +251,7 @@ const BuildingForm = ({ popupView }) => {
             ) : null}
             {currentSubIndex === 1 ? (
               <Fields
-                tab={"building"}
+                tab={''}
                 fields={getFormByTableName("building_buying")}
                 values={watch()}
                 errors={errors}
@@ -262,16 +262,16 @@ const BuildingForm = ({ popupView }) => {
             {currentSubIndex === 2 ? (
               <Input
                 containerClassName="max-w-[300px]"
-                name="building.building_cost"
+                name="building_cost"
                 type="number"
-                updatedName={`building.building_cost`}
+                updatedName={`building_cost`}
                 label={`building cost`}
                 values={watch()}
               />
             ) : null}
             {currentSubIndex === 3 ? (
               <Fields
-                tab={"building"}
+                tab={''}
                 fields={getFormByTableName("building_investment")}
                 values={watch()}
                 errors={errors}
@@ -281,7 +281,7 @@ const BuildingForm = ({ popupView }) => {
             ) : null}
             {currentSubIndex === 4 ? (
               <Fields
-                tab={"building"}
+                tab={''}
                 fields={getFormByTableName("building_real_estate_development")}
                 values={watch()}
                 errors={errors}
@@ -294,7 +294,7 @@ const BuildingForm = ({ popupView }) => {
       ) : (
         <>
           <Fields
-            tab={tab}
+            tab={''}
             fields={fields}
             values={watch()?.[tab]}
             errors={errors}

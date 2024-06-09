@@ -53,10 +53,13 @@ import {
   CreditorsAgesReport,
   VATBillsReport,
   WarehouseReport,
+  WorkerReport,
+  OwnerExpensesReport,
 } from "Pages/Report";
 import LawsuitForm from "Components/StructurePage/Forms/LawsuitForm/LawsuitForm";
 import ComplaintsReport from "Pages/Report/ComplaintsReport";
 import ServiceForm from "Components/StructurePage/Forms/ServiceForm/ServiceForm";
+import OwnerExpensesForm from "Components/StructurePage/Forms/OwnerExpensesForm/OwnerExpensesForm";
 
 const publicRoutes = [
   { path: "**", component: <NouFound /> },
@@ -71,6 +74,10 @@ const authProtectedRoutes = [
   { path: "/tools/:id", component: <Tools /> },
 
   // Reports
+  {
+    path: "/reports/worker-report",
+    component: <WorkerReport />,
+  },
   {
     path: "/reports/warehouse-report",
     component: <WarehouseReport />,
@@ -224,6 +231,11 @@ const authProtectedRoutes = [
     component: <UnitConditionConstructionReport />,
   },
 
+  // Owner expenses reports
+  {
+    path: "/reports/owner-expenses-report",
+    component: <OwnerExpensesReport />,
+  },
   // Manger reports
   {
     path: "/reports/mangers/cheque-report",
@@ -253,6 +265,7 @@ const authProtectedRoutes = [
     path: "/contracts/:type/:name",
     component: <ContractForm layout="update" />,
   },
+  { path: "/owner_expenses/:number", component: <OwnerExpensesForm /> },
   { path: "/lawsuit/:number", component: <LawsuitForm /> },
   // Chart forms
   { path: "/chart/:name", component: <Chart /> },

@@ -86,36 +86,54 @@ Note: (n) one of theme `apartment` `shop` `parking` `land` `villa`
 - available
 - @property date `form` `to`
 
-
-
-
-
-
 <!--  -->
-Time 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Time
 
 ##
+
 ترتيب ابجدي
-في حالة شركة مختلفة انشاء 
+في حالة شركة مختلفة انشاء
 في حالة عمل
+
+---
+
+## Columns
+
+| col         | table    | description               |
+| ----------- | -------- | ------------------------- |
+| name        | user     |
+| orders      |          | the total of orders       |
+| category    | category |
+| total_hours |          |
+| status      |          |
+| rate        |          | the calculation of rating |
+
+## Filters
+
+- name `user.id`
+- category `category.id`
+- building `building.id`
+- contract `contract.id`
+- problem `category_problem.id`
+- @property hours `form` `to`
+
+---
+
+## Columns
+
+| col      | table                  |
+| -------- | ---------------------- |
+| date     | owner_expenses_details |
+| building | owner_expenses         |
+| owner    | owner_expenses         |
+| account  | owner_expenses_details |
+| amount   | owner_expenses_details |
+| note     | owner_expenses_details |
+
+## Filters
+
+- owner_id `owner.id`
+- expenses_types[] `owner_expenses_types.id`
+- buildings[] `building.id`
+- @property date `form` `to`

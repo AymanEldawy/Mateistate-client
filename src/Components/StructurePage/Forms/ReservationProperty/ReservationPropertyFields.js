@@ -29,7 +29,7 @@ export const ReservationPropertyFields = ({
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">
-        {["account_id", "building_id"]?.map((field) => {
+        {/* {["account_id", "building_id"]?.map((field) => {
           let name = field?.replace(/_id/, "");
           return (
             <UniqueField
@@ -39,7 +39,23 @@ export const ReservationPropertyFields = ({
               error={errors?.[field] ? "Field is required" : ""}
             />
           );
-        })}
+        })} */}
+        <UniqueField
+          {...{
+            ...fieldsHash?.account_id,
+          }}
+          CACHE_LIST={CACHE_LIST}
+          list={CACHE_LIST?.account}
+          error={errors?.account_id ? "Field is required" : ""}
+        />
+        <UniqueField
+          {...{
+            ...fieldsHash?.building_id,
+          }}
+          CACHE_LIST={CACHE_LIST}
+          list={CACHE_LIST.building}
+          error={errors?.building_id ? "Field is required" : ""}
+        />
         <Select
           {...fieldsHash?.property_type}
           error={errors?.property_type ? "Field is required" : ""}
