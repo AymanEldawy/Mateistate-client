@@ -1,3 +1,8 @@
+import { useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+
+import { ApiActions } from "Helpers/Lib/api";
+import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import {
   flexRender,
   getCoreRowModel,
@@ -6,69 +11,60 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useMemo, useState } from "react";
-import { ResizeBar } from "./TableResizeBar";
-import BlockPaper from "Components/Global/BlockPaper";
-import { SortIcon } from "Components/Icons";
-import { useTranslation } from "react-i18next";
-import { NewTableBar } from "./NewTableBar";
-import { TablePagination } from "./TablePagination";
 import getTableColumns from "Helpers/columns-structure";
 import { useLocalStorage } from "Hooks/useLocalStorage";
-import { ApiActions } from "Helpers/Lib/api";
-import ConfirmModal from "Components/Global/Modal/ConfirmModal";
-import { TableSkeleton } from "../StructurePage/CustomTable/TableSkeleton";
+import getTableData from "Helpers/Lib/global-read";
+import { useQuery } from "@tanstack/react-query";
+import BlockPaper from "Components/Global/BlockPaper";
+import {
+  EyeIcon,
+  PlusIcon,
+  PrintIcon,
+  SearchIcon,
+  SortIcon,
+  TrashIcon,
+} from "Components/Icons";
+import { useTranslation } from "react-i18next";
+import { TablePagination } from "Components/DynamicTable/TablePagination";
+import { TableVisibility } from "Components/DynamicTable/TableVisibility";
+import { TableSkeleton } from "Components/StructurePage/CustomTable/TableSkeleton";
+import { ResizeBar } from "Components/DynamicTable/TableResizeBar";
+import { DebouncedInput } from "Components/StructurePage/CustomFields";
+import { TableFilterBar } from "Components/DynamicTable/TableFilterBar";
+import { TableInfo } from "Components/DynamicTable/TableInfo";
 
 let columnBeingDragged;
 
-export const DynamicTable = ({
-  tableName,
-  defaultTitle,
-  data,
-  containerClassName,
-  tableClassName,
-  tableHeadClassName,
-  tableBodyClassName,
-  thClassName,
-  tdClassName,
-  setOpen,
-  refetchData,
-  loading,
-  onClickAdd,
-  hideAddNew,
-  extraContent,
-  columns: outerColumns,
-  allowPrint,
-  onClickPrint,
-  defaultName,
-  onClickDelete,
-}) => {
+const List = ({ tableName, allowPrint, urlToAdd }) => {
   const { t } = useTranslation();
-  const { getTable, setTable } = useLocalStorage();
+  const params = useParams();
+  const { name } = params;
+  // const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnOrder, setColumnOrder] = useState([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
+  const [openColumnsSetting, setOpenColumnsSetting] = useState(false);
   const [openConfirmation, setOpenConfirmation] = useState(false);
-  const columns = useMemo(
-    () => (outerColumns ? outerColumns : getTableColumns(tableName)),
-    [tableName, outerColumns]
-  );
 
-  useEffect(() => {
-    const storageTable = getTable(tableName);
-    if (storageTable) setColumnVisibility(storageTable);
-  }, [tableName]);
+  const { getTable, setTable } = useLocalStorage();
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: [name, "table"],
+    queryFn: async () => await getTableData(name),
+  });
+  console.log(data,'da');
 
-  useEffect(() => {
+  useMemo(() => {
     if (Object.keys(columnVisibility).length)
       setTable(tableName, columnVisibility);
-  }, [columnVisibility]);
+  }, []);
+
+  console.log(data);
 
   const table = useReactTable({
-    columns,
-    data,
+    columns: getTableColumns(name),
+    data: !isLoading ? data : [],
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -103,34 +99,34 @@ export const DynamicTable = ({
     table.setColumnOrder(currentCols);
   };
 
+  const onClickPrint = () => {};
+
   const deleteItem = async () => {
     let ids = [];
     let list = [];
-    let selected = table.getFilteredSelectedRowModel();
+    // let selected = table.getFilteredSelectedRowModel();
 
-    for (const row of selected?.rows) {
-      list.push(row.original);
-      ids.push(row.original.id);
-    }
+    // for (const row of selected?.rows) {
+    //   list.push(row.original);
+    //   ids.push(row.original.id);
+    // }
     let res = null;
-    if (onClickDelete) {
-      res = await onClickDelete(list, ids);
-    } else {
-      res = await ApiActions.remove(defaultName || tableName, {
-        conditions: [
-          {
-            type: "and",
-            conditions:
-              ids.length > 1 ? [["id", "in", ids]] : [["id", "=", ids[0]]],
-          },
-        ],
-      });
-    }
+
+    res = await ApiActions.remove(tableName, {
+      conditions: [
+        {
+          type: "and",
+          conditions:
+            ids.length > 1 ? [["id", "in", ids]] : [["id", "=", ids[0]]],
+        },
+      ],
+    });
+
     if (res.success) {
-      setRowSelection([]);
-      await refetchData();
+      // setRowSelection([]);
+      // await refetchData();
     }
-    setOpenConfirmation(false);
+    // setOpenConfirmation(false);
   };
 
   return (
@@ -140,42 +136,84 @@ export const DynamicTable = ({
         open={openConfirmation}
         setOpen={setOpenConfirmation}
       />
-      <BlockPaper
-        title={defaultTitle || tableName}
-        subTitle={
-          table.getGroupedSelectedRowModel()?.rows.length ? (
-            <span className="text-blue-500 rounded-md text-sm font-medium capitalize">
-              {table.getGroupedSelectedRowModel()?.rows.length}{" "}
-              {t("selected_rows")}
-            </span>
-          ) : null
-        }
-      >
-        <NewTableBar
-          setColumnFilters={setColumnFilters}
-          setGlobalFilter={setGlobalFilter}
+      {openColumnsSetting && (
+        <TableVisibility
           table={table}
           columnVisibility={columnVisibility}
           tableName={tableName}
-          onAddClick={onClickAdd ? onClickAdd : () => setOpen(true)}
-          onDeleteClick={() => setOpenConfirmation(true)}
-          hideAddNew={hideAddNew}
-          extraContent={extraContent}
-          allowPrint={allowPrint}
-          onClickPrint={onClickPrint}
-          rowSelection={rowSelection}
+          onClose={() => setOpenColumnsSetting(false)}
         />
-
-        <div
-          className={`relative overflow-x-auto w-full  ${containerClassName}`}
-        >
+      )}
+      <BlockPaper
+        title={name}
+        contentBar={
+          <div className="flex gap-4 items-center justify-between mb-4">
+            <div className="flex gap-2 items-center">
+              <div className="relative">
+                <div className="relative md:block ">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-2 overflow-hidden">
+                    <span className="pointer-events-none">
+                      <SearchIcon />
+                    </span>
+                  </div>
+                  <DebouncedInput
+                    type="text"
+                    id="search-navbar"
+                    className={`block w-full p-2  text-sm rounded-md dark:text-white text-gray-900 border border-gray-300  bg-gray-100 active:ring-blue-200 focus-visible:ring-blue-200 focus:ring-blue-500 focus:border-blue-500`}
+                    onChange={(value) => setGlobalFilter(value)}
+                    debounce={500}
+                  />
+                </div>
+              </div>
+              {table.getPrePaginationRowModel()?.rows?.length ? (
+                <div>
+                  {table.getPrePaginationRowModel()?.rows?.length} {t("rows")}
+                </div>
+              ) : null}
+            </div>
+            <div className="flex gap-2">
+              {/* {!urlToAdd ? null : ( */}
+              <Link
+                to={urlToAdd}
+                className="flex items-center gap-2 bg-blue-500 text-sm text-white py-2 rounded px-2 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
+              >
+                <PlusIcon className="w-6 h-6" circle />
+                {t("add_new")}
+              </Link>
+              {/* )} */}
+              <button
+                className="bg-red-500 text-sm text-white py-2 rounded px-2 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300 disabled:bg-red-200"
+                // onClick={() => setOpenConfirmation(true)}
+                // disabled={typeof rowSelection === 'object' &&!Object.keys(rowSelection)?.length}
+              >
+                <TrashIcon />{" "}
+              </button>
+              <button
+                onClick={() => setOpenColumnsSetting(true)}
+                className="bg-green-500 text-sm text-white py-2 rounded px-2 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
+              >
+                <EyeIcon />
+              </button>
+              {allowPrint ? (
+                <button
+                  onClick={onClickPrint}
+                  className="flex items-center gap-2 bg-purple-500 rounded-md text-white px-4 py-2"
+                >
+                  <PrintIcon className="w-5 h-5" />
+                  {t("print")}
+                </button>
+              ) : null}
+            </div>
+          </div>
+        }
+      >
+        <TableInfo />
+        <div className={`relative overflow-x-auto w-full`}>
           <table
-            className={`w-[${table.getTotalSize()}] w-full ${tableClassName}`}
+            className={`w-[${table.getTotalSize()}] w-full `}
             style={{ width: table.getTotalSize() }}
           >
-            <thead
-              className={`${tableHeadClassName} bg-gray-100  text-sm dark:bg-[#161616]`}
-            >
+            <thead className={` bg-gray-100  text-sm dark:bg-[#161616]`}>
               {table.getHeaderGroups().map((headerGroup) => {
                 return (
                   <tr key={headerGroup.id}>
@@ -193,7 +231,7 @@ export const DynamicTable = ({
                         }}
                         onDrop={onDrop}
                         style={{ width: header.getSize() }}
-                        className={`w-[${header.getSize()}] text-gray-700 whitespace-nowrap dark:text-gray-300 font-medium capitalize relative  group border-b border-gray-200 dark:border-dark-border px-4 py-2 cursor-move ${thClassName}
+                        className={`w-[${header.getSize()}] text-gray-700 whitespace-nowrap dark:text-gray-300 font-medium capitalize relative  group border-b border-gray-200 dark:border-dark-border px-4 py-2 cursor-move 
                       ${
                         header.column.getIsSorted()
                           ? "sorting-hover [&_span]:visible bg-gray-300 dark:bg-dark-bg "
@@ -227,9 +265,9 @@ export const DynamicTable = ({
                 );
               })}
             </thead>
-            <tbody className={`${tableBodyClassName}`}>
-              {loading ? (
-                <TableSkeleton columns={columns} />
+            <tbody className={``}>
+              {isLoading ? (
+                <TableSkeleton />
               ) : (
                 <>
                   {table.getRowModel().rows?.length ? (
@@ -243,7 +281,7 @@ export const DynamicTable = ({
                             return (
                               <td
                                 key={cell?.id}
-                                className={`w-[${cell.column.getSize()}] px-4 py-2 ${tdClassName}`}
+                                className={`w-[${cell.column.getSize()}] px-4 py-2 `}
                                 style={{ width: cell.column.getSize() }}
                               >
                                 {flexRender(
@@ -259,7 +297,7 @@ export const DynamicTable = ({
                   ) : (
                     <tr className="text-red-500 h-28 bg-[#f1f1f1e8] dark:bg-[#00000021] p-1 rounded-sm text-center mt-2">
                       <td
-                        colSpan={columns.length}
+                        colSpan={5}
                         rowSpan={5}
                         className="ltr:text-left rtl:text-right relative"
                       >
@@ -273,10 +311,11 @@ export const DynamicTable = ({
               )}
             </tbody>
           </table>
+          {/* <TablePagination table={table} /> */}
         </div>
-
-        <TablePagination table={table} />
       </BlockPaper>
     </>
   );
 };
+
+export default List;

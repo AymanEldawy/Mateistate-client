@@ -223,6 +223,7 @@ const ContractTerminationForm = ({
           </div>
           <div className="flex gap-4 items-end">
             <button
+              type="button"
               className="text-sm py-2 rounded-md px-4 flex items-center gap-2 bg-blue-500 text-white"
               onClick={() => setOpenFeesForm(true)}
             >

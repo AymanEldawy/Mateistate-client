@@ -24,7 +24,7 @@ const CustomSelect = ({
 }) => {
   const { name } = field;
   const { t } = useTranslation();
-  const { register, control, watch, setValue } = useFormContext();
+  const { control, watch, setValue } = useFormContext();
   const [list, setList] = useState([]);
 
   useEffect(() => {

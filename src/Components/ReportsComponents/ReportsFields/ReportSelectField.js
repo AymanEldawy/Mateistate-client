@@ -72,6 +72,8 @@ const ReportSelectField = ({
                 menuList: () => "dark:bg-dark-bg",
                 ...selectClassNames,
               }}
+            
+              placeholder={field?.label}
               options={list}
               value={list?.find(
                 (c) => c?.value === +watch(updatedName || field?.name)

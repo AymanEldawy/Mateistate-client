@@ -15,7 +15,7 @@ import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
 import { PaletteIcon } from "Components/Icons";
-import { SubStepsList } from './../CustomForm/SubStepsList';
+import { SubStepsList } from "./../CustomForm/SubStepsList";
 
 const SUB_STEPS = [
   "building_real_estate_management",
@@ -41,8 +41,7 @@ const calculateFlats = (name, watch) => {
       return;
     case "parking_count":
     case "parking_floor":
-      FLATS.parking_count =
-        watch("parking_count") * watch("parking_floor");
+      FLATS.parking_count = watch("parking_count") * watch("parking_floor");
 
       return;
     case "mezzanine_count":
@@ -53,8 +52,7 @@ const calculateFlats = (name, watch) => {
       return;
     case "office_count":
     case "office_floor":
-      FLATS.office_count =
-        watch("office_count") * watch("office_floor");
+      FLATS.office_count = watch("office_count") * watch("office_floor");
 
       return;
     case "store_count":
@@ -128,12 +126,18 @@ const BuildingForm = ({ popupView }) => {
   const { isLoading } = useQuery({
     queryKey: [name, listOfNumbers?.[number - 1]],
     queryFn: async () => {
-      const data = await GET_UPDATE_DATE_BY_NUMBER.building(
-        listOfNumbers?.[number - 1]
-      );
-      console.log('called', data);
-      if (data?.success) {
-        reset(data?.result?.at(0));
+      const res = await ApiActions.read("building", {
+        conditions: [
+          {
+            type: "and",
+            conditions: [["number", "=", listOfNumbers[number - 1]]],
+          },
+        ],
+      });
+      console.log("🚀 ~ queryFn: ~ res:", res)
+
+      if (res?.success) {
+        reset(res?.result?.at(0));
         reCalculateFlats(watch);
       }
     },
@@ -241,7 +245,7 @@ const BuildingForm = ({ popupView }) => {
           <>
             {currentSubIndex === 0 ? (
               <Fields
-                tab={''}
+                tab={""}
                 fields={getFormByTableName("building_real_estate_management")}
                 values={watch()}
                 errors={errors}
@@ -251,7 +255,7 @@ const BuildingForm = ({ popupView }) => {
             ) : null}
             {currentSubIndex === 1 ? (
               <Fields
-                tab={''}
+                tab={""}
                 fields={getFormByTableName("building_buying")}
                 values={watch()}
                 errors={errors}
@@ -271,7 +275,7 @@ const BuildingForm = ({ popupView }) => {
             ) : null}
             {currentSubIndex === 3 ? (
               <Fields
-                tab={''}
+                tab={""}
                 fields={getFormByTableName("building_investment")}
                 values={watch()}
                 errors={errors}
@@ -281,7 +285,7 @@ const BuildingForm = ({ popupView }) => {
             ) : null}
             {currentSubIndex === 4 ? (
               <Fields
-                tab={''}
+                tab={""}
                 fields={getFormByTableName("building_real_estate_development")}
                 values={watch()}
                 errors={errors}
@@ -294,7 +298,7 @@ const BuildingForm = ({ popupView }) => {
       ) : (
         <>
           <Fields
-            tab={''}
+            tab={""}
             fields={fields}
             values={watch()?.[tab]}
             errors={errors}

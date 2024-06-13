@@ -623,7 +623,8 @@ export const SERVICE_STEPS = {
   service: "service",
   service_customer_request: "service_customer_request",
   service_lack_reason: "service_lack_reason",
-  service_material: "service_material",
+  service_requested_material: "service_requested_material",
+  service_received_material: "service_received_material",
   service_worker: "service_worker",
 };
 

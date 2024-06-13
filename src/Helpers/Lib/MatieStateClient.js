@@ -97,27 +97,24 @@ class MatieStateClient {
    *
    * @constructor
    * @param {string} baseURL - The base URL of the Fastify API.
-   * @param {string} token - The Token for authentication.
    */
-  constructor(baseURL, token) {
+  constructor(baseURL) {
     /** @private @type {string} */
     this.m_baseURL = baseURL.endsWith("/") ? baseURL.slice(0, -1) : baseURL;
     /** @private @type {string} */
-    this.m_token = token;
   }
-	
+
   async getReport(reportName, data) {
     try {
       const response = await fetch(`${this.m_baseURL}/report/${reportName}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-token": this.m_token,
         },
         body: JSON.stringify(data),
       });
 
-			if (!response.ok) {
+      if (!response.ok) {
         throw await response.json();
       }
 
@@ -146,7 +143,6 @@ class MatieStateClient {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-token": this.m_token,
         },
         body: JSON.stringify(data),
       });
@@ -176,7 +172,6 @@ class MatieStateClient {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-token": this.m_token,
         },
         body: JSON.stringify(data),
       });
@@ -206,7 +201,6 @@ class MatieStateClient {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-token": this.m_token,
         },
         body: JSON.stringify(data),
       });
@@ -236,7 +230,6 @@ class MatieStateClient {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-token": this.m_token,
         },
         body: JSON.stringify(data),
       });

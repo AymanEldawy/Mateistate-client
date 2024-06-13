@@ -116,6 +116,14 @@ const cost_center = (additional) => ({
   ...additional,
 });
 
+const building = (additional) => ({
+  label: "building",
+  name: "building_id",
+  is_ref: true,
+  ref_table: "building",
+  ...additional,
+});
+
 const bank = (additional) => ({
   label: "bank_id",
   name: "bank_id",
@@ -153,6 +161,7 @@ const FIELDS_STRUCTURE = {
   client,
   suppliers,
   bank,
+  building,
   // Fields,
   switchField,
   textField,

@@ -1,5 +1,12 @@
 import { ApiActions } from "./api";
 
+export const getUserList = async (code) => {
+  const response = await ApiActions.read("user", {
+    conditions: [{ type: "and", conditions: [["card_type", "=", code]] }],
+  });
+  return response?.result;
+};
+
 export const getAccountsChildrenByName = async (name = "Customers") => {
   const response = await ApiActions.read("account", {
     conditions: [{ type: "and", conditions: [["name", "=", name]] }],
@@ -117,3 +124,95 @@ export const getAccountReceivable = async (id) => {
   });
   if (res?.success) return res?.result?.at(0)?.id;
 };
+
+const contract = async () => {
+  const res = await ApiActions.read("contract", {
+    joins: [
+      {
+        type: "leftJoin",
+        table: "building",
+        conditions: { "building.id": "contract.building_id" },
+      },
+      {
+        type: "leftJoin",
+        table: "account",
+        conditions: { "account.id": "contract.client_id" },
+      },
+      {
+        type: "leftJoin",
+        table: "apartment",
+        conditions: { "apartment.id": "contract.apartment_id" },
+      },
+      {
+        type: "leftJoin",
+        table: "parking",
+        conditions: { "parking.id": "contract.parking_id" },
+      },
+      {
+        type: "leftJoin",
+        table: "shop",
+        conditions: { "shop.id": "contract.shop_id" },
+      },
+    ],
+    columns: [
+      "contract.*",
+      "building.name as building_name",
+      "account.name as client_name",
+      "apartment.apartment_no as unit_name",
+      "parking.parking_no as unit_name",
+      "shop.shop_no as unit_name",
+      "apartment.apartment_kind as unit_type",
+      "parking.parking_kind as unit_type",
+      "shop.shop_kind as unit_type",
+      "apartment.hex as hex",
+      "parking.hex as hex",
+      "shop.hex as hex",
+    ],
+  });
+  return res?.result;
+};
+const account = async () => {
+  const res = await ApiActions.read("account", {
+    joins: [
+      {
+        type: "leftJoin",
+        table: "account as a",
+        conditions: { "a.id": "account.parent_id" },
+      },
+      {
+        type: "leftJoin",
+        table: "account as a2",
+        conditions: { "a2.id": "account.final_id" },
+      },
+      {
+        type: "leftJoin",
+        table: "currency",
+        conditions: { "currency.id": "account.currency_id" },
+      },
+    ],
+    columns: [
+      "account.*",
+      "currency.name as currency_name",
+      "a.name as parent_name",
+      "a2.name as final_name",
+    ],
+  });
+  return res?.result;
+};
+
+const list = async (name) => {
+  const res = await ApiActions.read(name);
+  return res?.result;
+};
+
+const data = {
+  contract,
+  account,
+  list,
+};
+
+
+export default function getTableData(name) {
+  console.log("🚀 ~ getTableData ~ name:", name);
+  return data?.[name] || data?.list(name);
+}

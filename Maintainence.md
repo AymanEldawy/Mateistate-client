@@ -1,7 +1,9 @@
 # API endpoints
 
 ---
+
 1
+
 ## Home page for owner
 
 - `units` get all units for current or logged in owner
@@ -237,20 +239,15 @@ PATCH `/supervisor/updateRequestDetails`
 "approved": bool
 }
 
-
-
 # Generic
 
 POST `/ownerUnits`
 @param owner_account_id
 
-
 res:
 id
 number
 created_at
-
-
 
 # Administrations
 
@@ -386,22 +383,19 @@ contract_type,
 start_duration_date,
 end_duration_date,
 
-
-
 POST `/getUnitDetails`
 @params unit_id required
 
 POST `/units`
 @params building_id required
 
-res: 
+res:
 {
-  id: uuid,
-  number: int,
-  unit_type: int,
-  unit_no: string,
+id: uuid,
+number: int,
+unit_type: int,
+unit_no: string,
 }
-
 
 POST `/getContractDetails`
 @params contract_id required
@@ -414,7 +408,6 @@ start_duration_date,
 end_duration_date,
 client(id, name, phone, nationality)
 
-
 POST `/getContractCash`
 @params contract_id required
 
@@ -423,8 +416,8 @@ id: uuid,
 number: int,
 contract_type: int,
 cash:{
-  first_batch: float,
-  other_batches: float,
+first_batch: float,
+other_batches: float,
 }
 
 POST `/getContractCheque`
@@ -434,10 +427,9 @@ id: uuid,
 number: int,
 contract_type: int,
 cheques {
-  collected: float
-  uncollected:  float
+collected: float
+uncollected: float
 }
-
 
 # evacuation_request
 
@@ -593,8 +585,6 @@ user `in_vacation`
 user `in_vacation`
 \_ma
 
-
-
 {
 occupancy: int |,
 collections: int |,
@@ -603,87 +593,99 @@ returned_checks: int |,
 uncollected_checks: int |,
 }
 
-
-
 # Dropdowns
+
 ## screen collections (cheques)
+
 ### status
-  - all          0
-  - collected    1
-  - uncollected  3
-  - returned     2
+
+- all 0
+- collected 1
+- uncollected 3
+- returned 2
+
 ### date
-  - newest 1
-  - oldest 2
+
+- newest 1
+- oldest 2
 
 ### type
-  - apartment 1
-  - parking 2
-  - shop 3
+
+- apartment 1
+- parking 2
+- shop 3
+
 ### type_id
-  - `uuid` to search in type table
-  
+
+- `uuid` to search in type table
 
 ## screen collections (cash)
-### date
-  - newest 1
-  - oldest 2
 
+### date
+
+- newest 1
+- oldest 2
 
 ### status
-  - all 0
-  - expired 1
-  - not expired 2
+
+- all 0
+- expired 1
+- not expired 2
+
 ## screen contracts
 
 ### date
-  - newest 1
-  - oldest 2
+
+- newest 1
+- oldest 2
 
 ### contract status
-  - close to completion 1
-  - finished            2
-  - mast                3
+
+- close to completion 1
+- finished 2
+- mast 3
 
 ### expired over
-  - 30 days
-  - 60 days
-  - 90 days
-  - (n) more
+
+- 30 days
+- 60 days
+- 90 days
+- (n) more
 
 ## screen units
-  - ALL       0
-  - Occupied  1
-  - Empty     2
 
-
+- ALL 0
+- Occupied 1
+- Empty 2
 
 # Notifications Messages
+
 ## SuperVisor
-- onReceivedOrder       عند استلام الطلب
-- onStartingOrder       عند بداية الطلب
-- onPausedOrder         عند توقف الطلب لفترة
-- onCompletedOrder      عند اكتمال الطلب
-- onRequestedMaterials  عند طلب ماتريالز او اداوت
+
+- onReceivedOrder عند استلام الطلب
+- onStartingOrder عند بداية الطلب
+- onPausedOrder عند توقف الطلب لفترة
+- onCompletedOrder عند اكتمال الطلب
+- onRequestedMaterials عند طلب ماتريالز او اداوت
 - onReceivedEvacuation عند استلام طلب اخلاء
+
 ## Worker
-- onReceivedOrder       عند تعيينه لطلب ما
-- onCompletedOrder      عند اكتمال الطلب
-- onRateWorker          عند تققيمه
+
+- onReceivedOrder عند تعيينه لطلب ما
+- onCompletedOrder عند اكتمال الطلب
+- onRateWorker عند تققيمه
+
 ## Customer
-- onRequestedOrder      عند اضافة طلب
-- onApprovedOrder       عند الموافقة علي الطلب
-- onReturnedOrder       عند رجوع الطلب (عدم الموافقة و يجب تعديله)
-- onRejectedOrder       عند رجوع الطلب (عدم الموافقة و يجب تعديله)
-- onCompletedOrder      عند اكتمال الطلب
-- onContractCloseToCompletion  عند اقتراب العقد من النهاية
+
+- onRequestedOrder عند اضافة طلب
+- onApprovedOrder عند الموافقة علي الطلب
+- onReturnedOrder عند رجوع الطلب (عدم الموافقة و يجب تعديله)
+- onRejectedOrder عند رجوع الطلب (عدم الموافقة و يجب تعديله)
+- onCompletedOrder عند اكتمال الطلب
+- onContractCloseToCompletion عند اقتراب العقد من النهاية
 - onRequestedEvacuation عند استلام طلب اخلاء
 - onAcceptedRequestEvacuation عند قبول طلب اخلاء
 - onRejectedRequestEvacuation عند قبول طلب اخلاء
-
-
-
-
 
 للمشرف
 عند استلام الطلب: تم استلام طلبك بنجاح. يرجى المتابعة مع العمال لبدء التنفيذ.
@@ -705,15 +707,120 @@ uncollected_checks: int |,
 عند طلب الإخلاء: تم طلب الإخلاء بنجاح. سنقوم بالتنسيق لترتيب العملية بأسرع وقت ممكن.
 عند قبول طلب الإخلاء: تم قبول طلب الإخلاء بنجاح. سنقوم باتخاذ الإجراءات اللازمة للتنفيذ في أقرب وقت ممكن.
 
-
-
 ## Flow (customer service)
-starting form customer he can starting the request by choose the 
 
-
-
+starting form customer he can starting the request by choose the
 
 ## service order
-1. Customer starting the order 
-  title, description, time 
-2. supervisor recevied the order 
+
+1. Customer starting the order
+   title, description, time
+2. supervisor recevied the order
+
+## Maintenances
+
+post /customer/addMaintenancesOrder (data)
+
+@ required from client
+
+- (token) `required`
+- building_id -> service `required`    -> - owner_account_id -> service `required`
+- unit_type -> service `required`
+- unit_id -> service `required`
+- contract_id -> service_customer_request `required`
+- start_date -> service `required`
+
+- title -> service_worker `required`
+- description -> service_worker `required`
+- category_id -> service_worker `required`
+- category_problem_id -> service_worker `required`
+- total_minutes -> service_worker `required`
+- booking_start_date -> service_worker | service.start_date
+- booking_end_date -> service_worker | service.start_date + total_minutes
+
+- record ->
+- images ->
+
+@addtionals
+
+- phone -> service_customer_request
+- customer_user_id -> service_customer_request
+
+- status -> service
+- code -> 1 service `required`
+
+
+
+post /supervisor/acceptOrder (data)
+
+- (token) `required`
+- service_id `required`
+- worker_user_id -> service_worker `required`
+- status -> update service status to accept number
+- supervisor_user_id -> service
+
+
+post /supervisor/returnOrder (data)
+
+- (token) supervisor_user_id
+- service_id `required`
+- supervisor_user_id -> service
+- status -> update status to return number
+
+post /supervisor/rejectOrder (data)
+
+- (token) supervisor_user_id
+- service_id `required`
+- supervisor_user_id -> service
+- status -> update status to reject number
+
+post /worker/startingService (data)
+
+- (token) user.id user.tenant_id
+- service_id -> worker_service `required`
+- worker_user_id -> worker_service
+- tenant_id -> worker_service
+- worker_status -> worker_service
+
+post /worker/crashesService (data)
+
+- (token) user.tenant_id
+- code -> `required`
+- service_id -> service_lack_reason `required`
+- paused_date -> service_lack_reason `required`
+- tenant_id -> service_lack_reason
+- reason -> service_lack_reason
+- lack_reason_id -> service_lack_reason
+
+note code = 1 change service.status to (return)
+
+post /worker/requestMaterials (data)
+
+Note materials is a list of materials or items[]
+
+- (token) user.tenant_id
+- service_id -> service_requested_material `required`
+- material_id -> service_requested_material
+- name -> service_requested_material
+- quantity -> service_requested_material
+- tenant_id -> service_requested_material
+
+post /supervisor/acceptMaterials (data)
+
+- (token) user.tenant_id
+- service_id -> service_received_material `required`
+- material_id -> service_received_material `required`
+- quantity -> service_received_material `required`
+- price -> service_received_material `required`
+- tenant_id -> service_received_material
+- total -> service `required`
+
+
+
+
+
+post
+
+- is_default
+- payment_method
+- service_id

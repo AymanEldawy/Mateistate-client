@@ -461,11 +461,19 @@ NOTES: complicated tasks
 تحدد ساعات العمل و الاجازات و متاح و غير متاح الخ 
 
 
+Back in update
+delete
+save
 
 
 
+## Required todos
+- [] back in top 
+- [] delete on tables actions 
+- [] add delete button in forms
+- [] change button label to save
 
-
-
-
-
+- [] list&buttons
+- [] filtersbar&search
+- [] filter&sort
+- [] table

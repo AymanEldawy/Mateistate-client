@@ -9,7 +9,13 @@ import {
   IGNORED_SHOW_NUMBER_TABLE,
   UNIQUE_REF_TABLES,
 } from "Helpers/constants";
-import { DEFAULT_CURRENCY_CODE } from "Helpers/GENERATE_STARTING_DATA";
+import {
+  DEFAULT_CURRENCY_CODE,
+  USER_CUSTOMER_CODE,
+  USER_SUPERVISOR_CODE,
+  USER_SUPPLIER_CODE,
+  USER_WORKER_CODE,
+} from "Helpers/GENERATE_STARTING_DATA";
 import { ErrorText } from "Components/Global/ErrorText";
 
 const UniqueField = ({
@@ -147,10 +153,16 @@ const UniqueField = ({
 
               if (field?.ref_table === UNIQUE_REF_TABLES.clients) {
                 refTable = "user";
-                oldValues = { card_type: 1 };
+                oldValues = { card_type: USER_CUSTOMER_CODE };
               } else if (field?.ref_table === UNIQUE_REF_TABLES.suppliers) {
                 refTable = "user";
-                oldValues = { card_type: 2 };
+                oldValues = { card_type: USER_SUPPLIER_CODE };
+              } else if (field?.ref_table === UNIQUE_REF_TABLES.supervisor) {
+                refTable = "user";
+                oldValues = { card_type: USER_SUPERVISOR_CODE };
+              } else if (field?.ref_table === UNIQUE_REF_TABLES.employee) {
+                refTable = "user";
+                oldValues = { card_type: USER_WORKER_CODE };
               }
 
               dispatchForm({

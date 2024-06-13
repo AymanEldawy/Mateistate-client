@@ -30,6 +30,7 @@ const ServiceForm = ({ popupView }) => {
     defaultValues: getResetFields(name),
   });
 
+  console.log(code, "code");
   const {
     goTo,
     currentIndex,
@@ -39,7 +40,7 @@ const ServiceForm = ({ popupView }) => {
     CACHE_LIST,
     formSettings,
     onDeleteItem,
-  } = useFormSteps({ name: "service_customer" });
+  } = useFormSteps({ name: code == 1 ? "service_customer" : "service" });
   const { reset, watch } = methods;
 
   const { isLoading } = useQuery({

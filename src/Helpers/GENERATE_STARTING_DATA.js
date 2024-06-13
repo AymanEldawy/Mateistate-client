@@ -4,11 +4,15 @@ const { ApiActions } = require("./Lib/api");
 export const TENANT_ID = "051d7650-694b-423c-85d1-3871ce861830";
 
 export const USERS = [
-  "50a1763d-1547-4406-8c4b-6fde32b2824f", //local
-  // "14f28e9c-5765-4eab-a6a3-3ec584bc51f6", //server
-  // "7ac1f54e-4fa5-4694-8698-c36be01d8d6f", //server
-  // "7b7238c4-ffec-48be-9f23-17de58839d51", //server
-  // "76440e18-679a-4d6a-805f-9c738b05d27d", //server
+  "5c15418f-a0fa-4ef9-a4eb-c67539a2972f",
+  "54fec2d2-6ed6-489a-94e6-db30cee77523",
+  "18fb3175-8a14-483b-9ba6-51603c3d586c",
+  "2c453d1f-9aec-4da3-a7af-82a2bf02993e",
+  // "5a5a5a00-b3d2-4c50-9e1b-6b22f2c34b54", //local
+  // "5f9e29d5-2f74-49c5-83b6-81494ce14401", //local
+  // "2a212bea-87b8-4e83-83b7-8a63aac1721c", //local
+  // "2d056910-6c5d-483f-b344-91aacee2c9bc", //local
+  // "0c777b8f-c573-49fd-8a40-5c35c2044848", //local
 ];
 
 export const USER_CUSTOMER_CODE = 1;
@@ -762,7 +766,7 @@ function randomString(length) {
 
 // Generate 50 notification objects
 export async function insertIntoNotification() {
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 150; i++) {
     await ApiActions.insert("notification", {
       data: {
         title: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),

@@ -53,6 +53,7 @@ const TableFields = ({
       setIncreaseCount(rowsCount);
     }
   }, [rowsCount]);
+  console.log(rowsCount, 'co');
 
   const onDecrement = () => {
     let index = increaseCount - 2;

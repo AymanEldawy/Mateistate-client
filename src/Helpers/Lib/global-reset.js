@@ -245,8 +245,21 @@ const owner_expenses_types = {
 };
 
 const owner_expenses = {};
+const category = {
+  description: "",
+  image: "",
+  name: "",
+  parent_id: "",
+};
+const category_problem = {
+  category_id: "",
+  description: "",
+  is_available: "",
+};
 
 const RESET_FIELDS = {
+  category,
+  category_problem,
   contract,
   reservation_property,
   account,

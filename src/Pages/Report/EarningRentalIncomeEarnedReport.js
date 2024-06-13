@@ -14,8 +14,6 @@ import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFie
 import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
 import ReportSelectField from "Components/ReportsComponents/ReportsFields/ReportSelectField";
 import { SELECT_LISTS } from "Helpers/constants";
-import REPORTS from "Helpers/Lib/global-reports";
-import { token } from "Helpers/Lib/api";
 
 const EarningRentalIncomeEarnedReport = () => {
   const name = "earning_rental_income_earned_report";
@@ -52,10 +50,6 @@ const EarningRentalIncomeEarnedReport = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-token": token,
-            Authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsIn0.p5UuhOyn4nTAvmo8feVPpDuqm_pLTvIgD5XXH9JcMzM",
-            "ngrok-skip-browser-warning": "1",
           },
           body: JSON.stringify({
             columns: Object.keys(selectedColumns),

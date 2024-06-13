@@ -145,7 +145,7 @@ const land = [
     label: "bank_account_id",
     name: "bank_account_id",
     is_ref: true,
-    ref_table: "bank", // unknown table
+    ref_table: "account", // unknown table
   },
   {
     label: "commission_percent",
@@ -4192,7 +4192,7 @@ const category = [
     ref_table: "category",
     ref_col: "id",
   },
-  { label: "image", name: "image", type: "text", required: false },
+  { label: "image", name: "image", key: "image", required: false },
 ];
 
 const category_problem = [
@@ -5825,10 +5825,10 @@ const service = [
     label: "is_default",
     name: "is_default",
   }),
-  FIELDS_STRUCTURE.switchField({
-    label: "is_paid",
-    name: "is_paid",
-  }),
+  // FIELDS_STRUCTURE.switchField({
+  //   label: "is_paid",
+  //   name: "is_paid",
+  // }),
   { label: "total", name: "total", type: "number", readOnly: false },
   { label: "code", name: "code", type: "number", readOnly: false },
   { label: "status", name: "status", type: "number", readOnly: false },
@@ -5838,7 +5838,7 @@ const service = [
     type: "uuid",
     readOnly: false,
     is_ref: true,
-    ref_table: "user",
+    ref_table: UNIQUE_REF_TABLES.supervisor,
     ref_col: "id",
   },
 ];
@@ -5869,14 +5869,6 @@ const service_customer_request = [
     ref_col: "id",
   },
   { label: "phone", name: "phone", type: "text", readOnly: false },
-  FIELDS_STRUCTURE.switchField({
-    label: "approved",
-    name: "approved",
-  }),
-  FIELDS_STRUCTURE.switchField({
-    label: "returned",
-    name: "returned",
-  }),
 
   {
     label: "service_id",
@@ -5907,31 +5899,9 @@ const service_lack_reason = [
     ref_col: "id",
   },
 ];
-const service_material = [
-  {
-    label: "service_id",
-    name: "service_id",
-    type: "uuid",
-    readOnly: false,
-    is_ref: true,
-    ref_table: "service",
-    ref_col: "id",
-  },
-  {
-    label: "price",
-    name: "price",
-    type: "number",
-  },
-  {
-    label: "material_id",
-    name: "material_id",
-    type: "uuid",
-    readOnly: false,
-    is_ref: true,
-    ref_table: "material",
-    ref_col: "id",
-  },
-];
+const service_requested_material = [ {label: "material_id", name: 'material_id', type: 'uuid', required: false,is_ref: true, ref_table: 'materials',ref_col: 'id'},  {label: "name", name: 'name', type: 'text', required: false}, {name: "quantity", type: "number"} ]
+const service_received_material = [ {label: "material_id", name: 'material_id', type: 'uuid', required: false,is_ref: true, ref_table: 'materials',ref_col: 'id'},  {label: "price", name: 'price', type: 'number', required: false}, {name: "quantity", type: "number"} ]
+
 const service_worker = [
   { label: "title", name: "title", type: "text", readOnly: false },
   { label: "description", name: "description", type: "text", readOnly: false },
@@ -5950,19 +5920,10 @@ const service_worker = [
     type: "uuid",
     readOnly: false,
     is_ref: true,
-    ref_table: "worker_user",
+    ref_table: UNIQUE_REF_TABLES.employee,
     ref_col: "id",
   },
   { label: "status", name: "status", type: "number", readOnly: false },
-  {
-    label: "service_id",
-    name: "service_id",
-    type: "uuid",
-    readOnly: false,
-    is_ref: true,
-    ref_table: "service",
-    ref_col: "id",
-  },
 ];
 
 const service_customer_group = {
@@ -5981,9 +5942,14 @@ const service_customer_group = {
       tab_name: "service_lack_reason",
       formType: "grid",
     },
-    [SERVICE_STEPS.service_material]: {
-      fields: service_material,
-      tab_name: "service_material",
+    [SERVICE_STEPS.service_requested_material]: {
+      fields: service_requested_material,
+      tab_name: "service_requested_material",
+      formType: "grid",
+    },
+    [SERVICE_STEPS.service_received_material]: {
+      fields: service_received_material,
+      tab_name: "service_received_material",
       formType: "grid",
     },
     [SERVICE_STEPS.service_worker]: {
@@ -6004,9 +5970,14 @@ const service_group = {
       tab_name: "service_lack_reason",
       formType: "grid",
     },
-    [SERVICE_STEPS.service_material]: {
-      fields: service_material,
-      tab_name: "service_material",
+    [SERVICE_STEPS.service_requested_material]: {
+      fields: service_requested_material,
+      tab_name: "service_requested_material",
+      formType: "grid",
+    },
+    [SERVICE_STEPS.service_received_material]: {
+      fields: service_received_material,
+      tab_name: "service_received_material",
       formType: "grid",
     },
     [SERVICE_STEPS.service_worker]: {

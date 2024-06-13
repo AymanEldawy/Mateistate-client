@@ -1296,7 +1296,7 @@ const complaints_report = [
   { header: "unit_id", accessorKey: "unit_id" },
   { header: "unit_type", accessorKey: "unit_type" },
   { header: "is_default", accessorKey: "is_default" },
-  { header: "is_paid", accessorKey: "is_paid" },
+  // { header: "is_paid", accessorKey: "is_paid" },
   { header: "total", accessorKey: "total" },
   { header: "code", accessorKey: "code" },
   { header: "status", accessorKey: "status" },

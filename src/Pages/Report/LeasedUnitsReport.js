@@ -1,13 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import BlockPaper from "Components/Global/BlockPaper";
 import { ReportFilterColumns } from "../../Components/ReportsComponents/ReportFilterColumns";
 import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "Components/Global/Button";
-import REPORTS from "Helpers/Lib/global-reports";
-import { ReportBetweenDateField } from "Components/ReportsComponents/ReportsFields/ReportDateField";
 import { ReportReviewField } from "Components/ReportsComponents/ReportsFields/ReportReviewField";
 import { ReportFilterBuildings } from "Components/ReportsComponents/ReportFilterBuildings";
-import { ReportFilterContractPatterns } from "Components/ReportsComponents/ReportFilterContractPatterns";
 import useRefTable from "Hooks/useRefTables";
 import { getReportColumns, getReportFields } from "Helpers/Reports";
 import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFields";
@@ -15,9 +12,6 @@ import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportF
 import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
 import { ReportStatementField } from "Components/ReportsComponents/ReportsFields/ReportStatementField";
 import { CheckboxField } from "Components/StructurePage/CustomFields";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { ApiActions, token } from "Helpers/Lib/api";
 
 const REPORT_OPTIONS = [
   "show_merged_shops_and_flats",
@@ -47,7 +41,6 @@ const LeasedUnitsReport = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
         Authorization:
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsIn0.p5UuhOyn4nTAvmo8feVPpDuqm_pLTvIgD5XXH9JcMzM",
         "ngrok-skip-browser-warning": "1",

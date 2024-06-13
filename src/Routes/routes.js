@@ -60,6 +60,8 @@ import LawsuitForm from "Components/StructurePage/Forms/LawsuitForm/LawsuitForm"
 import ComplaintsReport from "Pages/Report/ComplaintsReport";
 import ServiceForm from "Components/StructurePage/Forms/ServiceForm/ServiceForm";
 import OwnerExpensesForm from "Components/StructurePage/Forms/OwnerExpensesForm/OwnerExpensesForm";
+import { Contracts } from "Components/Tables";
+import List from "Pages/List/List";
 
 const publicRoutes = [
   { path: "**", component: <NouFound /> },
@@ -253,6 +255,7 @@ const authProtectedRoutes = [
   { path: "/cheques/:code/:name/:number", component: <ChequeForm /> },
   { path: "/buildings/:number", component: <BuildingForm /> },
   { path: "/maintenances/:code/:number", component: <ServiceForm /> },
+  { path: "/list/:name/", component: <List /> },
   { path: "/list/:name/:number", component: <DynamicForm /> },
   { path: "/tools/:name/:number", component: <DynamicForm /> },
   {
@@ -261,6 +264,10 @@ const authProtectedRoutes = [
   },
   { path: "/account/:number", component: <AccountForm /> },
   { path: "/user/:number", component: <UserForm /> },
+  {
+    path: "/contracts",
+    component: <Contracts />,
+  },
   {
     path: "/contracts/:type/:name",
     component: <ContractForm layout="update" />,

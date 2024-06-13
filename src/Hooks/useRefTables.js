@@ -1,9 +1,11 @@
 import getFormByTableName from "Helpers/Forms/forms";
+import { USER_SUPERVISOR_CODE, USER_WORKER_CODE } from "Helpers/GENERATE_STARTING_DATA";
 import { ApiActions } from "Helpers/Lib/api";
 import {
   getAccountList,
   getAccountsChildrenByName,
   getCostCenterList,
+  getUserList,
 } from "Helpers/Lib/global-read";
 import { getReportFields } from "Helpers/Reports";
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
@@ -59,6 +61,16 @@ const useRefTable = (name, type = "form") => {
         continue;
       }
 
+      if (field?.ref_table === UNIQUE_REF_TABLES.supervisor) {
+        hash[UNIQUE_REF_TABLES.supervisor] = await getUserList(USER_SUPERVISOR_CODE);
+        continue;
+      }
+      
+      if (field?.ref_table === UNIQUE_REF_TABLES.employee) {
+        hash[UNIQUE_REF_TABLES.employee] = await getUserList(USER_WORKER_CODE);
+        continue;
+      }
+
       if (field?.ref_table === UNIQUE_REF_TABLES.suppliers) {
         hash[UNIQUE_REF_TABLES.suppliers] = await getAccountsChildrenByName(
           "Suppliers"
@@ -79,6 +91,7 @@ const useRefTable = (name, type = "form") => {
       ...prev,
       ...hash,
     }));
+    console.log(CACHE_LIST,'CA');
     setFieldsHash(fieldsHash);
   };
 

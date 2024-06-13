@@ -170,7 +170,7 @@ const ContractForm = () => {
 
       if (response?.result?.length) {
         const res = await getContractUpdate(
-          response?.result?.at(0)?.contract_id
+          response?.result?.at(0)?.id
         );
         let data = { ...res, contract: response?.result?.at(0) };
 
@@ -486,6 +486,7 @@ const ContractForm = () => {
                 CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
                 fields={fields}
                 values={watch()?.[tab]}
+                rowsCount={watch()?.[tab]?.length}
               />
             </div>
           ) : (

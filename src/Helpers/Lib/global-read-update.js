@@ -6,9 +6,6 @@ export const fetchData = async (table, col, id) => {
   });
 };
 
-export const getBuildingUpdate = async (id) => {
-  return await fetchData("building", "id", id);
-};
 
 export const getApartmentUpdate = async (id) => {
   const apartment = await fetchData("apartment", "id", id);
@@ -167,7 +164,7 @@ export const getInstallmentData = async (contractId) => {
 };
 
 export const getContractUpdateRestData = async (id) => {
-  const contract = await fetchData("contract", "id", id);
+  console.log("🚀 ~ getContractUpdateRestData ~ id:", id)
   const contract_commission = await fetchData(
     "contract_commission",
     "contract_id",
@@ -212,7 +209,6 @@ export const getContractUpdateRestData = async (id) => {
     id
   );
   const groupData = {
-    contract: contract?.result?.at(0),
     contract_commission: contract_commission?.result?.at(0),
     contract_terms: contract_terms?.result?.at(0),
     contract_pictures: contract_pictures?.result,
@@ -385,7 +381,6 @@ const getUserUpdate = async (id) => {
 
 export const GLOBAL_READ_GROUP_DATA = {
   user: getUserUpdate,
-  building: getBuildingUpdate,
   apartment: getApartmentUpdate,
   assets: getAssetsUpdate,
   parking: getParkingUpdate,
@@ -452,16 +447,6 @@ export async function getContractData(number, code) {
   return contractResponse;
 }
 
-export async function getBuildingByNumber(number) {
-  const response = await ApiActions.read("building", {
-    conditions: [{ type: "and", conditions: [["number", "=", number]] }],
-  });
-  let buildingId = response?.result?.at(0)?.id;
-  if (response?.success && buildingId) {
-    return await getBuildingUpdate(buildingId);
-  }
-}
-
 export async function getLawsuitByNumber(number) {
   const response = await ApiActions.read("lawsuit", {
     conditions: [{ type: "and", conditions: [["number", "=", number]] }],
@@ -514,7 +499,6 @@ export async function getServiceByNumber(number, code) {
 }
 
 export const GET_UPDATE_DATE_BY_NUMBER = {
-  building: getBuildingByNumber,
   lawsuit: getLawsuitByNumber,
   service: getServiceByNumber,
 };

@@ -58,7 +58,7 @@ export const ReportResultsTable = ({ data, columns, loading }) => {
 
   return (
     <>
-      <div className={`relative overflow-x-auto w-full`}>
+      <div className={`relative overflow-x-auto w-full text-sm`}>
         <table
           className={`w-[${table.getTotalSize()}] w-full `}
           style={{ width: table.getTotalSize() }}
@@ -80,8 +80,8 @@ export const ReportResultsTable = ({ data, columns, loading }) => {
                         e.preventDefault();
                       }}
                       onDrop={onDrop}
-                      style={{ width: header.getSize() }}
-                      className={`w-[${header.getSize()}] text-gray-700 whitespace-nowrap dark:text-gray-300 font-medium capitalize relative  group border-b border-gray-200 dark:border-dark-border px-4 py-2 cursor-move
+                      // style={{ width: header.getSize() }}
+                      className={` text-gray-700 whitespace-nowrap dark:text-gray-300 font-medium capitalize relative  group border-b border-gray-200 dark:border-dark-border px-4 py-2 cursor-move
                       ${
                         header.column.getIsSorted()
                           ? "sorting-hover [&_span]:visible bg-gray-300 dark:bg-dark-bg "
@@ -131,8 +131,8 @@ export const ReportResultsTable = ({ data, columns, loading }) => {
                           return (
                             <td
                               key={cell?.id}
-                              className={`w-[${cell.column.getSize()}] px-4 py-2`}
-                              style={{ width: cell.column.getSize() }}
+                              className={` px-4 py-2`}
+                              // style={{ width: cell.column.getSize() }}
                             >
                               {flexRender(
                                 cell.column.columnDef.cell,

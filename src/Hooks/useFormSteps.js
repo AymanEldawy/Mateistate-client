@@ -4,9 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import {
   getAccountList,
   getAccountsChildrenByName,
-  getCostCenterList
+  getCostCenterList,
+  getUserList
 } from "Helpers/Lib/global-read";
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
+import { USER_SUPERVISOR_CODE, USER_WORKER_CODE } from "Helpers/GENERATE_STARTING_DATA";
 
 const useFormSteps = ({ name }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -77,6 +79,16 @@ const useFormSteps = ({ name }) => {
           "Customers"
         );
         hash.account = await getAccountList();
+        continue;
+      }
+
+      if (field?.ref_table === UNIQUE_REF_TABLES.supervisor) {
+        hash[UNIQUE_REF_TABLES.supervisor] = await getUserList(USER_SUPERVISOR_CODE);
+        continue;
+      }
+      
+      if (field?.ref_table === UNIQUE_REF_TABLES.employee) {
+        hash[UNIQUE_REF_TABLES.employee] = await getUserList(USER_WORKER_CODE);
         continue;
       }
 
