@@ -1,6 +1,8 @@
 
 # material
 
+
+
 defaults1
 unit1  
 barcode1
@@ -152,8 +154,7 @@ class
 
 total_quantities
 total_quantities_percentage
-
-
+total_quantities_percentage2
 refunded_taxable_amount
 non_refunded_taxable_amount
 not_taxable

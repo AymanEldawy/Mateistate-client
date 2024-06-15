@@ -59,14 +59,12 @@ const Contracts = () => {
       return res?.result;
     },
   });
-  console.log(data, "d");
 
   // const queryClient = useQuery({
   //   queryKey: ["contract", page],
   //   page: 1,
   // });
   const columns = useMemo(() => getTableColumns(name), []);
-  // console.log("🚀 ~ Contracts ~ data:", queryClient);
 
   return (
     <BlockPaper

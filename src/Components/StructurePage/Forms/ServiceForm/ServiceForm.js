@@ -5,7 +5,9 @@ import { useForm } from "react-hook-form";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Fields } from "../CustomForm/Fields";
 import { toast } from "react-toastify";
-import INSERT_FUNCTION from "Helpers/Lib/global-insert";
+import INSERT_FUNCTION, {
+  dynamicInsertIntoMultiStepsTable,
+} from "Helpers/Lib/global-insert";
 import { Input } from "Components/StructurePage/CustomFields";
 import getFormByTableName from "Helpers/Forms/forms";
 import { FLATS } from "Helpers/constants";
@@ -30,7 +32,6 @@ const ServiceForm = ({ popupView }) => {
     defaultValues: getResetFields(name),
   });
 
-  console.log(code, "code");
   const {
     goTo,
     currentIndex,
@@ -40,9 +41,8 @@ const ServiceForm = ({ popupView }) => {
     CACHE_LIST,
     formSettings,
     onDeleteItem,
-  } = useFormSteps({ name: code == 1 ? "service_customer" : "service" });
+  } = useFormSteps({ name: code === 1 ? "service_customer" : "service" });
   const { reset, watch } = methods;
-
   const { isLoading } = useQuery({
     queryKey: [name, code, listOfNumbers?.[number - 1]],
     queryFn: async () => {
@@ -68,41 +68,42 @@ const ServiceForm = ({ popupView }) => {
       setMaxLength((prev) => +prev - 1);
     }
   };
-
   const onSubmit = async (value) => {
+    const response = await dynamicInsertIntoMultiStepsTable({
+      tableName: "service",
+      data: value,
+    });
     if (watch("service.id")) {
-      const response = await ApiActions.update("service", {
-        conditions: [
-          { type: "and", conditions: [["id", "=", value?.service?.id]] },
-        ],
-        updates: value?.service,
-      });
-
-      if (response?.success) {
-        await ApiActions.update("service_customer_request", {
-          conditions: [
-            {
-              type: "and",
-              conditions: [["id", "=", value?.service_customer_request?.id]],
-            },
-          ],
-          updates: value?.service_customer_request,
-        });
-      }
-    } else {
-      const response = await ApiActions.insert("service", {
-        data: { id: uuidv4(), created_at: new Date(), ...value?.service },
-      });
-
-      if (response?.success) {
-        await ApiActions.insert("service_customer_request", {
-          data: {
-            id: uuidv4(),
-            ...value?.service_customer_request,
-            service_id: watch("service.id") || response?.record?.id,
-          },
-        });
-      }
+      //   const response = await ApiActions.update("service", {
+      //     conditions: [
+      //       { type: "and", conditions: [["id", "=", value?.service?.id]] },
+      //     ],
+      //     updates: value?.service,
+      //   });
+      //   if (response?.success) {
+      //     await ApiActions.update("service_customer_request", {
+      //       conditions: [
+      //         {
+      //           type: "and",
+      //           conditions: [["id", "=", value?.service_customer_request?.id]],
+      //         },
+      //       ],
+      //       updates: value?.service_customer_request,
+      //     });
+      //   }
+      // } else {
+      //   const response = await ApiActions.insert("service", {
+      //     data: { id: uuidv4(), created_at: new Date(), ...value?.service },
+      //   });
+      //   if (response?.success) {
+      //     await ApiActions.insert("service_customer_request", {
+      //       data: {
+      //         id: uuidv4(),
+      //         ...value?.service_customer_request,
+      //         service_id: watch("service.id") || response?.record?.id,
+      //       },
+      //     });
+      //   }
     }
   };
 
@@ -126,6 +127,7 @@ const ServiceForm = ({ popupView }) => {
           fields={fields}
           CACHE_LIST={CACHE_LIST}
           increasable={false}
+          tab={tab}
         />
       ) : (
         <>

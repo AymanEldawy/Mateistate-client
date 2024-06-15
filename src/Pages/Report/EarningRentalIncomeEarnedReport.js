@@ -27,41 +27,10 @@ const EarningRentalIncomeEarnedReport = () => {
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
-  // const onSubmit = async () => {
-  //   console.log({
-  //     buildings: Object.keys(buildingsIds),
-  //     contracts: Object.keys(contractIds),
-  //     columns: Object.keys(selectedColumns),
-  //     filters: watch(),
-  //   });
-  //   const fn = REPORTS?.[name];
-  //   const response = await fn({
-  //     buildings: Object.keys(buildingsIds),
-  //     contracts: Object.keys(contractIds),
-  //     columns: Object.keys(selectedColumns),
-  //     filters: watch(),
-  //   });
-  //   console.log("🚀 ~ onSubmit ~ response:", response);
-  // };
+  
     const onSubmit = async () => {
-      const res = await fetch(
-        `http://localhost:4000/report/contract`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            columns: Object.keys(selectedColumns),
-            filters: watch(),
-            contracts: Object.keys(contractIds),
-            buildings: Object.keys(buildingsIds),
-          }),
-        }
-      );
-      const json = await res.json();
-
-      console.log("🚀 ~ onSubmit ~ res:", json);
+      
+    
     };
 
 

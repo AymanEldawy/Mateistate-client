@@ -164,7 +164,6 @@ export const getInstallmentData = async (contractId) => {
 };
 
 export const getContractUpdateRestData = async (id) => {
-  console.log("🚀 ~ getContractUpdateRestData ~ id:", id)
   const contract_commission = await fetchData(
     "contract_commission",
     "contract_id",

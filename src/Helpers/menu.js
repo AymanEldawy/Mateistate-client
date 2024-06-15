@@ -443,8 +443,8 @@ export const menuData = [
   },
   // Reports End
   {
-    key: "materials",
-    name: "Materials",
+    key: "material",
+    name: "Material",
     link: "",
     icon: <PuzzleIcon />,
     children: [
@@ -458,16 +458,16 @@ export const menuData = [
         name: "Category problem Card",
         link: "/list/category_problem",
       },
-      // {
-      //   key: "Group",
-      //   name: "materials Group Card",
-      //   // link: "/list/material_group",
-      //   link: "/list/material_group",
-      // },
+      {
+        key: "Group",
+        name: "materials Group Card",
+        // link: "/list/material_group",
+        link: "/list/material_group",
+      },
       {
         key: "Material",
         name: "Material Card",
-        link: "/list/materials",
+        link: "/list/material",
       },
       {
         key: "warehouse report",
@@ -646,6 +646,11 @@ export const menuData = [
         key: "voucher patterns",
         name: "Voucher patterns",
         link: "/patterns/voucher_pattern",
+      },
+      {
+        key: "bill patterns",
+        name: "bill patterns",
+        link: "/patterns/bill_pattern",
       },
       {
         key: "accounting voucher patterns",

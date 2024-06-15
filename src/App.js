@@ -15,7 +15,7 @@ function App() {
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState([]);
 
-  const auth = Cookies.get('user_admin')
+  const auth = Cookies.get('tenant_id')
 
   let resize = () => {
     if (window.innerWidth > 1024 && open) {

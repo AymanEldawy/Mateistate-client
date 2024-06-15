@@ -213,6 +213,5 @@ const data = {
 
 
 export default function getTableData(name) {
-  console.log("🚀 ~ getTableData ~ name:", name);
   return data?.[name] || data?.list(name);
 }

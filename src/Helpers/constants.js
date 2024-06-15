@@ -300,6 +300,13 @@ export const CONTRACTS_ASSETS_TYPE = {
 
 export const SELECT_LISTS = (listName) => {
   let list = {
+    bill_connect_with: [
+      { id: 0, name: "Nothing" },
+      { id: 1, name: "Maintenances order" },
+      { id: 2, name: "Maintenances contract" },
+      { id: 3, name: "Maintenances order" },
+
+    ],
     tenants_package: [
       { id: 1, name: "Full package" },
       { id: 2, name: "Maintenance" },
@@ -312,10 +319,14 @@ export const SELECT_LISTS = (listName) => {
     ],
     complaint_status: [
       { id: 0, name: "All" },
-      { id: 1, name: "pending" },
-      { id: 2, name: "underway" },
-      { id: 3, name: "done" },
-      { id: 4, name: "closed" },
+      { id: 1, name: "Pending" },
+      { id: 2, name: "Return" },
+      { id: 3, name: "Reject" },
+      { id: 4, name: "Approval" },
+      { id: 5, name: "Underway" },
+      { id: 6, name: "Done" },
+
+
     ],
     worker_status: [
       { id: 0, name: "All" },
@@ -723,6 +734,24 @@ export const ACCOUNTING_VOUCHER_PATTERN_STEPS = {
   accounting_voucher_general: "accounting_voucher_general",
   accounting_voucher_fields: "accounting_voucher_fields",
   accounting_voucher_sms: "SMS",
+};
+
+export const MATERIAL_STEPS = {
+  material: "material",
+  material_balance: "material_balance",
+  material_minimum: "material_minimum",
+  material_prices: "material_prices",
+  material_prices_details: "material_prices_details",
+  material_specifications: "material_specifications",
+};
+export const BILL_PATTERN_STEPS = {
+  bill_pattern_general: "bill_pattern_general",
+  bill_pattern_accounts: "bill_pattern_accounts",
+  bill_pattern_entries: "bill_pattern_entries",
+  bill_pattern_options: "bill_pattern_options",
+  bill_pattern_bill_details: "bill_pattern_bill_details",
+  bill_pattern_references: "bill_pattern_references",
+  bill_pattern_materials: "bill_pattern_materials",
 };
 
 export const CHEQUE_PATTERN_STEPS = {

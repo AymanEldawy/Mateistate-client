@@ -127,7 +127,6 @@ const OwnerExpensesForm = () => {
     }
   };
 
-  console.log(watch());
 
   return (
     <FormWrapperLayout

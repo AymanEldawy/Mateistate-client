@@ -62,6 +62,7 @@ import ServiceForm from "Components/StructurePage/Forms/ServiceForm/ServiceForm"
 import OwnerExpensesForm from "Components/StructurePage/Forms/OwnerExpensesForm/OwnerExpensesForm";
 import { Contracts } from "Components/Tables";
 import List from "Pages/List/List";
+import BillForm from "Components/StructurePage/Forms/BillForm/BillForm";
 
 const publicRoutes = [
   { path: "**", component: <NouFound /> },
@@ -252,6 +253,7 @@ const authProtectedRoutes = [
   { path: "/patterns/:pattern/:number", component: <PatternsForm /> },
 
   // Main forms
+  { path: "/bill/:code/:name/:number", component: <BillForm /> },
   { path: "/cheques/:code/:name/:number", component: <ChequeForm /> },
   { path: "/buildings/:number", component: <BuildingForm /> },
   { path: "/maintenances/:code/:number", component: <ServiceForm /> },

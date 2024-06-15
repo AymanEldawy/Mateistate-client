@@ -23,30 +23,11 @@ const LeasedLandsReport = () => {
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
-  console.log({
-    columns: Object.keys(selectedColumns),
-    filters: watch(),
-  });
 
   const onSubmit = async () => {
-    console.log("called");
-    const res = await fetch(`http://localhost:4000/report/land-leased-report`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        columns: Object.keys(selectedColumns),
-        filters: watch(),
-        // buildings: Object.keys(buildingsIds),
-      }),
-    });
-    const json = await res.json();
+  
 
-    console.log("🚀 ~ onSubmit ~ res:", json);
   };
-
-  console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
 
   return (
     <>

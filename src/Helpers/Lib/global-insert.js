@@ -42,6 +42,10 @@ const CONTRACT_GRID_FORMS_NAMES = {
     table: "contract_linked_parking",
     conditions: ["main_contract_id", "building_id", "account_id"],
   },
+  service_worker: {
+    table: "service_worker",
+    conditions: ["worker_status"],
+  },
   contract_receipt_number: {
     table: "contract_receipt_number",
     conditions: ["receipt_number", "receipt_date"],
@@ -72,7 +76,7 @@ const CONTRACT_GRID_FORMS_NAMES = {
  * @returns
  */
 
-const dynamicInsertIntoMultiStepsTable = async ({
+export const dynamicInsertIntoMultiStepsTable = async ({
   tableName,
   data,
   ...additionalParams
@@ -82,6 +86,7 @@ const dynamicInsertIntoMultiStepsTable = async ({
   let steps = Object.values(getFormByTableName(tableName)?.forms)?.map(
     (c) => c?.tab_name
   );
+  console.log("🚀 ~ steps:", steps)
 
   let stepGeneralName = steps?.at(0);
 
@@ -112,12 +117,13 @@ const dynamicInsertIntoMultiStepsTable = async ({
 
   if (mainResponse.success) {
     for (const name in list) {
+      console.log('called here', list?.[name], '1');
       if (list[name] && name !== stepGeneralName) {
         if (CONTRACT_GRID_FORMS_NAMES?.[name]) {
-          console.log("called here");
+          console.log('called here', list?.[name]);
           insertIntoGridTabs({
-            values: list[name],
-            tab: name,
+            grid: list[name],
+            tab: CONTRACT_GRID_FORMS_NAMES?.[name],
             itemNameId: `${tableName}_id`,
             SHOULD_UPDATES,
             item_id: tableId,
@@ -227,7 +233,6 @@ const insertToBuilding = async (data) => {
     if (data?.main_cost_center_id) {
     } else {
       let lastCostCenterNumber = await getLastCostCenterNumber();
-      console.log("🚀 ~ insertToBuilding ~ lastCostCenterNumber:", lastCostCenterNumber)
       let internal_number = lastCostCenterNumber
         ? +lastCostCenterNumber + 1
         : 101;
@@ -361,15 +366,13 @@ const dynamicInsertIntoContract = async ({
           } else {
             insertIntoGridTabs({
               grid: values,
-              tab,
+              tab: CONTRACT_GRID_FORMS_NAMES?.[name],
               item_id: contract_id,
               itemNameId: "contract_id",
               SHOULD_UPDATES,
             });
           }
-          console.log(list[name], "list[name]", values);
         } else {
-          console.log(list[name], "list[name]", values);
           values = removeNullValues(values);
           if (!values) continue;
           let subItemId = values?.id;
@@ -407,7 +410,7 @@ const dynamicInsertIntoContract = async ({
             SHOULD_UPDATES?.termination_fines_grid
           ) {
             insertIntoGridTabs({
-              values: data?.termination_fines_grid,
+              grid: data?.termination_fines_grid,
               tab: CONTRACT_GRID_FORMS_NAMES?.termination_fines_grid,
               item_id: subItemId,
               itemNameId: "contract_termination_fines_id",
@@ -659,6 +662,7 @@ const insertIntoGridTabs = async ({
   itemNameId,
   should_update,
 }) => {
+
   console.log(grid, table, item_id);
   if (!grid || !table || !item_id) return;
 

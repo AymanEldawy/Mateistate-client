@@ -134,7 +134,6 @@ const BuildingForm = ({ popupView }) => {
           },
         ],
       });
-      console.log("🚀 ~ queryFn: ~ res:", res)
 
       if (res?.success) {
         reset(res?.result?.at(0));
@@ -145,7 +144,6 @@ const BuildingForm = ({ popupView }) => {
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
-      console.log(name, type, value);
       calculateFlats(name, watch, setValue);
     });
     return () => subscription.unsubscribe();
@@ -154,7 +152,6 @@ const BuildingForm = ({ popupView }) => {
   const buildingFormValid = useCallback(() => {
     let valid = false;
     for (const flat in FLATS) {
-      console.log(FLATS?.[flat]);
       if (FLATS?.[flat]) valid = true;
     }
     return valid;
@@ -208,7 +205,6 @@ const BuildingForm = ({ popupView }) => {
     }
   };
 
-  // console.log(watch(), "watch");
 
   return (
     <FormWrapperLayout

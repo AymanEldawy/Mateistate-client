@@ -15,6 +15,8 @@ import {
   LAWSUIT_STEPS,
   SERVICE_STEPS,
   LAND_STEPS,
+  BILL_PATTERN_STEPS,
+  MATERIAL_STEPS,
 } from "Helpers/constants";
 import { CONTRACTS_FORM } from "./contract-forms";
 import FIELDS_STRUCTURE from "./fields-structure";
@@ -356,7 +358,10 @@ const reservation_property = [
   FIELDS_STRUCTURE.selectField({
     label: "payment_method",
     name: "payment_method",
-    list: [], // update future
+    list: [
+      { id: 1, name: "credit" },
+      { id: 2, name: "cash" },
+    ], // update future
   }),
   {
     label: "reservation_expired",
@@ -4128,55 +4133,772 @@ const material_group = [
   },
 ];
 
-const materials = [
-  { label: "barcode", name: "barcode", type: "text" },
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "description", name: "description", type: "text" },
+// Start Material
+const material = [
   {
-    label: "category_id",
-    name: "category_id",
+    label: "defaults1",
+    name: "defaults1",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  { label: "unit1", name: "unit1", type: "varchar", required: false },
+  { label: "barcode1", name: "barcode1", type: "varchar", required: false },
+  { label: "unit2", name: "unit2", type: "varchar", required: false },
+  { label: "exchange2", name: "exchange2", type: "number", required: false },
+  { label: "barcode2", name: "barcode2", type: "varchar", required: false },
+  {
+    label: "defaults2",
+    name: "defaults2",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  { label: "unit3", name: "unit3", type: "varchar", required: false },
+  { label: "exchange3", name: "exchange3", type: "number", required: false },
+  { label: "barcode3", name: "barcode3", type: "varchar", required: false },
+  {
+    label: "defaults3",
+    name: "defaults3",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  { label: "code", name: "code", type: "number", required: false },
+  { label: "name", name: "name", type: "varchar", required: false },
+  {
+    label: "material_group_id",
+    name: "material_group_id",
     type: "uuid",
+    required: false,
     is_ref: true,
-    ref_table: "category",
+    ref_table: "material_group",
     ref_col: "id",
   },
-  // {
-  //   label: "material_group_id",
-  //   name: "material_group_id",
-  //   type: "uuid",
-  //   is_ref: true,
-  //   ref_table: "material_group",
-  //   ref_col: "id",
-  //   require: true,
-  // },
+  { label: "note", name: "note", type: "varchar", required: false },
   {
-    label: "purchasing_price",
-    name: "purchasing_price",
+    label: "material_type",
+    name: "material_type",
     type: "number",
-    required: true,
+    required: false,
+  },
+];
+const material_balance = [
+  {
+    label: "store_id",
+    name: "store_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "store",
+    ref_col: "id",
+  },
+  { label: "unit1", name: "unit1", type: "varchar", required: false },
+  { label: "quality1", name: "quality1", type: "number", required: false },
+  { label: "unit2", name: "unit2", type: "varchar", required: false },
+  { label: "quality2", name: "quality2", type: "number", required: false },
+  { label: "unit3", name: "unit3", type: "varchar", required: false },
+  { label: "quality3", name: "quality3", type: "number", required: false },
+];
+const material_minimum = [
+  {
+    label: "store_id",
+    name: "store_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "store",
+    ref_col: "id",
+  },
+  { label: "minimum", name: "minimum", type: "number", required: false },
+  { label: "maximum", name: "maximum", type: "number", required: false },
+  { label: "note", name: "note", type: "text", required: false },
+];
+const material_prices = [
+  {
+    label: "currency_id",
+    name: "currency_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "currency",
+    ref_col: "id",
   },
   {
-    label: "selling_price",
-    name: "selling_price",
+    label: "currency_val",
+    name: "currency_val",
     type: "number",
-    required: true,
+    required: false,
+  },
+  { label: "vat_rate", name: "vat_rate", type: "number", required: false },
+  {
+    label: "average_purchase",
+    name: "average_purchase",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "biggest_purchase",
+    name: "biggest_purchase",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "pricing_policy",
+    name: "pricing_policy",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "purchase_date",
+    name: "purchase_date",
+    type: "date",
+    required: false,
+  },
+  {
+    label: "average_sales",
+    name: "average_sales",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "largest_sales",
+    name: "largest_sales",
+    type: "number",
+    required: false,
+  },
+  { label: "last_price", name: "last_price", type: "number", required: false },
+  { label: "sales_date", name: "sales_date", type: "date", required: false },
+];
+const material_prices_details = [
+  { label: "price_type", name: "price_type", type: "number", required: false },
+  { label: "unit1", name: "unit1", type: "number", required: false },
+  { label: "unit2", name: "unit2", type: "number", required: false },
+  { label: "unit3", name: "unit3", type: "number", required: false },
+];
+const material_specifications = [
+  {
+    label: "specification",
+    name: "specification",
+    type: "text",
+    required: false,
+  },
+  { label: "value", name: "value", type: "number", required: false },
+  { label: "note", name: "note", type: "text", required: false },
+];
+// end Material
+
+// Start Bill
+const bill = [
+  { label: "number", name: "number", type: "number", required: false },
+  {
+    label: "currency_id",
+    name: "currency_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "currency",
+    ref_col: "id",
+  },
+  {
+    label: "cost_center_id",
+    name: "cost_center_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "cost_center",
+    ref_col: "id",
+  },
+  { label: "note", name: "note", type: "text", required: false },
+  FIELDS_STRUCTURE.selectField({
+    label: "connect_with",
+    name: "connect_with",
+    list: SELECT_LISTS('bill_connect_with')
+  }),
+  // {
+  //   label: "connect_with_id",
+  //   name: "connect_with_id",
+  //   type: "uuid",
+  //   required: false,
+  //   is_ref: true,
+  //   ref_table: "connect_with",
+  //   ref_col: "id",
+  // },
+  {
+    label: "currency_val",
+    name: "currency_val",
+    type: "number",
+    required: false,
+  },
+  { label: "issue_date", name: "issue_date", type: "date", required: false },
+  { label: "bill_date", name: "bill_date", type: "date", required: false },
+  { label: "bill_kind", name: "bill_kind", type: "number", required: false },
+  {
+    label: "client_account_id",
+    name: "client_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "client_account",
+    ref_col: "id",
+  },
+  FIELDS_STRUCTURE.selectField({
+    label: "payment_method",
+    name: "payment_method",
+    list: [
+      { id: 1, name: "credit" },
+      { id: 2, name: "cash" },
+    ], // update future
+  }),
+  {
+    label: "receipt_number",
+    name: "receipt_number",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "store_id",
+    name: "store_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "store",
+    ref_col: "id",
+  },
+  {
+    label: "customer_account_id",
+    name: "customer_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "customer_account",
+    ref_col: "id",
+  },
+  {
+    label: "material_account_id",
+    name: "material_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "material_account",
+    ref_col: "id",
+  },
+  { label: "class", name: "class", type: "text", required: false },
+  {
+    label: "total_quantities",
+    name: "total_quantities",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "total_quantities_percentage",
+    name: "total_quantities_percentage",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "total_quantities_percentage2",
+    name: "total_quantities_percentage2",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "refunded_taxable_amount",
+    name: "refunded_taxable_amount",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "non_refunded_taxable_amount",
+    name: "non_refunded_taxable_amount",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "not_taxable",
+    name: "not_taxable",
+    type: "number",
+    required: false,
+  },
+  { label: "taxable", name: "taxable", type: "number", required: false },
+  { label: "total", name: "total", type: "number", required: false },
+  { label: "discounts", name: "discounts", type: "number", required: false },
+  {
+    label: "discounts_extra",
+    name: "discounts_extra",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "non_refundable_vat",
+    name: "non_refundable_vat",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "non_refundable_vat2",
+    name: "non_refundable_vat2",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "grand_total",
+    name: "grand_total",
+    type: "number",
+    required: false,
+  },
+  { label: "net", name: "net", type: "number", required: false },
+  {
+    label: "bill_total_text",
+    name: "bill_total_text",
+    type: "text",
+    required: false,
+  },
+];
+const bill_discounts_details = [
+  { label: "number", name: "number", type: "number", required: false },
+  {
+    label: "bill_id",
+    name: "bill_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "bill",
+    ref_col: "id",
+  },
+  {
+    label: "account_id",
+    name: "account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  { label: "discount", name: "discount", type: "number", required: false },
+  { label: "extra", name: "extra", type: "number", required: false },
+  {
+    label: "currency_id",
+    name: "currency_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "currency",
+    ref_col: "id",
+  },
+  {
+    label: "currency_val",
+    name: "currency_val",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "cost_center_id",
+    name: "cost_center_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "cost_center",
+    ref_col: "id",
+  },
+  {
+    label: "obverse_account_id",
+    name: "obverse_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "obverse_account",
+    ref_col: "id",
+  },
+  { label: "note", name: "note", type: "text", required: false },
+];
+const bill_material_details = [
+  { label: "number", name: "number", type: "number", required: false },
+  {
+    label: "bill_id",
+    name: "bill_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "bill",
+    ref_col: "id",
+  },
+  {
+    label: "material_id",
+    name: "material_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "material",
+    ref_col: "id",
+  },
+  { label: "quantity", name: "quantity", type: "number", required: false },
+  { label: "unit_price", name: "unit_price", type: "number", required: false },
+  {
+    label: "total_price",
+    name: "total_price",
+    type: "number",
+    required: false,
+  },
+  { label: "note", name: "note", type: "text", required: false },
+];
+// End Bill
+
+// Start Bill Pattern
+const bill_pattern_general = [
+  { label: "code", name: "code", type: "number", required: false },
+  { label: "name", name: "name", type: "text", required: false },
+  { label: "number", name: "number", type: "number", required: false },
+  { label: "bill_type", name: "bill_type", type: "number", required: false },
+  { label: "note", name: "note", type: "text", required: false },
+  {
+    label: "barcode_bill",
+    name: "barcode_bill",
+    type: "varchar",
+    required: false,
+  },
+];
+const bill_pattern_accounts = [
+  {
+    label: "default_store_id",
+    name: "default_store_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "default_store",
+    ref_col: "id",
+  },
+  {
+    label: "cost_center_id",
+    name: "cost_center_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "cost_center",
+    ref_col: "id",
+  },
+  {
+    label: "material_account_id",
+    name: "material_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "material_account",
+    ref_col: "id",
+  },
+  {
+    label: "cash_account_id",
+    name: "cash_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "cash_account",
+    ref_col: "id",
+  },
+  {
+    label: "discount_account_id",
+    name: "discount_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "discount_account",
+    ref_col: "id",
+  },
+  {
+    label: "extra_account_id",
+    name: "extra_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "extra_account",
+    ref_col: "id",
+  },
+  {
+    label: "vat_account_id",
+    name: "vat_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "vat_account",
+    ref_col: "id",
   },
   {
     label: "currency_id",
     name: "currency_id",
     type: "uuid",
+    required: false,
     is_ref: true,
     ref_table: "currency",
     ref_col: "id",
   },
-  { label: "note", name: "note", type: "text" },
   {
-    label: "is_available",
-    name: "is_available",
+    label: "use_vat_account_from_customer_card",
+    name: "use_vat_account_from_customer_card",
     type: "checkbox",
     key: "switch",
+    required: false,
+  },
+  {
+    label: "payment_method",
+    name: "payment_method",
+    type: "number",
+    required: false,
+  },
+
+  {
+    label: "active_perpetual_inventory",
+    name: "active_perpetual_inventory",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "stock_account_id",
+    name: "stock_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "stock_account",
+    ref_col: "id",
+  },
+  {
+    label: "calculate_sale_cost_center_id",
+    name: "calculate_sale_cost_center_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "calculate_sale_cost_center",
+    ref_col: "id",
   },
 ];
+const bill_pattern_entries = [
+  {
+    label: "post_to_store",
+    name: "post_to_store",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "post_to_store_auto",
+    name: "post_to_store_auto",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "generate_entries",
+    name: "generate_entries",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "auto_generate_entries",
+    name: "auto_generate_entries",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "post_generate_entries_auto",
+    name: "post_generate_entries_auto",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "deleting_entry_depending_on_materials",
+    name: "deleting_entry_depending_on_materials",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "possibility_of_changing_materials_account",
+    name: "possibility_of_changing_materials_account",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "calculate_vat_after_discount_and_extra_value_to_the_invoice",
+    name: "calculate_vat_after_discount_and_extra_value_to_the_invoice",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "merge_repeated_materials",
+    name: "merge_repeated_materials",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "required_customer_entry",
+    name: "required_customer_entry",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "required_cost_center_entry",
+    name: "required_cost_center_entry",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "required_category_entry",
+    name: "required_category_entry",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "show_alert_on_navigate_output",
+    name: "show_alert_on_navigate_output",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "dont_save_when_navigate_output",
+    name: "dont_save_when_navigate_output",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "show_average_price_check_message_after_adding_modifying",
+    name: "show_average_price_check_message_after_adding_modifying",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+];
+const bill_pattern_options = [
+  {
+    label: "bill_affected_the_pricing_of_materials",
+    name: "bill_affected_the_pricing_of_materials",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "pricing_of_materials",
+    name: "pricing_of_materials",
+    type: "number",
+    required: false,
+  },
+  { label: "menu", name: "menu", type: "varchar", required: false },
+  {
+    label: "table_color1",
+    name: "table_color1",
+    type: "color",
+    required: false,
+  },
+  {
+    label: "table_color2",
+    name: "table_color2",
+    type: "color",
+    required: false,
+  },
+];
+const bill_pattern_bill_details = [];
+const bill_pattern_references = [
+  {
+    label: "show_references_field",
+    name: "show_references_field",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "required_reference_field",
+    name: "required_reference_field",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "dont_show_expired_field",
+    name: "dont_show_expired_field",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "lock_bill_when_loading_references",
+    name: "lock_bill_when_loading_references",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+  {
+    label: "allow_partial_load",
+    name: "allow_partial_load",
+    type: "checkbox",
+    key: "switch",
+    required: false,
+  },
+
+  { label: "references", name: "references", type: "jsonb[]", required: false },
+];
+const bill_pattern_materials = [];
+
+// End Bill Pattern
+
+// const materials = [
+//   { label: "barcode", name: "barcode", type: "text" },
+//   { label: "name", name: "name", type: "text", required: true },
+//   { label: "description", name: "description", type: "text" },
+//   {
+//     label: "category_id",
+//     name: "category_id",
+//     type: "uuid",
+//     is_ref: true,
+//     ref_table: "category",
+//     ref_col: "id",
+//   },
+//   // {
+//   //   label: "material_group_id",
+//   //   name: "material_group_id",
+//   //   type: "uuid",
+//   //   is_ref: true,
+//   //   ref_table: "material_group",
+//   //   ref_col: "id",
+//   //   require: true,
+//   // },
+//   {
+//     label: "purchasing_price",
+//     name: "purchasing_price",
+//     type: "number",
+//     required: true,
+//   },
+//   {
+//     label: "selling_price",
+//     name: "selling_price",
+//     type: "number",
+//     required: true,
+//   },
+//   {
+//     label: "currency_id",
+//     name: "currency_id",
+//     type: "uuid",
+//     is_ref: true,
+//     ref_table: "currency",
+//     ref_col: "id",
+//   },
+//   { label: "note", name: "note", type: "text" },
+//   {
+//     label: "is_available",
+//     name: "is_available",
+//     type: "checkbox",
+//     key: "switch",
+//   },
+// ];
 
 // ==== End material
 // ==== Start Category
@@ -5899,8 +6621,32 @@ const service_lack_reason = [
     ref_col: "id",
   },
 ];
-const service_requested_material = [ {label: "material_id", name: 'material_id', type: 'uuid', required: false,is_ref: true, ref_table: 'materials',ref_col: 'id'},  {label: "name", name: 'name', type: 'text', required: false}, {name: "quantity", type: "number"} ]
-const service_received_material = [ {label: "material_id", name: 'material_id', type: 'uuid', required: false,is_ref: true, ref_table: 'materials',ref_col: 'id'},  {label: "price", name: 'price', type: 'number', required: false}, {name: "quantity", type: "number"} ]
+const service_requested_material = [
+  {
+    label: "material_id",
+    name: "material_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "materials",
+    ref_col: "id",
+  },
+  { label: "name", name: "name", type: "text", required: false },
+  { name: "quantity", type: "number" },
+];
+const service_received_material = [
+  {
+    label: "material_id",
+    name: "material_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "materials",
+    ref_col: "id",
+  },
+  { label: "price", name: "price", type: "number", required: false },
+  { name: "quantity", type: "number" },
+];
 
 const service_worker = [
   { label: "title", name: "title", type: "text", readOnly: false },
@@ -5915,6 +6661,16 @@ const service_worker = [
     ref_col: "id",
   },
   {
+    label: "category_problem_id",
+    name: "category_problem_id",
+    type: "uuid",
+    readOnly: false,
+    is_ref: true,
+    ref_table: "category_problem",
+    ref_col: "id",
+    ref_name: "description",
+  },
+  {
     label: "worker_user_id",
     name: "worker_user_id",
     type: "uuid",
@@ -5923,7 +6679,18 @@ const service_worker = [
     ref_table: UNIQUE_REF_TABLES.employee,
     ref_col: "id",
   },
-  { label: "status", name: "status", type: "number", readOnly: false },
+  {
+    label: "worker_status",
+    name: "worker_status",
+    type: "number",
+    readOnly: false,
+  },
+  {
+    label: "total_minutes",
+    name: "total_minutes",
+    type: "number",
+    readOnly: false,
+  },
 ];
 
 const service_customer_group = {
@@ -6261,6 +7028,75 @@ const villa_group = {
   },
 };
 
+const bill_group = {
+  forms: {
+    [BILL_PATTERN_STEPS.bill_pattern_general]: {
+      fields: bill_pattern_general,
+      tab_name: "bill_pattern",
+    },
+    [BILL_PATTERN_STEPS.bill_pattern_accounts]: {
+      fields: bill_pattern_accounts,
+      tab_name: "bill_pattern",
+    },
+    [BILL_PATTERN_STEPS.bill_pattern_entries]: {
+      fields: bill_pattern_entries,
+      tab_name: "bill_pattern",
+    },
+    [BILL_PATTERN_STEPS.bill_pattern_options]: {
+      fields: bill_pattern_options,
+      tab_name: "bill_pattern",
+    },
+    [BILL_PATTERN_STEPS.bill_pattern_bill_details]: {
+      fields: bill_pattern_bill_details,
+      tab_name: "bill_pattern",
+    },
+
+    [BILL_PATTERN_STEPS.bill_pattern_references]: {
+      fields: bill_pattern_references,
+      tab_name: "bill_pattern",
+    },
+
+    [BILL_PATTERN_STEPS.bill_pattern_materials]: {
+      fields: bill_pattern_materials,
+      tab_name: "bill_pattern",
+    },
+  },
+};
+
+const material_group_steps = {
+  forms: {
+    [MATERIAL_STEPS.material]: {
+      fields: material,
+      tab_name: "material",
+    },
+    [MATERIAL_STEPS.material_balance]: {
+      fields: material_balance,
+      tab_name: "material_balance",
+      formType: "grid",
+    },
+    [MATERIAL_STEPS.material_minimum]: {
+      fields: material_minimum,
+      tab_name: "material_minimum",
+      formType: "grid",
+    },
+    [MATERIAL_STEPS.material_prices]: {
+      fields: material_prices,
+      tab_name: "material_prices",
+    },
+    [MATERIAL_STEPS.material_prices_details]: {
+      fields: material_prices_details,
+      tab_name: "material_prices_details",
+      formType: "grid",
+    },
+
+    [MATERIAL_STEPS.material_specifications]: {
+      fields: material_specifications,
+      tab_name: "material_specifications",
+      formType: "grid",
+    },
+  },
+};
+
 const FORMS = {
   // Cards
   reservation_property,
@@ -6278,7 +7114,7 @@ const FORMS = {
   store,
   category,
   category_problem,
-  materials,
+  material: material_group_steps,
   material_group,
   assets_group,
   lawsuit_group,
@@ -6317,6 +7153,7 @@ const FORMS = {
   accounting_voucher_pattern: accounting_voucher_pattern_group,
   contract_pattern: contract_pattern_group,
   cheque_pattern: cheque_group,
+  bill_pattern: bill_group,
   // installment
   installment,
   // operations
@@ -6334,7 +7171,7 @@ const FORMS = {
   ...CONTRACTS_FORM,
 
   // maintenances
-  service: service_group,
+  service: service_customer_group,
   service_customer: service_customer_group,
 
   // owner expenses
@@ -6344,6 +7181,11 @@ const FORMS = {
 
   // admins
   tenants,
+
+  // Bill
+  bill,
+  bill_discounts_details,
+  bill_material_details,
 };
 
 export default function getFormByTableName(name) {

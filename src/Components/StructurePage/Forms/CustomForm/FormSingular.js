@@ -55,7 +55,6 @@ const FormSingular = ({ name, onClose }) => {
       }
     },
   });
-  console.log(fields,'f');
 
   // Handel Submit
   const onSubmit = async (value) => {

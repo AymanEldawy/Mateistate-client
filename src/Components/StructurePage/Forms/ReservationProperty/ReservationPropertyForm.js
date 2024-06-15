@@ -77,7 +77,6 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
   const { CACHE_LIST, fields } = useRefTable(name);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState([]);
-console.log(fields,'-f');
   const reservationQueryClient = useQuery({
     queryKey: [name, listOfNumbers?.[number - 1]],
     queryFn: async () => {

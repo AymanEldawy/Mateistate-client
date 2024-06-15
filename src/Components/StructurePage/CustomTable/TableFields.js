@@ -53,7 +53,6 @@ const TableFields = ({
       setIncreaseCount(rowsCount);
     }
   }, [rowsCount]);
-  console.log(rowsCount, 'co');
 
   const onDecrement = () => {
     let index = increaseCount - 2;
@@ -65,7 +64,7 @@ const TableFields = ({
 
   return (
     <>
-      <div className={`relative mt-4 ${containerClassName}`}>
+      <div className={`relative mt-4 overflow-x-auto ${containerClassName}`}>
         <table
           className={`border-collapse w-full text-sm text-left text-gray-500 dark:text-gray-400 border dark:border-dark-border rounded-md  ${tableClassName} ${
             tableError ? "!border-red-500" : ""

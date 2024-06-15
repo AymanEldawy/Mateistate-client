@@ -91,7 +91,6 @@ const useRefTable = (name, type = "form") => {
       ...prev,
       ...hash,
     }));
-    console.log(CACHE_LIST,'CA');
     setFieldsHash(fieldsHash);
   };
 

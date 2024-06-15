@@ -26,22 +26,10 @@ const Login = () => {
 
     if (res?.success) {
       let data = res?.result?.at(0);
-      // if (data?.role === 0) {
-      const response = await ApiActions.read("tenants", {
-        conditions: [
-          { type: "and", conditions: [["admin_id", "=", data?.id]] },
-        ],
-        columns: ["id"],
-      });
-      Cookies.set("tenant_id", response?.result?.at(0)?.id, {
-        expires: 7,
-      });
-      Cookies.set("user_admin", JSON.stringify(data), {
+      Cookies.set("tenant_id", data?.tenant_id, {
         expires: 7,
       });
       navigate("/");
-      // window?.location?.replace('/')
-      // }
     }
   };
 
