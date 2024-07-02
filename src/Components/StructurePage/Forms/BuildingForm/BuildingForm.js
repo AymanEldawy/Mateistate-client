@@ -1,4 +1,3 @@
-import { GET_UPDATE_DATE_BY_NUMBER } from "Helpers/Lib/global-read-update";
 import useFormSteps from "Hooks/useFormSteps";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -9,7 +8,6 @@ import INSERT_FUNCTION from "Helpers/Lib/global-insert";
 import { Input } from "Components/StructurePage/CustomFields";
 import getFormByTableName from "Helpers/Forms/forms";
 import { FLATS } from "Helpers/constants";
-import useListView from "Hooks/useListView";
 import { ApiActions } from "Helpers/Lib/api";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
@@ -94,12 +92,8 @@ const reCalculateFlats = (watch) => {
 const BuildingForm = ({ popupView }) => {
   const name = "building";
   const params = useParams();
+  const buildingId = params?.id;
   const navigate = useNavigate();
-  const viewList = useListView({
-    name: "building",
-    defaultNumber: params?.number,
-  });
-  const { listOfNumbers, number, setMaxLength, setNumber } = viewList;
   const methods = useForm({
     defaultValues: getResetFields(name),
   });
@@ -124,13 +118,13 @@ const BuildingForm = ({ popupView }) => {
   } = methods;
 
   const { isLoading } = useQuery({
-    queryKey: [name, listOfNumbers?.[number - 1]],
+    queryKey: [name, ],
     queryFn: async () => {
       const res = await ApiActions.read("building", {
         conditions: [
           {
             type: "and",
-            conditions: [["number", "=", listOfNumbers[number - 1]]],
+            conditions: [["id", "=", buildingId]],
           },
         ],
       });
@@ -160,7 +154,7 @@ const BuildingForm = ({ popupView }) => {
   const onDelete = async () => {
     let data = watch("building");
     const response = await ApiActions.remove("building", {
-      conditions: [{ type: "and", conditions: [["id", "=", data?.id]] }],
+      conditions: [{ type: "and", conditions: [["id", "=", buildingId]] }],
     });
 
     if (response?.success) {
@@ -175,9 +169,6 @@ const BuildingForm = ({ popupView }) => {
         ],
       });
 
-      onDeleteItem(data?.number);
-      setNumber((prev) => +prev - 1);
-      setMaxLength((prev) => +prev - 1);
     }
   };
 
@@ -195,7 +186,7 @@ const BuildingForm = ({ popupView }) => {
 
     if (res?.success) {
       if (res?.record?.id) navigate(`/tools/${res?.record?.id}`);
-      toast.success("Successfully added item in Building");
+      toast.success(`Successfully ${params?.id ? 'updated': 'inserted'} item in Building`);
     } else {
       if (res?.constraint?.indexOf('building_name_key"') !== -1) {
         toast.error(`Field to insert Building, Name is already exist.`);
@@ -209,7 +200,6 @@ const BuildingForm = ({ popupView }) => {
   return (
     <FormWrapperLayout
       name={name}
-      viewList={viewList}
       isLoading={isLoading}
       onSubmit={onSubmit}
       popupView={popupView}

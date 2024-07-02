@@ -724,7 +724,7 @@ post /customer/addMaintenancesOrder (data)
 @ required from client
 
 - (token) `required`
-- building_id -> service `required`    -> - owner_account_id -> service `required`
+- building_id -> service `required` -> - owner_account_id -> service `required`
 - unit_type -> service `required`
 - unit_id -> service `required`
 - contract_id -> service_customer_request `required`
@@ -749,8 +749,6 @@ post /customer/addMaintenancesOrder (data)
 - status -> service
 - code -> 1 service `required`
 
-
-
 post /supervisor/acceptOrder (data)
 
 - (token) `required`
@@ -758,7 +756,6 @@ post /supervisor/acceptOrder (data)
 - worker_user_id -> service_worker `required`
 - status -> update service status to accept number
 - supervisor_user_id -> service
-
 
 post /supervisor/returnOrder (data)
 
@@ -815,12 +812,54 @@ post /supervisor/acceptMaterials (data)
 - tenant_id -> service_received_material
 - total -> service `required`
 
-
-
-
-
 post
 
 - is_default
 - payment_method
 - service_id
+
+@ required from client
+
+post /supervisor/addPropertyPreparing (data)
+
+- (token) `required`
+- building_id -> service `required` -> - owner_account_id -> service `required`
+- unit_type -> service `required`
+- unit_id -> service `required`
+- start_date -> service `required` the smallest date or nearest date from list of worker data
+- status -> update service status to accept number
+
+list of workers[]
+
+- title -> service_worker `required`
+- description -> service_worker `required`
+- category_id -> service_worker `required`
+- category_problem_id -> service_worker `required`
+- total_minutes -> service_worker `required`
+- booking_start_date -> service_worker `required`
+- booking_end_date -> service_worker | service.start_date + total_minutes
+
+
+post /worker/startingPropertyPreparingService (data)
+
+- (token) user.id user.tenant_id
+- service_id -> worker_service `required`
+- worker_user_id -> worker_service
+- tenant_id -> worker_service
+- worker_status -> worker_service
+
+
+post /supervisor/endPropertyPreparingService (data)
+
+- (token) user.id user.tenant_id
+- service_id -> service `required`
+- status -> update status to reject number
+
+
+post /supervisor/getTechinaclsByCategoryId (category_id, start_date, minutes)
+
+- (token) user.tenant_id
+- get all users from user table that user.tenant_id eqaul tenant_id user.category_id equal category_id and user.card_type equal 3
+- check if some of workers are available on the time from start_date & start_date + minutes
+
+

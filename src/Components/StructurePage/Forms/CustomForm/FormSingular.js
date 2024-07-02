@@ -4,7 +4,6 @@ import INSERT_FUNCTION from "../../../../Helpers/Lib/global-insert";
 import useRefTable from "Hooks/useRefTables";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import useListView from "Hooks/useListView";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { removeNullValues } from "Helpers/functions";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
@@ -15,22 +14,12 @@ import getFormByTableName from "Helpers/Forms/forms";
 
 const FormSingular = ({ name, onClose }) => {
   const params = useParams();
-  const viewList = useListView({ name, defaultNumber: params?.number });
+  const id = params?.id;
   const { setRecordResponse, appendNewRecord } = usePopupForm();
   const methods = useForm({
     defaultValues: {},
   });
   const { fields, CACHE_LIST } = useRefTable(name);
-  const {
-    isLayoutUpdate,
-    listOfNumbers,
-    number,
-    setMaxLength,
-    setOpenConfirmation,
-    setListOfData,
-    setListOfNumbers,
-    onDeleteItem,
-  } = viewList;
 
   const {
     reset,
@@ -40,13 +29,13 @@ const FormSingular = ({ name, onClose }) => {
   } = methods;
 
   const { isLoading } = useQuery({
-    queryKey: [name, listOfNumbers?.[number - 1]],
+    queryKey: [name, id],
     queryFn: async () => {
       const data = await ApiActions.read(name, {
         conditions: [
           {
             type: "and",
-            conditions: [["number", "=", listOfNumbers?.at(number - 1)]],
+            conditions: [["id", "=", id]],
           },
         ],
       });
@@ -64,7 +53,7 @@ const FormSingular = ({ name, onClose }) => {
 
     let res = null;
 
-    if (isLayoutUpdate) {
+    if (id) {
       res = await ApiActions.update(name, {
         conditions: [{ type: "and", conditions: [["id", "=", watch("id")]] }],
         updates: values,
@@ -82,26 +71,16 @@ const FormSingular = ({ name, onClose }) => {
 
     if (res?.success) {
       toast.success(
-        isLayoutUpdate
+        id
           ? `Successfully update row: ${values?.name} in ${name}`
           : "Successfully added item in " + name
       );
-
-      if (!isLayoutUpdate) {
-        let record = res?.record;
-        setListOfData((prev) => ({
-          ...prev,
-          [record?.number]: record,
-        }));
-        setListOfNumbers((prev) => [...prev, record?.number]);
-      }
 
       if (!!setRecordResponse) {
         setRecordResponse({ table: name, response: res });
       }
 
-      if (!isLayoutUpdate) {
-        setMaxLength((prev) => +prev + 1);
+      if (!id) {
         await appendNewRecord(res);
         reset();
       }
@@ -113,7 +92,6 @@ const FormSingular = ({ name, onClose }) => {
   return (
     <FormWrapperLayout
       name={name}
-      viewList={viewList}
       onSubmit={onSubmit}
       methods={methods}
       itemId={watch("id")}

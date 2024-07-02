@@ -1,25 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { VoucherHead } from "./VoucherHead";
 import { VoucherFooter } from "./VoucherFooter";
-import BlockPaper from "Components/Global/BlockPaper";
 import getFormByTableName from "Helpers/Forms/forms";
 import { useParams } from "react-router-dom";
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { ApiActions } from "Helpers/Lib/api";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { toast } from "react-toastify";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
-import { Button } from "Components/Global/Button";
-import { FormStepPagination } from "../../../../Global/FormStepPagination";
 import { METHODS } from "Helpers/constants";
 import {
   deleteEntry,
   generateEntryFromVoucher,
   insertIntoGrid,
 } from "Helpers/Lib/vouchers-insert";
-import { CloseIcon } from "Components/Icons";
 import { CREATED_FROM_VOUCHER_CODE } from "Helpers/GENERATE_STARTING_DATA";
-import useListView from "Hooks/useListView";
 import useRefTable from "Hooks/useRefTables";
 import { useQuery } from "@tanstack/react-query";
 import FormWrapperLayout from "../../FormWrapperLayout/FormWrapperLayout";
@@ -35,20 +30,14 @@ const VoucherForm = ({
   outerClose,
 }) => {
   const params = useParams();
+  const id = params?.id;
   const name = params?.name || voucherName;
   const type = params?.type || voucherType;
   const methods = useForm();
   const { CACHE_LIST } = useRefTable("voucher_grid_data");
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const [gridFields, setGridFields] = useState([]);
-  const viewList = useListView({
-    name: "voucher_main_data",
-    defaultNumber: oldValues?.number,
-    additional: {
-      conditions: [{ type: "and", conditions: [["voucher_type", "=", type]] }],
-    },
-  });
-  const { listOfNumbers, number, maxLength, setMaxLength } = viewList;
+
   const {
     watch,
     reset,
@@ -57,17 +46,11 @@ const VoucherForm = ({
   } = methods;
 
   const queryClientNewVoucher = useQuery({
-    queryKey: ["voucher_main_data", number, type],
+    queryKey: ["voucher_main_data", id, type],
     queryFn: async () => {
-      if (maxLength < number) return null;
-
-      const res = await GET_UPDATE_DATE(
-        "voucher",
-        listOfNumbers?.at(number - 1),
-        {
-          voucherType: +type,
-        }
-      );
+      const res = await GET_UPDATE_DATE("voucher", id, {
+        voucherType: +type,
+      });
       reset(res);
     },
   });
@@ -192,7 +175,6 @@ const VoucherForm = ({
         data: { ...value, voucher_type: +type },
       });
       itemId = res?.record.id;
-      setMaxLength((p) => p + 1);
     }
 
     if (res?.success) {
@@ -202,7 +184,7 @@ const VoucherForm = ({
         tableName: "voucher_main_data",
         gridTableName: "voucher_grid_data",
         itemSearchName: "voucher_main_data_id",
-        should_update: maxLength < number,
+        should_update: id,
       });
 
       if (!!setRecordResponse) {
@@ -223,14 +205,14 @@ const VoucherForm = ({
           created_from_code: +type,
           grid,
           created_from_id: itemId,
-          should_update: !maxLength < number,
+          should_update: !id,
         });
       } else deleteEntry(itemId);
     }
 
     if (res?.success) {
       toast.success(
-        maxLength >= number
+        id
           ? `Successfully update row: ${values?.name} in ${name}`
           : "Successfully added item in " + name
       );
@@ -244,7 +226,6 @@ const VoucherForm = ({
     <FormWrapperLayout
       popupView={popupView}
       name={name}
-      viewList={viewList}
       onSubmit={onSubmit}
       methods={methods}
       itemId={watch("id")}
@@ -279,7 +260,7 @@ const VoucherForm = ({
         name={name}
         errors={errors}
         CACHE_LIST={CACHE_LIST}
-        isNewOne={maxLength < number}
+        isNewOne={!id}
         PATTERN_SETTINGS={PATTERN_SETTINGS}
       />
     </FormWrapperLayout>

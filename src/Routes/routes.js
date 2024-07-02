@@ -60,9 +60,9 @@ import LawsuitForm from "Components/StructurePage/Forms/LawsuitForm/LawsuitForm"
 import ComplaintsReport from "Pages/Report/ComplaintsReport";
 import ServiceForm from "Components/StructurePage/Forms/ServiceForm/ServiceForm";
 import OwnerExpensesForm from "Components/StructurePage/Forms/OwnerExpensesForm/OwnerExpensesForm";
-import { Contracts } from "Components/Tables";
-import List from "Pages/List/List";
+import List from "Components/Tables/List";
 import BillForm from "Components/StructurePage/Forms/BillForm/BillForm";
+import MaterialForm from "Components/StructurePage/Forms/MaterialForm/MaterialForm";
 
 const publicRoutes = [
   { path: "**", component: <NouFound /> },
@@ -246,36 +246,52 @@ const authProtectedRoutes = [
   },
 
   // Vouchers
-  { path: "/vouchers/:type/:name/:number", component: <VoucherForm /> },
-  { path: "/vouchers/entries/:number", component: <EntryForm /> },
+  { path: "/vouchers/:type/:name/:id", component: <VoucherForm /> },
+  { path: "/vouchers/entries/:id", component: <EntryForm /> },
 
   // Patterns
-  { path: "/patterns/:pattern/:number", component: <PatternsForm /> },
+  { path: "/patterns/:pattern/:id", component: <PatternsForm /> },
 
   // Main forms
-  { path: "/bill/:code/:name/:number", component: <BillForm /> },
-  { path: "/cheques/:code/:name/:number", component: <ChequeForm /> },
-  { path: "/buildings/:number", component: <BuildingForm /> },
-  { path: "/maintenances/:code/:number", component: <ServiceForm /> },
+  { path: "/bill/:code/:name/:id", component: <BillForm /> },
+  { path: "/cheques/:code/:name/:id", component: <ChequeForm /> },
   { path: "/list/:name/", component: <List /> },
-  { path: "/list/:name/:number", component: <DynamicForm /> },
-  { path: "/tools/:name/:number", component: <DynamicForm /> },
   {
-    path: "/reservation_property/:number",
+    path: "/patterns/:name",
+    component: <List urlToAdd={(name) => `/patterns/${name}`} />,
+  },
+  {
+    path: "/list/entries/:name",
+    component: <List urlToAdd={(name) => "/vouchers/entries"} />,
+  },
+  {
+    path: "/list/buildings/:name",
+    component: <List urlToAdd={(name) => "/buildings"} />,
+  },
+  { path: "/material/:id", component: <MaterialForm /> },
+  { path: "/material/", component: <MaterialForm /> },
+  { path: "/buildings/:id", component: <BuildingForm /> },
+  { path: "/buildings/", component: <BuildingForm /> },
+  { path: "/maintenances/:code/:id", component: <ServiceForm /> },
+  { path: "/maintenances/:code", component: <ServiceForm /> },
+  { path: "/:name/:id", component: <DynamicForm /> },
+  // { path: "/tools/:name/:id", component: <DynamicForm /> },
+  {
+    path: "/reservation_property/:id",
     component: <ReservationPropertyForm />,
   },
-  { path: "/account/:number", component: <AccountForm /> },
-  { path: "/user/:number", component: <UserForm /> },
+  { path: "/account/:id", component: <AccountForm /> },
+  { path: "/user/:id", component: <UserForm /> },
   {
-    path: "/contracts",
-    component: <Contracts />,
+    path: "/contracts/:type/:name/:id",
+    component: <ContractForm layout="update" />,
   },
   {
     path: "/contracts/:type/:name",
     component: <ContractForm layout="update" />,
   },
-  { path: "/owner_expenses/:number", component: <OwnerExpensesForm /> },
-  { path: "/lawsuit/:number", component: <LawsuitForm /> },
+  { path: "/owner_expenses/:id", component: <OwnerExpensesForm /> },
+  { path: "/lawsuit/:id", component: <LawsuitForm /> },
   // Chart forms
   { path: "/chart/:name", component: <Chart /> },
 ];

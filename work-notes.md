@@ -466,6 +466,7 @@ delete
 save
 
 
+- [] entires distibutive 
 
 ## Required todos
 - [] back in top 
@@ -480,3 +481,13 @@ save
 - [] bill patterns default
 - [] bill form
 - [] material form
+
+
+
+- [] dropdown search 
+- [] pagaintaion 
+- [] filters
+- [] popup 
+- [] table full width
+- [] text-wrap 
+- [] to form

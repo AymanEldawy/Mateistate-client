@@ -5,9 +5,11 @@ import { FormProvider, useForm } from "react-hook-form";
 import { ApiActions } from "Helpers/Lib/api";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import useGlobalOptions from "Hooks/useGlobalOptions";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setUser } = useGlobalOptions();
   const methods = useForm();
   const {
     formState: { errors, isDirty },
@@ -29,6 +31,7 @@ const Login = () => {
       Cookies.set("tenant_id", data?.tenant_id, {
         expires: 7,
       });
+      setUser(data);
       navigate("/");
     }
   };

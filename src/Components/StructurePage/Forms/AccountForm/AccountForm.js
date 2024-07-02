@@ -4,7 +4,6 @@ import { getLastNumberByColumn } from "../../../../Helpers/Lib/global-insert";
 import useRefTable from "Hooks/useRefTables";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import useListView from "Hooks/useListView";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { removeNullValues } from "Helpers/functions";
 import { AccountFormFields } from "./AccountFormFields";
@@ -81,17 +80,9 @@ const calculatePercentage = (watch, setTotalPercentage) => {
 const AccountForm = ({ onClose, popupView }) => {
   const name = "account";
   const params = useParams();
-  const viewList = useListView({ name, defaultNumber: params?.number });
   const { setRecordResponse, appendNewRecord } = usePopupForm();
   const methods = useForm();
-  const {
-    isLayoutUpdate,
-    listOfNumbers,
-    number,
-    setMaxLength,
-    setListOfNumbers,
-    setOpenConfirmation,
-  } = viewList;
+
   const {
     reset,
     watch,
@@ -105,13 +96,13 @@ const AccountForm = ({ onClose, popupView }) => {
   const [totalPercentage, setTotalPercentage] = useState(1);
 
   const accountQueryClient = useQuery({
-    queryKey: [name, listOfNumbers?.[number - 1]],
+    queryKey: [name, params?.id],
     queryFn: async () => {
       const res = await ApiActions.read("account", {
         conditions: [
           {
             type: "and",
-            conditions: [["number", "=", listOfNumbers[number - 1]]],
+            conditions: [["id", "=", params?.id]],
           },
         ],
       });
@@ -212,7 +203,7 @@ const AccountForm = ({ onClose, popupView }) => {
     let res = null;
     let account_id = values?.id;
 
-    if (isLayoutUpdate) {
+    if (params?.id) {
       res = await ApiActions.update(name, {
         conditions: [{ type: "and", conditions: [["id", "=", watch("id")]] }],
         updates: values,
@@ -226,7 +217,7 @@ const AccountForm = ({ onClose, popupView }) => {
 
     if (res?.success) {
       toast.success(
-        isLayoutUpdate
+        params?.id
           ? `Successfully update row: ${values?.name} in ${name}`
           : "Successfully added item in " + name
       );
@@ -259,9 +250,8 @@ const AccountForm = ({ onClose, popupView }) => {
         });
       }
 
-      if (!isLayoutUpdate) {
+      if (!params?.id) {
         let record = res?.record;
-        setListOfNumbers((prev) => [...prev, record?.number]);
         accountQueryClient.refresh();
       }
 
@@ -269,8 +259,7 @@ const AccountForm = ({ onClose, popupView }) => {
         setRecordResponse({ table: name, response: res });
       }
 
-      if (!isLayoutUpdate) {
-        setMaxLength((prev) => +prev + 1);
+      if (!params?.id) {
         await appendNewRecord(res);
         reset();
       }
@@ -283,7 +272,6 @@ const AccountForm = ({ onClose, popupView }) => {
   return (
     <FormWrapperLayout
       name={name}
-      viewList={viewList}
       isLoading={isLoading}
       onClose={onClose}
       onSubmit={onSubmit}
@@ -298,7 +286,6 @@ const AccountForm = ({ onClose, popupView }) => {
       }
     >
       <AccountFormFields
-        key={number}
         CACHE_LIST={CACHE_LIST}
         fields={fields}
         errors={errors}

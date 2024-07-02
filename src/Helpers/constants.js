@@ -26,6 +26,30 @@ import {
   VILLA_ASSET_TYPE_DEFAULT_NAME,
 } from "./GENERATE_STARTING_DATA";
 
+export const SERVICE_MENU = [
+  {
+    key: 1,
+    name: "Maintenances",
+    subChild: [
+      {
+        isForm: true,
+        key: "Maintenance order",
+        link: "/maintenances/1",
+      },
+      {
+        isForm: true,
+        key: "Property preparing order",
+        link: "/maintenances/2",
+      },
+      {
+        isForm: true,
+        key: "Default services order",
+        link: "/maintenances/3",
+      },
+    ],
+  },
+];
+
 export const SHOULD_DELETE_COST_CENTER = {
   apartment: true,
   parking: true,
@@ -300,13 +324,34 @@ export const CONTRACTS_ASSETS_TYPE = {
 
 export const SELECT_LISTS = (listName) => {
   let list = {
+    bill_pattern_bill_type: [
+      { id: 1, name: "Purchase" },
+      { id: 2, name: "T" },
+    ],
+    material_type: [
+      { id: 1, name: "Stored" },
+      { id: 2, name: "Services" },
+    ],
+
+    service_status: [
+      { id: 1, name: "Pending" },
+      { id: 2, name: "Return" },
+      { id: 3, name: "Reject" },
+      { id: 4, name: "Approval" },
+      { id: 5, name: "Underway" },
+      { id: 6, name: "Done" },
+    ],
+    evacuation_request_status: [
+      { id: 1, name: "pending" },
+      { id: 2, name: "approved" },
+      { id: 3, name: "reject" },
+    ],
+
     bill_connect_with: [
       { id: 0, name: "Nothing" },
       { id: 1, name: "Maintenances order" },
-      { id: 2, name: "Maintenances contract" },
-      { id: 3, name: "Maintenances order" },
-
     ],
+
     tenants_package: [
       { id: 1, name: "Full package" },
       { id: 2, name: "Maintenance" },
@@ -325,8 +370,6 @@ export const SELECT_LISTS = (listName) => {
       { id: 4, name: "Approval" },
       { id: 5, name: "Underway" },
       { id: 6, name: "Done" },
-
-
     ],
     worker_status: [
       { id: 0, name: "All" },
@@ -504,11 +547,32 @@ export const SELECT_LISTS = (listName) => {
       { name: "Rent", id: 2 },
     ],
 
+    service_status: [
+      { name: "Pending", id: 1 },
+      { name: "Return", id: 2 },
+      { name: "Reject", id: 3 },
+      { name: "Approval", id: 4 },
+      { name: "Underway", id: 5 },
+      { name: "Done", id: 6 },
+    ],
+
     contact_pattern_assets_type: [
+      {
+        name: APARTMENT_ASSET_TYPE_DEFAULT_NAME,
+        id: APARTMENT_ASSET_TYPE_CODE,
+      },
+      { name: PARKING_ASSET_TYPE_DEFAULT_NAME, id: PARKING_ASSET_TYPE_CODE },
+      { name: SHOP_ASSET_TYPE_DEFAULT_NAME, id: SHOP_ASSET_TYPE_CODE },
+      { name: LAND_ASSET_TYPE_DEFAULT_NAME, id: LAND_ASSET_TYPE_CODE },
+      { name: VILLA_ASSET_TYPE_DEFAULT_NAME, id: VILLA_ASSET_TYPE_CODE },
+    ],
+
+    unit_type: [
       // { name: "Apartment", id: 1 },
       // { name: "Parking", id: 2 },
       // { name: "Shop", id: 3 },
       // { name: "Land", id: 4 },
+      // { name: "Villa", id: 4 },
       {
         name: APARTMENT_ASSET_TYPE_DEFAULT_NAME,
         id: APARTMENT_ASSET_TYPE_CODE,
@@ -580,6 +644,10 @@ export const SELECT_LISTS = (listName) => {
       { name: "Custom", id: 4 },
     ],
 
+    bill_pattern_payment_methods: [
+      { id: 1, name: "Cash" },
+      { id: 2, name: "Credit" },
+    ],
     contract_payment_methods: [
       { id: 0, name: "All" },
       { id: 1, name: "Cash" },
@@ -631,11 +699,14 @@ export const USER_STEPS = {
 };
 
 export const SERVICE_STEPS = {
+  general: "general",
+  service_info: "service_info",
   service: "service",
   service_customer_request: "service_customer_request",
   service_lack_reason: "service_lack_reason",
   service_requested_material: "service_requested_material",
   service_received_material: "service_received_material",
+  service_material: "service_material",
   service_worker: "service_worker",
 };
 
@@ -1083,4 +1154,12 @@ export const FLATS = {
   // service_apartments: 0,
   // drivers_apartments: 0,
   underground_parking: 0,
+};
+
+export const POPUP_LINKS_NAME = {
+  entry_main_data: true,
+  cheque: true,
+  voucher_main_data: true,
+  contract: true,
+  service: true,
 };

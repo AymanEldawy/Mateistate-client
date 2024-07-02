@@ -16,8 +16,7 @@ import { useForm } from "react-hook-form";
 import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import GET_UPDATE_DATE, {
-  getContractData,
-  getContractUpdate,
+  getContractUpdate
 } from "Helpers/Lib/global-read-update";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import { ContractPayments } from "Components/StructurePage/Forms/ContractForm/ContractPayments";
@@ -46,7 +45,6 @@ import {
 import { Locked } from "Components/Global/Locked";
 import ContractTerminationForm from "./ContractTerminationForm";
 import { useQuery } from "@tanstack/react-query";
-import useListView from "Hooks/useListView";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 
 const SHOULD_UPDATES = {};
@@ -90,6 +88,7 @@ const ContractForm = () => {
   const code = searchQuery.get("code");
   const assetType = searchQuery.get("flat_type")?.toLowerCase();
   const contractName = `${assetType}_${type}_contract`;
+  const contractId = params?.id;
   const [isLoading, setIsLoading] = useState(false);
   const [shouldRefresh, setShouldRefresh] = useState(false);
   const [openInstallmentForm, setOpenInstallmentForm] = useState(false);
@@ -97,18 +96,10 @@ const ContractForm = () => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const [oldContracts, setOldContracts] = useState([]);
   const methods = useForm();
-  const viewList = useListView({
-    name: "contract",
-    defaultNumber: params?.number,
-    additional: {
-      conditions: [{ type: "and", conditions: [["code", "=", +code]] }],
-    },
-  });
-  const { setMaxLength, setNumber, number, maxLength, listOfNumbers } =
-    viewList;
 
-    const {
-      handleSubmit,
+
+  const {
+    handleSubmit,
     watch,
     formState: { errors, isDirty },
     setValue,
@@ -142,7 +133,7 @@ const ContractForm = () => {
       autoMergePatternSettingsWithValues(pattern, watch, setValue, tabNames);
     },
   });
-  
+
   // fetch Old Contract
   useQuery({
     queryKey: ["old_contracts"],
@@ -154,24 +145,22 @@ const ContractForm = () => {
     queryKey: [],
     queryFn: async () => {
       const lastNumber = await getLastNumberByColumn("contract", "code", +code);
-      setMaxLength(+lastNumber);
-      setNumber(+lastNumber + 1);
+
       if (!watch("contract.internal_number")) {
-        setValue(`contract.internal_number`, number);
+        setValue(`contract.internal_number`, +lastNumber + 1);
       }
     },
   });
 
   const contractQueryClient = useQuery({
-    queryKey: ["contract", code, number],
+    queryKey: ["contract", code, contractId],
     queryFn: async () => {
-      if (!number || !code || +number > +maxLength) return;
-      const response = await getContractData(listOfNumbers[number - 1], code);
+      const response = await ApiActions.read("contract", {
+        conditions: [{ type: "and", conditions: [["id", "=", contractId]] }],
+      });
 
       if (response?.result?.length) {
-        const res = await getContractUpdate(
-          response?.result?.at(0)?.id
-        );
+        const res = await getContractUpdate(contractId);
         let data = { ...res, contract: response?.result?.at(0) };
 
         reset(data);
@@ -182,7 +171,7 @@ const ContractForm = () => {
 
   // Fetch Rest contract data
   useQuery({
-    queryKey: ["contract", currentIndex, tab, number],
+    queryKey: ["contract", currentIndex, tab, contractId],
     queryFn: () => {
       if (currentIndex > 2 && watch("contract.id")) {
         fetchContractRestData(currentIndex, tabNames, watch, setValue);
@@ -218,7 +207,7 @@ const ContractForm = () => {
 
     setFields(newFields);
     setShouldRefresh((p) => !p);
-  }, [PATTERN_SETTINGS, currentIndex, number]);
+  }, [PATTERN_SETTINGS, currentIndex]);
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
@@ -295,7 +284,7 @@ const ContractForm = () => {
   }, [watch, oldContracts?.length, CACHE_LIST]);
 
   useEffect(() => {
-    if (+number <= maxLength) return;
+    if (contractId) return;
     autoMergePatternSettingsWithValues(
       PATTERN_SETTINGS,
       watch,
@@ -303,7 +292,7 @@ const ContractForm = () => {
       tabNames
     );
     // setShouldRefresh((p) => !p);
-  }, [number, code, type, assetType, maxLength, PATTERN_SETTINGS?.id]);
+  }, [code, type, assetType, PATTERN_SETTINGS?.id, contractId]);
 
   const globalButtonsActions = (action) => {
     switch (action) {
@@ -343,7 +332,6 @@ const ContractForm = () => {
 
     contract.end_duration_date = end_duration_date;
     reset({ contract });
-    setNumber(+maxLength + 1);
     setCurrentIndex(0);
   };
 
@@ -377,7 +365,7 @@ const ContractForm = () => {
       ...value,
       contract: watch("contract"),
       tabName: contractName,
-      layout: number <= maxLength,
+      layout: contractId,
       SHOULD_UPDATES,
     });
 
@@ -399,10 +387,9 @@ const ContractForm = () => {
           setOpenInstallmentForm(true);
         }
 
-        setMaxLength((p) => +p + 1);
       }
 
-      toast.success("Successfully Saved contract " + number);
+      toast.success("Successfully Saved contract ");
     } else {
       toast.error(res?.error?.detail);
     }
@@ -426,7 +413,7 @@ const ContractForm = () => {
       assetsType: assetType,
       assetsTypeNumber,
       buildingNumber,
-      contractNumber: number,
+      contractNumber: watch('contract.internal_number'),
       values: contract,
       commission: watch("contract_commission"),
     });
@@ -436,7 +423,6 @@ const ContractForm = () => {
     <FormWrapperLayout
       tableName="contract"
       name={contractName}
-      viewList={viewList}
       isLoading={isLoading || contractQueryClient?.isLoading}
       onSubmit={onSubmit}
       methods={methods}
@@ -500,9 +486,9 @@ const ContractForm = () => {
               ) : (
                 <>
                   {currentIndex === 0 && tab ? (
-                    <div key={number}>
+                    <div >
                       <ContractFinancialForm
-                        number={number}
+                        number={watch('contract.internal_number')}
                         fields={fields}
                         tab={tab}
                         values={watch()?.[tab]}
@@ -511,7 +497,7 @@ const ContractForm = () => {
                         globalButtonsActions={globalButtonsActions}
                         contract_id={watch(`contract.id`)}
                         dispatchVoucherEntries={dispatchVoucherEntries}
-                        layout={number <= maxLength}
+                        layout={contractId}
                         assetType={assetType}
                         contractType={type}
                       />

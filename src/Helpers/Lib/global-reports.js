@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ApiActions } from "./api";
+import { ApiActions, baseURL } from "./api";
 
 // Chq Reports
 export const chequesReport = async () => {};
@@ -27,15 +27,19 @@ export const PropertyMovingReport = async () => {};
 // Chq Reports
 
 export const leasedUnitsReport = async (params) => {
-  // return await axios.post(`http://localhost:4000/report/unit-leased-report`, params)
+  // return await axios.post(`${baseURL}/report/unit-leased-report`, params)
   return await ApiActions.report("unit-leased-report", params);
 };
 
 export const earning_rental_income_earned_report = async (params) => {
-  return await axios.post(`http://localhost:4000/report/contract`, params)
+  return await axios.post(`${baseURL}/report/contract`, params);
+};
+export const complaints_report = async (params) => {
+  return await axios.post(`${baseURL}/reports/complaints-report`, params);
 };
 
 const REPORTS = {
+  complaints_report,
   earning_rental_income_earned_report,
   leasedUnitsReport,
   cheques: chequesReport,

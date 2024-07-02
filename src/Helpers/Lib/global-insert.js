@@ -44,7 +44,7 @@ const CONTRACT_GRID_FORMS_NAMES = {
   },
   service_worker: {
     table: "service_worker",
-    conditions: ["worker_status"],
+    conditions: ["category_problem_id"],
   },
   contract_receipt_number: {
     table: "contract_receipt_number",
@@ -86,7 +86,6 @@ export const dynamicInsertIntoMultiStepsTable = async ({
   let steps = Object.values(getFormByTableName(tableName)?.forms)?.map(
     (c) => c?.tab_name
   );
-  console.log("🚀 ~ steps:", steps)
 
   let stepGeneralName = steps?.at(0);
 
@@ -117,10 +116,8 @@ export const dynamicInsertIntoMultiStepsTable = async ({
 
   if (mainResponse.success) {
     for (const name in list) {
-      console.log('called here', list?.[name], '1');
       if (list[name] && name !== stepGeneralName) {
         if (CONTRACT_GRID_FORMS_NAMES?.[name]) {
-          console.log('called here', list?.[name]);
           insertIntoGridTabs({
             grid: list[name],
             tab: CONTRACT_GRID_FORMS_NAMES?.[name],
@@ -273,10 +270,10 @@ const insertToVilla = async (data) =>
     data,
   });
 
-// Insert to Assets and other relation tables
-const insertToAssets = async (data) =>
+// Insert to material and other relation tables
+const insertToMaterial = async (data) =>
   await dynamicInsertIntoMultiStepsTable({
-    tableName: "assets",
+    tableName: "material",
     data,
   });
 
@@ -662,8 +659,6 @@ const insertIntoGridTabs = async ({
   itemNameId,
   should_update,
 }) => {
-
-  console.log(grid, table, item_id);
   if (!grid || !table || !item_id) return;
 
   const prevGrid = await ApiActions.read(table, {
@@ -684,6 +679,7 @@ const insertIntoGridTabs = async ({
     let item = grid?.[i];
     let prevItem = prevGrid?.result?.[i];
     let isValid = true;
+
 
     if (JSON.stringify(item) === JSON.stringify(prevItem)) continue;
 
@@ -826,9 +822,10 @@ export const getLastCostCenterNumber = async () => {
 
   let bigNumber = 0;
   for (const item of response?.result) {
-    if (item?.number > bigNumber && !item?.parent_id) bigNumber = item?.internal_number;
+    if (item?.number > bigNumber && !item?.parent_id)
+      bigNumber = item?.internal_number;
   }
-  
+
   return bigNumber ? +bigNumber : 1;
 };
 
@@ -846,7 +843,6 @@ export const generateApartments = async (
   building,
   UPDATES_ROWS
 ) => {
-  console.log("🚀 ~ building:", building)
   const FAILED_INSERTED_FLATS = [];
   let assetLastNumber = await getLastNumberByColumn(
     "cost_center",
@@ -1079,7 +1075,7 @@ const INSERT_FUNCTION = {
   // table name : function
   building: insertToBuilding,
   villa: insertToVilla,
-  assets: insertToAssets,
+  material: insertToMaterial,
   lawsuit: insetIntoLawsuit,
   // Units
   // land

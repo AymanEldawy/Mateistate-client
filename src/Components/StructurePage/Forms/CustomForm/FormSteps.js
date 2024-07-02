@@ -9,7 +9,6 @@ import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
 import { useParams } from "react-router-dom";
 import { usePopupForm } from "Hooks/usePopupForm";
-import useListView from "Hooks/useListView";
 import { SHOULD_DELETE_COST_CENTER } from "Helpers/constants";
 import { ApiActions } from "Helpers/Lib/api";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
@@ -23,7 +22,7 @@ const FormSteps = ({
   oldValues = null,
 }) => {
   const params = useParams();
-  const viewList = useListView({ name, defaultNumber: params?.number });
+  const id = params?.id;
   const { appendNewRecord } = usePopupForm();
   const methods = useForm({
     defaultValues: {},
@@ -42,25 +41,14 @@ const FormSteps = ({
   } = useFormSteps({ name });
 
   const {
-    isLayoutUpdate,
-    listOfNumbers,
-    number,
-    setMaxLength,
-    listOfData,
-    onDeleteItem,
-    setOpenConfirmation,
-  } = viewList;
-
-  const {
     watch,
     formState: { errors, isDirty },
     reset,
   } = methods;
 
   const { isLoading } = useQuery({
-    queryKey: [name, listOfNumbers?.[number - 1]],
+    queryKey: [name, id],
     queryFn: async () => {
-      let id = listOfData?.[listOfNumbers?.at(number - 1)]?.id;
       const data = await GET_UPDATE_DATE(name, id);
       if (data) {
         reset(data);
@@ -86,7 +74,6 @@ const FormSteps = ({
       ],
     });
     if (res?.success) {
-      onDeleteItem(data?.number);
       if (SHOULD_DELETE_COST_CENTER?.[tabNames[0]]) {
         await ApiActions.remove("cost_center", {
           conditions: [
@@ -95,7 +82,6 @@ const FormSteps = ({
         });
       }
     }
-    setOpenConfirmation(false);
   };
 
   // Handel Submit
@@ -111,12 +97,11 @@ const FormSteps = ({
 
     if (res?.success) {
       toast.success(
-        `Successfully ${isLayoutUpdate ? "Updated" : "Insert"} item in ` + name
+        `Successfully ${id ? "Updated" : "Insert"} item in ` + name
       );
 
-      if (!isLayoutUpdate) {
+      if (!id) {
         await appendNewRecord(res);
-        setMaxLength((prev) => +prev + 1);
       }
     } else {
       toast.error(res?.error?.detail);
@@ -127,7 +112,6 @@ const FormSteps = ({
   return (
     <FormWrapperLayout
       name={name}
-      viewList={viewList}
       isLoading={isLoading}
       onSubmit={onSubmit}
       methods={methods}

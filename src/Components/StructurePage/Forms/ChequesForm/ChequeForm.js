@@ -9,10 +9,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { OperationsForm } from "./OperationsForm";
-import { FormStepPagination } from "../../../Global/FormStepPagination";
 import { METHODS, resetChequeFields } from "Helpers/constants";
 import { ChequeStatus } from "./ChequeStatus";
-import { EyeIcon } from "Components/Icons";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import {
   CurrencyFieldGroup,
@@ -30,7 +28,6 @@ import {
 import { CREATED_FROM_CHQ_CODE } from "Helpers/GENERATE_STARTING_DATA";
 import useRefTable from "Hooks/useRefTables";
 import { removeNullValues } from "Helpers/functions";
-import useListView from "Hooks/useListView";
 import { useQuery } from "@tanstack/react-query";
 import { ViewEntry } from "Components/Global/ViewEntry";
 
@@ -59,6 +56,7 @@ const ChequeForm = ({
   action,
 }) => {
   const params = useParams();
+  const chqId = params?.id;
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const { CACHE_LIST, setCACHE_LIST } = useRefTable("cheque");
   const methods = useForm();
@@ -73,20 +71,6 @@ const ChequeForm = ({
   const code = params?.code || patternCode;
   const [selectedFormOperation, setSelectedFormOperation] = useState({});
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
-  const {
-    setNumber,
-    number,
-    setMaxLength,
-    maxLength,
-    isLayoutUpdate,
-    listOfNumbers,
-  } = useListView({
-    name: "cheque",
-    additional: {
-      conditions: [{ type: "and", conditions: [["type", "=", +code]] }],
-    },
-    defaultNumber: oldValues?.number,
-  });
 
   useQuery({
     queryKey: ["cheque", "cheque_pattern"],
@@ -101,15 +85,14 @@ const ChequeForm = ({
   });
 
   const { isLoading, refetch } = useQuery({
-    queryKey: ["cheque", name, number, code],
+    queryKey: ["cheque", name, code],
     queryFn: async () => {
       const response = await ApiActions.read("cheque", {
         conditions: [
           {
             type: "and",
-            conditions: [["number", "=", +listOfNumbers?.at(number - 1)]],
+            conditions: [["id", "=", chqId]],
           },
-          { type: "and", conditions: [["type", "=", +code]] },
         ],
       });
       reset(response?.result?.at(0));
@@ -158,7 +141,6 @@ const ChequeForm = ({
   );
 
   const onClickAddNew = () => {
-    setNumber(+maxLength + 1);
     reset({
       ...resetChequeFields(),
       ...mergePatternWithChequeData(PATTERN_SETTINGS, watch, setValue),
@@ -196,11 +178,10 @@ const ChequeForm = ({
     }
 
     if (res?.success) {
-      if (res?.record?.id && number >= maxLength) setMaxLength((p) => +p + 1);
       refetch();
 
       toast.success(
-        isLayoutUpdate
+        chqId
           ? `Successfully update row: ${values?.name} in ${name}`
           : "Successfully added item in " + name
       );
@@ -387,16 +368,7 @@ const ChequeForm = ({
               />
 
               <div className="flex justify-between gap-6 items-center mt-4 border-t pt-4">
-                <FormStepPagination
-                  number={number}
-                  goTo={setNumber}
-                  maxLength={maxLength}
-                  isNewOne={number > maxLength}
-                  allowActions={watch("id")}
-                  setNumber={setNumber}
-                  onClickAddNew={onClickAddNew}
-                />
-                <Button title={watch("id") ? "Modify" : "Submit"} />
+                <Button title={"Save"} />
               </div>
             </form>
           </FormProvider>

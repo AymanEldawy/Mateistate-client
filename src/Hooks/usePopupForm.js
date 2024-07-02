@@ -27,10 +27,20 @@ export const PopupFormProvider = ({ children }) => {
         ? `${record?.[numberSearchKey]}-${record?.name}`
         : record?.name;
 
+      let value =
+        openForm?.table === "user" || record?.account_id
+          ? record?.account_id
+          : record?.id;
       additional?.setList((prev) => {
-        return [...prev, { label, value: record?.id }];
+        return [
+          ...prev,
+          {
+            label,
+            value,
+          },
+        ];
       });
-      additional?.setValue(additional?.name, record.id);
+      additional?.setValue(additional?.name, value);
     }
   };
 

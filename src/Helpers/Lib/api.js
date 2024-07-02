@@ -16,10 +16,10 @@ export const SHOULD_DELETE_ENTRY = {
   op_return: true,
   contract_termination: true,
 };
+// export const baseURL = "http://203.161.62.124:5000/";
+export const baseURL = "http://localhost:5000";
 
 function CURD() {
-  const baseURL = "http://localhost:5000";
-  // const baseURL = "http://203.161.62.124:5000/";
   const matieStateClient = new MatieStateClient(baseURL);
 
   // Example Usage of getReport method

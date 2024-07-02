@@ -200,8 +200,72 @@ const account = async () => {
   return res?.result;
 };
 
-const list = async (name) => {
+const service = async (name, filters) => {
+  const res = await ApiActions.read("service", {
+    joins: [
+      {
+        type: "leftJoin",
+        table: "building",
+        conditions: { "building.id": `service.building_id` },
+      },
+      // {
+      //   type: "leftJoin",
+      //   table: "apartment",
+      //   conditions: { "apartment.id": `service.unit_id` },
+      // },
+      // {
+      //   type: "leftJoin",
+      //   table: "shop",
+      //   conditions: { "shop.id": `service.unit_id` },
+      // },
+      // {
+      //   type: "leftJoin",
+      //   table: "parking",
+      //   conditions: { "parking.id": `service.unit_id` },
+      // },
+      // {
+      //   type: "leftJoin",
+      //   table: "building as building",
+      //   conditions: { "building.id": `service.building_id` },
+      // },
+    ],
+    columns: [
+      `service.*`,
+      "building.name as building_name",
+      // "parking.parking_no as_unit_name",
+      // "shop.shop_no as_unit_name",
+      // "apartment.apartment_no as_unit_name",
+    ],
+  });
+
+  return res?.result;
+};
+
+const unit = async (filters, name) => {
+  const res = await ApiActions.read(name, {
+    joins: [
+      {
+        type: "leftJoin",
+        table: "building as building",
+        conditions: { "building.id": `${name}.building_id` },
+      },
+    ],
+    columns: [`${name}.*`, "building.name as building_name"],
+  });
+  return res?.result;
+};
+
+const list = async (filters, name) => {
   const res = await ApiActions.read(name);
+  return res?.result;
+};
+
+const villa = async (name) => {
+  const res = await ApiActions.read("villa");
+  return res?.result;
+};
+const land = async (name) => {
+  const res = await ApiActions.read("land");
   return res?.result;
 };
 
@@ -209,9 +273,16 @@ const data = {
   contract,
   account,
   list,
+  parking: unit,
+  apartment: unit,
+  shop: unit,
+  land,
+  villa,
+  service,
+  // parking: unit,
 };
 
-
-export default function getTableData(name) {
-  return data?.[name] || data?.list(name);
+export default function getTableData(name, filters) {
+  const fn = data?.[name] || data?.list;
+  return fn(filters, name);
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  CheckboxField,
   ColorField,
   CurrencyFieldGroup,
   Input,
@@ -98,7 +99,9 @@ export const Fields = ({
                 fieldsRow ? "grid grid-cols-2 items-center gap-2" : ""
               }
               labelClassName={fieldsRow ? "justify-end w-full flex" : ""}
-              selectContainerClassName={fieldsRow ? "!flex-1 w-full min-h-[20px]" : ""}
+              selectContainerClassName={
+                fieldsRow ? "!flex-1 w-full min-h-[20px]" : ""
+              }
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               table={field?.ref_table}
               CACHE_LIST={CACHE_LIST}
@@ -166,14 +169,23 @@ export const Fields = ({
           );
         } else if (field?.key === "switch") {
           return (
-            <Switch
+            <CheckboxField 
               {...field}
               defaultChecked={values?.[field?.name]}
               key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               values={values}
               error={errors?.[field?.name] ? "Field is required" : ""}
+              labelClassName="flex flex-col-reverse !items-start"
             />
+            // <Switch
+            //   {...field}
+            //   defaultChecked={values?.[field?.name]}
+            //   key={`${field?.name}-${i}`}
+            //   updatedName={tab ? `${tab}.${field?.name}` : ""}
+            //   values={values}
+            //   error={errors?.[field?.name] ? "Field is required" : ""}
+            // />
             // <></>
           );
         } else if (field?.type === "checkbox" || field.key === "choose") {
@@ -215,8 +227,10 @@ export const Fields = ({
               containerClassName={
                 fieldsRow ? "grid grid-cols-2 items-center gap-2" : ""
               }
-              labelClassName={fieldsRow? "justify-end w-full flex !min-w-fit": ''}
-              inputClassName={fieldsRow? "!flex-1 h-[30px]": ''}
+              labelClassName={
+                fieldsRow ? "justify-end w-full flex !min-w-fit" : ""
+              }
+              inputClassName={fieldsRow ? "!flex-1 h-[30px]" : ""}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               values={values}
               tab={tab}

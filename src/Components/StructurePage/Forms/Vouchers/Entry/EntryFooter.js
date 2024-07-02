@@ -11,13 +11,6 @@ export const EntryFooter = ({
   fields,
   errors,
   values,
-  isNewOne,
-  number,
-  goTo,
-  maxLength,
-  onlyView,
-  hideSubmit,
-  onClickAddNew,
 }) => {
   const { t } = useTranslation();
   const { watch } = useFormContext();

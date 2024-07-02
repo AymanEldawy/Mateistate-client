@@ -24,7 +24,7 @@ const CheckboxField = ({
     <div className={`w-full flex flex-col gap-2 ${containerClassName}`}>
       <label
         title={label}
-        className="relative flex w-full gap-2 items-center cursor-pointer"
+        className={`relative flex w-full gap-2 items-center cursor-pointer ${labelClassName}`}
       >
         <Controller
           name={updatedName || field.name}

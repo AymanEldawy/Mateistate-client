@@ -15,10 +15,19 @@ export const USERS = [
   // "0c777b8f-c573-49fd-8a40-5c35c2044848", //local
 ];
 
+// SERVICES CODE
+export const SERVICE_CUSTOMER_CODE = 1;
+export const SERVICE_PROPERTY_PREPARING_CODE = 2;
+export const SERVICE_DEFAULT_CODE = 3;
+
 export const USER_CUSTOMER_CODE = 1;
 export const USER_SUPPLIER_CODE = 2;
 export const USER_SUPERVISOR_CODE = 3;
 export const USER_WORKER_CODE = 4;
+
+// Lack reasons
+export const LACK_REASON_TENANT_NOT_EXIST_CODE = 1;
+export const LACK_REASON_WE_NEED_MATERIAL_CODE = 2;
 
 export const ACCOUNT_NORMAL_TYPE_CODE = 1;
 export const ACCOUNT_CLOSING_TYPE_CODE = 2;
@@ -39,6 +48,9 @@ export const CONNECT_WITH_CONTRACT_NAME = "Contract";
 export const CONNECT_WITH_LAWSUIT_NAME = "Lawsuit";
 export const CONNECT_WITH_BILL_NAME = "Bill";
 
+export const BILL_CONNECT_WITH_MAINTENANCES_CODE = 1;
+export const BILL_CONNECT_WITH_MAINTENANCES_NAME = 'Service';
+
 // Created From DEFAULT
 export const CREATED_FROM_CONTRACT_CODE = 1;
 export const CREATED_FROM_LAWSUIT_CODE = 2;
@@ -53,6 +65,15 @@ export const CREATED_FROM_CONTRACT_RESERVATION_CODE = 8;
 export const DEFAULT_CURRENCY_NAME = "United Arab Emirates Dirham";
 export const DEFAULT_CURRENCY_CODE = "AED";
 export const DEFAULT_CURRENCY_RATE = 1;
+
+// BILL PATTERN DEFAULT NAME
+export const BILL_TYPE_PAID_CODE = 1;
+export const BILL_TYPE_RECEIVED_CODE = 2;
+
+export const BILL_PAID_CODE = 1;
+export const BILL_PAID_NAME = "Purchase Invoice";
+export const BILL_RECEIVED_CODE = 2;
+export const BILL_RECEIVED_NAME = "VAT Invoice";
 
 // CHQ PATTERN DEFAULT NAME
 export const CHQ_PAID_CODE = 1;
@@ -166,6 +187,47 @@ let SHARED_CHQ = {
   returnable_move_cost_center_credit: true,
   returnable_move_cost_center_debit: true,
 };
+
+export const DEFAULT_BILL_INFO = [
+  {
+    name: BILL_PAID_NAME,
+    number: BILL_PAID_CODE,
+    default_store_id: null,
+    material_account_id: null,
+    bill_type: undefined,
+    menu: undefined,
+    payment_method: 1,
+    pricing_of_materials: 1,
+    table_color1: "",
+    table_color2: "",
+    auto_generate_entries: true,
+    generate_entries: true,
+    post_generate_entries_auto: true,
+    post_to_store: true,
+    post_to_store_auto: true,
+    cash_account_id: null,
+    code: BILL_PAID_CODE,
+  },
+  {
+    name: BILL_RECEIVED_NAME,
+    number: BILL_RECEIVED_CODE,
+    default_store_id: null,
+    material_account_id: null,
+    bill_type: undefined,
+    menu: undefined,
+    payment_method: 1,
+    pricing_of_materials: 1,
+    table_color1: "",
+    table_color2: "",
+    auto_generate_entries: true,
+    generate_entries: true,
+    post_generate_entries_auto: true,
+    post_to_store: true,
+    post_to_store_auto: true,
+    cash_account_id: null,
+    code: BILL_RECEIVED_CODE,
+  },
+];
 
 export const DEFAULT_CHQ_INFO = [
   {
@@ -425,6 +487,35 @@ let final_id = null;
 let parent_id = null;
 let levels = {};
 
+// insert default LACK_REASONS
+export async function INSERT_DEFAULT_LACK_REASONS() {
+  await ApiActions.insert("store", {
+    data: {
+      name: "store 1",
+      code: 1,
+      type: 1,
+    },
+  });
+
+  const reasons = [
+    {
+      code: LACK_REASON_TENANT_NOT_EXIST_CODE,
+      reason: "The tenant does not exist",
+      available: true,
+    },
+    {
+      code: LACK_REASON_WE_NEED_MATERIAL_CODE,
+      reason: "We need materials",
+      available: true,
+    },
+  ];
+  for (const item of reasons) {
+    await ApiActions.insert("lack_reason", {
+      data: item,
+    });
+  }
+}
+
 // insert default ACCOUNTS
 async function INSERT_DEFAULT_ACCOUNTS() {
   const currencyResponse = await ApiActions.insert("currency", {
@@ -633,6 +724,46 @@ export async function INSERT_DEFAULT_CONTRACTS(ACCOUNT_IDS) {
 }
 
 // INSERT DEFAULT CHEQUES
+export async function INSERT_DEFAULT_CATEGORY() {
+  const category = [
+    {
+      name: "AC Workstation",
+      description:
+        "A modern and ergonomic workstation with built-in air conditioning",
+      image: "https://source.unsplash.com/random/800x600?office-desk",
+    },
+    {
+      name: "WC Connector",
+      description:
+        "A high-quality connector for water closets and plumbing fixtures",
+      image: "https://source.unsplash.com/random/800x600?plumbing",
+    },
+    {
+      name: "Lighting Fixture",
+      description: "An energy-efficient LED lighting fixture for office spaces",
+      image: "https://source.unsplash.com/random/800x600?office-lighting",
+    },
+    {
+      name: "Desk Organizer",
+      description:
+        "A versatile desk organizer with multiple compartments and storage spaces",
+      image: "https://source.unsplash.com/random/800x600?desk-organizer",
+    },
+    {
+      name: "Office Chair",
+      description:
+        "A comfortable and supportive office chair with adjustable features",
+      image: "https://source.unsplash.com/random/800x600?office-chair",
+    },
+  ];
+  for (const cate of category) {
+    await ApiActions.insert("category", {
+      data: cate,
+    });
+  }
+}
+
+// INSERT DEFAULT CHEQUES
 export async function INSERT_DEFAULT_CHEQUES(ACCOUNT_IDS) {
   for (const cheque of DEFAULT_CHQ_INFO) {
     // merge accounts
@@ -740,6 +871,8 @@ export async function INSERT_DEFAULT_DATA() {
   // await ApiActions.read("cheque");
   INSERT_DEFAULT_BANKS();
   INSERT_DEFAULT_MULTIPLE_DATA();
+  INSERT_DEFAULT_LACK_REASONS();
+  INSERT_DEFAULT_CATEGORY();
   await INSERT_DEFAULT_ACCOUNTS();
 }
 // INSERT_DEFAULT_CHEQUES()

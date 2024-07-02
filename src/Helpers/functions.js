@@ -1,6 +1,13 @@
 import { ApiActions } from "./Lib/api";
 import { getAccountLastNumber } from "./Lib/global-insert";
-import { DEFAULT_CURRENCY_CODE } from "./GENERATE_STARTING_DATA";
+import {
+  APARTMENT_ASSET_TYPE_DEFAULT_NAME,
+  DEFAULT_CURRENCY_CODE,
+  LAND_ASSET_TYPE_DEFAULT_NAME,
+  PARKING_ASSET_TYPE_DEFAULT_NAME,
+  SHOP_ASSET_TYPE_DEFAULT_NAME,
+  VILLA_ASSET_TYPE_DEFAULT_NAME,
+} from "./GENERATE_STARTING_DATA";
 import { FLAT_PROPERTY_TABS, FLAT_PROPERTY_TYPES } from "./constants";
 
 // export const SERVER_URL = `https://matiestate-server.vercel.app/`;
@@ -299,6 +306,18 @@ export const refetchBuildingAssets = (
   }
 };
 
+export function getContractUnitType(contract) {
+  return contract?.parking_id
+    ? PARKING_ASSET_TYPE_DEFAULT_NAME
+    : contract?.shop_id
+    ? SHOP_ASSET_TYPE_DEFAULT_NAME
+    : contract?.apartment_id
+    ? APARTMENT_ASSET_TYPE_DEFAULT_NAME
+    : contract?.land_id
+    ? LAND_ASSET_TYPE_DEFAULT_NAME
+    : VILLA_ASSET_TYPE_DEFAULT_NAME;
+}
+
 export function getUnitType(contract, value) {
   let type = contract?.parking_id
     ? "parking_"
@@ -312,12 +331,15 @@ export function getUnitType(contract, value) {
 export function getContractStatus(value) {
   switch (value) {
     case 2:
-      return {value: 'Expired', classes: `bg-red-100 text-red-600`};
+      return { value: "Expired", classes: `bg-red-100 text-red-600` };
     case 3:
-      return {value: 'Renew', classes: `bg-green-100 text-green-600`};
+      return { value: "Renew", classes: `bg-green-100 text-green-600` };
     case 4:
-      return {value: 'Expired and not renewed', classes: `bg-orange-100 text-orange-600`};
+      return {
+        value: "Expired and not renewed",
+        classes: `bg-orange-100 text-orange-600`,
+      };
     default:
-      return {value: 'Rent', classes: `bg-blue-100 text-blue-600`};
+      return { value: "Rent", classes: `bg-blue-100 text-blue-600` };
   }
 }

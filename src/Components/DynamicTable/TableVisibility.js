@@ -16,7 +16,7 @@ export const TableVisibility = ({
 
   return (
     <Drawer onClose={onClose}>
-      <div className="mt-4 w-72 overflow-auto max-h-full dark:bg-dark-bg">
+      <div className="mt-4 w-72 overflow-auto max-h-full dark:bg-dark-bg z-20">
         <div className="flex justify-between items-center gap-4 px-2">
           <h3 className="font-semibold text-lg text-center capitalize ltr:border-l-4 rtl:border-r-4 px-2 dark:text-white dark:border-white text-primary border-primary">
             {tableName}

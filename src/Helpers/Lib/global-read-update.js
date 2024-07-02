@@ -416,6 +416,7 @@ export const GLOBAL_READ_GROUP_DATA = {
 };
 
 export default async function GET_UPDATE_DATE(name, id, params) {
+  console.log(name, id);
   if (GLOBAL_READ_GROUP_DATA?.[name]) {
     let fn = GLOBAL_READ_GROUP_DATA?.[name];
     return await fn(id, params);

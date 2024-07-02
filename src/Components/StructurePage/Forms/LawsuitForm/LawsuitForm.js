@@ -1,14 +1,12 @@
 import { GET_UPDATE_DATE_BY_NUMBER } from "Helpers/Lib/global-read-update";
 import useFormSteps from "Hooks/useFormSteps";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
 import { Fields } from "../CustomForm/Fields";
 import { toast } from "react-toastify";
 import INSERT_FUNCTION from "Helpers/Lib/global-insert";
 import getFormByTableName from "Helpers/Forms/forms";
-import { FLATS } from "Helpers/constants";
-import useListView from "Hooks/useListView";
 import { ApiActions } from "Helpers/Lib/api";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
@@ -22,12 +20,9 @@ const SUB_STEPS = ["lawsuit_expenses", "lawsuit_expenses_pictures"];
 const LawsuitForm = ({ popupView }) => {
   const name = "lawsuit";
   const params = useParams();
+  const id = params?.id;
   const navigate = useNavigate();
-  const viewList = useListView({
-    name,
-    defaultNumber: params?.number,
-  });
-  const { listOfNumbers, number, setMaxLength, setNumber } = viewList;
+
   const methods = useForm({
     defaultValues: getResetFields(name),
   });
@@ -52,11 +47,9 @@ const LawsuitForm = ({ popupView }) => {
   } = methods;
 
   const { isLoading } = useQuery({
-    queryKey: [name, listOfNumbers?.[number - 1]],
+    queryKey: [name, id],
     queryFn: async () => {
-      const data = await GET_UPDATE_DATE_BY_NUMBER.lawsuit(
-        listOfNumbers?.[number - 1]
-      );
+      const data = await GET_UPDATE_DATE_BY_NUMBER.lawsuit(id);
       if (data?.lawsuit?.id) {
         reset(data);
       }
@@ -82,8 +75,6 @@ const LawsuitForm = ({ popupView }) => {
       });
 
       onDeleteItem(data?.number);
-      setNumber((prev) => +prev - 1);
-      setMaxLength((prev) => +prev - 1);
     }
   };
 
@@ -103,11 +94,9 @@ const LawsuitForm = ({ popupView }) => {
     }
   };
 
-
   return (
     <FormWrapperLayout
       name={name}
-      viewList={viewList}
       isLoading={isLoading}
       onSubmit={onSubmit}
       popupView={popupView}

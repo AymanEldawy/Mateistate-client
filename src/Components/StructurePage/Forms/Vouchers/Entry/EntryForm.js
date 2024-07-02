@@ -1,42 +1,26 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { EntryHead } from "./EntryHead";
 import { EntryFooter } from "./EntryFooter";
-import BlockPaper from "Components/Global/BlockPaper";
 import getFormByTableName from "Helpers/Forms/forms";
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { ApiActions } from "Helpers/Lib/api";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
 import { toast } from "react-toastify";
-import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
-import { CloseIcon } from "Components/Icons";
-import { Button } from "Components/Global/Button";
-import { FormStepPagination } from "../../../../Global/FormStepPagination";
-import useListView from "Hooks/useListView";
-import { getResetFields } from "Helpers/Lib/global-reset";
-import ConfirmModal from "Components/Global/Modal/ConfirmModal";
-import Loading from "Components/Global/Loading";
 import { ErrorText } from "Components/Global/ErrorText";
 import useRefTable from "Hooks/useRefTables";
 import FormWrapperLayout from "../../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 
 const EntryForm = ({ oldValue, onlyView, outerClose }) => {
   // const [number, setNumber] = useState(0)
   const name = "entry_main_data";
-  const viewList = useListView({ name, ignoreList: !!onlyView });
+  const params = useParams();
+  const id = params?.id;
   const { CACHE_LIST } = useRefTable("entry_grid_data");
   const methods = useForm();
   const [gridErrors, setGridErrors] = useState(null);
-
-  const {
-    goToNumber,
-    listOfNumbers,
-    number,
-    maxLength,
-    setMaxLength,
-    setListOfNumbers,
-  } = viewList;
 
   const {
     handleSubmit,
@@ -47,10 +31,9 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
   } = methods;
 
   const queryClientEntry = useQuery({
-    queryKey: [name, listOfNumbers?.[number - 1]],
+    queryKey: [name, id],
     queryFn: async () => {
-      if (maxLength < number) return null;
-      const res = await GET_UPDATE_DATE("entry", listOfNumbers?.[number - 1]);
+      const res = await GET_UPDATE_DATE("entry", id);
       if (res?.id) {
         reset(res);
       }
@@ -148,15 +131,13 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
         });
       } else {
         res = await ApiActions.insert(name, {
-          data: { ...value, number },
+          data: { ...value },
         });
         if (res?.success) {
-          setMaxLength((p) => +p + 1);
-          setListOfNumbers((prev) => [...prev, number]);
         }
       }
 
-      let entryId = maxLength < number ? res?.record?.id : value.id;
+      let entryId = id || res?.record?.id;
 
       insertIntoGrid(grid, entryId);
     } else {
@@ -185,7 +166,6 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
     <FormWrapperLayout
       popupView={onlyView}
       name="Entry"
-      viewList={viewList}
       onSubmit={onSubmit}
       methods={methods}
       itemId={watch("id")}
@@ -193,7 +173,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
       isLoading={queryClientEntry?.isLoading}
       onClose={outerClose}
       tableName={name}
-      hidePaginationBar={true}
+      // hidePaginationBar={true}
     >
       <div
         className={
@@ -208,8 +188,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
           CACHE_LIST={CACHE_LIST}
           layout={"update"}
           values={watch()}
-          number={number}
-          isNewOne={+maxLength < number}
+          // number={number}
         />
 
         <div
@@ -223,7 +202,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
             </ErrorText>
           ) : null}
           <TableFields
-            key={number}
+            key={id}
             fields={gridFields}
             tab="grid"
             errors={errors}
@@ -232,7 +211,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
             increasable={onlyView || watch("created_from") ? false : true}
             onlyView={onlyView || watch("created_from_id")}
             rowsCount={
-              maxLength < number && !onlyView ? 5 : watch("grid")?.length
+              !id && !onlyView ? 5 : watch("grid")?.length
             }
           />
         </div>
@@ -241,9 +220,9 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
           fields={fields}
           errors={errors}
           CACHE_LIST={CACHE_LIST}
-          number={number}
-          maxLength={maxLength}
-          goTo={goToNumber}
+          // number={number}
+          // maxLength={maxLength}
+          // goTo={goToNumber}
           values={watch()}
           onlyView={onlyView}
           hideSubmit={watch("created_from_id")}

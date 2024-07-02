@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import useRefTable from "Hooks/useRefTables";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import useListView from "Hooks/useListView";
 import { removeNullValues } from "Helpers/functions";
 import { CREATED_FROM_CONTRACT_RESERVATION_CODE } from "Helpers/GENERATE_STARTING_DATA";
 import { useQuery } from "@tanstack/react-query";
@@ -54,17 +53,9 @@ const getPropertyList = async (type, building_id, setList) => {
 const ReservationPropertyForm = ({ onClose, popupView }) => {
   const name = "reservation_property";
   const params = useParams();
-  const viewList = useListView({ name, defaultNumber: params?.number });
-  // const { appendNewRecord } = usePopupForm();
+  const id = params?.id;
   const methods = useForm();
-  const {
-    isLayoutUpdate,
-    listOfNumbers,
-    number,
-    setMaxLength,
-    setListOfNumbers,
-    maxLength,
-  } = viewList;
+
   const {
     reset,
     watch,
@@ -78,13 +69,13 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState([]);
   const reservationQueryClient = useQuery({
-    queryKey: [name, listOfNumbers?.[number - 1]],
+    queryKey: [name, id],
     queryFn: async () => {
       const res = await ApiActions.read(name, {
         conditions: [
           {
             type: "and",
-            conditions: [["number", "=", listOfNumbers[number - 1]]],
+            conditions: [["id", "=", id]],
           },
         ],
       });
@@ -111,7 +102,6 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
     });
     return () => subscription.unsubscribe();
   }, [watch]);
-  
 
   // Handel Submit
   const onSubmit = async (value) => {
@@ -120,7 +110,7 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
     let values = removeNullValues(value);
     let res = null;
 
-    if (isLayoutUpdate) {
+    if (id) {
       res = await ApiActions.update(name, {
         conditions: [{ type: "and", conditions: [["id", "=", watch("id")]] }],
         updates: values,
@@ -133,16 +123,10 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
 
     if (res?.success) {
       toast.success(
-        isLayoutUpdate
+        id
           ? `Successfully update row: ${values?.name} in ${name}`
           : "Successfully added item in " + name
       );
-
-      if (!isLayoutUpdate) {
-        setMaxLength((prev) => +prev + 1);
-        reservationQueryClient?.refetch();
-        setListOfNumbers((prev) => [...prev, res?.record?.number]);
-      }
 
       if (watch("has_payment")) {
         generateEntryFromReservation({
@@ -160,7 +144,6 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
   return (
     <FormWrapperLayout
       name={name}
-      viewList={viewList}
       isLoading={isLoading}
       onClose={onClose}
       onSubmit={onSubmit}
@@ -170,7 +153,7 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
       itemNumber={watch("number")}
     >
       <ReservationPropertyFields
-        key={number}
+        key={id}
         CACHE_LIST={CACHE_LIST}
         fields={fields}
         errors={errors}

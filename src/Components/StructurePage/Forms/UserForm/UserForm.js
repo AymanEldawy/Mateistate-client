@@ -5,7 +5,6 @@ import useFormSteps from "Hooks/useFormSteps";
 import { useForm } from "react-hook-form";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { Fields } from "../CustomForm/Fields";
-import useListView from "Hooks/useListView";
 import { ApiActions } from "Helpers/Lib/api";
 import INSERT_FUNCTION from "Helpers/Lib/global-insert";
 import { removeNullValues } from "Helpers/functions";
@@ -24,10 +23,9 @@ const UserForm = ({
 }) => {
   const name = "user";
   const params = useParams();
-  const viewList = useListView({ name, defaultNumber: params?.number });
+  const id = params?.id;
   const { goTo, currentIndex, steps, fields, CACHE_LIST, setCurrentIndex } =
     useFormSteps({ name });
-  const { listOfNumbers, number, setMaxLength, isLayoutUpdate } = viewList;
 
   const { appendNewRecord } = usePopupForm();
   const methods = useForm();
@@ -38,13 +36,13 @@ const UserForm = ({
   } = methods;
 
   const { isLoading } = useQuery({
-    queryKey: [name, listOfNumbers?.[number - 1]],
+    queryKey: [name, id],
     queryFn: async () => {
       const res = await ApiActions.read(name, {
         conditions: [
           {
             type: "and",
-            conditions: [["number", "=", listOfNumbers[number - 1]]],
+            conditions: [["id", "=", id]],
           },
         ],
       });
@@ -70,12 +68,11 @@ const UserForm = ({
 
     if (res?.success) {
       toast.success(
-        `Successfully ${isLayoutUpdate ? "updated" : "inserted"} item in  ` +
+        `Successfully ${id ? "updated" : "inserted"} item in  ` +
           name
       );
       if (!!refetchData) refetchData();
-      if (!isLayoutUpdate) {
-        setMaxLength((prev) => +prev + 1);
+      if (!id) {
         await appendNewRecord(res);
       }
       reset();
@@ -88,7 +85,6 @@ const UserForm = ({
   return (
     <FormWrapperLayout
       name={"user"}
-      viewList={viewList}
       steps={steps}
       isLoading={isLoading}
       currentIndex={currentIndex}

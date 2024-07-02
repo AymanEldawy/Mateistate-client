@@ -26,7 +26,7 @@ export const menuData = [
           {
             key: "account-card",
             name: "account card",
-            link: "/account",
+            link: "/list/account",
           },
 
           {
@@ -55,7 +55,7 @@ export const menuData = [
       {
         key: "Customer",
         name: "Customer/Supplier Card",
-        link: "/user",
+        link: "/list/user",
       },
       { key: "owner-card", name: "owner card", link: "/list/owner" },
       { key: "seller-card", name: "seller card", link: "/list/seller" },
@@ -74,12 +74,12 @@ export const menuData = [
       {
         key: "reservation_property",
         name: "reservation property Card",
-        link: "/reservation_property",
+        link: "/list/reservation_property",
       },
       {
         key: "Building",
         name: "Building Card",
-        link: "/buildings",
+        link: "list/buildings/building",
       },
       {
         key: "Flat",
@@ -118,7 +118,7 @@ export const menuData = [
           {
             key: "owner expenses card",
             name: "owner expenses card",
-            link: "/owner_expenses",
+            link: "/list/owner_expenses",
           },
           {
             key: "owner expenses report",
@@ -127,16 +127,16 @@ export const menuData = [
           },
         ],
       },
-      {
-        key: "Watchman",
-        name: "Watchman Card",
-        link: "/list/watchman",
-      },
-      {
-        key: "Quotation Card",
-        name: "Quotation Card",
-        link: "/list/OfferPrice",
-      },
+      // {
+      //   key: "Watchman",
+      //   name: "Watchman Card",
+      //   link: "/list/watchman",
+      // },
+      // {
+      //   key: "Quotation Card",
+      //   name: "Quotation Card",
+      //   link: "/list/OfferPrice",
+      // },
     ],
   },
 
@@ -161,7 +161,7 @@ export const menuData = [
       {
         key: "lawsuit",
         name: "Lawsuit",
-        link: "/lawsuit",
+        link: "/list/lawsuit",
       },
       {
         key: "Owners Associations Fees",
@@ -442,41 +442,7 @@ export const menuData = [
     ],
   },
   // Reports End
-  {
-    key: "material",
-    name: "Material",
-    link: "",
-    icon: <PuzzleIcon />,
-    children: [
-      {
-        key: "Category",
-        name: "Category Card",
-        link: "/list/category",
-      },
-      {
-        key: "Category problem",
-        name: "Category problem Card",
-        link: "/list/category_problem",
-      },
-      {
-        key: "Group",
-        name: "materials Group Card",
-        // link: "/list/material_group",
-        link: "/list/material_group",
-      },
-      {
-        key: "Material",
-        name: "Material Card",
-        link: "/list/material",
-      },
-      {
-        key: "warehouse report",
-        name: "warehouse report",
-        // link: "/list/material_group",
-        link: "/reports/warehouse-report",
-      },
-    ],
-  },
+
   // {
   //   key: "assets",
   //   name: "Assets",
@@ -502,44 +468,94 @@ export const menuData = [
   //   ],
   // },
   {
-    key: "maintenance",
-    name: "maintenance",
+    key: "Maintenance",
+    name: "Maintenance",
     link: "",
     icon: <GearIcon />,
     children: [
-      // {
-      //   key: 1,
-      //   name: "Maintenance worker card",
-      //   link: "/",
-      // },
-      // {
-      //   key: 2,
-      //   name: "Complaint card",
-      //   link: "/maintenances",
-      // },
-
       {
-        key: 2,
-        name: "Property preparing order",
-        link: "/maintenances/2",
+        key: 1,
+        name: "Maintenances",
+        subChild: [
+          {
+            key: 1,
+            name: "Maintenances",
+            link: "/list/service",
+          },
+          {
+            key: 2,
+            name: "Property preparing order",
+            link: "/maintenances/2",
+          },
+          {
+            key: 3,
+            name: "Maintenance order",
+            link: "/maintenances/1",
+          },
+          {
+            key: 3,
+            name: "Default services order",
+            link: "/maintenances/3",
+          },
+          {
+            key: "Maintenance orders report",
+            name: "Maintenance orders report",
+            link: "/reports/complaints-report",
+          },
+          {
+            key: "Workers report",
+            name: "Workers report",
+            link: "/reports/worker-report",
+          },
+        ],
       },
       {
-        key: 3,
-        name: "Maintenance order",
-        link: "/maintenances",
+        key: "Category",
+        name: "Category",
+        subChild: [
+          {
+            key: "Category",
+            name: "Category Card",
+            link: "/list/category",
+          },
+          {
+            key: "Category problem",
+            name: "Category problem Card",
+            link: "/list/category_problem",
+          },
+        ],
       },
-
       {
-        key: "Maintenance orders report",
-        name: "Maintenance orders report",
-        link: "/reports/complaints-report",
+        key: "materials",
+        name: "Materials",
+        subChild: [
+          {
+            key: "Group",
+            name: "materials Group Card",
+            link: "/list/material_group",
+          },
+          {
+            key: "Material",
+            name: "Material Card",
+            link: "/list/material",
+          },
+          {
+            key: "warehouse report",
+            name: "warehouse report",
+            link: "/reports/warehouse-report",
+          },
+        ],
       },
       {
-        key: "Workers report",
-        name: "Workers report",
-        link: "/reports/worker-report",
+        key: "store",
+        name: "stores",
+        link: "/list/store",
       },
-
+      {
+        key: "lack_reason",
+        name: "lack reasons",
+        link: "/list/lack_reason",
+      },
       {
         key: 6,
         name: "evacuation request",
@@ -659,23 +675,23 @@ export const menuData = [
       },
     ],
   },
-  {
-    key: "Tools",
-    name: "Tools",
-    icon: <ToolsIcon />,
-    link: "",
-    children: [
-      {
-        key: "add tenant",
-        name: "Add tenant",
-        link: "/tools/tenants",
-      },
-    ],
-  },
+  // {
+  //   key: "Tools",
+  //   name: "Tools",
+  //   icon: <ToolsIcon />,
+  //   link: "",
+  //   children: [
+  //     {
+  //       key: "add tenant",
+  //       name: "Add tenant",
+  //       link: "/tools/tenants",
+  //     },
+  //   ],
+  // },
 ];
 
 // Generate dynamic Contract menu from contract pattern
-async function getContractMenus() {
+export async function getContractMenus() {
   const res = await ApiActions.read("contract_pattern");
   let hash = {};
 
@@ -709,6 +725,7 @@ async function getContractMenus() {
         theItem.name
       }?flat_type=${assetsType?.name}&code=${theItem?.code}&number=1`;
       menus.push({
+        isForm: true,
         key: theItem.name,
         name,
         link,
@@ -729,6 +746,7 @@ async function getContractMenus() {
         }?flat_type=${assetsType?.name}&code=${subItem?.code}&number=1`;
 
         subMenu.push({
+          isForm: true,
           key: subItem.name,
           name,
           link,
@@ -745,7 +763,7 @@ async function getContractMenus() {
   return menus;
 }
 // Generate dynamic Vouchers menu from Vouchers pattern
-async function getVouchersMenus() {
+export async function getVouchersMenus() {
   const res = await ApiActions.read("voucher_pattern");
 
   let hash = {};
@@ -770,6 +788,7 @@ async function getVouchersMenus() {
     if (theItem.direct) {
       let name = theItem.name;
       menus.push({
+        isForm: true,
         key: theItem.name,
         name,
         link: `/vouchers/${theItem.code}/${name}`,
@@ -778,9 +797,68 @@ async function getVouchersMenus() {
       let subMenu = [];
       for (const subItem of theItem) {
         subMenu.push({
+          isForm: true,
           key: subItem.name,
           name: subItem.name,
           link: `/vouchers/${subItem.code}/${subItem.name}`,
+        });
+      }
+      menus.push({
+        key: 3,
+        name: menu,
+        subChild: [
+          {
+            key: "voucher_main_data",
+            name: "vouchers",
+            link: "/list/voucher_main_data",
+          },
+          ...subMenu,
+        ],
+      });
+    }
+  }
+
+  return menus;
+}
+
+// Generate dynamic bills menu from bills pattern
+export async function getBillsMenus() {
+  const res = await ApiActions.read("bill_pattern");
+  let hash = {};
+
+  for (const item of res?.result) {
+    if (item.list_name) {
+      if (hash[item.list_name]) {
+        hash[item.list_name].push(item);
+      } else {
+        hash[item.list_name] = [item];
+      }
+    } else {
+      hash[item.name] = { direct: true, ...item };
+    }
+  }
+
+  let menus = [];
+
+  for (const menu in hash) {
+    let theItem = hash[menu];
+
+    if (theItem.direct) {
+      let name = theItem.name;
+      menus.push({
+        isForm: true,
+        key: theItem.name,
+        name,
+        link: `/bill/${theItem?.code}/${name}`,
+      });
+    } else {
+      let subMenu = [];
+      for (const subItem of theItem) {
+        subMenu.push({
+          isForm: true,
+          key: subItem.name,
+          name: subItem.name,
+          link: `/bill/${subItem?.code}/${subItem?.name}`,
         });
       }
       menus.push({
@@ -791,11 +869,25 @@ async function getVouchersMenus() {
     }
   }
 
-  return menus;
+  return [
+    {
+      key: "bills",
+      name: "bills",
+      link: "",
+      subChild: [
+        {
+          key: "bills",
+          name: "bills",
+          link: "/list/bill",
+        },
+        ...menus,
+      ],
+    },
+  ];
 }
 
 // Generate dynamic Cheques menu from Cheques pattern
-async function getChequesMenus() {
+export async function getChequesMenus() {
   const res = await ApiActions.read("cheque_pattern");
   let hash = {};
 
@@ -819,6 +911,7 @@ async function getChequesMenus() {
     if (theItem.direct) {
       let name = theItem.name;
       menus.push({
+        isForm: true,
         key: theItem.name,
         name,
         link: `/cheques/${theItem?.code}/${name}`,
@@ -827,6 +920,7 @@ async function getChequesMenus() {
       let subMenu = [];
       for (const subItem of theItem) {
         subMenu.push({
+          isForm: true,
           key: subItem.name,
           name: subItem.name,
           link: `/cheques/${subItem?.code}/${subItem?.name}`,
@@ -840,7 +934,21 @@ async function getChequesMenus() {
     }
   }
 
-  return menus;
+  return [
+    {
+      key: "Cheques",
+      name: "Cheques",
+      link: "",
+      subChild: [
+        {
+          key: "cheques",
+          name: "cheques",
+          link: "/list/cheque",
+        },
+        ...menus,
+      ],
+    },
+  ];
 }
 
 const getMenu = async () => {
@@ -849,32 +957,48 @@ const getMenu = async () => {
     menuData[3].children.unshift({
       key: "Contracts 2",
       name: "Contracts",
-      subChild: contractMenu,
+      subChild: [
+        {
+          key: "contract",
+          name: "contracts",
+          link: "/list/contract",
+        },
+        ...contractMenu,
+      ],
     });
   }
 
   const chequesMenus = await getChequesMenus();
   const voucherMenu = await getVouchersMenus();
+  const billMenu = await getBillsMenus();
 
   if (menuData[2].children?.[0]?.name !== "Journal Entry") {
     menuData[2].children = [
       {
-        key: "Journal Entry",
-        name: "Journal Entry",
-        link: "/vouchers/entries",
+        key: "Journals",
+        name: "Journals",
+        subChild: [
+          {
+            key: "Entries",
+            name: "Entries",
+            link: "/list/entries/entry",
+          },
+          {
+            key: "Journal Entry",
+            name: "Journal Entry",
+            link: "/vouchers/entries",
+          },
+        ],
       },
-      {
-        key: "Vouchers",
-        name: "Vouchers",
-        link: "",
-        subChild: voucherMenu,
-      },
-      {
-        key: "Cheques",
-        name: "Cheques",
-        link: "",
-        subChild: chequesMenus,
-      },
+      ...voucherMenu,
+      // {
+      //   key: "Vouchers",
+      //   name: "Vouchers",
+      //   link: "",
+      //   subChild: ,
+      // },
+      ...chequesMenus,
+      ...billMenu,
     ];
   }
 

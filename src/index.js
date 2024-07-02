@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 import { PopupFormProvider } from "Hooks/usePopupForm";
 import { ThemeProvider } from "Hooks/useTheme";
 import { BrowserRouter } from "react-router-dom";
+import { GlobalOptionsProvider } from "Hooks/useGlobalOptions";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -23,23 +24,25 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ThemeProvider>
-          <PopupFormProvider>
-            <VoucherEntriesViewProvider>
-              <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                style={{
-                  maxWidth: 500,
-                  width: "80%",
-                }}
-                newestOnTop={true}
-                theme="light"
-              />
-              <App />
-              <PopupForm />
-              <VoucherView />
-            </VoucherEntriesViewProvider>
-          </PopupFormProvider>
+          <GlobalOptionsProvider>
+            <PopupFormProvider>
+              <VoucherEntriesViewProvider>
+                <ToastContainer
+                  position="top-center"
+                  autoClose={2000}
+                  style={{
+                    maxWidth: 500,
+                    width: "80%",
+                  }}
+                  newestOnTop={true}
+                  theme="light"
+                />
+                <App />
+                <PopupForm />
+                <VoucherView />
+              </VoucherEntriesViewProvider>
+            </PopupFormProvider>
+          </GlobalOptionsProvider>
         </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>

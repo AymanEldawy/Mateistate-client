@@ -21,7 +21,7 @@ const FormWrapperLayout = ({
   children,
   disabledSubmit,
   methods,
-  viewList,
+  defaultTitle,
   itemId,
   itemNumber,
   steps,
@@ -42,43 +42,11 @@ const FormWrapperLayout = ({
     formState: { isSubmitting, isDirty },
     watch,
   } = methods;
-  const {
-    goToNumber,
-    number,
-    setNumber,
-    maxLength,
-    openConfirmation,
-    setOpenConfirmation,
-    onDeleteItem,
-  } = viewList;
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
-  // let blocker = useBlocker(
-  //   ({ currentLocation, nextLocation }) =>
-  //     isDirty && currentLocation.pathname !== nextLocation.pathname
-  // );
-
-  // React.useEffect(() => {
-  //   const unblock = history.block((location, action) => {
-  //     if (isDirty) {
-  //       return window.confirm("Navigate Back?");
-  //     }
-  //     return true;
-  //   });
-
-  //   return () => {
-  //     unblock();
-  //   };
-  // }, []);
   useEffect(() => {
     reset(getResetFields(tableName || name));
   }, [location?.pathname]);
-
-  const onClickAddNew = () => {
-    setNumber(+maxLength + 1);
-    reset(getResetFields(tableName || name));
-    if (setCurrentIndex) setCurrentIndex(0);
-    setRefresh((p) => !p);
-  };
 
   const onDelete = async () => {
     if (outerDelete) return outerDelete();
@@ -91,18 +59,12 @@ const FormWrapperLayout = ({
       ],
     });
     if (res?.success) {
-      onDeleteItem(itemNumber);
     }
     setOpenConfirmation(false);
   };
 
   return (
     <>
-      {/* <Prompt
-        when={isDirty}
-        message="Unsaved changes detected, continue?"
-        beforeUnload={true}
-      /> */}
       {isLoading || isSubmitting ? <Loading withBackdrop /> : null}
       <ConfirmModal
         onConfirm={onDelete}
@@ -124,12 +86,13 @@ const FormWrapperLayout = ({
               goTo={goToStep}
               customName={
                 <span className="capitalize">
-                  {maxLength < number ? (
+                  {/* {maxLength < number ? (
                     <span className="text-red-500 ltr:mr-2 rtl:ml-2 bg-red-100 px-2 py-1 rounded-md">
                       New
                     </span>
                   ) : null}
-                  {name?.replace(/_/g, " ")} number {number}
+                  {name?.replace(/_/g, " ")} number {number} */}
+                  {defaultTitle || name?.replace(/_/g, " ")}
                 </span>
               }
             />
@@ -140,32 +103,16 @@ const FormWrapperLayout = ({
 
             {hidePaginationBar ? null : (
               <div
-                className={`flex justify-between gap-4 items-center mt-4 border-t pt-4`}
+                className={`flex justify-end gap-4 items-center mt-4 border-t pt-4`}
               >
-                <FormStepPagination
-                  number={number}
-                  goTo={goToNumber}
-                  // maxLength={maxLength}
-                  maxLength={maxLength}
-                  isNewOne={number > maxLength}
-                  setNumber={setNumber}
-                  onClickDelete={() => setOpenConfirmation(true)}
-                  isArchived={watch(CONSTANT_COLUMNS_NAME.is_archived)}
-                  isDeleted={watch(CONSTANT_COLUMNS_NAME.is_deleted)}
-                  // allowActions={watch("id")}
-                  onClickAddNew={onClickAddNew}
-                />
-
-                <div className="flex gap-2 items-center">
-                  {additionalButtons ? additionalButtons : null}
-                  {onSubmit ? (
-                    <Button
-                      title={maxLength >= number ? "Modify" : "Submit"}
-                      classes="ltr:ml-auto rtl:mr-auto"
-                      disabled={!isDirty || disabledSubmit}
-                    />
-                  ) : null}
-                </div>
+                {additionalButtons ? additionalButtons : null}
+                {onSubmit ? (
+                  <Button
+                    title={"Save"}
+                    classes="ltr:ml-auto rtl:mr-auto"
+                    disabled={!isDirty || disabledSubmit}
+                  />
+                ) : null}
               </div>
             )}
           </form>

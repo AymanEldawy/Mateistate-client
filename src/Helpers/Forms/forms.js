@@ -4135,6 +4135,31 @@ const material_group = [
 
 // Start Material
 const material = [
+  { label: "code", name: "code", type: "number", required: false },
+  { label: "name", name: "name", type: "varchar", required: false },
+  {
+    label: "category_id",
+    name: "category_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "category",
+    ref_col: "id",
+  },
+  {
+    label: "material_group_id",
+    name: "material_group_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "material_group",
+    ref_col: "id",
+  },
+  FIELDS_STRUCTURE.selectField({
+    label: "material_type",
+    name: "material_type",
+    list: SELECT_LISTS("material_type"),
+  }),
   {
     label: "defaults1",
     name: "defaults1",
@@ -4164,24 +4189,8 @@ const material = [
     key: "switch",
     required: false,
   },
-  { label: "code", name: "code", type: "number", required: false },
-  { label: "name", name: "name", type: "varchar", required: false },
-  {
-    label: "material_group_id",
-    name: "material_group_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "material_group",
-    ref_col: "id",
-  },
+
   { label: "note", name: "note", type: "varchar", required: false },
-  {
-    label: "material_type",
-    name: "material_type",
-    type: "number",
-    required: false,
-  },
 ];
 const material_balance = [
   {
@@ -4313,7 +4322,7 @@ const bill = [
   FIELDS_STRUCTURE.selectField({
     label: "connect_with",
     name: "connect_with",
-    list: SELECT_LISTS('bill_connect_with')
+    list: SELECT_LISTS("bill_connect_with"),
   }),
   // {
   //   label: "connect_with_id",
@@ -4339,7 +4348,7 @@ const bill = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "client_account",
+    ref_table: "account",
     ref_col: "id",
   },
   FIELDS_STRUCTURE.selectField({
@@ -4371,7 +4380,7 @@ const bill = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "customer_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -4380,7 +4389,7 @@ const bill = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "material_account",
+    ref_table: "account",
     ref_col: "id",
   },
   { label: "class", name: "class", type: "text", required: false },
@@ -4456,16 +4465,16 @@ const bill = [
   },
 ];
 const bill_discounts_details = [
-  { label: "number", name: "number", type: "number", required: false },
-  {
-    label: "bill_id",
-    name: "bill_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "bill",
-    ref_col: "id",
-  },
+  // { label: "number", name: "number", type: "number", required: false },
+  // {
+  //   label: "bill_id",
+  //   name: "bill_id",
+  //   type: "uuid",
+  //   required: false,
+  //   is_ref: true,
+  //   ref_table: "bill",
+  //   ref_col: "id",
+  // },
   {
     label: "account_id",
     name: "account_id",
@@ -4477,21 +4486,21 @@ const bill_discounts_details = [
   },
   { label: "discount", name: "discount", type: "number", required: false },
   { label: "extra", name: "extra", type: "number", required: false },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-  },
-  {
-    label: "currency_val",
-    name: "currency_val",
-    type: "number",
-    required: false,
-  },
+  // {
+  //   label: "currency_id",
+  //   name: "currency_id",
+  //   type: "uuid",
+  //   required: false,
+  //   is_ref: true,
+  //   ref_table: "currency",
+  //   ref_col: "id",
+  // },
+  // {
+  //   label: "currency_val",
+  //   name: "currency_val",
+  //   type: "number",
+  //   required: false,
+  // },
   {
     label: "cost_center_id",
     name: "cost_center_id",
@@ -4507,22 +4516,22 @@ const bill_discounts_details = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "obverse_account",
+    ref_table: "account",
     ref_col: "id",
   },
   { label: "note", name: "note", type: "text", required: false },
 ];
 const bill_material_details = [
-  { label: "number", name: "number", type: "number", required: false },
-  {
-    label: "bill_id",
-    name: "bill_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "bill",
-    ref_col: "id",
-  },
+  // { label: "number", name: "number", type: "number", required: false },
+  // {
+  //   label: "bill_id",
+  //   name: "bill_id",
+  //   type: "uuid",
+  //   required: false,
+  //   is_ref: true,
+  //   ref_table: "bill",
+  //   ref_col: "id",
+  // },
   {
     label: "material_id",
     name: "material_id",
@@ -4549,14 +4558,16 @@ const bill_pattern_general = [
   { label: "code", name: "code", type: "number", required: false },
   { label: "name", name: "name", type: "text", required: false },
   { label: "number", name: "number", type: "number", required: false },
-  { label: "bill_type", name: "bill_type", type: "number", required: false },
+  FIELDS_STRUCTURE.selectField({
+    label: "bill_type",
+    name: "bill_type",
+    list: SELECT_LISTS("bill_pattern_bill_type"),
+  }),
   { label: "note", name: "note", type: "text", required: false },
-  {
+  FIELDS_STRUCTURE.switchField({
     label: "barcode_bill",
     name: "barcode_bill",
-    type: "varchar",
-    required: false,
-  },
+  }),
 ];
 const bill_pattern_accounts = [
   {
@@ -4583,7 +4594,7 @@ const bill_pattern_accounts = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "material_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -4592,7 +4603,7 @@ const bill_pattern_accounts = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "cash_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -4601,7 +4612,7 @@ const bill_pattern_accounts = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "discount_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -4610,7 +4621,7 @@ const bill_pattern_accounts = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "extra_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -4619,7 +4630,7 @@ const bill_pattern_accounts = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "vat_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -4630,6 +4641,7 @@ const bill_pattern_accounts = [
     is_ref: true,
     ref_table: "currency",
     ref_col: "id",
+    hideValue: true
   },
   {
     label: "use_vat_account_from_customer_card",
@@ -4638,12 +4650,11 @@ const bill_pattern_accounts = [
     key: "switch",
     required: false,
   },
-  {
+  FIELDS_STRUCTURE.selectField({
     label: "payment_method",
     name: "payment_method",
-    type: "number",
-    required: false,
-  },
+    list: SELECT_LISTS("bill_pattern_payment_methods"),
+  }),
 
   {
     label: "active_perpetual_inventory",
@@ -4658,7 +4669,7 @@ const bill_pattern_accounts = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "stock_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -4918,7 +4929,7 @@ const category = [
 ];
 
 const category_problem = [
-  { label: "description", name: "description", type: "text", required: true },
+  { label: "problem", name: "description", type: "text", required: true },
   {
     label: "category_id",
     name: "category_id",
@@ -4934,67 +4945,42 @@ const category_problem = [
     type: "checkbox",
     key: "switch",
   },
+  { label: "minutes", name: "minutes", type: "number", required: true },
 ];
 
 // ==== End Category
-
 const evacuation_request = [
-  {
-    label: "description",
-    name: "description",
-    type: "text",
-    require: true,
-    readOnly: false,
-  },
+  { label: "description", name: "description", type: "text", readOnly: true },
   {
     label: "evacuation_date",
     name: "evacuation_date",
     type: "date",
-    require: true,
-    readOnly: false,
+    readOnly: true,
   },
   {
     label: "contract_id",
     name: "contract_id",
     type: "uuid",
-    readOnly: false,
+    readOnly: true,
     is_ref: true,
     ref_table: "contract",
     ref_col: "id",
-    require: true,
   },
   {
     label: "user_account_id",
     name: "user_account_id",
     type: "uuid",
-    readOnly: false,
+    readOnly: true,
     is_ref: true,
-    ref_table: "user_account",
+    ref_table: "account",
     ref_col: "id",
-    require: true,
   },
-  {
-    label: "approved",
-    name: "approved",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "approved_description",
-    name: "approved_description",
-    type: "text",
-  },
-  {
-    label: "rejected",
-    name: "rejected",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "reject_reason",
-    name: "reject_reason",
-    type: "text",
-  },
+  FIELDS_STRUCTURE.selectField({
+    label: "request_status",
+    name: "request_status",
+    list: SELECT_LISTS("evacuation_request_status"),
+  }),
+  { label: "note", name: "note", type: "text", required: false },
 ];
 
 // ==== Start Parking
@@ -5862,11 +5848,6 @@ export const store = [
   },
   FIELDS_STRUCTURE.name(),
   {
-    label: "last_name",
-    name: "last_name",
-    type: "text",
-  },
-  {
     label: "address",
     name: "address",
     type: "text",
@@ -5882,12 +5863,11 @@ export const store = [
     name: "parent_id",
     is_ref: true,
     ref_table: "store",
-
     no_filter: true,
   },
   {
-    label: "store_final_id",
-    name: "store_final_id",
+    label: "final_id",
+    name: "final_id",
     is_ref: true,
     ref_table: "store",
   },
@@ -6276,7 +6256,7 @@ const lawsuit_expenses = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "debit_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -6285,7 +6265,7 @@ const lawsuit_expenses = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "credit_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -6382,7 +6362,7 @@ const lawsuit_internal_expenses = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "lawyer_debit_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -6391,7 +6371,7 @@ const lawsuit_internal_expenses = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "lawyer_credit_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -6419,7 +6399,7 @@ const lawsuit_internal_expenses = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "maintenance_debit_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -6428,7 +6408,7 @@ const lawsuit_internal_expenses = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "maintenance_credit_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -6456,7 +6436,7 @@ const lawsuit_internal_expenses = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "furniture_debit_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -6465,7 +6445,7 @@ const lawsuit_internal_expenses = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "furniture_credit_account",
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -6542,18 +6522,24 @@ const service = [
     ref_col: "id",
     ref_name: "apartment_no",
   },
-  { label: "unit_type", name: "unit_type", type: "number", readOnly: false },
-  FIELDS_STRUCTURE.switchField({
-    label: "is_default",
-    name: "is_default",
+  FIELDS_STRUCTURE.selectField({
+    label: "unit_type",
+    name: "unit_type",
+    list: SELECT_LISTS("unit_type"),
   }),
+
   // FIELDS_STRUCTURE.switchField({
-  //   label: "is_paid",
-  //   name: "is_paid",
+  //   label: "is_default",
+  //   name: "is_default",
   // }),
+
   { label: "total", name: "total", type: "number", readOnly: false },
-  { label: "code", name: "code", type: "number", readOnly: false },
-  { label: "status", name: "status", type: "number", readOnly: false },
+  // { label: "code", name: "code", type: "number", readOnly: false },
+  FIELDS_STRUCTURE.selectField({
+    label: "status",
+    name: "status",
+    list: SELECT_LISTS("service_status"),
+  }),
   {
     label: "supervisor_user_id",
     name: "supervisor_user_id",
@@ -6564,6 +6550,7 @@ const service = [
     ref_col: "id",
   },
 ];
+
 const service_customer_request = [
   {
     label: "contract_id",
@@ -6591,61 +6578,70 @@ const service_customer_request = [
     ref_col: "id",
   },
   { label: "phone", name: "phone", type: "text", readOnly: false },
-
-  {
-    label: "service_id",
-    name: "service_id",
-    type: "uuid",
-    readOnly: false,
-    is_ref: true,
-    ref_table: "service",
-    ref_col: "id",
-  },
 ];
+
 const service_lack_reason = [
-  { label: "reason", name: "reason", type: "text", readOnly: false },
-  { label: "paused_date", name: "paused_date", type: "date", readOnly: false },
+  { label: "paused_date", name: "paused_date", type: "date", required: false },
   {
     label: "continue_date",
     name: "continue_date",
     type: "date",
-    readOnly: false,
+    required: false,
+  },
+
+  {
+    label: "lack_reason_id",
+    name: "lack_reason_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "lack_reason",
+    ref_col: "id",
   },
   {
-    label: "service_id",
-    name: "service_id",
+    label: "lack_reason_code",
+    name: "lack_reason_code",
+    type: "number",
+    required: false,
+  },
+  { label: "reason", name: "reason", type: "text", required: false },
+  {
+    label: "user_worker_id",
+    name: "user_worker_id",
     type: "uuid",
-    readOnly: false,
+    required: false,
     is_ref: true,
-    ref_table: "service",
+    ref_table: "user_worker",
     ref_col: "id",
   },
 ];
-const service_requested_material = [
+
+const service_material = [
+  { label: "created_at", name: "created_at", type: "date", required: false },
   {
     label: "material_id",
     name: "material_id",
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "materials",
-    ref_col: "id",
-  },
-  { label: "name", name: "name", type: "text", required: false },
-  { name: "quantity", type: "number" },
-];
-const service_received_material = [
-  {
-    label: "material_id",
-    name: "material_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "materials",
+    ref_table: "material",
     ref_col: "id",
   },
   { label: "price", name: "price", type: "number", required: false },
-  { name: "quantity", type: "number" },
+  { label: "quantity", name: "quantity", type: "number", required: false },
+  FIELDS_STRUCTURE.selectField({
+    label: "status",
+    name: "status",
+  }),
+  {
+    label: "worker_user_id",
+    name: "worker_user_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "worker_user",
+    ref_col: "id",
+  },
 ];
 
 const service_worker = [
@@ -6693,6 +6689,65 @@ const service_worker = [
   },
 ];
 
+const default_service_general = [
+  {
+    label: "title",
+    name: "service_worker.0.title",
+    type: "text",
+    readOnly: false,
+  },
+  { label: "total", name: "service.total", type: "number", readOnly: false },
+  {
+    label: "category_problem_id",
+    name: "service_worker.0.category_problem_id",
+    type: "uuid",
+    readOnly: false,
+    is_ref: true,
+    ref_table: "category_problem",
+    ref_col: "id",
+    ref_name: "description",
+  },
+  {
+    label: "description",
+    name: "service_worker.0.description",
+    type: "text",
+    readOnly: false,
+  },
+  {
+    label: "category_id",
+    name: "service_worker.0.category_id",
+    type: "uuid",
+    readOnly: false,
+    is_ref: true,
+    ref_table: "category",
+    ref_col: "id",
+  },
+
+  {
+    label: "total_minutes",
+    name: "service_worker.0.total_minutes",
+    type: "number",
+    readOnly: false,
+  },
+  FIELDS_STRUCTURE.switchField({
+    label: "display",
+    name: "service.display",
+    defaultChecked: true,
+    required: true,
+  }),
+];
+
+const lack_reason = [
+  { label: "code", name: "code", type: "number", readOnly: false },
+  { label: "reason", name: "reason", type: "text", readOnly: false },
+  {
+    label: "available",
+    name: "available",
+    type: "checkbox",
+    key: "switch",
+  },
+];
+
 const service_customer_group = {
   forms: {
     [SERVICE_STEPS.service]: {
@@ -6709,14 +6764,9 @@ const service_customer_group = {
       tab_name: "service_lack_reason",
       formType: "grid",
     },
-    [SERVICE_STEPS.service_requested_material]: {
-      fields: service_requested_material,
-      tab_name: "service_requested_material",
-      formType: "grid",
-    },
-    [SERVICE_STEPS.service_received_material]: {
-      fields: service_received_material,
-      tab_name: "service_received_material",
+    [SERVICE_STEPS.service_material]: {
+      fields: service_material,
+      tab_name: "service_material",
       formType: "grid",
     },
     [SERVICE_STEPS.service_worker]: {
@@ -6726,6 +6776,7 @@ const service_customer_group = {
     },
   },
 };
+
 const service_group = {
   forms: {
     [SERVICE_STEPS.service]: {
@@ -6737,14 +6788,9 @@ const service_group = {
       tab_name: "service_lack_reason",
       formType: "grid",
     },
-    [SERVICE_STEPS.service_requested_material]: {
-      fields: service_requested_material,
-      tab_name: "service_requested_material",
-      formType: "grid",
-    },
-    [SERVICE_STEPS.service_received_material]: {
-      fields: service_received_material,
-      tab_name: "service_received_material",
+    [SERVICE_STEPS.service_material]: {
+      fields: service_material,
+      tab_name: "service_material",
       formType: "grid",
     },
     [SERVICE_STEPS.service_worker]: {
@@ -6752,6 +6798,19 @@ const service_group = {
       tab_name: "service_worker",
       formType: "grid",
     },
+  },
+};
+
+const default_service = {
+  forms: {
+    [SERVICE_STEPS.general]: {
+      fields: default_service_general,
+      tab_name: "",
+    },
+    // [SERVICE_STEPS.service_info]: {
+    //   fields: default_service_service_worker,
+    //   tab_name: "service_worker",
+    // },
   },
 };
 
@@ -7171,8 +7230,10 @@ const FORMS = {
   ...CONTRACTS_FORM,
 
   // maintenances
-  service: service_customer_group,
+  default_service,
+  service: service_group,
   service_customer: service_customer_group,
+  lack_reason,
 
   // owner expenses
   owner_expenses,

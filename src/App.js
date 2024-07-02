@@ -9,13 +9,15 @@ import Footer from "Components/Layout/Footer";
 import getMenu from "Helpers/menu";
 import Login from "Pages/Auth/Login";
 import Cookies from "js-cookie";
+import useGlobalOptions from "Hooks/useGlobalOptions";
 
 function App() {
   const [mode, setMode] = useState("dark");
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState([]);
+  const { user } = useGlobalOptions();
 
-  const auth = Cookies.get('tenant_id')
+  const auth = Cookies.get("tenant_id");
 
   let resize = () => {
     if (window.innerWidth > 1024 && open) {
@@ -40,7 +42,7 @@ function App() {
 
   return (
     <div id="layout-wrapper" className={"flex flex-col h-screen"}>
-      {auth ? (
+      {auth || auth ? (
         <>
           <Header setOpen={setOpen} mode={mode} setMode={setMode} />
           <Menu menu={menu} />
