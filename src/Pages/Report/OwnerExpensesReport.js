@@ -7,7 +7,6 @@ import REPORTS from "Helpers/Lib/global-reports";
 import useRefTable from "Hooks/useRefTables";
 import { getReportColumns } from "Helpers/Reports";
 import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFields";
-import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
 import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
 import { ReportBetweenDateField } from "Components/ReportsComponents/ReportsFields/ReportDateField";
 import ReportUniqueField from "Components/ReportsComponents/ReportsFields/ReportUniqueField";
@@ -28,7 +27,12 @@ const OwnerExpensesReport = () => {
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
-    await REPORTS.nearToExpireContract();
+    const res = await REPORTS[name]({
+      filters: watch(),
+      columns: Object.keys(selectedColumns),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
@@ -78,12 +82,12 @@ const OwnerExpensesReport = () => {
               </div>
             </div>
             <div className="my-8 flex justify-end"></div>
+            <Button
+              onClick={() => setOpenReportResults(true)}
+              title="Show"
+              classes="my-4 flex ltr:ml-auto rtl:mr-auto"
+            />
           </form>
-          <Button
-            onClick={() => setOpenReportResults(true)}
-            title="Show"
-            classes="my-4 flex ltr:ml-auto rtl:mr-auto"
-          />
         </FormProvider>
       </BlockPaper>
       <ReportResultsWrapper

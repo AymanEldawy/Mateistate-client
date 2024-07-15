@@ -495,7 +495,7 @@ export const menuData = [
           {
             key: 3,
             name: "Default services order",
-            link: "/maintenances/3",
+            link: "/list/default_service",
           },
           {
             key: "Maintenance orders report",
@@ -550,6 +550,11 @@ export const menuData = [
         key: "store",
         name: "stores",
         link: "/list/store",
+      },
+      {
+        key: "user_work_times",
+        name: "user work times",
+        link: "/list/user_work_times",
       },
       {
         key: "lack_reason",

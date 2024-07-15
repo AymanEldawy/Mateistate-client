@@ -13,25 +13,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { ReportFilterBuildings } from "Components/ReportsComponents/ReportFilterBuildings";
 import { ReportFilterCategories } from "Components/ReportsComponents/ReportFilterCategories";
-import {
-  USER_SUPERVISOR_CODE,
-  USER_WORKER_CODE,
-} from "Helpers/GENERATE_STARTING_DATA";
-import { insertIntoUserConnect } from "Helpers/Lib/vouchers-insert";
-
-async function getUserConnect(user_id, setIds, name, searchKey) {
-  if (!user_id) return;
-  const res = await ApiActions.read(name, {
-    conditions: [{ type: "and", conditions: [["user_id", "=", user_id]] }],
-  });
-  if (res?.result) {
-    let hash = {};
-    for (const item of res?.result) {
-      hash[item?.[searchKey]] = true;
-    }
-    setIds(hash);
-  }
-}
+import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import getTableColumns from "Helpers/columns-structure";
 
 const UserForm = ({
   onClose,
@@ -69,21 +52,9 @@ const UserForm = ({
           },
         ],
       });
-      let data = res?.result?.at(0);
-      reset(data);
-
-      if (data?.card_type >= USER_SUPERVISOR_CODE) {
-        await getUserConnect(data?.id, setBuildingsIds, "worker_building", 'building_id');
-      }
-
-      if (data?.card_type === USER_WORKER_CODE) {
-        await getUserConnect(data?.id, setCategoriesIds, "worker_category", 'category_id');
-      }
+      reset(res?.result?.at(0));
     },
   });
-
-  console.log(buildingsIds, 'buildingsIds');
-  console.log(categoriesIds, 'categoriesIds');
 
   useEffect(() => {
     if (layout !== "update" && oldValues) {
@@ -106,24 +77,6 @@ const UserForm = ({
         `Successfully ${id ? "updated" : "inserted"} item in  ` + name
       );
       if (!!refetchData) refetchData();
-
-      if (watch("card_type") >= USER_SUPERVISOR_CODE) {
-        await insertIntoUserConnect({
-          ids: Object.keys(buildingsIds),
-          name: "worker_building",
-          searchKey: "building_id",
-          userId: id || res?.record?.id,
-        });
-      }
-      if (watch("card_type") > USER_SUPERVISOR_CODE) {
-        await insertIntoUserConnect({
-          ids: Object.keys(categoriesIds),
-          name: "worker_category",
-          searchKey: "category_id",
-          userId: id || res?.record?.id,
-        });
-      }
-
       if (!id) {
         await appendNewRecord(res);
       }
@@ -134,7 +87,8 @@ const UserForm = ({
     if (!!onClose) onClose();
   };
 
-  console.log(watch());
+  console.log(CACHE_LIST,'s');
+
   return (
     <FormWrapperLayout
       name={"user"}
@@ -158,18 +112,17 @@ const UserForm = ({
       />
 
       {watch("card_type") > 2 ? (
-        <ReportFilterBuildings
-          bodyClassName={"grid grid-cols-3 md:grid-cols-4 xl:grid-cols-6"}
-          buildingsIds={buildingsIds}
-          setBuildingsIds={setBuildingsIds}
+        <TableFields
+          tab="worker_building"
+          CACHE_LIST={CACHE_LIST}
+          fields={getTableColumns("worker_building")}
         />
       ) : null}
       {watch("card_type") > 3 ? (
-        <ReportFilterCategories
-          containerClassName="mt-4"
-          bodyClassName={"grid grid-cols-3 md:grid-cols-4 xl:grid-cols-6"}
-          categoriesIds={categoriesIds}
-          setCategoriesIds={setCategoriesIds}
+        <TableFields
+          tab="worker_category"
+          CACHE_LIST={CACHE_LIST}
+          fields={getTableColumns("worker_category")}
         />
       ) : null}
     </FormWrapperLayout>

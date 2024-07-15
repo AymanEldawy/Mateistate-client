@@ -1,4 +1,4 @@
-import { ApiActions } from "./Lib/api";
+import { ApiActions, baseURL } from "./Lib/api";
 import { getAccountLastNumber } from "./Lib/global-insert";
 import {
   APARTMENT_ASSET_TYPE_DEFAULT_NAME,
@@ -9,6 +9,7 @@ import {
   VILLA_ASSET_TYPE_DEFAULT_NAME,
 } from "./GENERATE_STARTING_DATA";
 import { FLAT_PROPERTY_TABS, FLAT_PROPERTY_TYPES } from "./constants";
+import axios from "axios";
 
 // export const SERVER_URL = `https://matiestate-server.vercel.app/`;
 export const SERVER_URL = `https://matiestate-server.vercel.app`;
@@ -342,4 +343,16 @@ export function getContractStatus(value) {
     default:
       return { value: "Rent", classes: `bg-blue-100 text-blue-600` };
   }
+}
+
+export async function uploadAttachment({
+  id,
+  entity_type,
+  attachment_type,
+  file,
+}) {
+  return await axios.post(
+    `${baseURL}/uploadAttachment/${entity_type}/${id}/:${attachment_type}`,
+    { file }
+  );
 }

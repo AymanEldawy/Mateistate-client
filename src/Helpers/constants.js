@@ -41,11 +41,11 @@ export const SERVICE_MENU = [
         key: "Property preparing order",
         link: "/maintenances/2",
       },
-      {
-        isForm: true,
-        key: "Default services order",
-        link: "/maintenances/3",
-      },
+      // {
+      //   isForm: true,
+      //   key: "Default services order",
+      //   link: "/maintenances/3",
+      // },
     ],
   },
 ];
@@ -324,6 +324,10 @@ export const CONTRACTS_ASSETS_TYPE = {
 
 export const SELECT_LISTS = (listName) => {
   let list = {
+    service_material_status: [
+      { id: 1, name: "Requested" },
+      { id: 2, name: "Received" },
+    ],
     bill_pattern_bill_type: [
       { id: 1, name: "Purchase" },
       { id: 2, name: "T" },
@@ -344,7 +348,9 @@ export const SELECT_LISTS = (listName) => {
     evacuation_request_status: [
       { id: 1, name: "pending" },
       { id: 2, name: "approved" },
-      { id: 3, name: "reject" },
+      { id: 3, name: "rejected" },
+      { id: 4, name: "confirmed" },
+      { id: 5, name: "canceled" },
     ],
 
     bill_connect_with: [
@@ -523,8 +529,8 @@ export const SELECT_LISTS = (listName) => {
     ],
 
     flat_property_type: [
-      { name: "Ownership", id: 0 },
-      { name: "Real Estate Management", id: 1 },
+      { name: "Ownership", id: "0" },
+      { name: "Real Estate Management", id: "1" },
     ],
 
     cheque_pattern_paper_type: [
@@ -1162,4 +1168,10 @@ export const POPUP_LINKS_NAME = {
   voucher_main_data: true,
   contract: true,
   service: true,
+};
+
+
+export const UPLOAD_TYPES = {
+  SERVICE_CUSTOMER_ATTACHMENT: "SERVICE_CUSTOMER_ATTACHMENT",
+  SERVICE_WORKER_ATTACHMENT: "SERVICE_WORKER_ATTACHMENT",
 };

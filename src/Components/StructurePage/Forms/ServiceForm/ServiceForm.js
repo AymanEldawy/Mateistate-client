@@ -1,4 +1,7 @@
-import { GET_UPDATE_DATE_BY_NUMBER } from "Helpers/Lib/global-read-update";
+import {
+  GET_UPDATE_DATE_BY_NUMBER,
+  getServiceUpdate,
+} from "Helpers/Lib/global-read-update";
 import useFormSteps from "Hooks/useFormSteps";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -49,7 +52,7 @@ const ServiceForm = ({ popupView }) => {
   const { isLoading } = useQuery({
     queryKey: [name, code, id],
     queryFn: async () => {
-      const data = await GET_UPDATE_DATE_BY_NUMBER.service(id, code);
+      const data = await getServiceUpdate(id);
       if (data?.service?.id) {
         reset(data);
       }

@@ -28,7 +28,13 @@ const ComplaintsReport = () => {
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
-    await REPORTS.nearToExpireContract();
+    const res = await REPORTS.complaints_report({
+      // buildings: Object.keys(buildingsIds),
+      filters: watch(),
+      columns: Object.keys(selectedColumns),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
@@ -75,12 +81,12 @@ const ComplaintsReport = () => {
               </div>
             </div>
             <div className="my-8 flex justify-end"></div>
+            <Button
+              onClick={() => setOpenReportResults(true)}
+              title="Show"
+              classes="my-4 flex ltr:ml-auto rtl:mr-auto"
+            />
           </form>
-          <Button
-            onClick={() => setOpenReportResults(true)}
-            title="Show"
-            classes="my-4 flex ltr:ml-auto rtl:mr-auto"
-          />
         </FormProvider>
       </BlockPaper>
       <ReportResultsWrapper

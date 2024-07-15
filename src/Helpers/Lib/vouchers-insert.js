@@ -961,3 +961,41 @@ export const deleteEntry = async (id) => {
     conditions: [{ type: "and", conditions: [["id", "=", id]] }],
   });
 };
+
+// Insert into grid
+export const insertIntoUserConnect = async ({
+  ids,
+  userId,
+  name,
+  searchKey,
+}) => {
+  const prevGrid = await ApiActions.read(name, {
+    conditions: [
+      {
+        type: "and",
+        conditions: [["user_id", "=", userId]],
+      },
+    ],
+  });
+
+  let length = Math.max(ids?.length, prevGrid?.result?.length || 0);
+  console.log("🚀 ~ length:", length)
+
+  for (let i = 0; i < length; i++) {
+    let prevItem = prevGrid?.result?.[i];
+    console.log("🚀 ~ prevItem:", prevItem)
+    let id = ids?.[i];
+    console.log("🚀 ~ id:", id)
+    if (id === prevItem?.[searchKey]) continue;
+
+    if (id) {
+      await ApiActions.insert(name, {
+        data: { [searchKey]: id, user_id: userId },
+      });
+    } else {
+      await ApiActions.remove(name, {
+        conditions: [{ type: "and", conditions: [["id", "=", prevItem?.id]] }],
+      });
+    }
+  }
+};

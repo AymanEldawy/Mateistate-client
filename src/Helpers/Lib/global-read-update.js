@@ -6,7 +6,6 @@ export const fetchData = async (table, col, id) => {
   });
 };
 
-
 export const getApartmentUpdate = async (id) => {
   const apartment = await fetchData("apartment", "id", id);
   const apartment_pictures = await fetchData(
@@ -485,12 +484,40 @@ export async function getServiceUpdate(id) {
   return groupData;
 }
 
-export async function getServiceByNumber(number, code) {
+export async function getMaterialUpdate(id) {
+  const promises = [
+    fetchData("material", "id", id),
+    fetchData("material_balance", "material_id", id),
+    fetchData("material_minimum", "material_id", id),
+    fetchData("material_prices", "material_id", id),
+    fetchData("material_prices_details", "material_id", id),
+    fetchData("material_specifications", "material_id", id),
+  ];
+
+  const [
+    material,
+    material_balance,
+    material_minimum,
+    material_prices,
+    material_prices_details,
+    material_specifications,
+  ] = await Promise.all(promises);
+
+  const groupData = {
+    material: material?.result?.at(0),
+    material_balance: material_balance?.result,
+    material_minimum: material_minimum?.result,
+    material_prices: material_prices?.result?.at(0),
+    material_prices_details: material_prices_details?.result,
+    material_specifications: material_specifications?.result,
+  };
+
+  return groupData;
+}
+
+export async function getServiceById(id) {
   const response = await ApiActions.read("service", {
-    conditions: [
-      { type: "and", conditions: [["number", "=", number]] },
-      { type: "and", conditions: [["code", "=", code]] },
-    ],
+    conditions: [{ type: "and", conditions: [["id", "=", id]] }],
   });
   let serviceId = response?.result?.at(0)?.id;
   if (response?.success && serviceId) {
@@ -500,5 +527,6 @@ export async function getServiceByNumber(number, code) {
 
 export const GET_UPDATE_DATE_BY_NUMBER = {
   lawsuit: getLawsuitByNumber,
-  service: getServiceByNumber,
+  material: getMaterialUpdate,
+  // service: getServiceByNumber,
 };

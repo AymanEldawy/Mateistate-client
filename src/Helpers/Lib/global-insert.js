@@ -42,9 +42,17 @@ const CONTRACT_GRID_FORMS_NAMES = {
     table: "contract_linked_parking",
     conditions: ["main_contract_id", "building_id", "account_id"],
   },
+  service_material: {
+    table: "service_material",
+    conditions: ["status"],
+  },
   service_worker: {
     table: "service_worker",
     conditions: ["category_problem_id"],
+  },
+  service_lack_reason: {
+    table: "service_lack_reason",
+    conditions: ["lack_reason_id"],
   },
   contract_receipt_number: {
     table: "contract_receipt_number",
@@ -81,11 +89,14 @@ export const dynamicInsertIntoMultiStepsTable = async ({
   data,
   ...additionalParams
 }) => {
+  console.log("🚀 ~ tableName:", tableName)
   const SHOULD_UPDATES = data?.SHOULD_UPDATES;
 
-  let steps = Object.values(getFormByTableName(tableName)?.forms)?.map(
-    (c) => c?.tab_name
-  );
+  let steps = Object.values(
+    getFormByTableName(
+      tableName === "service" ? "service_customer" : tableName
+    )?.forms
+  )?.map((c) => c?.tab_name);
 
   let stepGeneralName = steps?.at(0);
 
@@ -680,7 +691,6 @@ const insertIntoGridTabs = async ({
     let prevItem = prevGrid?.result?.[i];
     let isValid = true;
 
-
     if (JSON.stringify(item) === JSON.stringify(prevItem)) continue;
 
     for (const condition of conditions) {
@@ -1022,8 +1032,7 @@ const insertToUser = async (data) => {
     });
 
     return res;
-  } // if is UPDATE ignore
-
+  }
   let type = SELECT_LISTS("user_type")?.find(
     (c) => c.id === +data?.card_type
   )?.name;

@@ -2,7 +2,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -11,7 +10,6 @@ import { SortIcon } from "Components/Icons";
 import { useTranslation } from "react-i18next";
 import { TableSkeleton } from "../StructurePage/CustomTable/TableSkeleton";
 import { ResizeBar } from "Components/DynamicTable/TableResizeBar";
-import { TablePagination } from "Components/DynamicTable/TablePagination";
 let columnBeingDragged;
 
 export const ReportResultsTable = ({ data, columns, loading }) => {
@@ -27,7 +25,6 @@ export const ReportResultsTable = ({ data, columns, loading }) => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     enableRowSelection: true,
@@ -162,8 +159,6 @@ export const ReportResultsTable = ({ data, columns, loading }) => {
           </tbody>
         </table>
       </div>
-
-      <TablePagination table={table} />
     </>
   );
 };

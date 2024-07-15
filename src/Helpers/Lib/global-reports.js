@@ -37,8 +37,20 @@ export const earning_rental_income_earned_report = async (params) => {
 export const complaints_report = async (params) => {
   return await axios.post(`${baseURL}/reports/complaints-report`, params);
 };
+export const worker_report = async (params) => {
+  return await axios.post(`${baseURL}/reports/worker-report`, params);
+};
+export const warehouse_report = async (params) => {
+  return await axios.post(`${baseURL}/reports/warehouse-report`, params);
+};
+export const owner_expenses_report = async (params) => {
+  return await axios.post(`${baseURL}/reports/owner-expenses-report`, params);
+};
 
 const REPORTS = {
+  owner_expenses_report,
+  warehouse_report,
+  worker_report,
   complaints_report,
   earning_rental_income_earned_report,
   leasedUnitsReport,

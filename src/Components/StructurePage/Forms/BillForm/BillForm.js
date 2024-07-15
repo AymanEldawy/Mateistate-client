@@ -212,7 +212,7 @@ const BillForm = ({
           />
           <Input
             {...fields?.class}
-            updatedName="bill.class"
+            updatedName="bill.kind"
             tab="bill"
             error={errors?.class ? "Field is required" : ""}
           />

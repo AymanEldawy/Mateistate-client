@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { MaterialFormStepOne } from "./MaterialFormStepOne";
+import { GET_UPDATE_DATE_BY_NUMBER } from "Helpers/Lib/global-read-update";
 
 const MaterialForm = ({ popupView }) => {
   const name = "material";
@@ -40,35 +41,25 @@ const MaterialForm = ({ popupView }) => {
   const { isLoading } = useQuery({
     queryKey: [name, materialId],
     queryFn: async () => {
-      const res = await ApiActions.read(name, {
-        conditions: [
-          {
-            type: "and",
-            conditions: [["id", "=", materialId]],
-          },
-        ],
-      });
-
-      if (res?.success) {
-        reset(res?.result?.at(0));
-      }
+      const data = await GET_UPDATE_DATE_BY_NUMBER.material(materialId);
+      reset(data);
     },
   });
-
+  
   const onDelete = async () => {
     let data = watch(name);
     const response = await ApiActions.remove(name, {
       conditions: [{ type: "and", conditions: [["id", "=", materialId]] }],
     });
   };
+  console.log(watch());
 
   const onSubmit = async (value) => {
     if (!isDirty) return;
-
+    
     const getTheFunInsert = INSERT_FUNCTION?.material;
     const res = await getTheFunInsert(value);
 
-    
     if (res?.success) {
       toast.success("Successfully added item in material");
     } else {

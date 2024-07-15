@@ -4,10 +4,10 @@ const { ApiActions } = require("./Lib/api");
 export const TENANT_ID = "051d7650-694b-423c-85d1-3871ce861830";
 
 export const USERS = [
-  "5c15418f-a0fa-4ef9-a4eb-c67539a2972f",
-  "54fec2d2-6ed6-489a-94e6-db30cee77523",
-  "18fb3175-8a14-483b-9ba6-51603c3d586c",
-  "2c453d1f-9aec-4da3-a7af-82a2bf02993e",
+  "3bee9d02-6461-44c9-9e8a-ca5aa2354a1b",
+  "88231589-38b3-4ab4-b330-8d413effbc84",
+  "a08dff95-2810-412c-9c2d-66abe7523bea",
+  "9ff8c8b9-7901-4bf4-b2e0-a8d018912732",
   // "5a5a5a00-b3d2-4c50-9e1b-6b22f2c34b54", //local
   // "5f9e29d5-2f74-49c5-83b6-81494ce14401", //local
   // "2a212bea-87b8-4e83-83b7-8a63aac1721c", //local
@@ -49,7 +49,7 @@ export const CONNECT_WITH_LAWSUIT_NAME = "Lawsuit";
 export const CONNECT_WITH_BILL_NAME = "Bill";
 
 export const BILL_CONNECT_WITH_MAINTENANCES_CODE = 1;
-export const BILL_CONNECT_WITH_MAINTENANCES_NAME = 'Service';
+export const BILL_CONNECT_WITH_MAINTENANCES_NAME = "Service";
 
 // Created From DEFAULT
 export const CREATED_FROM_CONTRACT_CODE = 1;
@@ -917,4 +917,152 @@ export async function insertIntoNotification() {
   }
 }
 
+// Generate 50 notification objects
+export async function insertIntoDefaultService() {
+  let CATEGORIES = [];
+
+  const res = await ApiActions.read("category");
+
+  for (const item of res?.result) {
+    CATEGORIES?.push(item?.id);
+  }
+
+  if (!CATEGORIES?.length) return;
+
+  for (let i = 0; i < 150; i++) {
+    await ApiActions.insert("default_service", {
+      data: {
+        name: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+
+        description: randomString(
+          Math.floor(Math.random() * (100 - 50 + 1)) + 50
+        ),
+        category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
+        picture: `https://example.com/${randomString(
+          Math.floor(Math.random() * (10 - 5 + 1)) + 5
+        )}`,
+        price: Math.floor(Math.random() * 400),
+        display: true,
+        available: true,
+        service_type: 0,
+      },
+    });
+  }
+}
+
+// Generate 50 notification objects
+export async function insertIntoProblems() {
+  let CATEGORIES = [];
+
+  const res = await ApiActions.read("category");
+
+  for (const item of res?.result) {
+    CATEGORIES?.push(item?.id);
+  }
+
+  if (!CATEGORIES?.length) return;
+
+  for (let i = 0; i < 150; i++) {
+    await ApiActions.insert("category_problem", {
+      data: {
+        description: randomString(
+          Math.floor(Math.random() * (100 - 50 + 1)) + 50
+        ),
+        category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
+        minutes: Math.floor(Math.random() * 400),
+        is_available: true,
+      },
+    });
+  }
+}
+
 // insertIntoNotification();
+
+const workers = [
+  {
+    card_type: 4,
+    category_id: "59dd0ab6-5f81-4e12-ad9a-4bd5033af459",
+    name: "worker 2",
+    phone: "+971400400100",
+  },
+  {
+    card_type: 4,
+    category_id: "59dd0ab6-5f81-4e12-ad9a-4bd5033af459",
+    name: "worker 3",
+    phone: "+971400400200",
+  },
+  {
+    card_type: 4,
+    category_id: "59dd0ab6-5f81-4e12-ad9a-4bd5033af459",
+    name: "worker 4",
+    phone: "+971400400300",
+  },
+];
+
+// insert times
+export async function insertTimes() {
+  let CATEGORIES = [];
+  let WORKERS = [];
+  let SUPERVISORS = [];
+
+  const categoryRes = await ApiActions.read("category");
+  const workerRes = await ApiActions.read("user", {
+    conditions: [
+      { type: "and", conditions: [["card_type", "=", USER_WORKER_CODE]] },
+    ],
+  });
+  const supervisorRes = await ApiActions.read("user", {
+    conditions: [
+      { type: "and", conditions: [["card_type", "=", USER_SUPERVISOR_CODE]] },
+    ],
+  });
+
+  let date = new Date(); //
+  date.setHours(9, 0, 0, 0); 
+  for (let i = 0; i < 30; i++) {
+    let startDate = new Date(date); 
+    let endDate = new Date(date); 
+    
+    startDate.setDate(startDate.getDate() + i);
+    endDate.setDate(endDate.getDate() + i);
+
+    
+    startDate.setHours(9, 0, 0, 0); 
+    endDate.setHours(17, 0, 0, 0); 
+    for (const cate of categoryRes?.result) {
+      for (const worker of workerRes?.result) {
+        insertWorkDay({
+          user_id: worker.id,
+          category_id: cate.id,
+          work_time_start: startDate,
+          work_time_end: endDate,
+        });
+      }
+      for (const supervisor of supervisorRes?.result) {
+        insertWorkDay({
+          user_id: supervisor.id,
+          category_id: cate.id,
+          work_time_start: startDate,
+          work_time_end: endDate,
+        });
+      }
+    }
+
+    // await ApiActions.insert("category_problem", {
+    //   data: {
+    //     description: randomString(
+    //       Math.floor(Math.random() * (100 - 50 + 1)) + 50
+    //     ),
+    //     category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
+    //     minutes: Math.floor(Math.random() * 400),
+    //     is_available: true,
+    //   },
+    // });
+  }
+}
+
+async function insertWorkDay(data) {
+  await ApiActions.insert("user_work_times", {
+    data,
+  });
+}

@@ -22,18 +22,25 @@ const WarehouseReport = () => {
   const { CACHE_LIST } = useRefTable(name, "");
   const [selectedColumns, setSelectedColumns] = useState({});
   const [openReportResults, setOpenReportResults] = useState(false);
-  const [buildingsIds, setBuildingsIds] = useState({});
-  const [contractIds, setContractIds] = useState({});
   const [data, setData] = useState([]);
 
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
-    await REPORTS.nearToExpireContract();
+    const res = await REPORTS[name]({
+      filters: watch(),
+      columns: Object.keys(selectedColumns),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
-  console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
+  console.log({
+    filters: watch(),
+    col: columns,
+    columns: Object.keys(selectedColumns),
+  });
 
   return (
     <>
@@ -66,12 +73,12 @@ const WarehouseReport = () => {
               </div>
             </div>
             <div className="my-8 flex justify-end"></div>
+            <Button
+              onClick={() => setOpenReportResults(true)}
+              title="Show"
+              classes="my-4 flex ltr:ml-auto rtl:mr-auto"
+            />
           </form>
-          <Button
-            onClick={() => setOpenReportResults(true)}
-            title="Show"
-            classes="my-4 flex ltr:ml-auto rtl:mr-auto"
-          />
         </FormProvider>
       </BlockPaper>
       <ReportResultsWrapper

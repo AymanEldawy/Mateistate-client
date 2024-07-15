@@ -163,7 +163,8 @@ const land = [
   {
     label: "used_end_date",
     name: "used_end_date",
-    type: "date",
+    type: "checkbox",
+    key: "switch",
   },
   {
     label: "customer_owner_id",
@@ -585,6 +586,16 @@ const seller = [
 ];
 
 const user_general = [
+  FIELDS_STRUCTURE.uniqueField({
+    name: "building_id",
+    hide_in_form: true,
+    ref_table: "building",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    name: "category_id",
+    hide_in_form: true,
+    ref_table: "category",
+  }),
   FIELDS_STRUCTURE.id(),
   {
     label: "number",
@@ -613,11 +624,9 @@ const user_general = [
   {
     label: "account_id",
     name: "account_id",
-
     required: true,
     is_ref: true,
     ref_table: "account",
-
     hide_in_form: true,
   },
   {
@@ -638,7 +647,7 @@ const user_general = [
   {
     label: "national_id",
     name: "national_id",
-    type: "number",
+    type: "text",
   },
   {
     label: "national_id_expiry",
@@ -682,6 +691,11 @@ const user_general = [
     required: true,
   },
   {
+    label: "token",
+    name: "token",
+    type: "text",
+  },
+  {
     label: "fax",
     name: "fax",
     type: "text",
@@ -718,6 +732,12 @@ const user_general = [
     is_ref: true,
     ref_table: "account",
   },
+  // {
+  //   label: "category_id",
+  //   name: "category_id",
+  //   is_ref: true,
+  //   ref_table: "category",
+  // },
   {
     label: "bank_id",
     name: "bank_id",
@@ -1445,7 +1465,7 @@ const apartment = [
   {
     label: "floor_no",
     name: "floor_no",
-    type: "number",
+    type: "text",
   },
   {
     label: "apartment_kind",
@@ -1481,8 +1501,8 @@ const apartment = [
     type: "text",
   },
   {
-    label: "class",
-    name: "class",
+    label: "kind",
+    name: "kind",
     type: "text",
   },
   {
@@ -1523,12 +1543,12 @@ const apartment = [
   {
     label: "water_meter",
     name: "water_meter",
-    type: "number",
+    type: "text",
   },
   {
     label: "electricity_meter",
     name: "electricity_meter",
-    type: "number",
+    type: "text",
   },
   {
     label: "statement",
@@ -2232,7 +2252,7 @@ const cheque_grid = [
   {
     label: "chq_number",
     name: "internal_number",
-    type: "number",
+    type: "text",
   },
   {
     label: "amount",
@@ -3941,175 +3961,196 @@ const assets_shipping = [
 
 // ==== End Assets
 
-// ==== Start maintenance_order
-const maintenance_order = [
-  FIELDS_STRUCTURE.id(),
-  FIELDS_STRUCTURE.created_at(),
-  {
-    label: "number",
-    name: "number",
-    type: "text",
+// // ==== Start maintenance_order
+// const maintenance_order = [
+//   FIELDS_STRUCTURE.id(),
+//   FIELDS_STRUCTURE.created_at(),
+//   {
+//     label: "number",
+//     name: "number",
+//     type: "text",
 
-    hide_in_form: true,
-  },
-  {
-    label: "type",
-    name: "type",
-    type: "number",
-  },
-  {
-    label: "maintenance_order_no",
-    name: "maintenance_order_no",
-    type: "text",
-  },
-  {
-    label: "complaint_id",
-    name: "complaint_id",
-    is_ref: true,
-    ref_table: "complaint", // unknown table
-  },
-  {
-    label: "maintenance_worker_id",
-    name: "maintenance_worker_id",
-    is_ref: true,
-    ref_table: "maintenance_worker", // unknown table
-  },
-  {
-    label: "work_kind",
-    name: "work_kind",
-    type: "text",
-  },
-  {
-    label: "start_date",
-    name: "start_date",
-    type: "date",
-  },
-  {
-    label: "end_expected_date",
-    name: "end_expected_date",
-    type: "date",
-  },
-  {
-    label: "close_date",
-    name: "close_date",
-    type: "date",
-  },
-  {
-    label: "order_state",
-    name: "order_state",
-    type: "text",
-  },
-  {
-    label: "reason_not_realized",
-    name: "reason_not_realized",
-    type: "text",
-  },
-  {
-    label: "convert_to",
-    name: "convert_to",
-    type: "text",
-  },
-  {
-    label: "convert_note",
-    name: "convert_note",
-    type: "text",
-  },
-  {
-    label: "realized",
-    name: "realized",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "mat",
-    name: "mat",
-    type: "text",
-  },
-  {
-    label: "reason",
-    name: "reason",
-    type: "text",
-  },
-  {
-    label: "repetition",
-    name: "repetition",
-    type: "number",
-  },
-  {
-    label: "delay",
-    name: "delay",
-    type: "number",
-  },
-  {
-    label: "delay_reason",
-    name: "delay_reason",
-    type: "text",
-  },
-  {
-    label: "create_entry",
-    name: "create_entry",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "entry_date",
-    name: "entry_date",
-    type: "date",
-  },
-  {
-    label: "entry_value",
-    name: "entry_value",
-    type: "number",
-  },
-  {
-    label: "entry_currency_id",
-    name: "entry_currency_id",
-    is_ref: true,
-    ref_table: "currency",
-    ref_name: "code",
-  },
-  {
-    label: "entry_currency_val",
-    name: "entry_currency_val",
-    type: "number",
-  },
-  {
-    label: "debit_account_id",
-    name: "debit_account_id",
-    is_ref: true,
-    ref_table: "account",
-  },
-  {
-    label: "credit_account_id",
-    name: "credit_account_id",
-    is_ref: true,
-    ref_table: "account",
-  },
-  {
-    label: "debit_cost_center_id",
-    name: "debit_cost_center_id",
-    is_ref: true,
-    ref_table: "cost_center",
-  },
-  {
-    label: "credit_cost_center_id",
-    name: "credit_cost_center_id",
-    is_ref: true,
-    ref_table: "cost_center",
-  },
-  {
-    label: "entry_note",
-    name: "entry_note",
-    type: "text",
-  },
-  {
-    label: "note2",
-    name: "note2",
-    type: "text",
-  },
-];
+//     hide_in_form: true,
+//   },
+//   {
+//     label: "type",
+//     name: "type",
+//     type: "number",
+//   },
+//   {
+//     label: "maintenance_order_no",
+//     name: "maintenance_order_no",
+//     type: "text",
+//   },
+//   {
+//     label: "complaint_id",
+//     name: "complaint_id",
+//     is_ref: true,
+//     ref_table: "complaint", // unknown table
+//   },
+//   {
+//     label: "maintenance_worker_id",
+//     name: "maintenance_worker_id",
+//     is_ref: true,
+//     ref_table: "maintenance_worker", // unknown table
+//   },
+//   {
+//     label: "work_kind",
+//     name: "work_kind",
+//     type: "text",
+//   },
+//   {
+//     label: "start_date",
+//     name: "start_date",
+//     type: "date",
+//   },
+//   {
+//     label: "end_expected_date",
+//     name: "end_expected_date",
+//     type: "date",
+//   },
+//   {
+//     label: "close_date",
+//     name: "close_date",
+//     type: "date",
+//   },
+//   {
+//     label: "order_state",
+//     name: "order_state",
+//     type: "text",
+//   },
+//   {
+//     label: "reason_not_realized",
+//     name: "reason_not_realized",
+//     type: "text",
+//   },
+//   {
+//     label: "convert_to",
+//     name: "convert_to",
+//     type: "text",
+//   },
+//   {
+//     label: "convert_note",
+//     name: "convert_note",
+//     type: "text",
+//   },
+//   {
+//     label: "realized",
+//     name: "realized",
+//     type: "checkbox",
+//     key: "switch",
+//   },
+//   {
+//     label: "mat",
+//     name: "mat",
+//     type: "text",
+//   },
+//   {
+//     label: "reason",
+//     name: "reason",
+//     type: "text",
+//   },
+//   {
+//     label: "repetition",
+//     name: "repetition",
+//     type: "number",
+//   },
+//   {
+//     label: "delay",
+//     name: "delay",
+//     type: "number",
+//   },
+//   {
+//     label: "delay_reason",
+//     name: "delay_reason",
+//     type: "text",
+//   },
+//   {
+//     label: "create_entry",
+//     name: "create_entry",
+//     type: "checkbox",
+//     key: "switch",
+//   },
+//   {
+//     label: "entry_date",
+//     name: "entry_date",
+//     type: "date",
+//   },
+//   {
+//     label: "entry_value",
+//     name: "entry_value",
+//     type: "number",
+//   },
+//   {
+//     label: "entry_currency_id",
+//     name: "entry_currency_id",
+//     is_ref: true,
+//     ref_table: "currency",
+//     ref_name: "code",
+//   },
+//   {
+//     label: "entry_currency_val",
+//     name: "entry_currency_val",
+//     type: "number",
+//   },
+//   {
+//     label: "debit_account_id",
+//     name: "debit_account_id",
+//     is_ref: true,
+//     ref_table: "account",
+//   },
+//   {
+//     label: "credit_account_id",
+//     name: "credit_account_id",
+//     is_ref: true,
+//     ref_table: "account",
+//   },
+//   {
+//     label: "debit_cost_center_id",
+//     name: "debit_cost_center_id",
+//     is_ref: true,
+//     ref_table: "cost_center",
+//   },
+//   {
+//     label: "credit_cost_center_id",
+//     name: "credit_cost_center_id",
+//     is_ref: true,
+//     ref_table: "cost_center",
+//   },
+//   {
+//     label: "entry_note",
+//     name: "entry_note",
+//     type: "text",
+//   },
+//   {
+//     label: "note2",
+//     name: "note2",
+//     type: "text",
+//   },
+// ];
 
 // ==== End maintenance_order
+
+const user_work_times = [
+  {
+    label:"user_id", name: "user_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "user",
+    ref_col: "id",
+  },
+  {
+    label:"category_id", name: "category_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "category",
+    ref_col: "id",
+  },
+  { label:"work_time_start", name: "work_time_start", type: "date", required: true },
+  { label:"work_time_end", name: "work_time_end", type: "date", required: true },
+];
 
 // ==== Start material
 const material_group = [
@@ -4392,7 +4433,7 @@ const bill = [
     ref_table: "account",
     ref_col: "id",
   },
-  { label: "class", name: "class", type: "text", required: false },
+  { label: "kind", name: "kind", type: "text", required: false },
   {
     label: "total_quantities",
     name: "total_quantities",
@@ -4641,7 +4682,7 @@ const bill_pattern_accounts = [
     is_ref: true,
     ref_table: "currency",
     ref_col: "id",
-    hideValue: true
+    hideValue: true,
   },
   {
     label: "use_vat_account_from_customer_card",
@@ -5002,7 +5043,7 @@ const parking = [
   {
     label: "floor_no",
     name: "floor_no",
-    type: "number",
+    type: "text",
   },
   {
     label: "area",
@@ -5198,7 +5239,7 @@ const shop = [
   {
     label: "floor_no",
     name: "floor_no",
-    type: "number",
+    type: "text",
   },
   {
     label: "shop_no",
@@ -5235,8 +5276,8 @@ const shop = [
     name: "main_cost_center_id",
   }),
   {
-    label: "class",
-    name: "class",
+    label: "kind",
+    name: "kind",
     type: "text",
   },
   {
@@ -5317,12 +5358,12 @@ const shop = [
   {
     label: "water_meter",
     name: "water_meter",
-    type: "number",
+    type: "text",
   },
   {
     label: "electricity_meter",
     name: "electricity_meter",
-    type: "number",
+    type: "text",
   },
   {
     label: "bond_type",
@@ -5694,7 +5735,7 @@ const villa_interior_details = [
   {
     label: "floor_count",
     name: "floor_count",
-    type: "number",
+    type: "text",
   },
   {
     label: "balcony_count",
@@ -6562,6 +6603,7 @@ const service_customer_request = [
     ref_col: "id",
     ref_name: "internal_number",
   },
+  { label: "description", name: "description", type: "text", readOnly: false },
   {
     label: "payment_method",
     name: "payment_method",
@@ -6577,7 +6619,6 @@ const service_customer_request = [
     ref_table: "user",
     ref_col: "id",
   },
-  { label: "phone", name: "phone", type: "text", readOnly: false },
 ];
 
 const service_lack_reason = [
@@ -6597,6 +6638,7 @@ const service_lack_reason = [
     is_ref: true,
     ref_table: "lack_reason",
     ref_col: "id",
+    ref_name: "reason",
   },
   {
     label: "lack_reason_code",
@@ -6604,14 +6646,13 @@ const service_lack_reason = [
     type: "number",
     required: false,
   },
-  { label: "reason", name: "reason", type: "text", required: false },
   {
     label: "user_worker_id",
     name: "user_worker_id",
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "user_worker",
+    ref_table: UNIQUE_REF_TABLES.employee,
     ref_col: "id",
   },
 ];
@@ -6627,11 +6668,13 @@ const service_material = [
     ref_table: "material",
     ref_col: "id",
   },
+  { label: "name", name: "name", type: "text", required: false },
   { label: "price", name: "price", type: "number", required: false },
   { label: "quantity", name: "quantity", type: "number", required: false },
   FIELDS_STRUCTURE.selectField({
     label: "status",
     name: "status",
+    list: SELECT_LISTS("service_material_status"),
   }),
   {
     label: "worker_user_id",
@@ -6639,13 +6682,12 @@ const service_material = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "worker_user",
+    ref_table: UNIQUE_REF_TABLES.employee,
     ref_col: "id",
   },
 ];
 
 const service_worker = [
-  { label: "title", name: "title", type: "text", readOnly: false },
   { label: "description", name: "description", type: "text", readOnly: false },
   {
     label: "category_id",
@@ -6687,54 +6729,24 @@ const service_worker = [
     type: "number",
     readOnly: false,
   },
-];
-
-const default_service_general = [
   {
-    label: "title",
-    name: "service_worker.0.title",
-    type: "text",
-    readOnly: false,
-  },
-  { label: "total", name: "service.total", type: "number", readOnly: false },
-  {
-    label: "category_problem_id",
-    name: "service_worker.0.category_problem_id",
-    type: "uuid",
-    readOnly: false,
-    is_ref: true,
-    ref_table: "category_problem",
-    ref_col: "id",
-    ref_name: "description",
-  },
-  {
-    label: "description",
-    name: "service_worker.0.description",
-    type: "text",
+    label: "booking_start_date",
+    name: "booking_start_date",
+    type: "date",
     readOnly: false,
   },
   {
-    label: "category_id",
-    name: "service_worker.0.category_id",
-    type: "uuid",
+    label: "booking_end_date",
+    name: "booking_end_date",
+    type: "date",
     readOnly: false,
-    is_ref: true,
-    ref_table: "category",
-    ref_col: "id",
   },
-
   {
-    label: "total_minutes",
-    name: "service_worker.0.total_minutes",
-    type: "number",
+    label: "booking_completed_date",
+    name: "booking_completed_date",
+    type: "date",
     readOnly: false,
   },
-  FIELDS_STRUCTURE.switchField({
-    label: "display",
-    name: "service.display",
-    defaultChecked: true,
-    required: true,
-  }),
 ];
 
 const lack_reason = [
@@ -6801,20 +6813,46 @@ const service_group = {
   },
 };
 
-const default_service = {
-  forms: {
-    [SERVICE_STEPS.general]: {
-      fields: default_service_general,
-      tab_name: "",
-    },
-    // [SERVICE_STEPS.service_info]: {
-    //   fields: default_service_service_worker,
-    //   tab_name: "service_worker",
-    // },
+const default_service = [
+  { label: "name", name: "name", type: "text", required: true },
+  { label: "description", name: "description", type: "text", required: true },
+  {
+    label: "category_id",
+    name: "category_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "category",
+    ref_col: "id",
   },
-};
+  FIELDS_STRUCTURE.selectField({
+    label: "service_type",
+    name: "service_type",
+    list: [
+      { id: 0, name: "All" },
+      { id: 1, name: "Flats" },
+      { id: 2, name: "Parking" },
+      { id: 3, name: "Land" },
+    ],
+  }),
+  { label: "price", name: "price", type: "number", required: true },
+  {
+    label: "available",
+    name: "available",
+    type: "checkbox",
+    key: "switch",
+    required: true,
+  },
+  {
+    label: "display",
+    name: "display",
+    type: "checkbox",
+    key: "switch",
+    required: true,
+  },
+  { label: "picture", name: "picture", key: "image", required: false },
+];
 
-// Lawsuit end
 const lawsuit_group = {
   forms: {
     [LAWSUIT_STEPS.lawsuit]: {
@@ -6881,8 +6919,8 @@ const building_group = {
 // land
 const land_group = {
   forms: {
-    [USER_STEPS.user_general]: {
-      fields: user_general,
+    [USER_STEPS.land_general]: {
+      fields: land,
       tab_name: "land",
     },
     [LAND_STEPS.land_accumulate]: {
@@ -7194,7 +7232,7 @@ const FORMS = {
   parking: parking_group,
   shop: shop_group,
   villa: villa_group,
-  maintenance_order,
+  // maintenance_order,
   // Entries
   // accounting_voucher_grid_data,
   // accounting_voucher_main_data,
@@ -7234,6 +7272,7 @@ const FORMS = {
   service: service_group,
   service_customer: service_customer_group,
   lack_reason,
+  user_work_times,
 
   // owner expenses
   owner_expenses,

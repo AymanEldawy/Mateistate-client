@@ -1280,8 +1280,8 @@ const vat_bills_report = [
     ],
   }),
   FIELDS_STRUCTURE.textField({
-    label: "class",
-    name: "class",
+    label: "kind",
+    name: "kind",
   }),
   FIELDS_STRUCTURE.switchField({
     label: "show_details",

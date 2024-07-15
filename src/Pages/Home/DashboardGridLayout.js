@@ -1,4 +1,4 @@
-import { INSERT_DEFAULT_CATEGORY, INSERT_DEFAULT_DATA, INSERT_DEFAULT_LACK_REASONS, insertIntoNotification } from "Helpers/GENERATE_STARTING_DATA";
+import { INSERT_DEFAULT_CATEGORY, INSERT_DEFAULT_DATA, INSERT_DEFAULT_LACK_REASONS, insertIntoDefaultService, insertIntoNotification, insertIntoProblems, insertTimes } from "Helpers/GENERATE_STARTING_DATA";
 import { ReportCount } from "./ReportCount";
 import { ReportLatest } from "./ReportLatest";
 
@@ -6,8 +6,12 @@ export const DashboardGridLayout = () => {
 
   const loadData  = async () => {
     // await insertIntoNotification()
+    // await INSERT_DEFAULT_DATA()
     // await INSERT_DEFAULT_LACK_REASONS()
-    await INSERT_DEFAULT_CATEGORY()
+    // await INSERT_DEFAULT_CATEGORY();
+    // await insertIntoDefaultService();
+    // await insertIntoProblems();
+    await insertTimes();
   }
 
   return (

@@ -49,6 +49,92 @@ const cheque_pattern = [
   { header: "default_print_folder", accessorKey: "default_print_folder" },
 ];
 
+const default_service = [
+  {
+    size: 40,
+    header: "no",
+    accessorKey: "number",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          to={`/cheques/2/Received Check/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          # {getValue()}
+        </Link>
+      );
+    },
+  },
+
+  { header: "number", accessorKey: "number" },
+  { header: "name", accessorKey: "name" },
+  { header: "description", accessorKey: "description" },
+  { header: "category_id", accessorKey: "category_id" },
+  { header: "service_type", accessorKey: "service_type" },
+  { header: "All", accessorKey: "All" },
+  { header: "Flats", accessorKey: "Flats" },
+  { header: "Parking", accessorKey: "Parking" },
+  { header: "Land", accessorKey: "Land" },
+  { header: "price", accessorKey: "price" },
+  { header: "available", accessorKey: "available" },
+  { header: "display", accessorKey: "display" },
+  { header: "picture", accessorKey: "picture" },
+];
+const cheque = [
+  {
+    size: 40,
+    header: "no",
+    accessorKey: "number",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          to={`/cheques/2/Received Check/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          # {getValue()}
+        </Link>
+      );
+    },
+  },
+
+  { header: "number", accessorKey: "number" },
+  { header: "internal_number", accessorKey: "internal_number" },
+  { header: "account", accessorKey: "account" },
+  { header: "cost_center", accessorKey: "cost_center" },
+  { header: "note", accessorKey: "note" },
+  { header: "connect_with", accessorKey: "connect_with" },
+  { header: "type", accessorKey: "type" },
+  { header: "amount", accessorKey: "amount" },
+  { header: "currency_id", accessorKey: "currency_id" },
+  { header: "code", accessorKey: "code" },
+  { header: "feedback", accessorKey: "feedback" },
+  { header: "currency_val", accessorKey: "currency_val" },
+  { header: "seller_id", accessorKey: "seller_id" },
+  { header: "observe_account_id", accessorKey: "observe_account_id" },
+  { header: "observe_cost_center_id", accessorKey: "observe_cost_center_id" },
+  { header: "observe_account_note", accessorKey: "observe_account_note" },
+  { header: "beneficiary_name", accessorKey: "beneficiary_name" },
+  { header: "parking_id", accessorKey: "parking_id" },
+  { header: "shop_id", accessorKey: "shop_id" },
+  { header: "shop_no", accessorKey: "shop_no" },
+  { header: "apartment_id", accessorKey: "apartment_id" },
+  { header: "apartment_no", accessorKey: "apartment_no" },
+  { header: "due_date", accessorKey: "due_date" },
+  { header: "end_due_date", accessorKey: "end_due_date" },
+  { header: "without_due_date", accessorKey: "without_due_date" },
+  { header: "bank_id", accessorKey: "bank_id" },
+  { header: "note1", accessorKey: "note1" },
+  { header: "note2", accessorKey: "note2" },
+  { header: "deport_status", accessorKey: "deport_status" },
+  { header: "collection_status", accessorKey: "collection_status" },
+  {
+    header: "partial_collection_status",
+    accessorKey: "partial_collection_status",
+  },
+  { header: "return_status", accessorKey: "return_status" },
+  { header: "deposit_status", accessorKey: "deposit_status" },
+  { header: "gen_entries", accessorKey: "gen_entries" },
+];
 const bill_pattern = [
   {
     size: 40,
@@ -92,7 +178,6 @@ const contract = [
     header: "no",
     accessorKey: "number",
     cell: ({ getValue, row }) => {
-
       // contract_type
       let type = SELECT_LISTS("contact_pattern_contract_type")?.find(
         (c) => c?.id === row?.original?.contract_type
@@ -348,6 +433,18 @@ const service = [
       />
     ),
   },
+  {
+    header: "number",
+    accessorKey: "number",
+    cell: ({ row, getValue }) => (
+      <Link
+        to={`/maintenances/${row?.original?.code}/${row.original.id}`}
+        className="text-blue-500 font-medium hover:underline"
+      >
+        # {getValue()}
+      </Link>
+    ),
+  },
   { header: "code", accessorKey: "code" },
   { header: "start_date", accessorKey: "start_date" },
   { header: "end_date", accessorKey: "end_date" },
@@ -381,6 +478,37 @@ const service = [
   { header: "reason", accessorKey: "reason" },
 ];
 
+const user_work_times = [
+  {
+    id: "select",
+    size: 40,
+    isResizingColumn: false,
+    header: ({ table }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: table.getIsAllRowsSelected(),
+          indeterminate: table.getIsSomeRowsSelected(),
+          onChange: table.getToggleAllRowsSelectedHandler(),
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: row.getIsSelected(),
+          disabled: !row.getCanSelect(),
+          indeterminate: row.getIsSomeSelected(),
+          onChange: row.getToggleSelectedHandler(),
+        }}
+      />
+    ),
+  },
+  { header: "user_id", accessorKey: "user_id" },
+  { header: "category_id", accessorKey: "category_id" },
+  { header: "work_time_start", accessorKey: "work_time_start" },
+  { header: "work_time_end", accessorKey: "work_time_end" },
+
+]
 const material_group = [
   {
     id: "select",
@@ -437,6 +565,20 @@ const material = [
       />
     ),
   },
+  { header: "code", accessorKey: "code" },
+  { header: "name", accessorKey: "name",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/material/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          # {getValue()}
+        </Link>
+      );
+    },
+
+   },
   { header: "defaults1", accessorKey: "defaults1" },
   { header: "unit1", accessorKey: "unit1" },
   { header: "barcode1", accessorKey: "barcode1" },
@@ -448,8 +590,6 @@ const material = [
   { header: "exchange3", accessorKey: "exchange3" },
   { header: "barcode3", accessorKey: "barcode3" },
   { header: "defaults3", accessorKey: "defaults3" },
-  { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
   { header: "material_group_name", accessorKey: "material_group_name" },
   { header: "note", accessorKey: "note" },
   {
@@ -606,7 +746,34 @@ export const user = [
       />
     ),
   },
-  { header: "number", accessorKey: "number" },
+  {
+    header: "number",
+    accessorKey: "number",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/user/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          # {getValue()}
+        </Link>
+      );
+    },
+  },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/user/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   {
     header: "created_at",
     accessorKey: "created_at",
@@ -3408,7 +3575,7 @@ export const shop = [
   { header: "x_index", accessorKey: "x_index" },
   { header: "y_index", accessorKey: "y_index" },
   { header: "cost_center_id", accessorKey: "cost_center_id" },
-  { header: "class", accessorKey: "class" },
+  { header: "kind", accessorKey: "kind" },
   { header: "area", accessorKey: "area" },
   { header: "area_unit", accessorKey: "area_unit" },
   { header: "view", accessorKey: "view" },
@@ -4032,6 +4199,27 @@ const entry = [
   { header: "observe_account_id", accessorKey: "observe_account_id" },
 ];
 
+const worker_building = [
+  {
+    name: "building_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "building",
+    ref_col: "id",
+  },
+];
+const worker_category = [
+  {
+    name: "category_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "category",
+    ref_col: "id",
+  },
+];
+
 const TABLES = {
   contract,
   reservation_property,
@@ -4109,6 +4297,11 @@ const TABLES = {
   bill_pattern,
   lack_reason,
   entry,
+  default_service,
+  cheque,
+  worker_building,
+  worker_category,
+  user_work_times
 };
 
 export default function getTableColumns(name) {

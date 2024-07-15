@@ -255,6 +255,7 @@ const authProtectedRoutes = [
   // Main forms
   { path: "/bill/:code/:name/:id", component: <BillForm /> },
   { path: "/cheques/:code/:name/:id", component: <ChequeForm /> },
+  { path: "/cheques/:code/:name/", component: <ChequeForm /> },
   { path: "/list/:name/", component: <List /> },
   {
     path: "/patterns/:name",
@@ -275,6 +276,7 @@ const authProtectedRoutes = [
   { path: "/maintenances/:code/:id", component: <ServiceForm /> },
   { path: "/maintenances/:code", component: <ServiceForm /> },
   { path: "/:name/:id", component: <DynamicForm /> },
+  { path: "/:name", component: <DynamicForm /> },
   // { path: "/tools/:name/:id", component: <DynamicForm /> },
   {
     path: "/reservation_property/:id",
@@ -282,6 +284,7 @@ const authProtectedRoutes = [
   },
   { path: "/account/:id", component: <AccountForm /> },
   { path: "/user/:id", component: <UserForm /> },
+  { path: "/user/", component: <UserForm /> },
   {
     path: "/contracts/:type/:name/:id",
     component: <ContractForm layout="update" />,
