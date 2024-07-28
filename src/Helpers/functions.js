@@ -8,7 +8,11 @@ import {
   SHOP_ASSET_TYPE_DEFAULT_NAME,
   VILLA_ASSET_TYPE_DEFAULT_NAME,
 } from "./GENERATE_STARTING_DATA";
-import { FLAT_PROPERTY_TABS, FLAT_PROPERTY_TYPES } from "./constants";
+import {
+  FLAT_PROPERTY_TABS,
+  FLAT_PROPERTY_TYPES,
+  IGNORED_SHOW_NUMBER_TABLE,
+} from "./constants";
 import axios from "axios";
 
 // export const SERVER_URL = `https://matiestate-server.vercel.app/`;
@@ -72,11 +76,11 @@ export function getMonthsDiff(start_date, end_date, price) {
   return { monthlyPrice, remainingPrice, startDate, endDate, monthsDiff };
 }
 
-export async function getInsertAccountTrigger(name, conditions) {
+export async function getInsertAccountTrigger(code, conditions) {
   // get suppliers or customers id
   const parentAccount = await ApiActions.read("account", {
-    conditions: name
-      ? [{ type: "and", conditions: [["name", "=", name]] }]
+    conditions: code
+      ? [{ type: "and", conditions: [["internal_number", "=", code]] }]
       : conditions,
   });
 
@@ -355,4 +359,16 @@ export async function uploadAttachment({
     `${baseURL}/uploadAttachment/${entity_type}/${id}/:${attachment_type}`,
     { file }
   );
+}
+
+export function getUniqueFieldLabel(item, table, refName, locale) {
+  if (locale === "en" && item?.ltnName) {
+    return item?.ltnName;
+  }
+
+  return item?.number && !IGNORED_SHOW_NUMBER_TABLE[table]
+    ? `${item?.internal_number || item?.number}-${item?.[refName || "name"]}${
+        item?.parent_name ? `-(${item?.parent_name})` : ""
+      }`
+    : item[refName || "name"];
 }

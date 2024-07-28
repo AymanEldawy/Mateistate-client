@@ -329,8 +329,8 @@ export const SELECT_LISTS = (listName) => {
       { id: 2, name: "Received" },
     ],
     bill_pattern_bill_type: [
-      { id: 1, name: "Purchase" },
-      { id: 2, name: "T" },
+      { id: 1, name: "Input" },
+      { id: 2, name: "Output" },
     ],
     material_type: [
       { id: 1, name: "Stored" },

@@ -19,6 +19,7 @@ const FormSteps = ({
   onClose,
   layout,
   setRecordResponse,
+  popupView,
   oldValues = null,
 }) => {
   const params = useParams();
@@ -112,6 +113,7 @@ const FormSteps = ({
   return (
     <FormWrapperLayout
       name={name}
+      popupView={popupView}
       isLoading={isLoading}
       onSubmit={onSubmit}
       methods={methods}

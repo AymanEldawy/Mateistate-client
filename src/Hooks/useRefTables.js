@@ -1,5 +1,9 @@
 import getFormByTableName from "Helpers/Forms/forms";
-import { USER_SUPERVISOR_CODE, USER_WORKER_CODE } from "Helpers/GENERATE_STARTING_DATA";
+import {
+  MAIN_USERS_CODE,
+  USER_SUPERVISOR_CODE,
+  USER_WORKER_CODE,
+} from "Helpers/GENERATE_STARTING_DATA";
 import { ApiActions } from "Helpers/Lib/api";
 import {
   getAccountList,
@@ -55,17 +59,19 @@ const useRefTable = (name, type = "form") => {
 
       if (field?.ref_table === UNIQUE_REF_TABLES.clients) {
         hash[UNIQUE_REF_TABLES.clients] = await getAccountsChildrenByName(
-          "Customers"
+          MAIN_USERS_CODE[1]
         );
         hash.account = await getAccountList();
         continue;
       }
 
       if (field?.ref_table === UNIQUE_REF_TABLES.supervisor) {
-        hash[UNIQUE_REF_TABLES.supervisor] = await getUserList(USER_SUPERVISOR_CODE);
+        hash[UNIQUE_REF_TABLES.supervisor] = await getUserList(
+          USER_SUPERVISOR_CODE
+        );
         continue;
       }
-      
+
       if (field?.ref_table === UNIQUE_REF_TABLES.employee) {
         hash[UNIQUE_REF_TABLES.employee] = await getUserList(USER_WORKER_CODE);
         continue;
@@ -73,7 +79,7 @@ const useRefTable = (name, type = "form") => {
 
       if (field?.ref_table === UNIQUE_REF_TABLES.suppliers) {
         hash[UNIQUE_REF_TABLES.suppliers] = await getAccountsChildrenByName(
-          "Suppliers"
+          MAIN_USERS_CODE[2]
         );
         hash.account = await getAccountList();
         continue;

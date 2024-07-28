@@ -4,6 +4,7 @@ import {
   CheckboxField,
   Input,
   Select,
+  Textarea,
   UniqueField,
 } from "Components/StructurePage/CustomFields";
 import React, { useEffect, useMemo } from "react";
@@ -39,6 +40,11 @@ export const MaterialFormStepOne = ({
           error={errors?.name ? "Field is required" : ""}
           updatedName={tab ? `${tab}.name` : ""}
         />
+        <Input
+          {...fieldsHash?.ltnName}
+          error={errors?.ltnName ? "Field is required" : ""}
+          updatedName={tab ? `${tab}.ltnName` : ""}
+        />
         <UniqueField
           {...fieldsHash?.material_group_id}
           CACHE_LIST={CACHE_LIST}
@@ -57,12 +63,6 @@ export const MaterialFormStepOne = ({
           list={!!CACHE_LIST ? CACHE_LIST?.category : []}
           error={errors?.category_id ? "Field is required" : ""}
           updatedName={tab ? `${tab}.category_id` : ""}
-        />
-        <Input
-          {...fieldsHash?.note}
-          error={errors?.note ? "Field is required" : ""}
-          updatedName={tab ? `${tab}.note` : ""}
-          containerClassName=""
         />
       </div>
       <div className="flex flex-col gap-4 flex-wrap w-full max-w-2xl mx-auto">
@@ -154,6 +154,13 @@ export const MaterialFormStepOne = ({
           />
         </div>
       </div>
+      <Textarea
+          {...fieldsHash?.note}
+          error={errors?.note ? "Field is required" : ""}
+          updatedName={tab ? `${tab}.note` : ""}
+          containerClassName=""
+        />
+
     </div>
   );
 };

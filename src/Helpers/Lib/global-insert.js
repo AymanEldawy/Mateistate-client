@@ -20,6 +20,7 @@ import {
   CREATED_FROM_CONTRACT_CODE,
   CREATED_FROM_CONTRACT_TERMINATION_CODE,
   CREATED_FROM_VOUCHER_CODE,
+  MAIN_USERS_CODE,
   VOUCHER_RECEIPTS_CODE,
 } from "Helpers/GENERATE_STARTING_DATA";
 import { getAccountCash } from "./global-read";
@@ -1035,7 +1036,7 @@ const insertToUser = async (data) => {
   }
   let type = SELECT_LISTS("user_type")?.find(
     (c) => c.id === +data?.card_type
-  )?.name;
+  )?.id;
 
   if (data?.card_type > 2) {
     const userResponse = await ApiActions.insert("user", {
@@ -1043,7 +1044,7 @@ const insertToUser = async (data) => {
     });
     return userResponse;
   } else {
-    const account = await getInsertAccountTrigger(`${type}s`);
+    const account = await getInsertAccountTrigger(MAIN_USERS_CODE?.[type]);
     account.name = data?.name;
 
     // automatic insert a new account in suppliers or customers before insert the user

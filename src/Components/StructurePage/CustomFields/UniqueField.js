@@ -5,10 +5,7 @@ import { useState } from "react";
 import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import {
-  IGNORED_SHOW_NUMBER_TABLE,
-  UNIQUE_REF_TABLES,
-} from "Helpers/constants";
+import { UNIQUE_REF_TABLES } from "Helpers/constants";
 import {
   DEFAULT_CURRENCY_CODE,
   USER_CUSTOMER_CODE,
@@ -17,6 +14,7 @@ import {
   USER_WORKER_CODE,
 } from "Helpers/GENERATE_STARTING_DATA";
 import { ErrorText } from "Components/Global/ErrorText";
+import { getUniqueFieldLabel } from "Helpers/functions";
 
 const UniqueField = ({
   list: defaultList,
@@ -38,19 +36,14 @@ const UniqueField = ({
   const { dispatchForm } = usePopupForm();
   const [list, setList] = useState([]);
   const { control, watch, setValue } = useFormContext();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     setList(
       defaultList?.map((item) => {
         return {
           value: item?.[field?.ref_col || "id"],
-          label:
-            item?.number && !IGNORED_SHOW_NUMBER_TABLE[field?.ref_table]
-              ? `${item?.internal_number || item?.number}-${
-                  item?.[field?.ref_name || "name"]
-                }${item?.parent_name ? `-(${item?.parent_name})` : ""}`
-              : item[field?.ref_name || "name"],
+          label: getUniqueFieldLabel(item, field?.ref_table, field?.ref_name, i18n.language),
         };
       })
     );
@@ -164,6 +157,7 @@ const UniqueField = ({
                 refTable = "user";
                 oldValues = { card_type: USER_WORKER_CODE };
               }
+              console.log(refTable, 'ref');
 
               dispatchForm({
                 open: true,

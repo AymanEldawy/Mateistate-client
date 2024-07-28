@@ -247,9 +247,11 @@ const authProtectedRoutes = [
 
   // Vouchers
   { path: "/vouchers/:type/:name/:id", component: <VoucherForm /> },
-  { path: "/vouchers/entries/:id", component: <EntryForm /> },
+  { path: "/vouchers/entries/entry_main_data/:id", component: <EntryForm /> },
+  { path: "/vouchers/entries/entry_main_data", component: <EntryForm /> },
 
   // Patterns
+  { path: "/patterns/:pattern", component: <PatternsForm /> },
   { path: "/patterns/:pattern/:id", component: <PatternsForm /> },
 
   // Main forms
@@ -258,7 +260,7 @@ const authProtectedRoutes = [
   { path: "/cheques/:code/:name/", component: <ChequeForm /> },
   { path: "/list/:name/", component: <List /> },
   {
-    path: "/patterns/:name",
+    path: "/patterns/list/:name",
     component: <List urlToAdd={(name) => `/patterns/${name}`} />,
   },
   {

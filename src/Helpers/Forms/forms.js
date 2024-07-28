@@ -26,6 +26,8 @@ const land = [
   FIELDS_STRUCTURE.created_at(),
   FIELDS_STRUCTURE.number(),
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   FIELDS_STRUCTURE.numberField({
     label: "type",
     name: "type",
@@ -411,6 +413,8 @@ const account = [
     name: "internal_number",
   }),
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "type",
     name: "type",
@@ -449,6 +453,7 @@ const account_distributive = [
 const lessor = [
   FIELDS_STRUCTURE.id(),
   { label: "full_name", name: "name", type: "text", required: true },
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
   FIELDS_STRUCTURE.numberField({
     label: "passport",
     name: "passport",
@@ -502,6 +507,7 @@ const lessor = [
 const owner = [
   FIELDS_STRUCTURE.id(),
   { label: "full_name", name: "name", type: "text", required: true },
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
   FIELDS_STRUCTURE.textField({
     label: "id_card",
     name: "id_card",
@@ -532,6 +538,7 @@ const seller = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
   { label: "full_name", name: "name", type: "text", required: true },
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
   FIELDS_STRUCTURE.nationality(),
   FIELDS_STRUCTURE.numberField({
     label: "id_card",
@@ -605,6 +612,8 @@ const user_general = [
     hide_in_form: true,
   },
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   FIELDS_STRUCTURE.created_at(),
   {
     label: "card_type",
@@ -766,6 +775,8 @@ const bank = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "address",
     name: "address",
@@ -784,6 +795,8 @@ const cost_center = [
     // hide_in_form: true,
   },
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "parent_id",
     name: "parent_id",
@@ -798,6 +811,8 @@ const cost_center = [
 const country = [
   FIELDS_STRUCTURE.created_at(),
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "code",
     name: "code",
@@ -808,6 +823,8 @@ const country = [
 const currency = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "code",
     name: "code",
@@ -824,6 +841,8 @@ const building = [
   FIELDS_STRUCTURE.id(),
   // {  label: 'number', name: "number", type: "text", required: true },
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   FIELDS_STRUCTURE.textField({
     label: "city",
     name: "city",
@@ -1290,6 +1309,8 @@ const accounting_voucher_pattern_general = [
     type: "number",
   },
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "list_name",
     name: "list_name",
@@ -1757,6 +1778,8 @@ const contract_pattern_general = [
     type: "number",
   },
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "list_name",
     name: "list_name",
@@ -2337,6 +2360,8 @@ const cheque_general = [
   },
   // {  label: 'code', name: "code", type: "number"},
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "list_name",
     name: "list_name",
@@ -3393,6 +3418,8 @@ const voucher_pattern_general = [
     type: "number",
   },
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "list_name",
     name: "list_name",
@@ -3565,6 +3592,8 @@ const assets_group = [
     required: true,
   },
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "last_name",
     name: "last_name",
@@ -3594,6 +3623,8 @@ const assets = [
     ref_table: "assets_group",
   },
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "code",
     name: "code",
@@ -4133,23 +4164,34 @@ const assets_shipping = [
 
 const user_work_times = [
   {
-    label:"user_id", name: "user_id",
+    label: "user_id",
+    name: "user_id",
     type: "uuid",
     required: true,
     is_ref: true,
     ref_table: "user",
     ref_col: "id",
   },
+  // {
+  //   label:"category_id", name: "category_id",
+  //   type: "uuid",
+  //   required: true,
+  //   is_ref: true,
+  //   ref_table: "category",
+  //   ref_col: "id",
+  // },
   {
-    label:"category_id", name: "category_id",
-    type: "uuid",
+    label: "work_time_start",
+    name: "work_time_start",
+    type: "datetime-local",
     required: true,
-    is_ref: true,
-    ref_table: "category",
-    ref_col: "id",
   },
-  { label:"work_time_start", name: "work_time_start", type: "date", required: true },
-  { label:"work_time_end", name: "work_time_end", type: "date", required: true },
+  {
+    label: "work_time_end",
+    name: "work_time_end",
+    type: "datetime-local",
+    required: true,
+  },
 ];
 
 // ==== Start material
@@ -4164,6 +4206,8 @@ const material_group = [
     hide_in_form: true,
   },
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   FIELDS_STRUCTURE.note(),
   {
     label: "parent_id",
@@ -4176,8 +4220,9 @@ const material_group = [
 
 // Start Material
 const material = [
-  { label: "code", name: "code", type: "number", required: false },
-  { label: "name", name: "name", type: "varchar", required: false },
+  { label: "code", name: "code", type: "number", required: true },
+  { label: "name", name: "name", type: "text", required: true },
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
   {
     label: "category_id",
     name: "category_id",
@@ -4208,11 +4253,11 @@ const material = [
     key: "switch",
     required: false,
   },
-  { label: "unit1", name: "unit1", type: "varchar", required: false },
-  { label: "barcode1", name: "barcode1", type: "varchar", required: false },
-  { label: "unit2", name: "unit2", type: "varchar", required: false },
+  { label: "unit1", name: "unit1", type: "text", required: false },
+  { label: "barcode1", name: "barcode1", type: "text", required: false },
+  { label: "unit2", name: "unit2", type: "text", required: false },
   { label: "exchange2", name: "exchange2", type: "number", required: false },
-  { label: "barcode2", name: "barcode2", type: "varchar", required: false },
+  { label: "barcode2", name: "barcode2", type: "text", required: false },
   {
     label: "defaults2",
     name: "defaults2",
@@ -4220,9 +4265,9 @@ const material = [
     key: "switch",
     required: false,
   },
-  { label: "unit3", name: "unit3", type: "varchar", required: false },
+  { label: "unit3", name: "unit3", type: "text", required: false },
   { label: "exchange3", name: "exchange3", type: "number", required: false },
-  { label: "barcode3", name: "barcode3", type: "varchar", required: false },
+  { label: "barcode3", name: "barcode3", type: "text", required: false },
   {
     label: "defaults3",
     name: "defaults3",
@@ -4231,7 +4276,7 @@ const material = [
     required: false,
   },
 
-  { label: "note", name: "note", type: "varchar", required: false },
+  { label: "note", name: "note", type: "text", required: false },
 ];
 const material_balance = [
   {
@@ -4243,11 +4288,11 @@ const material_balance = [
     ref_table: "store",
     ref_col: "id",
   },
-  { label: "unit1", name: "unit1", type: "varchar", required: false },
+  { label: "unit1", name: "unit1", type: "text", required: false },
   { label: "quality1", name: "quality1", type: "number", required: false },
-  { label: "unit2", name: "unit2", type: "varchar", required: false },
+  { label: "unit2", name: "unit2", type: "text", required: false },
   { label: "quality2", name: "quality2", type: "number", required: false },
-  { label: "unit3", name: "unit3", type: "varchar", required: false },
+  { label: "unit3", name: "unit3", type: "text", required: false },
   { label: "quality3", name: "quality3", type: "number", required: false },
 ];
 const material_minimum = [
@@ -4598,6 +4643,7 @@ const bill_material_details = [
 const bill_pattern_general = [
   { label: "code", name: "code", type: "number", required: false },
   { label: "name", name: "name", type: "text", required: false },
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
   { label: "number", name: "number", type: "number", required: false },
   FIELDS_STRUCTURE.selectField({
     label: "bill_type",
@@ -4617,7 +4663,7 @@ const bill_pattern_accounts = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "default_store",
+    ref_table: "store",
     ref_col: "id",
   },
   {
@@ -4844,7 +4890,7 @@ const bill_pattern_options = [
     type: "number",
     required: false,
   },
-  { label: "menu", name: "menu", type: "varchar", required: false },
+  { label: "menu", name: "menu", type: "text", required: false },
   {
     label: "table_color1",
     name: "table_color1",
@@ -4956,6 +5002,8 @@ const bill_pattern_materials = [];
 // ==== Start Category
 const category = [
   { label: "name", name: "name", type: "text", required: true },
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   { label: "description", name: "description", type: "text", required: false },
   {
     label: "parent_id",
@@ -4971,6 +5019,7 @@ const category = [
 
 const category_problem = [
   { label: "problem", name: "description", type: "text", required: true },
+  { label: "Ltnproblem", name: "ltndescription", type: "text", required: true },
   {
     label: "category_id",
     name: "category_id",
@@ -5888,6 +5937,8 @@ export const store = [
     type: "number",
   },
   FIELDS_STRUCTURE.name(),
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
+
   {
     label: "address",
     name: "address",
@@ -6081,8 +6132,9 @@ const owner_expenses_details = [
 const owner_expenses_types = [
   // { label:"number", name: "number", type: "number", required: false },
   { label: "name", name: "name", type: "text", required: false },
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
   { label: "note", name: "note", type: "text", required: false },
-  { label: "code", name: "code", type: "varchar", required: false },
+  { label: "code", name: "code", type: "text", required: false },
 ];
 
 const tenants = [
@@ -6315,7 +6367,7 @@ const lawsuit_expenses = [
     type: "uuid",
     required: false,
     is_ref: true,
-    ref_table: "debit_cost_center",
+    ref_table: "cost_center",
     ref_col: "id",
   },
   {
@@ -6545,6 +6597,15 @@ const service = [
   { label: "start_date", name: "start_date", type: "date", readOnly: false },
   { label: "end_date", name: "end_date", type: "date", readOnly: false },
   {
+    label: "owner_account_id",
+    name: "owner_account_id",
+    type: "uuid",
+    readOnly: false,
+    is_ref: true,
+    ref_table: UNIQUE_REF_TABLES.suppliers,
+    ref_col: "id",
+  },
+  {
     label: "building_id",
     name: "building_id",
     type: "uuid",
@@ -6590,6 +6651,11 @@ const service = [
     ref_table: UNIQUE_REF_TABLES.supervisor,
     ref_col: "id",
   },
+  FIELDS_STRUCTURE.uniqueField({
+    label: "default_service_id",
+    name: "default_service_id",
+    ref_table: "default_service",
+  }),
 ];
 
 const service_customer_request = [
@@ -6669,6 +6735,7 @@ const service_material = [
     ref_col: "id",
   },
   { label: "name", name: "name", type: "text", required: false },
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
   { label: "price", name: "price", type: "number", required: false },
   { label: "quantity", name: "quantity", type: "number", required: false },
   FIELDS_STRUCTURE.selectField({
@@ -6752,6 +6819,7 @@ const service_worker = [
 const lack_reason = [
   { label: "code", name: "code", type: "number", readOnly: false },
   { label: "reason", name: "reason", type: "text", readOnly: false },
+  { label: "ltnreason", name: "ltnreason", type: "text", readOnly: false },
   {
     label: "available",
     name: "available",
@@ -6815,6 +6883,7 @@ const service_group = {
 
 const default_service = [
   { label: "name", name: "name", type: "text", required: true },
+  { label: "ltnname", name: "ltnname", type: "text", required: false },
   { label: "description", name: "description", type: "text", required: true },
   {
     label: "category_id",

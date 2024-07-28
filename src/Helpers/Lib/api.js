@@ -16,7 +16,9 @@ export const SHOULD_DELETE_ENTRY = {
   op_return: true,
   contract_termination: true,
 };
-export const baseURL = "http://203.161.62.124:5000/";
+
+export const baseURL = "http://203.161.62.124:5001/";
+// export const baseURL = "http://cratic-home.com:5000/";
 // export const baseURL = "http://localhost:5000";
 
 function CURD() {

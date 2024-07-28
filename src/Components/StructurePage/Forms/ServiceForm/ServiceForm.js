@@ -1,6 +1,5 @@
 import {
-  GET_UPDATE_DATE_BY_NUMBER,
-  getServiceUpdate,
+  getServiceUpdate
 } from "Helpers/Lib/global-read-update";
 import useFormSteps from "Hooks/useFormSteps";
 import { useForm } from "react-hook-form";
@@ -13,9 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import {
-  SERVICE_CUSTOMER_CODE,
-  SERVICE_DEFAULT_CODE,
-  SERVICE_PROPERTY_PREPARING_CODE,
+  SERVICE_CUSTOMER_CODE, SERVICE_PROPERTY_PREPARING_CODE
 } from "Helpers/GENERATE_STARTING_DATA";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -109,11 +106,6 @@ const ServiceForm = ({ popupView }) => {
   const onSubmit = async (value) => {
     // setValue("service.code", +code);
     value.service.code = +code;
-    if (+code === SERVICE_DEFAULT_CODE) {
-      value.service.is_default = true;
-      // setValue("service.is_default", true);
-    }
-
     const response = await dynamicInsertIntoMultiStepsTable({
       tableName: "service",
       data: value,
@@ -158,7 +150,7 @@ const ServiceForm = ({ popupView }) => {
         <TableFields
           fields={fields}
           CACHE_LIST={CACHE_LIST}
-          increasable={false}
+          // increasable={false}
           tab={tab}
         />
       ) : (

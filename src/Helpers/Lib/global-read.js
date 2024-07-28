@@ -7,9 +7,9 @@ export const getUserList = async (code) => {
   return response?.result;
 };
 
-export const getAccountsChildrenByName = async (name = "Customers") => {
+export const getAccountsChildrenByName = async (code) => {
   const response = await ApiActions.read("account", {
-    conditions: [{ type: "and", conditions: [["name", "=", name]] }],
+    conditions: [{ type: "and", conditions: [["internal_number", "=", code]] }],
   });
   let accountId = response?.result?.at(0)?.id;
 
@@ -171,6 +171,7 @@ const contract = async () => {
   });
   return res?.result;
 };
+
 const account = async () => {
   const res = await ApiActions.read("account", {
     joins: [
@@ -269,6 +270,28 @@ const land = async (name) => {
   return res?.result;
 };
 
+const entry_main_data = async (name) => {
+  const res = await ApiActions.read("entry_main_data", {
+    joins: [
+      {
+        type: "leftJoin",
+
+        table: "entry_grid_data",
+        conditions: {
+          "entry_main_data.id": "entry_grid_data.entry_main_data_id",
+        },
+      },
+    ],
+    columns: [
+      "entry_main_data.*",
+      "entry_grid_data.account_id",
+      "entry_grid_data.cost_center_id",
+      "entry_grid_data.observe_account_id",
+    ],
+  });
+  return res?.result;
+};
+
 const data = {
   contract,
   account,
@@ -279,6 +302,7 @@ const data = {
   land,
   villa,
   service,
+  entry_main_data,
   // parking: unit,
 };
 

@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import getFormByTableName from "Helpers/Forms/forms";
 
-const FormSingular = ({ name, onClose }) => {
+const FormSingular = ({ name, onClose, popupView }) => {
   const params = useParams();
   const id = params?.id;
   const { setRecordResponse, appendNewRecord } = usePopupForm();
@@ -91,6 +91,7 @@ const FormSingular = ({ name, onClose }) => {
 
   return (
     <FormWrapperLayout
+      popupView={popupView}
       name={name}
       onSubmit={onSubmit}
       methods={methods}

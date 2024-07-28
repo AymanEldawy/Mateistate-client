@@ -11,9 +11,11 @@ export const DynamicForm = ({
   setRecordResponse,
   popupView,
   normalForm,
+  name: outerName,
 }) => {
+  console.log("🚀 ~ popupView:", popupView)
   const params = useParams();
-  const { name } = params;
+  const name = outerName || params?.name;
 
   let isMultiSteps = useMemo(() => {
     const table = getFormByTableName(name);
@@ -21,6 +23,7 @@ export const DynamicForm = ({
     return;
   }, [name]);
 
+  console.log(name, "ss");
   return (
     <div key={name}>
       {/* <Suspense fallback={<>loading</>}> */}

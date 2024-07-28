@@ -5,10 +5,14 @@ import {
   getAccountList,
   getAccountsChildrenByName,
   getCostCenterList,
-  getUserList
+  getUserList,
 } from "Helpers/Lib/global-read";
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
-import { USER_SUPERVISOR_CODE, USER_WORKER_CODE } from "Helpers/GENERATE_STARTING_DATA";
+import {
+  MAIN_USERS_CODE,
+  USER_SUPERVISOR_CODE,
+  USER_WORKER_CODE,
+} from "Helpers/GENERATE_STARTING_DATA";
 
 const useFormSteps = ({ name }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -71,22 +75,24 @@ const useFormSteps = ({ name }) => {
 
       if (field?.ref_table === "account") {
         hash.account = await getAccountList();
-        continue; 
+        continue;
       }
 
       if (field?.ref_table === UNIQUE_REF_TABLES.clients) {
         hash[UNIQUE_REF_TABLES.clients] = await getAccountsChildrenByName(
-          "Customers"
+          MAIN_USERS_CODE[1]
         );
         hash.account = await getAccountList();
         continue;
       }
 
       if (field?.ref_table === UNIQUE_REF_TABLES.supervisor) {
-        hash[UNIQUE_REF_TABLES.supervisor] = await getUserList(USER_SUPERVISOR_CODE);
+        hash[UNIQUE_REF_TABLES.supervisor] = await getUserList(
+          USER_SUPERVISOR_CODE
+        );
         continue;
       }
-      
+
       if (field?.ref_table === UNIQUE_REF_TABLES.employee) {
         hash[UNIQUE_REF_TABLES.employee] = await getUserList(USER_WORKER_CODE);
         continue;
@@ -94,7 +100,7 @@ const useFormSteps = ({ name }) => {
 
       if (field?.ref_table === UNIQUE_REF_TABLES.suppliers) {
         hash[UNIQUE_REF_TABLES.suppliers] = await getAccountsChildrenByName(
-          "Suppliers"
+          MAIN_USERS_CODE[2]
         );
         hash.account = await getAccountList();
         continue;

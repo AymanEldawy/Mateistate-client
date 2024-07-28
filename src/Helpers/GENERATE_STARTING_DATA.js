@@ -1,4 +1,8 @@
-const { ApiActions } = require("./Lib/api");
+import axios from "axios";
+import { UNIQUE_REF_TABLES } from "./constants";
+import INSERT_FUNCTION from "./Lib/global-insert";
+
+const { ApiActions, baseURL } = require("./Lib/api");
 
 // Account & Users Codes
 export const TENANT_ID = "051d7650-694b-423c-85d1-3871ce861830";
@@ -18,12 +22,16 @@ export const USERS = [
 // SERVICES CODE
 export const SERVICE_CUSTOMER_CODE = 1;
 export const SERVICE_PROPERTY_PREPARING_CODE = 2;
-export const SERVICE_DEFAULT_CODE = 3;
 
 export const USER_CUSTOMER_CODE = 1;
 export const USER_SUPPLIER_CODE = 2;
 export const USER_SUPERVISOR_CODE = 3;
 export const USER_WORKER_CODE = 4;
+
+export const MAIN_USERS_CODE = {
+  [USER_CUSTOMER_CODE]: 121,
+  [USER_SUPPLIER_CODE]: 221,
+};
 
 // Lack reasons
 export const LACK_REASON_TENANT_NOT_EXIST_CODE = 1;
@@ -304,183 +312,310 @@ export const DEFAULT_CONTRACT_PATTERN_INFO = [
 ];
 
 const DEFAULT_ACCOUNTS = [
-  { code: 1, name: "Assets", type: "Balance Sheet", number: 3, level: 0 },
+  {
+    code: 1,
+    name: "الاصول",
+    ltnnanme: "Assets",
+    type: "Balance Sheet",
+    number: 3,
+    level: 0,
+  },
   {
     code: 11,
-    name: "Fixed Assets",
+    name: "الموجودات الثابتة",
+    ltnnanme: "Fixed Assets",
     type: "Balance Sheet",
     number: 1,
     level: 1,
   },
   {
     code: 111,
-    name: "Furniture & Fixture",
+    name: "أثاث ومفروشات",
+    ltnnanme: "Furniture & Fixture",
     type: "Balance Sheet",
     number: 0,
     level: 2,
   },
   {
     code: 12,
-    name: "Current assets",
+    name: "الموجودات المتداولة",
+    ltnnanme: "Current assets",
     type: "Balance Sheet",
     number: 4,
     level: 1,
   },
-  { code: 121, name: "Customers", type: "Balance Sheet", number: 1, level: 2 },
-  { code: 12101, name: "ahmad", type: "Balance Sheet", number: 0, level: 3 },
+  {
+    code: 121,
+    name: "الزبائن",
+    ltnnanme: "Customers",
+    type: "Balance Sheet",
+    number: 1,
+    level: 2,
+  },
   {
     code: 122,
-    name: "Notes Receivables",
+    name: "أوراق القبض",
+    ltnnanme: "Notes Receivables",
     type: "Balance Sheet",
     number: 0,
     level: 2,
   },
-  { code: 123, name: "Buildings", type: "Balance Sheet", number: 2, level: 2 },
+  {
+    code: 123,
+    name: "الأبنية",
+    ltnnanme: "Buildings",
+    type: "Balance Sheet",
+    number: 2,
+    level: 2,
+  },
   {
     code: 12301,
-    name: "Building No.1",
+    name: "بناء رقم 1",
+    ltnnanme: "Building No.1",
     type: "Balance Sheet",
     number: 3,
     level: 3,
   },
   {
     code: 123011,
-    name: "Flats Building No.1",
+    name: "شقق بناء رقم 1",
+    ltnnanme: "Flats Building No.1",
     type: "Balance Sheet",
     number: 0,
     level: 4,
   },
   {
     code: 123012,
-    name: "Shops Building No.1",
+    name: "محلات بناء رقم 1",
+    ltnnanme: "Shops Building No.1",
     type: "Balance Sheet",
     number: 0,
     level: 4,
   },
   {
     code: 123013,
-    name: "Villa 1 1",
+    name: "فيلا 1 1",
+    ltnnanme: "Villa 1 1",
     type: "Balance Sheet",
     number: 0,
     level: 4,
   },
   {
     code: 12302,
-    name: "indos building",
+    name: "مبنى إندوس",
+    ltnnanme: "indos building",
     type: "Balance Sheet",
     number: 0,
     level: 3,
   },
-  { code: 125, name: "Stock", type: "Balance Sheet", number: 1, level: 2 },
+  {
+    code: 125,
+    name: "المخزون",
+    ltnnanme: "Stock",
+    type: "Balance Sheet",
+    number: 1,
+    level: 2,
+  },
   {
     code: 1251,
-    name: "End period inventory",
+    name: "مخزون بضاعة جاهزة آخر المدة",
+    ltnnanme: "End period inventory",
     type: "Balance Sheet",
     number: 0,
     level: 3,
   },
   {
     code: 13,
-    name: "Cash on hand",
+    name: "الأموال الجاهزة",
+    ltnnanme: "Cash on hand",
     type: "Balance Sheet",
     number: 2,
     level: 1,
   },
-  { code: 131, name: "Cash", type: "Balance Sheet", number: 0, level: 2 },
-  { code: 132, name: "Bank", type: "Balance Sheet", number: 0, level: 2 },
-  { code: 2, name: "liabilities", type: "Balance Sheet", number: 2, level: 0 },
+  {
+    code: 131,
+    name: "الصندوق",
+    ltnnanme: "Cash",
+    type: "Balance Sheet",
+    number: 0,
+    level: 2,
+  },
+  {
+    code: 132,
+    name: "المصرف",
+    ltnnanme: "Bank",
+    type: "Balance Sheet",
+    number: 0,
+    level: 2,
+  },
+  {
+    code: 2,
+    name: "الالتزامات",
+    ltnnanme: "liabilities",
+    type: "Balance Sheet",
+    number: 2,
+    level: 0,
+  },
   {
     code: 21,
-    name: "Owners Equites",
+    name: "حقوق الملكية",
+    ltnnanme: "Owners Equites",
     type: "Balance Sheet",
     number: 1,
     level: 1,
   },
-  { code: 2101, name: "Capital", type: "Balance Sheet", number: 0, level: 2 },
+  {
+    code: 2101,
+    name: "رأس المال",
+    ltnnanme: "Capital",
+    type: "Balance Sheet",
+    number: 0,
+    level: 2,
+  },
   {
     code: 22,
-    name: "Current Liabilities",
+    name: "المطاليب المتداولة",
+    ltnnanme: "Current Liabilities",
     type: "Balance Sheet",
     number: 4,
     level: 1,
   },
-  { code: 221, name: "Suppliers", type: "Balance Sheet", number: 1, level: 2 },
+  {
+    code: 221,
+    name: "الموردون",
+    ltnnanme: "Suppliers",
+    type: "Balance Sheet",
+    number: 1,
+    level: 2,
+  },
   {
     code: 221001,
-    name: "Supplier No.1",
+    name: "مورد رقم 1",
+    ltnnanme: "Supplier No.1",
     type: "Balance Sheet",
     number: 0,
     level: 3,
   },
   {
     code: 222,
-    name: "Note Payables",
+    name: "أوراق الدفع",
+    ltnnanme: "Note Payables",
     type: "Balance Sheet",
     number: 0,
     level: 2,
   },
   {
     code: 223,
-    name: "Security deposit",
+    name: "التأمينات",
+    ltnnanme: "Security deposit",
     type: "Balance Sheet",
     number: 0,
     level: 2,
   },
-  { code: 224, name: "VAT", type: "Balance Sheet", number: 0, level: 2 },
-  { code: 3, name: "Expenses", type: "Profit & Loss", number: 3, level: 0 },
-  { code: 31, name: "Salaries", type: "Profit & Loss", number: 0, level: 1 },
   {
-    code: 32,
-    name: "Water and Electricity",
+    code: 224,
+    name: "الضريبة",
+    ltnnanme: "VAT",
+    type: "Balance Sheet",
+    number: 0,
+    level: 2,
+  },
+  {
+    code: 3,
+    name: "المصاريف",
+    ltnnanme: "Expenses",
+    type: "Profit & Loss",
+    number: 3,
+    level: 0,
+  },
+  {
+    code: 31,
+    name: "رواتب وأجور",
+    ltnnanme: "Salaries",
     type: "Profit & Loss",
     number: 0,
     level: 1,
   },
-  { code: 33, name: "Expenses", type: "Profit & Loss", number: 0, level: 1 },
-  { code: 4, name: "Revenues", type: "Profit & Loss", number: 7, level: 0 },
+  {
+    code: 32,
+    name: "ماء وكهرباء",
+    ltnnanme: "Water and Electricity",
+    type: "Profit & Loss",
+    number: 0,
+    level: 1,
+  },
+  {
+    code: 33,
+    name: "مصاريف متفرقة",
+    ltnnanme: "Expenses",
+    type: "Profit & Loss",
+    number: 0,
+    level: 1,
+  },
+  {
+    code: 4,
+    name: "الإيرادات",
+    ltnnanme: "Revenues",
+    type: "Profit & Loss",
+    number: 7,
+    level: 0,
+  },
   {
     code: 41,
-    name: "Flats Sales Revenue",
+    name: "ايراد بيع الشقق",
+    ltnnanme: "Flats Sales Revenue",
     type: "Profit & Loss",
     number: 0,
     level: 1,
   },
   {
     code: 42,
-    name: "Shops Sales Revenue",
+    name: "ايراد بيع المحلات",
+    ltnnanme: "Shops Sales Revenue",
     type: "Profit & Loss",
     number: 0,
     level: 1,
   },
   {
     code: 43,
-    name: "Flats Rent Revenue",
+    name: "ايراد ايجار الشقق",
+    ltnnanme: "Flats Rent Revenue",
     type: "Profit & Loss",
     number: 0,
     level: 1,
   },
   {
     code: 44,
-    name: " Shops Rent Revenue",
+    name: "ايراد ايجار المحلات",
+    ltnnanme: " Shops Rent Revenue",
     type: "Profit & Loss",
     number: 0,
     level: 1,
   },
   {
     code: 45,
-    name: "Sales commission Revenue",
+    name: "ايراد عمولات بيع",
+    ltnnanme: "Sales commission Revenue",
     type: "Profit & Loss",
     number: 0,
     level: 1,
   },
   {
     code: 46,
-    name: "Rent Commission Revenue",
+    name: "ايراد عمولة ايجار",
+    ltnnanme: "Rent Commission Revenue",
     type: "Profit & Loss",
     number: 0,
     level: 1,
   },
-  { code: 47, name: "Revenue", type: "Profit & Loss", number: 0, level: 1 },
+  {
+    code: 47,
+    name: "ايرادات أخرى",
+    ltnnanme: "Revenue",
+    type: "Profit & Loss",
+    number: 0,
+    level: 1,
+  },
 ];
 
 let final_id = null;
@@ -541,6 +676,7 @@ async function INSERT_DEFAULT_ACCOUNTS() {
     let data = {
       internal_number: item?.code,
       name: item?.name,
+      ltnnanme: item?.ltnnanme,
       type: 1,
       currency_id,
       status: item?.type,
@@ -899,6 +1035,13 @@ function randomString(length) {
 
 // Generate 50 notification objects
 export async function insertIntoNotification() {
+  let USERS = [];
+
+  const res = await ApiActions.read("user");
+
+  for (const item of res?.result) {
+    USERS?.push(item?.id);
+  }
   for (let i = 0; i < 150; i++) {
     await ApiActions.insert("notification", {
       data: {
@@ -909,7 +1052,7 @@ export async function insertIntoNotification() {
         url: `https://example.com/${randomString(
           Math.floor(Math.random() * (10 - 5 + 1)) + 5
         )}`,
-        tenant_id: TENANT_ID,
+        // tenant_id: TENANT_ID,
         user_id: USERS[Math.floor(Math.random() * USERS?.length)],
         status: i % 2 === 0,
       },
@@ -951,6 +1094,378 @@ export async function insertIntoDefaultService() {
 }
 
 // Generate 50 notification objects
+export async function insertIntoMaterials() {
+  let MATERIAL_GROUP = [];
+
+  const res = await ApiActions.read("material_group");
+
+  for (const item of res?.result) {
+    MATERIAL_GROUP?.push(item?.id);
+  }
+
+  let CATEGORIES = [];
+
+  const ress = await ApiActions.read("category");
+
+  for (const item of ress?.result) {
+    CATEGORIES?.push(item?.id);
+  }
+
+  if (!MATERIAL_GROUP?.length) return;
+
+  for (let i = 0; i < 150; i++) {
+    await ApiActions.insert("material", {
+      data: {
+        material_type: 1,
+        code: i + 1,
+        name: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+        unit1: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+        unit2: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+        unit3: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+        exchange2: Math.floor(Math.random() * (30 - 10 + 1)) + 10,
+        category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
+        material_group_id:
+          MATERIAL_GROUP[Math.floor(Math.random() * MATERIAL_GROUP?.length)],
+      },
+    });
+  }
+}
+
+const problems = [
+  {
+    description: "Replace worn-out gasket on hydraulic pump.",
+    minutes: 45,
+  },
+  {
+    description: "Clean and lubricate conveyor belt rollers.",
+    minutes: 60,
+  },
+  {
+    description: "Fix leaking pipe joint in the cooling system.",
+    minutes: 90,
+  },
+  {
+    description: "Replace broken handle on equipment cabinet.",
+    minutes: 30,
+  },
+  {
+    description: "Adjust tension on drive belts of industrial mixer.",
+    minutes: 45,
+  },
+  {
+    description: "Repair electrical wiring in control panel.",
+    minutes: 60,
+  },
+  {
+    description: "Inspect and replace air filters in HVAC units.",
+    minutes: 75,
+  },
+  {
+    description: "Grease fittings on production line machinery.",
+    minutes: 45,
+  },
+  {
+    description: "Replace worn-out seals on hydraulic cylinders.",
+    minutes: 60,
+  },
+  {
+    description: "Clean and calibrate sensors on packaging machine.",
+    minutes: 90,
+  },
+  {
+    description: "Repair conveyor belt motor.",
+    minutes: 30,
+  },
+  {
+    description: "Inspect and tighten bolts on assembly line equipment.",
+    minutes: 45,
+  },
+  {
+    description: "Replace worn-out bearings in conveyor system.",
+    minutes: 60,
+  },
+  {
+    description: "Fix broken switch on control panel.",
+    minutes: 75,
+  },
+  {
+    description: "Adjust and align robotic arms in manufacturing cell.",
+    minutes: 45,
+  },
+  {
+    description: "Clean and inspect heat exchangers in HVAC system.",
+    minutes: 60,
+  },
+  {
+    description: "Replace damaged pneumatic hoses on assembly line.",
+    minutes: 90,
+  },
+  {
+    description: "Repair leaking hydraulic valve.",
+    minutes: 30,
+  },
+  {
+    description: "Inspect and calibrate temperature sensors.",
+    minutes: 45,
+  },
+  {
+    description: "Replace worn-out filters in air compressor.",
+    minutes: 60,
+  },
+  {
+    description: "Grease chains and sprockets on packaging line.",
+    minutes: 75,
+  },
+  {
+    description: "Repair broken weld on structural frame.",
+    minutes: 45,
+  },
+  {
+    description: "Inspect and replace worn-out belts on conveyor system.",
+    minutes: 60,
+  },
+  {
+    description:
+      "Fix malfunctioning control valve in water circulation system.",
+    minutes: 90,
+  },
+  {
+    description: "Replace faulty solenoid valve in pneumatic system.",
+    minutes: 30,
+  },
+  {
+    description: "Inspect and adjust tension on drive chains.",
+    minutes: 45,
+  },
+  {
+    description: "Clean and lubricate guide rails on robotic assembly arm.",
+    minutes: 60,
+  },
+  {
+    description: "Repair broken sensor on automated packaging line.",
+    minutes: 75,
+  },
+  {
+    description: "Adjust alignment of conveyor belt rollers.",
+    minutes: 45,
+  },
+  {
+    description: "Inspect and replace worn-out seals on hydraulic cylinders.",
+    minutes: 60,
+  },
+  {
+    description: "Fix broken safety switch on production line.",
+    minutes: 90,
+  },
+  {
+    description: "Replace worn-out gasket on hydraulic pump.",
+    minutes: 45,
+  },
+  {
+    description: "Clean and lubricate conveyor belt rollers.",
+    minutes: 60,
+  },
+  {
+    description: "Fix leaking pipe joint in the cooling system.",
+    minutes: 90,
+  },
+  {
+    description: "Replace broken handle on equipment cabinet.",
+    minutes: 30,
+  },
+  {
+    description: "Adjust tension on drive belts of industrial mixer.",
+    minutes: 45,
+  },
+  {
+    description: "Repair electrical wiring in control panel.",
+    minutes: 60,
+  },
+  {
+    description: "Inspect and replace air filters in HVAC units.",
+    minutes: 75,
+  },
+  {
+    description: "Grease fittings on production line machinery.",
+    minutes: 45,
+  },
+  {
+    description: "Replace worn-out seals on hydraulic cylinders.",
+    minutes: 60,
+  },
+  {
+    description: "Clean and calibrate sensors on packaging machine.",
+    minutes: 90,
+  },
+  {
+    description: "Repair conveyor belt motor.",
+    minutes: 30,
+  },
+  {
+    description: "Inspect and tighten bolts on assembly line equipment.",
+    minutes: 45,
+  },
+  {
+    description: "Replace worn-out bearings in conveyor system.",
+    minutes: 60,
+  },
+  {
+    description: "Fix broken switch on control panel.",
+    minutes: 75,
+  },
+  {
+    description: "Adjust and align robotic arms in manufacturing cell.",
+    minutes: 45,
+  },
+  {
+    description: "Clean and inspect heat exchangers in HVAC system.",
+    minutes: 60,
+  },
+  {
+    description: "Replace damaged pneumatic hoses on assembly line.",
+    minutes: 90,
+  },
+  {
+    description: "Repair leaking hydraulic valve.",
+    minutes: 30,
+  },
+  {
+    description: "Inspect and calibrate temperature sensors.",
+    minutes: 45,
+  },
+  {
+    description: "Replace worn-out filters in air compressor.",
+    minutes: 60,
+  },
+  {
+    description: "Grease chains and sprockets on packaging line.",
+    minutes: 75,
+  },
+  {
+    description: "Repair broken weld on structural frame.",
+    minutes: 45,
+  },
+  {
+    description: "Inspect and replace worn-out belts on conveyor system.",
+    minutes: 60,
+  },
+  {
+    description:
+      "Fix malfunctioning control valve in water circulation system.",
+    minutes: 90,
+  },
+  {
+    description: "Replace faulty solenoid valve in pneumatic system.",
+    minutes: 30,
+  },
+  {
+    description: "Inspect and adjust tension on drive chains.",
+    minutes: 45,
+  },
+  {
+    description: "Clean and lubricate guide rails on robotic assembly arm.",
+    minutes: 60,
+  },
+  {
+    description: "Repair broken sensor on automated packaging line.",
+    minutes: 75,
+  },
+  {
+    description: "Adjust alignment of conveyor belt rollers.",
+    minutes: 45,
+  },
+  {
+    description: "Inspect and replace worn-out seals on hydraulic cylinders.",
+    minutes: 60,
+  },
+  {
+    description: "Fix broken safety switch on production line.",
+    minutes: 90,
+  },
+  {
+    description: "Replace worn-out bearings in industrial gearbox.",
+    minutes: 45,
+  },
+  {
+    description: "Calibrate pressure sensors in manufacturing equipment.",
+    minutes: 60,
+  },
+  {
+    description: "Inspect and clean water filters in cooling tower system.",
+    minutes: 75,
+  },
+  {
+    description: "Repair damaged conveyor belt splice.",
+    minutes: 45,
+  },
+  {
+    description: "Replace worn-out seals on hydraulic pumps.",
+    minutes: 60,
+  },
+  {
+    description: "Fix broken actuator on pneumatic control system.",
+    minutes: 90,
+  },
+  {
+    description: "Inspect and replace worn-out rollers on assembly line.",
+    minutes: 30,
+  },
+  {
+    description: "Adjust alignment of robotic welding arm.",
+    minutes: 45,
+  },
+  {
+    description: "Clean and calibrate weighing scales in packaging area.",
+    minutes: 60,
+  },
+  {
+    description: "Replace worn-out filters in ventilation system.",
+    minutes: 75,
+  },
+  {
+    description: "Repair electrical fault in industrial oven control panel.",
+    minutes: 45,
+  },
+  {
+    description: "Inspect and lubricate chain drive on forklift.",
+    minutes: 60,
+  },
+  {
+    description: "Fix broken conveyor belt sensor.",
+    minutes: 90,
+  },
+  {
+    description: "Replace worn-out brushes in vacuum packaging machine.",
+    minutes: 30,
+  },
+  {
+    description: "Inspect and adjust alignment of packaging line conveyor.",
+    minutes: 45,
+  },
+  {
+    description: "Repair leaking hydraulic cylinder on forklift.",
+    minutes: 60,
+  },
+  {
+    description: "Clean and calibrate temperature probes in laboratory oven.",
+    minutes: 75,
+  },
+  {
+    description: "Replace worn-out seals on hydraulic valves.",
+    minutes: 45,
+  },
+  {
+    description: "Fix broken safety interlock on industrial press.",
+    minutes: 60,
+  },
+  {
+    description:
+      "Inspect and adjust tension on drive belts of automated sorter.",
+    minutes: 90,
+  },
+];
+
+// Generate 50 notification objects
 export async function insertIntoProblems() {
   let CATEGORIES = [];
 
@@ -963,19 +1478,280 @@ export async function insertIntoProblems() {
   if (!CATEGORIES?.length) return;
 
   for (let i = 0; i < 150; i++) {
+    let problem = problems[Math.floor(Math.random() * problems?.length)];
     await ApiActions.insert("category_problem", {
       data: {
-        description: randomString(
-          Math.floor(Math.random() * (100 - 50 + 1)) + 50
-        ),
+        description: problem.description,
         category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
-        minutes: Math.floor(Math.random() * 400),
+        minutes: problem.minutes,
         is_available: true,
       },
     });
   }
 }
 
+// Generate 50 notification objects
+export async function updateProblems() {
+  const res = await ApiActions.read("category_problem");
+  console.log("🚀 ~ updateProblems ~ data:", res);
+  let data = res?.result;
+
+  for (const item of data) {
+    let problem = problems[Math.floor(Math.random() * problems?.length)];
+    const res = await ApiActions.update("category_problem", {
+      conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
+      updates: {
+        description: problem.description,
+        minutes: problem.minutes,
+      },
+    });
+    console.log("🚀 ~ updateProblems ~ res:", res);
+  }
+}
+
+const default_service_update = [
+  {
+    name: "HVAC System Inspection",
+    description:
+      "Comprehensive inspection of HVAC system components including filters, ducts, and thermostat calibration.",
+    price: 120,
+    picture: "https://source.unsplash.com/8cG9jD1q8Xw",
+  },
+  {
+    name: "Electrical Panel Upgrade",
+    description:
+      "Upgrade of electrical panel to ensure safety and compliance with current electrical codes.",
+    price: 300,
+    picture: "https://source.unsplash.com/RtfxjyLWvlk",
+  },
+  {
+    name: "Plumbing Leak Repair",
+    description:
+      "Locate and repair leaks in plumbing systems including pipes, faucets, and fixtures.",
+    price: 150,
+    picture: "https://source.unsplash.com/sBx6tVQ64xI",
+  },
+  {
+    name: "Roof Inspection and Repair",
+    description:
+      "Thorough inspection of roof for damages and necessary repairs to ensure structural integrity.",
+    price: 250,
+    picture: "https://source.unsplash.com/_-2Mw5iCeQ4",
+  },
+  {
+    name: "Gutter Cleaning and Maintenance",
+    description:
+      "Cleaning and maintenance of gutters to prevent clogging and ensure proper water drainage.",
+    price: 80,
+    picture: "https://source.unsplash.com/HTFbJb5ldrg",
+  },
+  {
+    name: "Fireplace Cleaning and Inspection",
+    description:
+      "Cleaning and inspection of fireplace and chimney to remove debris and ensure safe operation.",
+    price: 100,
+    picture: "https://source.unsplash.com/3tEQFtRvcko",
+  },
+  {
+    name: "Pool Maintenance",
+    description:
+      "Regular maintenance and cleaning of pool including chemical balancing, skimming, and equipment checks.",
+    price: 200,
+    picture: "https://source.unsplash.com/8DCj50kOgIE",
+  },
+  {
+    name: "Landscaping Service",
+    description:
+      "Professional landscaping services including lawn mowing, trimming, and garden maintenance.",
+    price: 120,
+    picture: "https://source.unsplash.com/YWR2SXqFjZ0",
+  },
+  {
+    name: "Appliance Repair",
+    description:
+      "Repair and maintenance of household appliances such as refrigerators, washers, and dryers.",
+    price: 180,
+    picture: "https://source.unsplash.com/9HLO52jB8Hw",
+  },
+  {
+    name: "Painting Services",
+    description:
+      "Interior and exterior painting services including surface preparation and color consultation.",
+    price: 350,
+    picture: "https://source.unsplash.com/0q6m1vA7Lvw",
+  },
+  {
+    name: "Carpet Cleaning",
+    description:
+      "Professional cleaning of carpets and upholstery using eco-friendly and effective cleaning methods.",
+    price: 100,
+    picture: "https://source.unsplash.com/1zTl4WIRglw",
+  },
+  {
+    name: "Security System Installation",
+    description:
+      "Installation of advanced security systems including cameras, alarms, and smart home integration.",
+    price: 400,
+    picture: "https://source.unsplash.com/7Fg8p-Dcfm0",
+  },
+  {
+    name: "Flooring Installation",
+    description:
+      "Installation of hardwood, laminate, or tile flooring with attention to detail and quality craftsmanship.",
+    price: 300,
+    picture: "https://source.unsplash.com/n3sF5jvNw-U",
+  },
+  {
+    name: "Drywall Repair",
+    description:
+      "Repair of drywall damages including cracks, holes, and water damage to restore smooth and even surfaces.",
+    price: 150,
+    picture: "https://source.unsplash.com/N0XGbbY1YVc",
+  },
+  {
+    name: "Pest Control Services",
+    description:
+      "Effective pest control services to eliminate pests such as ants, rodents, termites, and bedbugs.",
+    price: 120,
+    picture: "https://source.unsplash.com/tPnxr9JUqic",
+  },
+  {
+    name: "Fence Installation and Repair",
+    description:
+      "Installation or repair of fences including wood, vinyl, and metal fences for privacy and security.",
+    price: 250,
+    picture: "https://source.unsplash.com/aZo-44l8GWo",
+  },
+  {
+    name: "Window Cleaning",
+    description:
+      "Professional cleaning of windows inside and out to achieve streak-free and sparkling clean windows.",
+    price: 80,
+    picture: "https://source.unsplash.com/ItXY5y2cGSw",
+  },
+  {
+    name: "Deck Maintenance",
+    description:
+      "Regular maintenance and repair of decks including cleaning, staining, and board replacement.",
+    price: 180,
+    picture: "https://source.unsplash.com/X_z8Qr-kxjY",
+  },
+  {
+    name: "Junk Removal",
+    description:
+      "Removal and disposal of unwanted junk and debris from homes, offices, or construction sites.",
+    price: 120,
+    picture: "https://source.unsplash.com/5JWuE-3h_3E",
+  },
+  {
+    name: "Bathroom Remodeling",
+    description:
+      "Full or partial bathroom remodeling including plumbing, tiling, fixtures, and modern design upgrades.",
+    price: 500,
+    picture: "https://source.unsplash.com/JX6v3xS-16A",
+  },
+  {
+    name: "Kitchen Renovation",
+    description:
+      "Complete kitchen renovation including cabinetry, countertops, appliances, and lighting upgrades.",
+    price: 600,
+    picture: "https://source.unsplash.com/1fm6pcz5RQE",
+  },
+  {
+    name: "Tree Trimming and Pruning",
+    description:
+      "Trimming and pruning of trees to enhance appearance, promote growth, and maintain safety.",
+    price: 150,
+    picture: "https://source.unsplash.com/l7PwAv6leLk",
+  },
+  {
+    name: "Concrete Repair and Resurfacing",
+    description:
+      "Repair and resurfacing of damaged concrete surfaces including driveways, sidewalks, and patios.",
+    price: 200,
+    picture: "https://source.unsplash.com/qW0fUJ7Np0s",
+  },
+  {
+    name: "Pressure Washing",
+    description:
+      "High-pressure washing of exterior surfaces including siding, walkways, and driveways to remove dirt and stains.",
+    price: 100,
+    picture: "https://source.unsplash.com/MkOKFFlAEe8",
+  },
+  {
+    name: "Cabinet Refacing",
+    description:
+      "Refacing of kitchen or bathroom cabinets to update appearance without the cost of full replacement.",
+    price: 250,
+    picture: "https://source.unsplash.com/K3gWZg8PqU4",
+  },
+  {
+    name: "Attic Insulation Installation",
+    description:
+      "Installation of insulation in attics to improve energy efficiency and maintain consistent indoor temperatures.",
+    price: 300,
+    picture: "https://source.unsplash.com/Xe8ykq2ahmQ",
+  },
+  {
+    name: "Ceiling Fan Installation",
+    description:
+      "Installation of ceiling fans to improve air circulation and energy efficiency in homes or offices.",
+    price: 120,
+    picture: "https://source.unsplash.com/DjGFndcw15A",
+  },
+  {
+    name: "Garage Door Repair",
+    description:
+      "Repair and maintenance of garage doors including springs, tracks, and opener systems.",
+    price: 180,
+    picture: "https://source.unsplash.com/pv_vR3s6Fj0",
+  },
+  {
+    name: "Solar Panel Installation",
+    description:
+      "Installation of solar panels to harness renewable energy and reduce electricity bills.",
+    price: 500,
+    picture: "https://source.unsplash.com/YL8eNHWUVS0",
+  },
+  {
+    name: "Emergency Plumbing Service",
+    description:
+      "Emergency plumbing services available 24/7 for immediate repair of leaks, clogs, and plumbing emergencies.",
+    price: 200,
+    picture: "https://source.unsplash.com/nIYj8lE8uLw",
+  },
+  {
+    name: "Siding Repair and Replacement",
+    description:
+      "Repair or replacement of damaged siding to enhance curb appeal and protect against weather elements.",
+    price: 300,
+    picture: "https://source.unsplash.com/cC6LxL8UW5k",
+  },
+  {
+    name: "Wallpaper Removal and Painting",
+    description:
+      "Removal of old wallpaper followed by professional painting to refresh and modernize interior spaces.",
+    price: 150,
+    picture: "https://source.unsplash.com/U0lVRz6",
+  },
+];
+
+export async function updateDefaultService() {
+  const res = await ApiActions.read("default_service");
+  let data = res?.result;
+
+  for (const item of data) {
+    let service =
+      default_service_update[
+        Math.floor(Math.random() * default_service_update?.length)
+      ];
+    const res = await ApiActions.update("default_service", {
+      conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
+      updates: service,
+    });
+    console.log("🚀 ~ updateProblems ~ res:", res);
+  }
+}
 // insertIntoNotification();
 
 const workers = [
@@ -1001,11 +1777,6 @@ const workers = [
 
 // insert times
 export async function insertTimes() {
-  let CATEGORIES = [];
-  let WORKERS = [];
-  let SUPERVISORS = [];
-
-  const categoryRes = await ApiActions.read("category");
   const workerRes = await ApiActions.read("user", {
     conditions: [
       { type: "and", conditions: [["card_type", "=", USER_WORKER_CODE]] },
@@ -1018,34 +1789,29 @@ export async function insertTimes() {
   });
 
   let date = new Date(); //
-  date.setHours(9, 0, 0, 0); 
+  date.setHours(9, 0, 0, 0);
   for (let i = 0; i < 30; i++) {
-    let startDate = new Date(date); 
-    let endDate = new Date(date); 
-    
+    let startDate = new Date(date);
+    let endDate = new Date(date);
+
     startDate.setDate(startDate.getDate() + i);
     endDate.setDate(endDate.getDate() + i);
 
-    
-    startDate.setHours(9, 0, 0, 0); 
-    endDate.setHours(17, 0, 0, 0); 
-    for (const cate of categoryRes?.result) {
-      for (const worker of workerRes?.result) {
-        insertWorkDay({
-          user_id: worker.id,
-          category_id: cate.id,
-          work_time_start: startDate,
-          work_time_end: endDate,
-        });
-      }
-      for (const supervisor of supervisorRes?.result) {
-        insertWorkDay({
-          user_id: supervisor.id,
-          category_id: cate.id,
-          work_time_start: startDate,
-          work_time_end: endDate,
-        });
-      }
+    startDate.setHours(9, 0, 0, 0);
+    endDate.setHours(17, 0, 0, 0);
+    for (const worker of workerRes?.result) {
+      insertWorkDay({
+        user_id: worker.id,
+        work_time_start: startDate,
+        work_time_end: endDate,
+      });
+    }
+    for (const supervisor of supervisorRes?.result) {
+      insertWorkDay({
+        user_id: supervisor.id,
+        work_time_start: startDate,
+        work_time_end: endDate,
+      });
     }
 
     // await ApiActions.insert("category_problem", {
@@ -1065,4 +1831,123 @@ async function insertWorkDay(data) {
   await ApiActions.insert("user_work_times", {
     data,
   });
+}
+
+//
+// // Generate 50 notification objects
+// export async function insertIntoContract() {
+//   let BUILDINGS = [];
+//   const res = await ApiActions.read("building");
+//   for (const item of res?.result) {
+//     BUILDINGS?.push(item?.id);
+//   }
+//   let APARTMENT = [];
+//   const resAPARTMENT = await ApiActions.read("apartment");
+//   for (const item of resAPARTMENT?.result) {
+//     APARTMENT?.push(item?.id);
+//   }
+
+//   let SHOP = [];
+//   const resSHOP = await ApiActions.read("shop");
+//   for (const item of resSHOP?.result) {
+//     SHOP?.push(item?.id);
+//   }
+
+//   let PARKING = [];
+//   const resPARKING = await ApiActions.read("parking");
+//   for (const item of resPARKING?.result) {
+//     PARKING?.push(item?.id);
+//   }
+
+//   for (let i = 0; i < 150; i++) {
+//     await ApiActions.insert("contract", {
+//       data: {
+//         material_type: 1,
+//         code: i+1,
+//         name: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+//         unit1: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+//         unit2: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+//         unit3: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+//         exchange2: Math.floor(Math.random() * (30 - 10 + 1)) + 10,
+//         category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
+//         material_group_id:
+//           MATERIAL_GROUP[Math.floor(Math.random() * MATERIAL_GROUP?.length)],
+//       },
+//     });
+//   }
+// }
+// Generate 50 notification objects
+export async function updateUserToken() {
+  // const DEFAULT_USERS = [
+  //   {
+  //     name: "Owner 1",
+  //     card_type: 2,
+  //     phone: "+971200200200",
+  //   },
+  //   {
+  //     name: "Owner 2",
+  //     card_type: 2,
+  //     phone: "+971200200201",
+  //   },
+  //   {
+  //     name: "Customer 1",
+  //     card_type: 1,
+  //     phone: "+971100100100",
+  //   },
+  //   {
+  //     name: "Customer 2",
+  //     card_type: 1,
+  //     phone: "+971100100101",
+  //   },
+  //   {
+  //     name: "Supervisor 1",
+  //     card_type: 3,
+  //     phone: "+971300300300",
+  //   },
+  //   {
+  //     name: "Supervisor 2",
+  //     card_type: 3,
+  //     phone: "+971300300301",
+  //   },
+  //   {
+  //     name: "Worker 1",
+  //     card_type: 4,
+  //     phone: "+971400400400",
+  //   },
+  //   {
+  //     name: "Worker 2",
+  //     card_type: 4,
+  //     phone: "+971400400401",
+  //   },
+  // ];
+  // for (const user of DEFAULT_USERS) {
+  //   await INSERT_FUNCTION.user(user);
+  // }
+
+  const res = await ApiActions.read("user");
+  for (const item of res?.result) {
+    await ApiActions.update("user", {
+      conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
+      updates: { token: "123456" },
+    });
+  }
+  for (const item of res?.result) {
+    let token = await axios(`http://203.161.62.124:5001/verify_token`, {
+      method: "POST",
+      data: {
+        phone_number: item.phone,
+        token: "123456",
+      },
+    });
+    token = token.data;
+    await axios(`http://203.161.62.124:5001/singup`, {
+      method: "POST",
+      headers: {
+        Authorization: token?.access_token,
+      },
+      data: {
+        password: "12121212",
+      },
+    });
+  }
 }

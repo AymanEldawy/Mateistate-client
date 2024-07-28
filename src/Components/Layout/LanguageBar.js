@@ -22,6 +22,7 @@ const languages = {
 };
 const LanguageBar = () => {
   const { i18n } = useTranslation();
+  console.log("🚀 ~ LanguageBar ~ i18n:", i18n.language)
   const [selectedLang, setSelectedLang] = useState(languages[0]);
   const [open, setOpen] = useState(false);
 

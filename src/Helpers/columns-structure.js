@@ -1179,7 +1179,18 @@ export const building = [
       />
     ),
   },
-  { header: "name", accessorKey: "name" },
+  { header: "name", accessorKey: "name", 
+    cell: ({ getValue, row }) => (
+      <Link
+        to={`/buildings/${row?.original?.id}`}
+        className="text-blue-500 font-medium hover:underline"
+      >
+        # {getValue()}
+      </Link>
+    ),
+
+
+   },
   { header: "emirate", accessorKey: "emirate" },
   { header: "suburb", accessorKey: "suburb" },
   { header: "area", accessorKey: "area" },
@@ -4169,7 +4180,16 @@ export const store = [
       <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
     ),
   },
-  { header: "number", accessorKey: "number" },
+  { header: "number", accessorKey: "number", 
+    cell: ({ getValue, row }) => (
+      <Link
+        to={`/store/${row?.original?.id}`}
+        className="text-blue-500 font-medium hover:underline"
+      >
+        # {getValue()}
+      </Link>
+    ),
+   },
   { header: "type", accessorKey: "type" },
   { header: "code", accessorKey: "code" },
   { header: "name", accessorKey: "name" },
@@ -4187,13 +4207,13 @@ export const store = [
   },
 ];
 
-const entry = [
+const entry_main_data = [
   { header: "created_at", accessorKey: "created_at" },
   { header: "number", accessorKey: "number" },
   { header: "debit", accessorKey: "debit" },
   { header: "credit", accessorKey: "credit" },
-  { header: "account_name", accessorKey: "account_name" },
-  { header: "cost_center", accessorKey: "cost_center" },
+  { header: "account_name", accessorKey: "account_id" },
+  { header: "cost_center", accessorKey: "cost_center_id" },
   { header: "original", accessorKey: "created_from" },
   { header: "note", accessorKey: "note" },
   { header: "observe_account_id", accessorKey: "observe_account_id" },
@@ -4296,7 +4316,7 @@ const TABLES = {
   cheque_pattern,
   bill_pattern,
   lack_reason,
-  entry,
+  entry_main_data,
   default_service,
   cheque,
   worker_building,

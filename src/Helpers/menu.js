@@ -540,6 +540,11 @@ export const menuData = [
             link: "/list/material",
           },
           {
+            key: "Unregister Material",
+            name: "Unregister Material",
+            link: "/list/unregister-material",
+          },
+          {
             key: "warehouse report",
             name: "warehouse report",
             link: "/reports/warehouse-report",
@@ -656,22 +661,22 @@ export const menuData = [
       {
         key: "contract patterns",
         name: "Contract patterns",
-        link: "/patterns/contract_pattern",
+        link: "/patterns/list/contract_pattern",
       },
       {
         key: "cheques patterns",
         name: "cheque patterns",
-        link: "/patterns/cheque_pattern",
+        link: "/patterns/list/cheque_pattern",
       },
       {
         key: "voucher patterns",
         name: "Voucher patterns",
-        link: "/patterns/voucher_pattern",
+        link: "/patterns/list/voucher_pattern",
       },
       {
         key: "bill patterns",
         name: "bill patterns",
-        link: "/patterns/bill_pattern",
+        link: "/patterns/list/bill_pattern",
       },
       {
         key: "accounting voucher patterns",
@@ -986,12 +991,12 @@ const getMenu = async () => {
           {
             key: "Entries",
             name: "Entries",
-            link: "/list/entries/entry",
+            link: "/list/entries/entry_main_data",
           },
           {
             key: "Journal Entry",
             name: "Journal Entry",
-            link: "/vouchers/entries",
+            link: "/vouchers/entries/entry_main_data",
           },
         ],
       },
