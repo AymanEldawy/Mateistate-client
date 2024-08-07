@@ -90,13 +90,12 @@ export const dynamicInsertIntoMultiStepsTable = async ({
   data,
   ...additionalParams
 }) => {
-  console.log("🚀 ~ tableName:", tableName)
+  console.log("🚀 ~ tableName:", tableName);
   const SHOULD_UPDATES = data?.SHOULD_UPDATES;
 
   let steps = Object.values(
-    getFormByTableName(
-      tableName === "service" ? "service_customer" : tableName
-    )?.forms
+    getFormByTableName(tableName === "service" ? "service_customer" : tableName)
+      ?.forms
   )?.map((c) => c?.tab_name);
 
   let stepGeneralName = steps?.at(0);
@@ -797,6 +796,7 @@ export const getAccountLastNumber = async (name, col, val) => {
     limit: 1,
     sorts: [{ column: "internal_number", order: "DESC", nulls: "last" }],
   });
+  console.log("🚀 ~ getAccountLastNumber ~ response:", response);
   return response?.result?.at(0);
 };
 
@@ -1026,6 +1026,26 @@ const updateUnits = async (unit, data, unitId) => {
 
 // insert To User
 const insertToUser = async (data) => {
+  let member_id = null;
+  if (!data?.member_id) {
+    const memberRes = await ApiActions.insert("members", {
+      data: {
+        name: data?.name,
+        email: data?.email,
+        phone: data?.phone,
+        user_type: 3,
+      },
+    });
+    member_id = memberRes?.record?.id;
+  } else {
+    const memberRes = await ApiActions.update("members", {
+      conditions: [{ type: "and", conditions: [["id", "=", data?.member_id]] }],
+    });
+    member_id = memberRes?.result?.at(0)?.id;
+  }
+
+  if (!member_id) return;
+
   if (data?.id) {
     const res = await ApiActions.update("user", {
       conditions: [{ type: "and", conditions: [["id", "=", data?.id]] }],
@@ -1034,18 +1054,20 @@ const insertToUser = async (data) => {
 
     return res;
   }
+
   let type = SELECT_LISTS("user_type")?.find(
     (c) => c.id === +data?.card_type
   )?.id;
 
   if (data?.card_type > 2) {
     const userResponse = await ApiActions.insert("user", {
-      data,
+      data: { ...data, member_id },
     });
     return userResponse;
   } else {
     const account = await getInsertAccountTrigger(MAIN_USERS_CODE?.[type]);
     account.name = data?.name;
+    // account.ltnname = data?.ltnname;
 
     // automatic insert a new account in suppliers or customers before insert the user
     const accountResponse = await ApiActions.insert("account", {
@@ -1055,8 +1077,17 @@ const insertToUser = async (data) => {
     if (accountResponse?.success) {
       // insert the USER after connect it with the inserted ACCOUNT
       const userResponse = await ApiActions.insert("user", {
-        data: { ...data, account_id: accountResponse?.record?.id },
+        data: { ...data, member_id, account_id: accountResponse?.record?.id },
       });
+      
+      if(!userResponse?.success) {
+        await ApiActions.remove('members', {
+          conditions: [{type: 'and', conditions: [['id', '=', member_id]]}]
+        })
+        await ApiActions.remove('account', {
+          conditions: [{type: 'and', conditions: [['id', '=', account]]}]
+        })
+      }
       return userResponse;
     }
   }

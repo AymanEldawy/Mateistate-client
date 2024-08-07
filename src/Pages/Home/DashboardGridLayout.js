@@ -1,19 +1,21 @@
-import { INSERT_DEFAULT_CATEGORY, INSERT_DEFAULT_DATA, INSERT_DEFAULT_LACK_REASONS, insertIntoDefaultService, insertIntoMaterials, insertIntoNotification, insertIntoProblems, insertTimes, updateDefaultService, updateProblems, updateUserToken } from "Helpers/GENERATE_STARTING_DATA";
+import { INSERT_DEFAULT_ACCOUNTS, INSERT_DEFAULT_CATEGORY, INSERT_DEFAULT_DATA, INSERT_DEFAULT_LACK_REASONS, insertIntoDefaultService, insertIntoMaterials, insertIntoNotification, insertIntoProblems, insertTimes, updateDefaultService, updateMaterials, updateMaterialsPrice, updateProblems, updateUserToken } from "Helpers/GENERATE_STARTING_DATA";
 import { ReportCount } from "./ReportCount";
 import { ReportLatest } from "./ReportLatest";
 
 export const DashboardGridLayout = () => {
 
   const loadData  = async () => {
+    // await INSERT_DEFAULT_ACCOUNTS()
+    // await updateMaterials()
     // await INSERT_DEFAULT_DATA()
-    await updateDefaultService()
     // await INSERT_DEFAULT_CATEGORY();
     // await INSERT_DEFAULT_LACK_REASONS()
     // await insertIntoProblems();
-    // await insertIntoMaterials();
     // await insertIntoDefaultService();
-    // await insertIntoNotification()
-    // await insertTimes();
+    // await updateMaterialsPrice();
+    await insertIntoNotification()
+    // await updateDefaultService()
+    await insertTimes();
     // await updateUserToken();
   }
 

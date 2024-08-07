@@ -612,7 +612,7 @@ const user_general = [
     hide_in_form: true,
   },
   FIELDS_STRUCTURE.name(),
-  { label: "ltnname", name: "ltnname", type: "text", required: false },
+  // { label: "ltnname", name: "ltnname", type: "text", required: false },
 
   FIELDS_STRUCTURE.created_at(),
   {

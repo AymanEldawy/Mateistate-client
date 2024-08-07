@@ -652,7 +652,7 @@ export async function INSERT_DEFAULT_LACK_REASONS() {
 }
 
 // insert default ACCOUNTS
-async function INSERT_DEFAULT_ACCOUNTS() {
+export async function INSERT_DEFAULT_ACCOUNTS() {
   const currencyResponse = await ApiActions.insert("currency", {
     data: {
       name: DEFAULT_CURRENCY_NAME,
@@ -676,7 +676,7 @@ async function INSERT_DEFAULT_ACCOUNTS() {
     let data = {
       internal_number: item?.code,
       name: item?.name,
-      ltnnanme: item?.ltnnanme,
+      // ltnnanme: item?.ltnnanme,
       type: 1,
       currency_id,
       status: item?.type,
@@ -1005,11 +1005,12 @@ export async function INSERT_DEFAULT_MULTIPLE_DATA() {
 
 export async function INSERT_DEFAULT_DATA() {
   // await ApiActions.read("cheque");
-  INSERT_DEFAULT_BANKS();
-  INSERT_DEFAULT_MULTIPLE_DATA();
-  INSERT_DEFAULT_LACK_REASONS();
-  INSERT_DEFAULT_CATEGORY();
-  await INSERT_DEFAULT_ACCOUNTS();
+  await INSERT_DEFAULT_BANKS();
+  await INSERT_DEFAULT_MULTIPLE_DATA();
+  await INSERT_DEFAULT_LACK_REASONS();
+  await insertIntoMaterials();
+  // INSERT_DEFAULT_CATEGORY();
+  // await INSERT_DEFAULT_ACCOUNTS();
 }
 // INSERT_DEFAULT_CHEQUES()
 // INSERT_DEFAULT_DATA()
@@ -1073,6 +1074,10 @@ export async function insertIntoDefaultService() {
   if (!CATEGORIES?.length) return;
 
   for (let i = 0; i < 150; i++) {
+    let service =
+      default_service_update[
+        Math.floor(Math.random() * default_service_update?.length)
+      ];
     await ApiActions.insert("default_service", {
       data: {
         name: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
@@ -1088,6 +1093,39 @@ export async function insertIntoDefaultService() {
         display: true,
         available: true,
         service_type: 0,
+        ...service,
+      },
+    });
+  }
+}
+
+export async function updateMaterialsPrice() {
+  const matRes = await ApiActions.read("material");
+  for (const mat of matRes?.result) {
+    await ApiActions.insert("material_prices", {
+      data: {
+        material_id: mat.id,
+        last_price: Math.floor(Math.random() * 200),
+        vat_rate: Math.floor(Math.random() * 5),
+      },
+    });
+  }
+}
+
+export async function updateMaterials() {
+  let CATEGORIES = [];
+
+  const matRes = await ApiActions.read("material");
+  const ress = await ApiActions.read("category");
+
+  for (const item of ress?.result) {
+    CATEGORIES?.push(item?.id);
+  }
+  for (const mat of matRes?.result) {
+    await ApiActions.update("material", {
+      conditions: [{ type: "and", conditions: [["id", "=", mat.id]] }],
+      updates: {
+        category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
       },
     });
   }
@@ -1479,33 +1517,16 @@ export async function insertIntoProblems() {
 
   for (let i = 0; i < 150; i++) {
     let problem = problems[Math.floor(Math.random() * problems?.length)];
+
     await ApiActions.insert("category_problem", {
       data: {
-        description: problem.description,
+        description: problem.description?.slice(0,55),
         category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
         minutes: problem.minutes,
         is_available: true,
+        ...problem,
       },
     });
-  }
-}
-
-// Generate 50 notification objects
-export async function updateProblems() {
-  const res = await ApiActions.read("category_problem");
-  console.log("🚀 ~ updateProblems ~ data:", res);
-  let data = res?.result;
-
-  for (const item of data) {
-    let problem = problems[Math.floor(Math.random() * problems?.length)];
-    const res = await ApiActions.update("category_problem", {
-      conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
-      updates: {
-        description: problem.description,
-        minutes: problem.minutes,
-      },
-    });
-    console.log("🚀 ~ updateProblems ~ res:", res);
   }
 }
 
@@ -1736,44 +1757,7 @@ const default_service_update = [
   },
 ];
 
-export async function updateDefaultService() {
-  const res = await ApiActions.read("default_service");
-  let data = res?.result;
-
-  for (const item of data) {
-    let service =
-      default_service_update[
-        Math.floor(Math.random() * default_service_update?.length)
-      ];
-    const res = await ApiActions.update("default_service", {
-      conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
-      updates: service,
-    });
-    console.log("🚀 ~ updateProblems ~ res:", res);
-  }
-}
 // insertIntoNotification();
-
-const workers = [
-  {
-    card_type: 4,
-    category_id: "59dd0ab6-5f81-4e12-ad9a-4bd5033af459",
-    name: "worker 2",
-    phone: "+971400400100",
-  },
-  {
-    card_type: 4,
-    category_id: "59dd0ab6-5f81-4e12-ad9a-4bd5033af459",
-    name: "worker 3",
-    phone: "+971400400200",
-  },
-  {
-    card_type: 4,
-    category_id: "59dd0ab6-5f81-4e12-ad9a-4bd5033af459",
-    name: "worker 4",
-    phone: "+971400400300",
-  },
-];
 
 // insert times
 export async function insertTimes() {
@@ -1813,17 +1797,6 @@ export async function insertTimes() {
         work_time_end: endDate,
       });
     }
-
-    // await ApiActions.insert("category_problem", {
-    //   data: {
-    //     description: randomString(
-    //       Math.floor(Math.random() * (100 - 50 + 1)) + 50
-    //     ),
-    //     category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
-    //     minutes: Math.floor(Math.random() * 400),
-    //     is_available: true,
-    //   },
-    // });
   }
 }
 

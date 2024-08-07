@@ -3,7 +3,7 @@
 import Cookies from "js-cookie";
 import MatieStateClient from "./MatieStateClient";
 import { toast } from "react-toastify";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export const SHOULD_DELETE_ENTRY = {
   account: true,
@@ -49,16 +49,20 @@ function CURD() {
   };
   // Example Usage of createRecord method
   const insert = async (tableName, params) => {
+    console.log("🚀 ~ insert ~ params:", params);
     try {
+      let data = {
+        ...params.data,
+      };
+
+      if (tableName !== "members") {
+        data.tenant_id = Cookies.get("tenant_id");
+      }
+
       const createRecordResponse = await matieStateClient.createRecord(
         tableName,
         {
-          ...params,
-          data: {
-            ...params?.data,
-            id: uuidv4(),
-            tenant_id: Cookies.get("tenant_id"),
-          },
+          data,
         }
       );
       return createRecordResponse;
@@ -72,15 +76,15 @@ function CURD() {
   const read = async (tableName, params = {}) => {
     try {
       const tenant_id = Cookies.get("tenant_id");
-      // if (tenant_id) {
-      //   params = {
-      //     ...params,
-      //     conditions: [
-      //       ...(params?.conditions || []),
-      //       { type: "and", conditions: [["tenant_id", "=", tenant_id]] },
-      //     ],
-      //   };
-      // }
+      if (tenant_id) {
+        params = {
+          ...params,
+          conditions: [
+            ...(params?.conditions || []),
+            { type: "and", conditions: [["tenant_id", "=", tenant_id]] },
+          ],
+        };
+      }
 
       const readRecordResponse = await matieStateClient.readRecords(
         tableName,
@@ -114,8 +118,7 @@ function CURD() {
     });
   };
 
-  const deleteContract = async (params) => {
-  };
+  const deleteContract = async (params) => {};
 
   // Example Usage of deleteRecords method
   const remove = async (tableName, params = {}) => {

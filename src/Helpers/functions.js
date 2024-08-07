@@ -77,6 +77,7 @@ export function getMonthsDiff(start_date, end_date, price) {
 }
 
 export async function getInsertAccountTrigger(code, conditions) {
+  console.log("🚀 ~ getInsertAccountTrigger ~ code:", code)
   // get suppliers or customers id
   const parentAccount = await ApiActions.read("account", {
     conditions: code
@@ -101,7 +102,8 @@ export async function getInsertAccountTrigger(code, conditions) {
     ],
   });
 
-  let internal_number = +parentAccountData?.internal_number + 1;
+  console.log("🚀 ~ getInsertAccountTrigger ~ parentAccountData:", parentAccountData)
+  let internal_number = +parentAccountData?.internal_number + 1 || parseInt(`${parentAccount?.result?.at(0)?.internal_number}01`);
   let level = +parentAccountData?.level || 0;
 
   let account = {

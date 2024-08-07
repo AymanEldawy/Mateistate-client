@@ -19,12 +19,22 @@ const Login = () => {
 
   const onSubmit = async () => {
     if (!isDirty) return;
-    const res = await ApiActions.read("admins", {
+    const res = await ApiActions.read("members", {
       conditions: [
         { type: "and", conditions: [["email", "=", watch("email")]] },
         { type: "and", conditions: [["password", "=", watch("password")]] },
       ],
+      joins: [
+        {
+          type: "join",
+          table: "admins",
+          conditions: { "members.id": "admins.member_id" },
+        },
+      ],
+      columns: ["members.*", "admins.tenant_id as tenant_id"],
     });
+
+    console.log(res?.result);
 
     if (res?.success) {
       let data = res?.result?.at(0);
