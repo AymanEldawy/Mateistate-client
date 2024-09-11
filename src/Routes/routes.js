@@ -63,6 +63,7 @@ import OwnerExpensesForm from "Components/StructurePage/Forms/OwnerExpensesForm/
 import List from "Components/Tables/List";
 import BillForm from "Components/StructurePage/Forms/BillForm/BillForm";
 import MaterialForm from "Components/StructurePage/Forms/MaterialForm/MaterialForm";
+import UnregisterMaterials from "Components/StructurePage/Forms/MaterialForm/UnregisterMaterials";
 
 const publicRoutes = [
   { path: "**", component: <NouFound /> },
@@ -256,6 +257,7 @@ const authProtectedRoutes = [
 
   // Main forms
   { path: "/bill/:code/:name/:id", component: <BillForm /> },
+  { path: "/bill/:code/:name/", component: <BillForm /> },
   { path: "/cheques/:code/:name/:id", component: <ChequeForm /> },
   { path: "/cheques/:code/:name/", component: <ChequeForm /> },
   { path: "/list/:name/", component: <List /> },
@@ -273,6 +275,7 @@ const authProtectedRoutes = [
   },
   { path: "/material/:id", component: <MaterialForm /> },
   { path: "/material/", component: <MaterialForm /> },
+  { path: "/materials/unregister-material/", component: <UnregisterMaterials /> },
   { path: "/buildings/:id", component: <BuildingForm /> },
   { path: "/buildings/", component: <BuildingForm /> },
   { path: "/maintenances/:code/:id", component: <ServiceForm /> },
@@ -280,6 +283,10 @@ const authProtectedRoutes = [
   { path: "/:name/:id", component: <DynamicForm /> },
   { path: "/:name", component: <DynamicForm /> },
   // { path: "/tools/:name/:id", component: <DynamicForm /> },
+  {
+    path: "/reservation_property/",
+    component: <ReservationPropertyForm />,
+  },
   {
     path: "/reservation_property/:id",
     component: <ReservationPropertyForm />,
@@ -295,6 +302,7 @@ const authProtectedRoutes = [
     path: "/contracts/:type/:name",
     component: <ContractForm layout="update" />,
   },
+  { path: "/owner_expenses", component: <OwnerExpensesForm /> },
   { path: "/owner_expenses/:id", component: <OwnerExpensesForm /> },
   { path: "/lawsuit/:id", component: <LawsuitForm /> },
   // Chart forms

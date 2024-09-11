@@ -7,24 +7,40 @@ import {
 import { BanknoteIcon, UserIcon } from "Components/Icons";
 import IndeterminateCheckbox from "Components/DynamicTable/IndeterminateCheckbox";
 import { SELECT_LISTS } from "./constants";
+import { ApiActions } from "./Lib/api";
 
 const cheque_pattern = [
   {
     size: 40,
     header: "no",
     accessorKey: "number",
-    cell: ({ getValue, row }) => (
-      <Link
-        to={`/patterns/contract_pattern/${row?.original?.id}`}
-        className="text-blue-500 font-medium hover:underline"
-      >
-        # {getValue()}
-      </Link>
-    ),
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          to={`/patterns/cheque_pattern/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          # {getValue()}
+        </Link>
+      );
+    },
   },
 
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link
+          to={`/patterns/cheque_pattern/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   {
     header: "paper_type",
     accessorKey: "paper_type",
@@ -49,46 +65,24 @@ const cheque_pattern = [
   { header: "default_print_folder", accessorKey: "default_print_folder" },
 ];
 
-const default_service = [
-  {
-    size: 40,
-    header: "no",
-    accessorKey: "number",
-    cell: ({ getValue, row }) => {
-      return (
-        <Link
-          to={`/cheques/2/Received Check/${row?.original?.id}`}
-          className="text-blue-500 font-medium hover:underline"
-        >
-          # {getValue()}
-        </Link>
-      );
-    },
-  },
-
-  { header: "number", accessorKey: "number" },
-  { header: "name", accessorKey: "name" },
-  { header: "description", accessorKey: "description" },
-  { header: "category_id", accessorKey: "category_id" },
-  { header: "service_type", accessorKey: "service_type" },
-  { header: "All", accessorKey: "All" },
-  { header: "Flats", accessorKey: "Flats" },
-  { header: "Parking", accessorKey: "Parking" },
-  { header: "Land", accessorKey: "Land" },
-  { header: "price", accessorKey: "price" },
-  { header: "available", accessorKey: "available" },
-  { header: "display", accessorKey: "display" },
-  { header: "picture", accessorKey: "picture" },
-];
 const cheque = [
   {
     size: 40,
     header: "no",
     accessorKey: "number",
     cell: ({ getValue, row }) => {
+      let data = null;
+      ApiActions.read("cheque_pattern", {
+        conditions: [
+          { type: "and", conditions: [["code", "=", row?.original?.type]] },
+        ],
+      }).then((res) => {
+        data = res?.data?.at(0);
+        console.log(res, "----type");
+      });
       return (
         <Link
-          to={`/cheques/2/Received Check/${row?.original?.id}`}
+          to={`/cheques/${data?.code}/${data?.name}/${row?.original?.id}`}
           className="text-blue-500 font-medium hover:underline"
         >
           # {getValue()}
@@ -119,8 +113,20 @@ const cheque = [
   { header: "shop_no", accessorKey: "shop_no" },
   { header: "apartment_id", accessorKey: "apartment_id" },
   { header: "apartment_no", accessorKey: "apartment_no" },
-  { header: "due_date", accessorKey: "due_date" },
-  { header: "end_due_date", accessorKey: "end_due_date" },
+  {
+    header: "due_date",
+    accessorKey: "due_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
+  {
+    header: "end_due_date",
+    accessorKey: "end_due_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "without_due_date", accessorKey: "without_due_date" },
   { header: "bank_id", accessorKey: "bank_id" },
   { header: "note1", accessorKey: "note1" },
@@ -186,7 +192,11 @@ const contract = [
 
       return (
         <Link
-          to={`/contracts/${type?.name}/${unitType} ${type?.name} Contract/${row?.original?.id}?flat_type=${unitType}&code=${row?.original?.code}${row?.original?.id}`}
+          to={`/contracts/${type?.name?.toLowerCase()}/${unitType} ${
+            type?.name
+          } Contract/${row?.original?.id}?flat_type=${unitType}&code=${
+            row?.original?.code
+          }${row?.original?.id}`}
           className="text-blue-500 font-medium hover:underline"
         >
           # {getValue()}
@@ -392,7 +402,13 @@ const evacuation_request = [
     ),
   },
   { header: "description", accessorKey: "description" },
-  { header: "evacuation_date", accessorKey: "evacuation_date" },
+  {
+    header: "evacuation_date",
+    accessorKey: "evacuation_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "contract_id", accessorKey: "contract_id" },
   { header: "user_account_id", accessorKey: "user_account_id" },
   {
@@ -446,8 +462,20 @@ const service = [
     ),
   },
   { header: "code", accessorKey: "code" },
-  { header: "start_date", accessorKey: "start_date" },
-  { header: "end_date", accessorKey: "end_date" },
+  {
+    header: "start_date",
+    accessorKey: "start_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
+  {
+    header: "end_date",
+    accessorKey: "end_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "building_name", accessorKey: "building_name" },
   { header: "unit_name", accessorKey: "unit_name" },
   { header: "apartment_no", accessorKey: "apartment_no" },
@@ -507,8 +535,7 @@ const user_work_times = [
   { header: "category_id", accessorKey: "category_id" },
   { header: "work_time_start", accessorKey: "work_time_start" },
   { header: "work_time_end", accessorKey: "work_time_end" },
-
-]
+];
 const material_group = [
   {
     id: "select",
@@ -566,7 +593,9 @@ const material = [
     ),
   },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name",
+  {
+    header: "name",
+    accessorKey: "name",
     cell: ({ row, getValue }) => {
       return (
         <Link
@@ -577,8 +606,7 @@ const material = [
         </Link>
       );
     },
-
-   },
+  },
   { header: "defaults1", accessorKey: "defaults1" },
   { header: "unit1", accessorKey: "unit1" },
   { header: "barcode1", accessorKey: "barcode1" },
@@ -660,13 +688,34 @@ const category_problem = [
       />
     ),
   },
-  { header: "name", accessorKey: "name" },
-  { header: "description", accessorKey: "description" },
-  { header: "category_name", accessorKey: "category_name" },
+  {
+    header: "category_name",
+    accessorKey: "category_name",
+    cell: ({ row, getValue }) => {
+      console.log(row?.original, "--");
+      return getValue();
+    },
+  },
+  {
+    header: "description",
+    accessorKey: "description",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          className="text-blue-500 hover:underline"
+          to={`/category_problem/${row?.original?.id}`}
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
+  { header: "price", accessorKey: "price" },
+  { header: "minutes", accessorKey: "minutes" },
   { header: "is_available", accessorKey: "is_available" },
 ];
 
-export const account = [
+const account = [
   {
     id: "select",
     size: 40,
@@ -697,7 +746,20 @@ export const account = [
     sortingFn: "myCustomSortingFn", // use custom global sorting function
   },
 
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/account/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   {
     header: "type",
     accessorKey: "type",
@@ -721,7 +783,7 @@ export const account = [
   { header: "note", accessorKey: "note" },
 ];
 
-export const user = [
+const user = [
   {
     id: "select",
     size: 40,
@@ -792,7 +854,13 @@ export const user = [
       return <span>{type?.name}</span>;
     },
   },
-  { header: "date_of_birth", accessorKey: "date_of_birth" },
+  {
+    header: "date_of_birth",
+    accessorKey: "date_of_birth",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "passport_number", accessorKey: "passport_number" },
   { header: "passport_expiry", accessorKey: "passport_expiry" },
   {
@@ -833,15 +901,9 @@ export const user = [
   {
     header: "nationality",
     accessorKey: "nationality",
-    cell: ({ getValue }) => {
-      let type = SELECT_LISTS("nationality_list")?.find(
-        (c) => c?.id === getValue()
-      );
-      return <span>{type?.ar_name}</span>;
-    },
   },
 ];
-export const lessor = [
+const lessor = [
   {
     id: "select",
     size: 40,
@@ -866,9 +928,28 @@ export const lessor = [
       />
     ),
   },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/lessor/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   { header: "passport", accessorKey: "passport" },
-  { header: "passport_expiry_date", accessorKey: "passport_expiry_date" },
+  {
+    header: "passport_expiry_date",
+    accessorKey: "passport_expiry_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "id_card", accessorKey: "id_card" },
   { header: "lessor_card", accessorKey: "lessor_card" },
   { header: "cell_phone", accessorKey: "cell_phone" },
@@ -883,7 +964,7 @@ export const lessor = [
   { header: "role", accessorKey: "role" },
 ];
 
-export const owner = [
+const owner = [
   {
     id: "select",
     size: 40,
@@ -908,7 +989,20 @@ export const owner = [
       />
     ),
   },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/owner/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   { header: "id_card", accessorKey: "id_card" },
   { header: "phone", accessorKey: "phone" },
   { header: "cell_phone", accessorKey: "cell_phone" },
@@ -919,7 +1013,7 @@ export const owner = [
   { header: "nationality", accessorKey: "nationality" },
 ];
 
-export const reservation_property = [
+const reservation_property = [
   {
     id: "select",
     size: 40,
@@ -956,8 +1050,20 @@ export const reservation_property = [
   { header: "property_type", accessorKey: "property_type" },
   { header: "building_id", accessorKey: "building_id" },
   { header: "property_id", accessorKey: "property_id" },
-  { header: "book_date", accessorKey: "book_date" },
-  { header: "end_book_date", accessorKey: "end_book_date" },
+  {
+    header: "book_date",
+    accessorKey: "book_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
+  {
+    header: "end_book_date",
+    accessorKey: "end_book_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "note", accessorKey: "note" },
   { header: "has_payment", accessorKey: "has_payment" },
   { header: "payment_method", accessorKey: "payment_method" },
@@ -965,7 +1071,7 @@ export const reservation_property = [
   { header: "payment_amount", accessorKey: "payment_amount" },
   { header: "currency_id", accessorKey: "currency_id" },
 ];
-export const seller = [
+const seller = [
   {
     id: "select",
     size: 40,
@@ -997,7 +1103,20 @@ export const seller = [
       <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
     ),
   },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/seller/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   { header: "nationality", accessorKey: "nationality" },
   { header: "id_card", accessorKey: "id_card" },
   { header: "passport", accessorKey: "passport" },
@@ -1013,7 +1132,7 @@ export const seller = [
   { header: "statement", accessorKey: "statement" },
 ];
 
-export const bank = [
+const bank = [
   {
     id: "select",
     size: 40,
@@ -1045,11 +1164,24 @@ export const bank = [
       <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
     ),
   },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/bank/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   { header: "address", accessorKey: "address" },
 ];
 
-export const cost_center = [
+const cost_center = [
   {
     id: "select",
     size: 40,
@@ -1082,12 +1214,25 @@ export const cost_center = [
     ),
   },
   { header: "number", accessorKey: "number" },
-  { header: "name", accessorKey: "name" },
-  { header: "parent_id", accessorKey: "parent_id" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/cost_center/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
+  { header: "parent_id", accessorKey: "parent_name" },
   { header: "note", accessorKey: "note" },
 ];
 
-export const country = [
+const country = [
   {
     id: "select",
     size: 40,
@@ -1122,7 +1267,7 @@ export const country = [
   { header: "name", accessorKey: "name" },
   { header: "code", accessorKey: "code" },
 ];
-export const currency = [
+const currency = [
   {
     id: "select",
     size: 40,
@@ -1147,14 +1292,31 @@ export const currency = [
       />
     ),
   },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/currency/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {getValue()}
+        </Link>
+      );
+    },
+  },
   { header: "code", accessorKey: "code" },
   { header: "rate", accessorKey: "rate" },
+  {
+    header: "ltnname",
+    accessorKey: "ltnname",
+  },
 ];
 
 //  === building card
 
-export const building = [
+const building = [
   {
     id: "select",
     size: 40,
@@ -1179,7 +1341,9 @@ export const building = [
       />
     ),
   },
-  { header: "name", accessorKey: "name", 
+  {
+    header: "name",
+    accessorKey: "name",
     cell: ({ getValue, row }) => (
       <Link
         to={`/buildings/${row?.original?.id}`}
@@ -1188,9 +1352,7 @@ export const building = [
         # {getValue()}
       </Link>
     ),
-
-
-   },
+  },
   { header: "emirate", accessorKey: "emirate" },
   { header: "suburb", accessorKey: "suburb" },
   { header: "area", accessorKey: "area" },
@@ -1200,7 +1362,13 @@ export const building = [
   { header: "basin_number", accessorKey: "basin_number" },
   { header: "bond_number", accessorKey: "bond_number" },
   { header: "bond_type", accessorKey: "bond_type" },
-  { header: "bond_date", accessorKey: "bond_date" },
+  {
+    header: "bond_date",
+    accessorKey: "bond_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "owner_id", accessorKey: "owner_id" },
   { header: "display", accessorKey: "display" },
   { header: "statement", accessorKey: "statement" },
@@ -1223,7 +1391,13 @@ export const building = [
   { header: "service_apartments", accessorKey: "service_apartments" },
   { header: "drivers_apartments", accessorKey: "drivers_apartments" },
   { header: "stores", accessorKey: "stores" },
-  { header: "purchase_date", accessorKey: "purchase_date" },
+  {
+    header: "purchase_date",
+    accessorKey: "purchase_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "amount", accessorKey: "amount" },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "currency_val", accessorKey: "currency_val" },
@@ -1238,221 +1412,11 @@ export const building = [
   { header: "gen_entries", accessorKey: "gen_entries" },
 ];
 
-export const building_buying = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "amount", accessorKey: "amount" },
-  { header: "gen_entries", accessorKey: "gen_entries" },
-  { header: "currency_id", accessorKey: "currency_id" },
-  { header: "building_id", accessorKey: "building_id" },
-  { header: "supplier_account_id", accessorKey: "supplier_account_id" },
-  { header: "statement", accessorKey: "statement" },
-];
-export const building_editorial_entry = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "building_id", accessorKey: "building_id" },
-  { header: "building_cost", accessorKey: "building_cost" },
-];
-export const building_investment = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  { header: "owner_id", accessorKey: "owner_id" },
-  { header: "investment_start_date", accessorKey: "investment_start_date" },
-  { header: "investment_end_date", accessorKey: "investment_end_date" },
-  { header: "terminating_tenancies", accessorKey: "terminating_tenancies" },
-  { header: "investment_value", accessorKey: "investment_value" },
-  { header: "gen_entries", accessorKey: "gen_entries" },
-  { header: "currency_id", accessorKey: "currency_id" },
-  { header: "currency_val", accessorKey: "currency_val" },
-  { header: "tenants", accessorKey: "tenants" },
-  { header: "renters_insurance", accessorKey: "renters_insurance" },
-];
-export const building_pictures = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "picture", accessorKey: "picture" },
-  { header: "building_id", accessorKey: "building_id" },
-];
-export const building_real_estate_development = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  { header: "account_id", accessorKey: "account_id" },
-  { header: "create_within_id", accessorKey: "create_within_id" },
-  { header: "building_receipt", accessorKey: "building_receipt" },
-  { header: "received_date", accessorKey: "received_date" },
-  { header: "amount", accessorKey: "amount" },
-  { header: "currency_id", accessorKey: "currency_id" },
-  { header: "currency_val", accessorKey: "currency_val" },
-  { header: "note", accessorKey: "note" },
-  { header: "building_id", accessorKey: "building_id" },
-];
-export const building_real_estate_management = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  { header: "owner_id", accessorKey: "owner_id" },
-  { header: "commission_rate", accessorKey: "commission_rate" },
-  { header: "revenue_id", accessorKey: "revenue_id" },
-];
-
 // ==== End Cards
 
 // ==== Start accounting_voucher
 
-export const accounting_voucher_grid_data = [
+const accounting_voucher_grid_data = [
   {
     id: "select",
     size: 40,
@@ -1494,7 +1458,7 @@ export const accounting_voucher_grid_data = [
   { header: "note", accessorKey: "note" },
 ];
 
-export const accounting_voucher_main_data = [
+const accounting_voucher_main_data = [
   {
     id: "select",
     size: 40,
@@ -1541,7 +1505,7 @@ export const accounting_voucher_main_data = [
   { header: "sms", accessorKey: "sms" },
 ];
 
-export const accounting_voucher_pattern = [
+const accounting_voucher_pattern = [
   {
     id: "select",
     size: 40,
@@ -1601,49 +1565,10 @@ export const accounting_voucher_pattern = [
   },
 ];
 
-export const accounting_voucher_pictures = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "picture", accessorKey: "picture" },
-  {
-    header: "accounting_voucher_main_id",
-    accessorKey: "accounting_voucher_main_id",
-  },
-];
-
 // ==== End accounting_voucher
 // ==== Start apartment
 
-export const apartment = [
+const apartment = [
   {
     id: "select",
     size: 40,
@@ -1668,10 +1593,37 @@ export const apartment = [
       />
     ),
   },
-  { header: "building_id", accessorKey: "building_id" },
-  { header: "apartment_number", accessorKey: "apartment_number" },
+  { header: "building_id", accessorKey: "building_name" },
+  {
+    header: "apartment_number",
+    accessorKey: "apartment_no",
+    cell: ({ getValue, row }) => (
+      <Link
+        to={`/apartment/${row?.original?.id}`}
+        className="text-blue-500 font-medium hover:underline"
+      >
+        {getValue()}
+      </Link>
+    ),
+  },
   { header: "floor", accessorKey: "floor" },
-  { header: "type", accessorKey: "type" },
+  {
+    header: "apartment_kind",
+    accessorKey: "apartment_kind",
+    cell: ({ getValue, row }) => {
+      let kind = SELECT_LISTS("apartment_flat_type")?.find(
+        (c) => c?.id === +getValue()
+      ).name;
+      return (
+        <span
+          to={`/apartment/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {kind}
+        </span>
+      );
+    },
+  },
   { header: "description", accessorKey: "description" },
   { header: "category", accessorKey: "category" },
   { header: "area", accessorKey: "area" },
@@ -1686,8 +1638,6 @@ export const apartment = [
   { header: "water_meter", accessorKey: "water_meter" },
   { header: "electricity_meter", accessorKey: "electricity_meter" },
   { header: "statement", accessorKey: "statement" },
-  { header: "x_index", accessorKey: "x_index" },
-  { header: "y_index", accessorKey: "y_index" },
   { header: "room_count", accessorKey: "room_count" },
   { header: "property_values_id", accessorKey: "property_values_id" },
   { header: "hex", accessorKey: "hex" },
@@ -1697,132 +1647,9 @@ export const apartment = [
   { header: "note", accessorKey: "note" },
 ];
 
-export const apartment_pictures = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  { header: "apartment_id", accessorKey: "apartment_id" },
-  { header: "picture", accessorKey: "picture" },
-];
-export const apartment_property_values = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  { header: "area", accessorKey: "area" },
-  { header: "area_unit", accessorKey: "area_unit" },
-  { header: "view", accessorKey: "view" },
-  { header: "bathroom_count", accessorKey: "bathroom_count" },
-  { header: "balcony_count", accessorKey: "balcony_count" },
-  { header: "property_type", accessorKey: "property_type" },
-  { header: "note", accessorKey: "note" },
-  { header: "room_count", accessorKey: "room_count" },
-  { header: "hex", accessorKey: "hex" },
-];
-export const apartment_rental_price = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  { header: "apartment_id", accessorKey: "apartment_id" },
-  { header: "date", accessorKey: "date" },
-  { header: "price", accessorKey: "price" },
-  { header: "currency_id", accessorKey: "currency_id" },
-];
-export const apartment_selling_price = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  { header: "apartment_id", accessorKey: "apartment_id" },
-  { header: "date", accessorKey: "date" },
-  { header: "price", accessorKey: "price" },
-  { header: "currency_id", accessorKey: "currency_id" },
-];
 // ==== End apartment
 
-export const contract_cycle = [
+const contract_cycle = [
   {
     id: "select",
     size: 40,
@@ -1868,7 +1695,7 @@ export const contract_cycle = [
   { header: "civil_license_to", accessorKey: "civil_license_to" },
 ];
 
-export const contract_financial = [
+const contract_financial = [
   {
     id: "select",
     size: 40,
@@ -1914,8 +1741,20 @@ export const contract_financial = [
   { header: "electricity_insurance", accessorKey: "electricity_insurance" },
   { header: "last_meter_reading", accessorKey: "last_meter_reading" },
   { header: "contract_duration", accessorKey: "contract_duration" },
-  { header: "start_date", accessorKey: "start_date" },
-  { header: "end_date", accessorKey: "end_date" },
+  {
+    header: "start_date",
+    accessorKey: "start_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
+  {
+    header: "end_date",
+    accessorKey: "end_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "paid_type", accessorKey: "paid_type" },
   { header: "cost_center_id", accessorKey: "cost_center_id" },
   { header: "revenue_account_id", accessorKey: "revenue_account_id" },
@@ -1937,45 +1776,7 @@ export const contract_financial = [
   { header: "fee_revenue_account_id", accessorKey: "fee_revenue_account_id" },
 ];
 
-export const contract_linked_parking = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "contract_id", accessorKey: "contract_id" },
-  { header: "building_id", accessorKey: "building_id" },
-  { header: "account_id", accessorKey: "account_id" },
-  { header: "main_contract_id", accessorKey: "main_contract_id" },
-];
-
-export const contract_pattern = [
+const contract_pattern = [
   {
     id: "select",
     size: 40,
@@ -2116,416 +1917,8 @@ export const contract_pattern = [
   { header: "sms", accessorKey: "sms" },
 ];
 
-export const contract_pictures = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  { header: "contract_id", accessorKey: "contract_id" },
-  { header: "picture", accessorKey: "picture" },
-];
-
-export const contract_receipt_number = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  { header: "contract_id", accessorKey: "contract_id" },
-  { header: "receipt_number", accessorKey: "receipt_number" },
-  { header: "receipt_date", accessorKey: "receipt_date" },
-  { header: "receipt_statement", accessorKey: "receipt_statement" },
-];
-
-// ==== Start financial
-export const financial_data = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "number", accessorKey: "number" },
-  { header: "type", accessorKey: "type" },
-  { header: "internal_number", accessorKey: "internal_number" },
-  { header: "amount", accessorKey: "amount" },
-  { header: "currency_id", accessorKey: "currency_id" },
-  { header: "seller_id", accessorKey: "seller_id" },
-  { header: "received_from", accessorKey: "received_from" },
-  { header: "beneficiary_name", accessorKey: "beneficiary_name" },
-  { header: "cost_center_id", accessorKey: "cost_center_id" },
-  { header: "note", accessorKey: "note" },
-  { header: "date", accessorKey: "date" },
-  { header: "due_date", accessorKey: "due_date" },
-  { header: "due_end_date", accessorKey: "due_end_date" },
-  { header: "without_due_date", accessorKey: "without_due_date" },
-  { header: "bank_id", accessorKey: "bank_id" },
-  { header: "obverse_account_id", accessorKey: "obverse_account_id" },
-  { header: "obverse_account_note", accessorKey: "obverse_account_note" },
-  { header: "observe_cost_center_id", accessorKey: "observe_cost_center_id" },
-  { header: "note1", accessorKey: "note1" },
-  { header: "note2", accessorKey: "note2" },
-  { header: "deport_status", accessorKey: "deport_status" },
-  { header: "collection_status", accessorKey: "collection_status" },
-  {
-    header: "partial_collection_status",
-    accessorKey: "partial_collection_status",
-  },
-  { header: "endors_status", accessorKey: "endors_status" },
-  { header: "return_status", accessorKey: "return_status" },
-  { header: "deposit_status", accessorKey: "deposit_status" },
-  { header: "clipboard_number", accessorKey: "clipboard_number" },
-  { header: "clipboard_date", accessorKey: "clipboard_date" },
-  {
-    header: "clipboard_receipt_number",
-    accessorKey: "clipboard_receipt_number",
-  },
-  {
-    header: "clipboard_internal_number",
-    accessorKey: "clipboard_internal_number",
-  },
-];
-
-export const financial_patterns = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "paperType", accessorKey: "paperType" },
-  { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
-  { header: "list_name", accessorKey: "list_name" },
-  { header: "default_account_id", accessorKey: "default_account_id" },
-  { header: "shortcut_key", accessorKey: "shortcut_key" },
-  { header: "gen_entries", accessorKey: "gen_entries" },
-  { header: "auto_gen_entries", accessorKey: "auto_gen_entries" },
-  { header: "auto_transfer_entry", accessorKey: "auto_transfer_entry" },
-  { header: "default_print_folder", accessorKey: "default_print_folder" },
-  { header: "deportable", accessorKey: "deportable" },
-  { header: "deportable_gen_enteries", accessorKey: "deportable_gen_enteries" },
-  {
-    header: "deportable_auto_gen_enteries",
-    accessorKey: "deportable_auto_gen_enteries",
-  },
-  {
-    header: "deportable_auto_transfer_entry",
-    accessorKey: "deportable_auto_transfer_entry",
-  },
-  { header: "deportable_default_date", accessorKey: "deportable_default_date" },
-  {
-    header: "deportable_default_account_is_onwer",
-    accessorKey: "deportable_default_account_is_onwer",
-  },
-  {
-    header: "deportable_default_observe_account_is_client",
-    accessorKey: "deportable_default_observe_account_is_client",
-  },
-  {
-    header: "deportable_move_cost_center_debit",
-    accessorKey: "deportable_move_cost_center_debit",
-  },
-  {
-    header: "deportable_move_cost_center_credit",
-    accessorKey: "deportable_move_cost_center_credit",
-  },
-  {
-    header: "deportable_debit_account_id",
-    accessorKey: "deportable_debit_account_id",
-  },
-  {
-    header: "deportable_credit_account_id",
-    accessorKey: "deportable_credit_account_id",
-  },
-  { header: "collection", accessorKey: "collection" },
-
-  { header: "collection_gen_enteries", accessorKey: "collection_gen_enteries" },
-  {
-    header: "collection_auto_gen_enteries",
-    accessorKey: "collection_auto_gen_enteries",
-  },
-  {
-    header: "collection_auto_transfer_entry",
-    accessorKey: "collection_auto_transfer_entry",
-  },
-  { header: "collection_default_date", accessorKey: "collection_default_date" },
-  {
-    header: "collection_default_account_is_building_bank",
-    accessorKey: "collection_default_account_is_building_bank",
-  },
-  {
-    header: "collection_default_observe_account_is_client",
-    accessorKey: "collection_default_observe_account_is_client",
-  },
-  {
-    header: "collection_move_cost_center_debit",
-    accessorKey: "collection_move_cost_center_debit",
-  },
-  {
-    header: "collection_move_cost_center_credit",
-    accessorKey: "collection_move_cost_center_credit",
-  },
-  {
-    header: "collection_credit_account_id",
-    accessorKey: "collection_credit_account_id",
-  },
-  {
-    header: "collection_debit_account_id",
-    accessorKey: "collection_debit_account_id",
-  },
-  { header: "commission_type", accessorKey: "commission_type" },
-  {
-    header: "commission_amount_from_building",
-    accessorKey: "commission_amount_from_building",
-  },
-  {
-    header: "commission_default_account_is_building_owner",
-    accessorKey: "commission_default_account_is_building_owner",
-  },
-  {
-    header: "commission_default_observe_is_revenue_account",
-    accessorKey: "commission_default_observe_is_revenue_account",
-  },
-  {
-    header: "commission_move_cost_center_debit",
-    accessorKey: "commission_move_cost_center_debit",
-  },
-  {
-    header: "commission_move_cost_center_credit",
-    accessorKey: "commission_move_cost_center_credit",
-  },
-  {
-    header: "commission_debit_account_id",
-    accessorKey: "commission_debit_account_id",
-  },
-  {
-    header: "commission_credit_account_id",
-    accessorKey: "commission_credit_account_id",
-  },
-  { header: "partial_collection", accessorKey: "partial_collection" },
-  { header: "partial_gen_enteries", accessorKey: "partial_gen_enteries" },
-  {
-    header: "partial_auto_gen_enteries",
-    accessorKey: "partial_auto_gen_enteries",
-  },
-  {
-    header: "partial_auto_transfer_entry",
-    accessorKey: "partial_auto_transfer_entry",
-  },
-  {
-    header: "partial_default_account_is_building_bank",
-    accessorKey: "partial_default_account_is_building_bank",
-  },
-  {
-    header: "partial_default_observe_account_is_client",
-    accessorKey: "partial_default_observe_account_is_client",
-  },
-  {
-    header: "partial_move_cost_center_debit",
-    accessorKey: "partial_move_cost_center_debit",
-  },
-  {
-    header: "partial_move_cost_center_credit",
-    accessorKey: "partial_move_cost_center_credit",
-  },
-  {
-    header: "partial_debit_account_id",
-    accessorKey: "partial_debit_account_id",
-  },
-  {
-    header: "partial_credit_account_id",
-    accessorKey: "partial_credit_account_id",
-  },
-  { header: "endorsable", accessorKey: "endorsable" },
-  {
-    header: "endorsement_gen_enteries",
-    accessorKey: "endorsement_gen_enteries",
-  },
-  {
-    header: "endorsement_auto_gen_enteries",
-    accessorKey: "endorsement_auto_gen_enteries",
-  },
-  {
-    header: "endorsement_auto_transfer_entry",
-    accessorKey: "endorsement_auto_transfer_entry",
-  },
-  {
-    header: "endorsement_default_date",
-    accessorKey: "endorsement_default_date",
-  },
-  {
-    header: "endorsement_move_cost_center_debit",
-    accessorKey: "endorsement_move_cost_center_debit",
-  },
-  {
-    header: "endorsement_move_cost_center_credit",
-    accessorKey: "endorsement_move_cost_center_credit",
-  },
-  {
-    header: "endorsement_debit_account_id",
-    accessorKey: "endorsement_debit_account_id",
-  },
-  {
-    header: "endorsement_credit_account_id",
-    accessorKey: "endorsement_credit_account_id",
-  },
-  { header: "returnable", accessorKey: "returnable" },
-  { header: "returnable_gen_enteries", accessorKey: "returnable_gen_enteries" },
-  {
-    header: "returnable_auto_gen_enteries",
-    accessorKey: "returnable_auto_gen_enteries",
-  },
-  {
-    header: "returnable_auto_transfer_entry",
-    accessorKey: "returnable_auto_transfer_entry",
-  },
-  { header: "returnable_default_date", accessorKey: "returnable_default_date" },
-  {
-    header: "returnable_default_account_is_client",
-    accessorKey: "returnable_default_account_is_client",
-  },
-  {
-    header: "returnable_default_observe_account_is_building_bank",
-    accessorKey: "returnable_default_observe_account_is_building_bank",
-  },
-  {
-    header: "returnable_active_operations",
-    accessorKey: "returnable_active_operations",
-  },
-  {
-    header: "returnable_move_cost_center_debit",
-    accessorKey: "returnable_move_cost_center_debit",
-  },
-  {
-    header: "returnable_move_cost_center_credit",
-    accessorKey: "returnable_move_cost_center_credit",
-  },
-  {
-    header: "returnable_debit_account_id",
-    accessorKey: "returnable_debit_account_id",
-  },
-  {
-    header: "returnable_credit_account_id",
-    accessorKey: "returnable_credit_account_id",
-  },
-  {
-    header: "returnFeedefault_account_is_client",
-    accessorKey: "returnFeedefault_account_is_client",
-  },
-  {
-    header: "returnFeeDebit_account_id",
-    accessorKey: "returnFeeDebit_account_id",
-  },
-  {
-    header: "returnFeeCredit_account_id",
-    accessorKey: "returnFeeCredit_account_id",
-  },
-  { header: "statement_account", accessorKey: "statement_account" },
-  {
-    header: "statement_observe_account",
-    accessorKey: "statement_observe_account",
-  },
-  { header: "statement_leaving", accessorKey: "statement_leaving" },
-  { header: "statement_endorsement", accessorKey: "statement_endorsement" },
-  { header: "statement_collection", accessorKey: "statement_collection" },
-  { header: "statement_return", accessorKey: "statement_return" },
-  { header: "statement_partial", accessorKey: "statement_partial" },
-  { header: "sms", accessorKey: "sms" },
-];
-// ==== End financial
-
 // ==== Start Installment
-export const installment = [
+const installment = [
   {
     id: "select",
     size: 40,
@@ -2553,7 +1946,13 @@ export const installment = [
   { header: "contract_id", accessorKey: "contract_id" },
   { header: "total_amount", accessorKey: "total_amount" },
   { header: "first_batch", accessorKey: "first_batch" },
-  { header: "payment_date", accessorKey: "payment_date" },
+  {
+    header: "payment_date",
+    accessorKey: "payment_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "voucher_pattern_id", accessorKey: "voucher_pattern_id" },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "currency_val", accessorKey: "currency_val" },
@@ -2565,56 +1964,33 @@ export const installment = [
   { header: "installments_numbers", accessorKey: "installments_numbers" },
   { header: "each_number", accessorKey: "each_number" },
   { header: "each_duration", accessorKey: "each_duration" },
-  { header: "first_installment_date", accessorKey: "first_installment_date" },
+  {
+    header: "first_installment_date",
+    accessorKey: "first_installment_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "installment_price", accessorKey: "installment_price" },
   { header: "final_payment", accessorKey: "final_payment" },
   { header: "begin_number", accessorKey: "begin_number" },
-  { header: "installment_date", accessorKey: "installment_date" },
+  {
+    header: "installment_date",
+    accessorKey: "installment_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "installment_statement", accessorKey: "installment_statement" },
   { header: "beneficiary_name", accessorKey: "beneficiary_name" },
   { header: "gen_entries_type", accessorKey: "gen_entries_type" },
   { header: "bank_id", accessorKey: "bank_id" },
 ];
-export const installment_data = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  { header: "due_date", accessorKey: "due_date" },
-  { header: "number", accessorKey: "number" },
-  { header: "amount", accessorKey: "amount" },
-  { header: "bank_id", accessorKey: "bank_id" },
-  { header: "client_id", accessorKey: "client_id" },
-  { header: "observe_account_id", accessorKey: "observe_account_id" },
-  { header: "statement", accessorKey: "statement" },
-  { header: "end_due_date", accessorKey: "end_due_date" },
-  { header: "beneficiary_name", accessorKey: "beneficiary_name" },
-  { header: "installment_id", accessorKey: "installment_id" },
-];
+
 // ==== End Installment
 
 // ==== Start Operations
-export const op_collection = [
+const op_collection = [
   {
     id: "select",
     size: 40,
@@ -2668,7 +2044,7 @@ export const op_collection = [
   },
 ];
 
-export const op_deportation = [
+const op_deportation = [
   {
     id: "select",
     size: 40,
@@ -2712,7 +2088,7 @@ export const op_deportation = [
     accessorKey: "accounting_voucher_main_data_id",
   },
 ];
-export const op_return = [
+const op_return = [
   {
     id: "select",
     size: 40,
@@ -2761,48 +2137,7 @@ export const op_return = [
 // ==== end Operations
 
 // ==== Start Voucher
-export const voucher_grid_data = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "account_id", accessorKey: "account_id" },
-  { header: "debit", accessorKey: "debit" },
-  { header: "credit", accessorKey: "credit" },
-  { header: "currency_id", accessorKey: "currency_id" },
-  { header: "cost_center_id", accessorKey: "cost_center_id" },
-  { header: "voucher_main_data_id", accessorKey: "voucher_main_data_id" },
-  { header: "note", accessorKey: "note" },
-];
-
-export const voucher_main_data = [
+const voucher_main_data = [
   {
     id: "select",
     size: 40,
@@ -2841,7 +2176,7 @@ export const voucher_main_data = [
   { header: "difference", accessorKey: "difference" },
 ];
 
-export const voucher_pattern = [
+const voucher_pattern = [
   {
     id: "select",
     size: 40,
@@ -2910,355 +2245,8 @@ export const voucher_pattern = [
 ];
 // ==== End Voucher
 
-// ==== Start Assets
-export const assets_group = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "number", accessorKey: "number" },
-  { header: "type", accessorKey: "type" },
-  { header: "name", accessorKey: "name" },
-  { header: "last_name", accessorKey: "last_name" },
-  { header: "note", accessorKey: "note" },
-  { header: "parent_id", accessorKey: "parent_id" },
-];
-
-export const assets = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "number", accessorKey: "number" },
-  { header: "assets_group_id", accessorKey: "assets_group_id" },
-  { header: "name", accessorKey: "name" },
-  { header: "code", accessorKey: "code" },
-  { header: "barcode", accessorKey: "barcode" },
-  { header: "note", accessorKey: "note" },
-  { header: "is_active", accessorKey: "is_active" },
-  { header: "assets_area_id", accessorKey: "assets_area_id" },
-  { header: "current_assets_area_id", accessorKey: "current_assets_area_id" },
-  { header: "state", accessorKey: "state" },
-  { header: "origin", accessorKey: "origin" },
-];
-
-export const assets_accounts = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "assets_id", accessorKey: "assets_id" },
-  { header: "assets_account_id", accessorKey: "assets_account_id" },
-  { header: "expense_account_id", accessorKey: "expense_account_id" },
-  { header: "depreciation_account_id", accessorKey: "depreciation_account_id" },
-  {
-    header: "depreciation_Total_account_id",
-    accessorKey: "depreciation_Total_account_id",
-  },
-  { header: "profit_account_id", accessorKey: "profit_account_id" },
-  { header: "losses_account_id", accessorKey: "losses_account_id" },
-  { header: "evaluation_account_id", accessorKey: "evaluation_account_id" },
-];
-export const assets_depreciation = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "assets_id", accessorKey: "assets_id" },
-  { header: "depreciation_mode", accessorKey: "depreciation_mode" },
-  { header: "is_depreciation_monthly", accessorKey: "is_depreciation_monthly" },
-  { header: "depreciation_begin_date", accessorKey: "depreciation_begin_date" },
-  { header: "age", accessorKey: "age" },
-  { header: "depreciation_avg", accessorKey: "depreciation_avg" },
-  { header: "scrap_value", accessorKey: "scrap_value" },
-  { header: "old_year_extra", accessorKey: "old_year_extra" },
-  { header: "old_year_decrease", accessorKey: "old_year_decrease" },
-  { header: "old_year_depreciation", accessorKey: "old_year_depreciation" },
-  { header: "old_year_maintenance", accessorKey: "old_year_maintenance" },
-];
-export const assets_input = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "assets_id", accessorKey: "assets_id" },
-  { header: "importer", accessorKey: "importer" },
-  { header: "enter_account_id", accessorKey: "enter_account_id" },
-  { header: "enter_date", accessorKey: "enter_date" },
-  { header: "enter_value", accessorKey: "enter_value" },
-  { header: "currency_id", accessorKey: "currency_id" },
-  { header: "enter_cost_center_id", accessorKey: "enter_cost_center_id" },
-  {
-    header: "enter_credit_Cost_center_id",
-    accessorKey: "enter_credit_Cost_center_id",
-  },
-  { header: "enter_note", accessorKey: "enter_note" },
-];
-export const assets_maintenance = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "assets_id", accessorKey: "assets_id" },
-  { header: "maintenance_contract", accessorKey: "maintenance_contract" },
-  { header: "maintenance_begin_date", accessorKey: "maintenance_begin_date" },
-  { header: "maintenance_end_date", accessorKey: "maintenance_end_date" },
-  { header: "guaranty", accessorKey: "guaranty" },
-  { header: "guaranty_begin_date", accessorKey: "guaranty_begin_date" },
-  { header: "guaranty_end_date", accessorKey: "guaranty_end_date" },
-];
-export const assets_sale = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "assets_id", accessorKey: "assets_id" },
-  { header: "is_sale", accessorKey: "is_sale" },
-  { header: "sale_date", accessorKey: "sale_date" },
-  { header: "sale_customer", accessorKey: "sale_customer" },
-  { header: "sales_account_id", accessorKey: "sales_account_id" },
-  { header: "sale_value", accessorKey: "sale_value" },
-  { header: "currency_sale_id", accessorKey: "currency_sale_id" },
-  { header: "currency_sale_val", accessorKey: "currency_sale_val" },
-  { header: "sale_note", accessorKey: "sale_note" },
-];
-export const assets_shipping = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "assets_id", accessorKey: "assets_id" },
-  { header: "shipping", accessorKey: "shipping" },
-  { header: "shipping_no", accessorKey: "shipping_no" },
-  { header: "shipping_date", accessorKey: "shipping_date" },
-  { header: "arrive_date", accessorKey: "arrive_date" },
-  { header: "arrive_place", accessorKey: "arrive_place" },
-  { header: "import_permit", accessorKey: "import_permit" },
-  { header: "custom_note", accessorKey: "custom_note" },
-  { header: "custom_date", accessorKey: "custom_date" },
-  { header: "custom_expense", accessorKey: "custom_expense" },
-  { header: "shipping_note", accessorKey: "shipping_note" },
-];
-
-// ==== End Assets
 // ==== Start lawsuit
-export const lawsuit = [
+const lawsuit = [
   {
     id: "select",
     size: 40,
@@ -3293,27 +2281,75 @@ export const lawsuit = [
   { header: "number", accessorKey: "number" },
   { header: "type", accessorKey: "type" },
   { header: "contract_id", accessorKey: "contract_id" },
-  { header: "start_date", accessorKey: "start_date" },
+  {
+    header: "start_date",
+    accessorKey: "start_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "lawsuit_no", accessorKey: "lawsuit_no" },
-  { header: "open_date", accessorKey: "open_date" },
-  { header: "exec_date", accessorKey: "exec_date" },
+  {
+    header: "open_date",
+    accessorKey: "open_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
+  {
+    header: "exec_date",
+    accessorKey: "exec_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "stop_exec", accessorKey: "stop_exec" },
-  { header: "stop_exec_date", accessorKey: "stop_exec_date" },
+  {
+    header: "stop_exec_date",
+    accessorKey: "stop_exec_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "stop_exec_note", accessorKey: "stop_exec_note" },
-  { header: "stop_pay_date", accessorKey: "stop_pay_date" },
-  { header: "quittance_date", accessorKey: "quittance_date" },
+  {
+    header: "stop_pay_date",
+    accessorKey: "stop_pay_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
+  {
+    header: "quittance_date",
+    accessorKey: "quittance_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   {
     header: "quittance_electricity_date",
     accessorKey: "quittance_electricity_date",
   },
   { header: "rent", accessorKey: "rent" },
   { header: "is_ended", accessorKey: "is_ended" },
-  { header: "end_date", accessorKey: "end_date" },
+  {
+    header: "end_date",
+    accessorKey: "end_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "exe_no", accessorKey: "exe_no" },
   { header: "currency_id", accessorKey: "currency_id" },
   { header: "currency_val", accessorKey: "currency_val" },
   { header: "lawyer_rent", accessorKey: "lawyer_rent" },
-  { header: "lawyer_rent_date", accessorKey: "lawyer_rent_date" },
+  {
+    header: "lawyer_rent_date",
+    accessorKey: "lawyer_rent_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "lawyer_entry", accessorKey: "lawyer_entry" },
   { header: "lawyer_debit_account_id", accessorKey: "lawyer_debit_account_id" },
   {
@@ -3322,7 +2358,13 @@ export const lawsuit = [
   },
   { header: "lawyer_note", accessorKey: "lawyer_note" },
   { header: "maintenance_rent", accessorKey: "maintenance_rent" },
-  { header: "maintenance_rent_date", accessorKey: "maintenance_rent_date" },
+  {
+    header: "maintenance_rent_date",
+    accessorKey: "maintenance_rent_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "maintenance_entry", accessorKey: "maintenance_entry" },
   {
     header: "maintenance_debit_account_id",
@@ -3334,7 +2376,13 @@ export const lawsuit = [
   },
   { header: "maintenance_note", accessorKey: "maintenance_note" },
   { header: "furniture", accessorKey: "furniture" },
-  { header: "furniture_date", accessorKey: "furniture_date" },
+  {
+    header: "furniture_date",
+    accessorKey: "furniture_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "furniture_entry", accessorKey: "furniture_entry" },
   {
     header: "furniture_debit_account_id",
@@ -3352,73 +2400,8 @@ export const lawsuit = [
 ];
 // ==== End lawsuit
 
-// ==== Start maintenance_order
-export const maintenance_order = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "number", accessorKey: "number" },
-  { header: "type", accessorKey: "type" },
-  { header: "maintenance_order_no", accessorKey: "maintenance_order_no" },
-  { header: "complaint_id", accessorKey: "complaint_id" },
-  { header: "maintenance_worker_id", accessorKey: "maintenance_worker_id" },
-  { header: "work_kind", accessorKey: "work_kind" },
-  { header: "start_date", accessorKey: "start_date" },
-  { header: "end_expected_date", accessorKey: "end_expected_date" },
-  { header: "close_date", accessorKey: "close_date" },
-  { header: "order_state", accessorKey: "order_state" },
-  { header: "reason_not_realized", accessorKey: "reason_not_realized" },
-  { header: "convert_to", accessorKey: "convert_to" },
-  { header: "convert_note", accessorKey: "convert_note" },
-  { header: "realized", accessorKey: "realized" },
-  { header: "mat", accessorKey: "mat" },
-  { header: "reason", accessorKey: "reason" },
-  { header: "repetition", accessorKey: "repetition" },
-  { header: "delay", accessorKey: "delay" },
-  { header: "delay_reason", accessorKey: "delay_reason" },
-  { header: "create_entry", accessorKey: "create_entry" },
-  { header: "entry_date", accessorKey: "entry_date" },
-  { header: "entry_value", accessorKey: "entry_value" },
-  { header: "entry_currency_id", accessorKey: "entry_currency_id" },
-  { header: "entry_currency_val", accessorKey: "entry_currency_val" },
-  { header: "debit_account_id", accessorKey: "debit_account_id" },
-  { header: "credit_account_id", accessorKey: "credit_account_id" },
-  { header: "debit_cost_center_id", accessorKey: "debit_cost_center_id" },
-  { header: "credit_cost_center_id", accessorKey: "credit_cost_center_id" },
-  { header: "entry_note", accessorKey: "entry_note" },
-  { header: "note2", accessorKey: "note2" },
-];
-
 // ==== Start Parking
-export const parking = [
+const parking = [
   {
     id: "select",
     size: 40,
@@ -3450,8 +2433,36 @@ export const parking = [
       <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
     ),
   },
-  { header: "building_id", accessorKey: "building_id" },
-  { header: "parking_no", accessorKey: "parking_no" },
+  { header: "building_id", accessorKey: "building_name" },
+  {
+    header: "parking_no",
+    accessorKey: "parking_no",
+    cell: ({ getValue, row }) => (
+      <Link
+        to={`/parking/${row?.original?.id}`}
+        className="text-blue-500 font-medium hover:underline"
+      >
+        {getValue()}
+      </Link>
+    ),
+  },
+  {
+    header: "parking_kind",
+    accessorKey: "parking_kind",
+    cell: ({ getValue, row }) => {
+      let kind = SELECT_LISTS("parking_kind_type")?.find(
+        (c) => c?.id === +getValue()
+      ).name;
+      return (
+        <span
+          to={`/parking/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {kind}
+        </span>
+      );
+    },
+  },
   { header: "floor_no", accessorKey: "floor_no" },
   { header: "area", accessorKey: "area" },
   { header: "area_unit", accessorKey: "area_unit" },
@@ -3461,92 +2472,20 @@ export const parking = [
   { header: "customer_id", accessorKey: "customer_id" },
   { header: "has_lawsuit", accessorKey: "has_lawsuit" },
   { header: "cost_center_id", accessorKey: "cost_center_id" },
-  { header: "purchase_date", accessorKey: "purchase_date" },
+  {
+    header: "purchase_date",
+    accessorKey: "purchase_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "flat_owner", accessorKey: "flat_owner" },
   { header: "note", accessorKey: "note" },
 ];
-export const parking_pictures = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "parking_id", accessorKey: "parking_id" },
-  { header: "picture", accessorKey: "picture" },
-];
-export const parking_price = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "parking_id", accessorKey: "parking_id" },
-  { header: "date1", accessorKey: "date1" },
-  { header: "print1", accessorKey: "print1" },
-  { header: "currency1_id", accessorKey: "currency1_id" },
-  { header: "date2", accessorKey: "date2" },
-  { header: "prnumber", accessorKey: "prnumber" },
-  { header: "currency2_id", accessorKey: "currency2_id" },
-  { header: "cost_price", accessorKey: "cost_price" },
-  { header: "sale", accessorKey: "sale" },
-];
-
 // ==== End Parking
 
 // ==== Start Shop
-export const shop = [
+const shop = [
   {
     id: "select",
     size: 40,
@@ -3578,15 +2517,40 @@ export const shop = [
       <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
     ),
   },
-  { header: "building_id", accessorKey: "building_id" },
   { header: "number", accessorKey: "number" },
-  { header: "shop_no", accessorKey: "shop_no" },
-  { header: "shop_kind", accessorKey: "shop_kind" },
+  {
+    header: "shop_no",
+    accessorKey: "shop_no",
+
+    cell: ({ getValue, row }) => (
+      <Link
+        to={`/shop/${row?.original?.id}`}
+        className="text-blue-500 font-medium hover:underline"
+      >
+        {getValue()}
+      </Link>
+    ),
+  },
+  {
+    header: "shop_kind",
+    accessorKey: "shop_kind",
+    cell: ({ getValue, row }) => {
+      let kind = SELECT_LISTS("shop_kind_type")?.find(
+        (c) => c?.id === +getValue()
+      ).name;
+      return (
+        <span
+          to={`/shop/${row?.original?.id}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {kind}
+        </span>
+      );
+    },
+  },
+  { header: "building_id", accessorKey: "building_name" },
   { header: "description", accessorKey: "description" },
-  { header: "x_index", accessorKey: "x_index" },
-  { header: "y_index", accessorKey: "y_index" },
   { header: "cost_center_id", accessorKey: "cost_center_id" },
-  { header: "kind", accessorKey: "kind" },
   { header: "area", accessorKey: "area" },
   { header: "area_unit", accessorKey: "area_unit" },
   { header: "view", accessorKey: "view" },
@@ -3603,163 +2567,20 @@ export const shop = [
   { header: "electricity_meter", accessorKey: "electricity_meter" },
   { header: "bond_type", accessorKey: "bond_type" },
   { header: "bond_no", accessorKey: "bond_no" },
-  { header: "bond_date", accessorKey: "bond_date" },
+  {
+    header: "bond_date",
+    accessorKey: "bond_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "type", accessorKey: "type" },
   { header: "note", accessorKey: "note" },
-];
-export const shop_fixed_assets = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "shop_id", accessorKey: "shop_id" },
-  { header: "assets_id", accessorKey: "assets_id" },
-  { header: "value", accessorKey: "value" },
-  { header: "note", accessorKey: "note" },
-];
-export const shop_pictures = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "shop_id", accessorKey: "shop_id" },
-  { header: "picture", accessorKey: "picture" },
-];
-export const shop_rent_price = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "shop_id", accessorKey: "shop_id" },
-  { header: "price", accessorKey: "price" },
-  { header: "currency_id", accessorKey: "currency_id" },
-  { header: "cost_price", accessorKey: "cost_price" },
-  { header: "cost_currency_id", accessorKey: "cost_currency_id" },
-  { header: "rent", accessorKey: "rent" },
-];
-export const shop_selling_price = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "shop_id", accessorKey: "shop_id" },
-  { header: "price", accessorKey: "price" },
-  { header: "currency_id", accessorKey: "currency_id" },
-  { header: "sale", accessorKey: "sale" },
-  { header: "sale_currency_id", accessorKey: "sale_currency_id" },
 ];
 
 // ==== End Shop
 // ==== Start Villa
-export const villa = [
+const villa = [
   {
     id: "select",
     size: 40,
@@ -3799,7 +2620,13 @@ export const villa = [
   { header: "street", accessorKey: "street" },
   { header: "doc_type", accessorKey: "doc_type" },
   { header: "doc_no", accessorKey: "doc_no" },
-  { header: "doc_date", accessorKey: "doc_date" },
+  {
+    header: "doc_date",
+    accessorKey: "doc_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "piece_no", accessorKey: "piece_no" },
   { header: "basin_no", accessorKey: "basin_no" },
   { header: "water_meter", accessorKey: "water_meter" },
@@ -3807,181 +2634,7 @@ export const villa = [
   { header: "customer_owner_id", accessorKey: "customer_owner_id" },
   { header: "note", accessorKey: "note" },
 ];
-export const villa_accounts = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "villa_id", accessorKey: "villa_id" },
-  { header: "villa_account_id", accessorKey: "villa_account_id" },
-  { header: "cost_center_id", accessorKey: "cost_center_id" },
-  { header: "account_bank_villa_id", accessorKey: "account_bank_villa_id" },
-  { header: "cash_account_id", accessorKey: "cash_account_id" },
-  { header: "insurance_account_id", accessorKey: "insurance_account_id" },
-  { header: "lessor_id", accessorKey: "lessor_id" },
-];
-export const villa_assets = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "villa_id", accessorKey: "villa_id" },
-  { header: "assets_id", accessorKey: "assets_id" },
-  { header: "value", accessorKey: "value" },
-  { header: "note", accessorKey: "note" },
-];
-export const villa_exterior_details = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "villa_id", accessorKey: "villa_id" },
-  { header: "wall", accessorKey: "wall" },
-  { header: "wall_state", accessorKey: "wall_state" },
-  { header: "lighting_count", accessorKey: "lighting_count" },
-  { header: "parking_count", accessorKey: "parking_count" },
-  { header: "parking_area", accessorKey: "parking_area" },
-  { header: "parking_shaded", accessorKey: "parking_shaded" },
-  { header: "pool_count", accessorKey: "pool_count" },
-  { header: "pool_state", accessorKey: "pool_state" },
-  { header: "pool_system", accessorKey: "pool_system" },
-  { header: "play_ground_count", accessorKey: "play_ground_count" },
-  { header: "play_ground_area", accessorKey: "play_ground_area" },
-  { header: "garden_count", accessorKey: "garden_count" },
-  { header: "garden_area", accessorKey: "garden_area" },
-  { header: "garden_state", accessorKey: "garden_state" },
-];
-export const villa_interior_details = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "villa_id", accessorKey: "villa_id" },
-  { header: "floor_count", accessorKey: "floor_count" },
-  { header: "balcony_count", accessorKey: "balcony_count" },
-  { header: "room_count", accessorKey: "room_count" },
-  { header: "service_room_count", accessorKey: "service_room_count" },
-  { header: "other_room_count", accessorKey: "other_room_count" },
-  { header: "bath_room_count", accessorKey: "bath_room_count" },
-  { header: "stairs_internal", accessorKey: "stairs_internal" },
-  { header: "room_state", accessorKey: "room_state" },
-  { header: "land_area", accessorKey: "land_area" },
-  { header: "land_area_building", accessorKey: "land_area_building" },
-  { header: "area_unit", accessorKey: "area_unit" },
-  { header: "finishing_state", accessorKey: "finishing_state" },
-  { header: "security_system", accessorKey: "security_system" },
-  { header: "security_type", accessorKey: "security_type" },
-];
-
-export const owner_expenses_types = [
+const owner_expenses_types = [
   {
     id: "select",
     size: 40,
@@ -4007,11 +2660,23 @@ export const owner_expenses_types = [
     ),
   },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name",
+    accessorKey: "name",
+    cell: ({ getValue, row }) => (
+      <Link
+        to={`/owner_expenses_types/${row?.original?.id}`}
+        className="text-blue-500 font-medium hover:underline"
+      >
+        {getValue()}
+      </Link>
+    ),
+  },
+  { header: "ltnname", accessorKey: "ltnname" },
   { header: "note", accessorKey: "note" },
 ];
 
-export const owner_expenses = [
+const owner_expenses = [
   {
     id: "select",
     size: 40,
@@ -4036,119 +2701,34 @@ export const owner_expenses = [
       />
     ),
   },
-  { header: "date", accessorKey: "date" },
-  { header: "number", accessorKey: "number" },
+  {
+    header: "date",
+    accessorKey: "date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
+  {
+    header: "number",
+    accessorKey: "number",
+    cell: ({ getValue, row }) => (
+      <Link
+        to={`/owner_expenses/${row?.original?.id}`}
+        className="text-blue-500 font-medium hover:underline"
+      >
+        # {getValue()}
+      </Link>
+    ),
+  },
   { header: "receipt_number", accessorKey: "receipt_number" },
   { header: "building_name", accessorKey: "building_name" },
   { header: "owner_name", accessorKey: "owner_name" },
   { header: "note", accessorKey: "note" },
 ];
 
-export const villa_pictures = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "villa_id", accessorKey: "villa_id" },
-  { header: "picture", accessorKey: "picture" },
-];
-export const villa_rent_price = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  {
-    header: "created_at",
-    accessorKey: "created_at",
-    cell: ({ getValue }) => (
-      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
-    ),
-  },
-  { header: "villa_id", accessorKey: "villa_id" },
-  { header: "date", accessorKey: "date" },
-  { header: "price", accessorKey: "price" },
-  { header: "currency_id", accessorKey: "currency_id" },
-];
-export const villa_selling_price = [
-  {
-    id: "select",
-    size: 40,
-    isResizingColumn: false,
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
-    ),
-  },
-  { header: "villa_id", accessorKey: "villa_id" },
-  { header: "date", accessorKey: "date" },
-  { header: "price", accessorKey: "price" },
-  { header: "currency_id", accessorKey: "currency_id" },
-];
 // ==== End Villa
 
-export const land = [
+const land = [
   {
     header: "created_at",
     accessorKey: "created_at",
@@ -4161,7 +2741,13 @@ export const land = [
   { header: "type", accessorKey: "type" },
   { header: "ban", accessorKey: "ban" },
   { header: "land_no", accessorKey: "land_no" },
-  { header: "date", accessorKey: "date" },
+  {
+    header: "date",
+    accessorKey: "date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
   { header: "city", accessorKey: "city" },
   { header: "region", accessorKey: "region" },
   { header: "space", accessorKey: "space" },
@@ -4170,9 +2756,15 @@ export const land = [
   { header: "price", accessorKey: "price" },
   { header: "license_no", accessorKey: "license_no" },
   { header: "license", accessorKey: "license" },
-  { header: "license_date", accessorKey: "license_date" },
+  {
+    header: "license_date",
+    accessorKey: "license_date",
+    cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
 ];
-export const store = [
+const store = [
   {
     header: "created_at",
     accessorKey: "created_at",
@@ -4180,7 +2772,9 @@ export const store = [
       <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
     ),
   },
-  { header: "number", accessorKey: "number", 
+  {
+    header: "number",
+    accessorKey: "number",
     cell: ({ getValue, row }) => (
       <Link
         to={`/store/${row?.original?.id}`}
@@ -4189,7 +2783,7 @@ export const store = [
         # {getValue()}
       </Link>
     ),
-   },
+  },
   { header: "type", accessorKey: "type" },
   { header: "code", accessorKey: "code" },
   { header: "name", accessorKey: "name" },
@@ -4252,57 +2846,24 @@ const TABLES = {
   country,
   currency,
   building,
-  building_buying,
-  building_editorial_entry,
-  building_investment,
-  building_pictures,
-  building_real_estate_development,
-  building_real_estate_management,
   accounting_voucher_grid_data,
   accounting_voucher_main_data,
   accounting_voucher_pattern,
-  accounting_voucher_pictures,
   apartment,
-  apartment_pictures,
-  apartment_property_values,
-  apartment_rental_price,
-  apartment_selling_price,
   contract_cycle,
   contract_financial,
-  contract_linked_parking,
   contract_pattern,
-  contract_pictures,
-  contract_receipt_number,
-  financial_data,
-  financial_patterns,
   installment,
-  installment_data,
   op_collection,
   op_deportation,
   op_return,
-  voucher_grid_data,
   voucher_main_data,
   voucher_pattern,
-  assets_group,
-  assets,
-  assets_accounts,
-  assets_depreciation,
-  assets_input,
-  assets_maintenance,
-  assets_sale,
-  assets_shipping,
   lawsuit,
-  maintenance_order,
   material_group,
   material,
   parking,
-  parking_pictures,
-  parking_price,
   shop,
-  shop_fixed_assets,
-  shop_pictures,
-  shop_rent_price,
-  shop_selling_price,
   villa,
   user,
   store,
@@ -4317,11 +2878,10 @@ const TABLES = {
   bill_pattern,
   lack_reason,
   entry_main_data,
-  default_service,
   cheque,
   worker_building,
   worker_category,
-  user_work_times
+  user_work_times,
 };
 
 export default function getTableColumns(name) {

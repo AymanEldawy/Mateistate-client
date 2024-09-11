@@ -542,7 +542,7 @@ export const menuData = [
           {
             key: "Unregister Material",
             name: "Unregister Material",
-            link: "/list/unregister-material",
+            link: "/materials/unregister-material",
           },
           {
             key: "warehouse report",
@@ -834,6 +834,8 @@ export async function getVouchersMenus() {
 // Generate dynamic bills menu from bills pattern
 export async function getBillsMenus() {
   const res = await ApiActions.read("bill_pattern");
+  if (!res?.result?.length) return [];
+
   let hash = {};
 
   for (const item of res?.result) {

@@ -118,12 +118,15 @@ const BillForm = ({
     }
   }, [oldValues, PATTERN_SETTINGS?.id]);
 
+  const onSubmit = () =>{}
+
   return (
     <FormWrapperLayout
       name={name}
       isLoading={isLoading}
       popupView={popupView}
       methods={methods}
+      onSubmit={onSubmit}
     >
       <div className="grid md:grid-cols-2 lg:grid-cols-3 justify-between gap-4">
         <div className="flex flex-col gap-2">

@@ -50,6 +50,7 @@ const FormSteps = ({
   const { isLoading } = useQuery({
     queryKey: [name, id],
     queryFn: async () => {
+      if (!id) return;
       const data = await GET_UPDATE_DATE(name, id);
       if (data) {
         reset(data);

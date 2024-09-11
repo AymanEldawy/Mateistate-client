@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Modal from "./Modal";
 import {
+  getBillsMenus,
   getChequesMenus,
   getContractMenus,
   getVouchersMenus,
 } from "Helpers/menu";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "Components/Icons";
-import { SERVICE_MENU } from "Helpers/constants";
+import { DEFAULT_BILL_MENU, SERVICE_MENU } from "Helpers/constants";
 
 export const PopupLinks = ({ onClose, name }) => {
+  console.log("🚀 ~ PopupLinks ~ name:", name);
   const [open, setOpen] = useState(false);
   const [links, setLinks] = useState([]);
 
@@ -28,6 +30,16 @@ export const PopupLinks = ({ onClose, name }) => {
       //     },
       //   ]);
       //   break;
+      case "bill":
+        const BillsMenu = await getBillsMenus();
+        console.log(
+          "🚀 ~ getLinks ~ BillsMenu:",
+          BillsMenu,
+          "DEFAULT_BILL_MENU",
+          DEFAULT_BILL_MENU
+        );
+        setLinks(BillsMenu || DEFAULT_BILL_MENU);
+        break;
       case "service":
         setLinks(SERVICE_MENU);
         break;

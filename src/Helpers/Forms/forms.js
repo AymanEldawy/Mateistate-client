@@ -310,13 +310,14 @@ const land_selling_price = [
 
 // ==== Start Cards
 const reservation_property = [
-  FIELDS_STRUCTURE.dateField({
-    label: "created_at",
-    name: "created_at",
-    type: "date",
-  }),
+  // FIELDS_STRUCTURE.dateField({
+  //   label: "created_at",
+  //   name: "created_at",
+  //   type: "date",
+  // }),
   FIELDS_STRUCTURE.account({
     required: true,
+    ref_table: UNIQUE_REF_TABLES.clients,
   }),
 
   FIELDS_STRUCTURE.selectField({
@@ -775,7 +776,7 @@ const bank = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
   FIELDS_STRUCTURE.name(),
-  { label: "ltnname", name: "ltnname", type: "text", required: false },
+  // { label: "ltnname", name: "ltnname", type: "text", required: false },
 
   {
     label: "address",
@@ -4651,6 +4652,17 @@ const bill_pattern_general = [
     list: SELECT_LISTS("bill_pattern_bill_type"),
   }),
   { label: "note", name: "note", type: "text", required: false },
+
+  {
+    label: "currency_id",
+    name: "currency_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "currency",
+    ref_col: "id",
+    hideValue: true,
+  },
   FIELDS_STRUCTURE.switchField({
     label: "barcode_bill",
     name: "barcode_bill",
@@ -4720,16 +4732,7 @@ const bill_pattern_accounts = [
     ref_table: "account",
     ref_col: "id",
   },
-  {
-    label: "currency_id",
-    name: "currency_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "currency",
-    ref_col: "id",
-    hideValue: true,
-  },
+
   {
     label: "use_vat_account_from_customer_card",
     name: "use_vat_account_from_customer_card",
@@ -5029,13 +5032,14 @@ const category_problem = [
     ref_col: "id",
     require: true,
   },
+  { label: "minutes", name: "minutes", type: "number", required: true },
+  { label: "price", name: "price", type: "number" },
   {
     label: "is_available",
     name: "is_available",
     type: "checkbox",
     key: "switch",
   },
-  { label: "minutes", name: "minutes", type: "number", required: true },
 ];
 
 // ==== End Category
@@ -5641,12 +5645,12 @@ const villa = [
     name: "electricity_meter",
     type: "number",
   },
-  {
-    label: "customer_owner_id",
-    name: "customer_owner_id",
-    is_ref: true,
-    ref_table: "owner", // unknown table
-  },
+  // {
+  //   label: "customer_owner_id",
+  //   name: "customer_owner_id",
+  //   is_ref: true,
+  //   ref_table: "owner", // unknown table
+  // },
   FIELDS_STRUCTURE.note(),
 ];
 
@@ -5853,18 +5857,18 @@ const villa_interior_details = [
   },
 ];
 
-const villa_pictures = [
-  FIELDS_STRUCTURE.id(),
-  FIELDS_STRUCTURE.created_at(),
-  {
-    label: "picture",
-    name: "picture",
-    type: "file",
-    multiple: true,
+// const villa_pictures = [
+//   FIELDS_STRUCTURE.id(),
+//   FIELDS_STRUCTURE.created_at(),
+//   {
+//     label: "picture",
+//     name: "picture",
+//     type: "file",
+//     multiple: true,
 
-    key: "image",
-  },
-];
+//     key: "image",
+//   },
+// ];
 
 const villa_rental_price = [
   FIELDS_STRUCTURE.id(),
@@ -6131,10 +6135,10 @@ const owner_expenses_details = [
 ];
 const owner_expenses_types = [
   // { label:"number", name: "number", type: "number", required: false },
-  { label: "name", name: "name", type: "text", required: false },
+  { label: "code", name: "code", type: "text", required: true },
+  { label: "name", name: "name", type: "text", required: true },
   { label: "ltnname", name: "ltnname", type: "text", required: false },
   { label: "note", name: "note", type: "text", required: false },
-  { label: "code", name: "code", type: "text", required: false },
 ];
 
 const tenants = [
@@ -6643,6 +6647,12 @@ const service = [
     list: SELECT_LISTS("service_status"),
   }),
   {
+    label: "payment_method",
+    name: "payment_method",
+    type: "number",
+    readOnly: false,
+  },
+  {
     label: "supervisor_user_id",
     name: "supervisor_user_id",
     type: "uuid",
@@ -6651,11 +6661,6 @@ const service = [
     ref_table: UNIQUE_REF_TABLES.supervisor,
     ref_col: "id",
   },
-  FIELDS_STRUCTURE.uniqueField({
-    label: "default_service_id",
-    name: "default_service_id",
-    ref_table: "default_service",
-  }),
 ];
 
 const service_customer_request = [
@@ -6670,12 +6675,6 @@ const service_customer_request = [
     ref_name: "internal_number",
   },
   { label: "description", name: "description", type: "text", readOnly: false },
-  {
-    label: "payment_method",
-    name: "payment_method",
-    type: "number",
-    readOnly: false,
-  },
   {
     label: "customer_user_id",
     name: "customer_user_id",
@@ -6713,8 +6712,8 @@ const service_lack_reason = [
     required: false,
   },
   {
-    label: "user_worker_id",
-    name: "user_worker_id",
+    label: "worker_user_id",
+    name: "worker_user_id",
     type: "uuid",
     required: false,
     is_ref: true,
@@ -6880,47 +6879,6 @@ const service_group = {
     },
   },
 };
-
-const default_service = [
-  { label: "name", name: "name", type: "text", required: true },
-  { label: "ltnname", name: "ltnname", type: "text", required: false },
-  { label: "description", name: "description", type: "text", required: true },
-  {
-    label: "category_id",
-    name: "category_id",
-    type: "uuid",
-    required: true,
-    is_ref: true,
-    ref_table: "category",
-    ref_col: "id",
-  },
-  FIELDS_STRUCTURE.selectField({
-    label: "service_type",
-    name: "service_type",
-    list: [
-      { id: 0, name: "All" },
-      { id: 1, name: "Flats" },
-      { id: 2, name: "Parking" },
-      { id: 3, name: "Land" },
-    ],
-  }),
-  { label: "price", name: "price", type: "number", required: true },
-  {
-    label: "available",
-    name: "available",
-    type: "checkbox",
-    key: "switch",
-    required: true,
-  },
-  {
-    label: "display",
-    name: "display",
-    type: "checkbox",
-    key: "switch",
-    required: true,
-  },
-  { label: "picture", name: "picture", key: "image", required: false },
-];
 
 const lawsuit_group = {
   forms: {
@@ -7179,10 +7137,10 @@ const villa_group = {
       fields: villa_interior_details,
       tab_name: "villa",
     },
-    [VILLA_STEPS.villa_pictures]: {
-      fields: villa_pictures,
-      tab_name: "villa_pictures",
-    },
+    // [VILLA_STEPS.villa_pictures]: {
+    //   fields: villa_pictures,
+    //   tab_name: "villa_pictures",
+    // },
     [VILLA_STEPS.villa_rental_price]: {
       fields: villa_rental_price,
       tab_name: "villa_rental_price",
@@ -7337,7 +7295,6 @@ const FORMS = {
   ...CONTRACTS_FORM,
 
   // maintenances
-  default_service,
   service: service_group,
   service_customer: service_customer_group,
   lack_reason,

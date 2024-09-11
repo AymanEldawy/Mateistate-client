@@ -1017,10 +1017,12 @@ export async function INSERT_DEFAULT_DATA() {
 
 // Define the notification schema
 const notificationSchema = {
-  title: String,
-  description: String,
-  url: String,
-  status: Boolean,
+  title: "String",
+  description: "String",
+  url: "String",
+  screen_name: "String",
+  screen_id: "String",
+  status: "Boolean",
 };
 
 // Function to generate a random string
@@ -1126,6 +1128,18 @@ export async function updateMaterials() {
       conditions: [{ type: "and", conditions: [["id", "=", mat.id]] }],
       updates: {
         category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
+      },
+    });
+  }
+}
+
+export async function updateCategoryProblem() {
+  const problems = await ApiActions.read("category_problem");
+  for (const mat of problems?.result) {
+    await ApiActions.update("category_problem", {
+      conditions: [{ type: "and", conditions: [["id", "=", mat.id]] }],
+      updates: {
+        price: Math.floor(Math.random() * 50),
       },
     });
   }
@@ -1520,10 +1534,11 @@ export async function insertIntoProblems() {
 
     await ApiActions.insert("category_problem", {
       data: {
-        description: problem.description?.slice(0,55),
+        description: problem.description?.slice(0, 55),
         category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
         minutes: problem.minutes,
         is_available: true,
+        price: Math.floor(Math.random() * 50),
         ...problem,
       },
     });
@@ -1897,30 +1912,44 @@ export async function updateUserToken() {
   //   await INSERT_FUNCTION.user(user);
   // }
 
-  const res = await ApiActions.read("user");
+  const res = await ApiActions.read("members", {
+    conditions: [{ type: "and", conditions: [["user_type", "=", 3]] }],
+  });
   for (const item of res?.result) {
-    await ApiActions.update("user", {
+    await ApiActions.update("members", {
       conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
       updates: { token: "123456" },
     });
+
+    try {
+      // Make the POST request using axios
+      let response = await axios.post(
+        "http://203.161.62.124:5001/verify_token",
+        {
+          phone_number: item.phone,
+          token: "123456",
+        }
+      );
+
+      // Access the response data
+      const token = response.data;
+
+      // Log or use the token as needed
+      console.log("Token:", token);
+      await axios(`http://203.161.62.124:5001/singup`, {
+        method: "POST",
+        headers: {
+          Authorization: token.access_token,
+        },
+        data: {
+          password: "12121212",
+        },
+      });
+    } catch (error) {
+      console.error("Error verifying token:", error);
+      throw error; // or handle the error as needed
+    }
   }
-  for (const item of res?.result) {
-    let token = await axios(`http://203.161.62.124:5001/verify_token`, {
-      method: "POST",
-      data: {
-        phone_number: item.phone,
-        token: "123456",
-      },
-    });
-    token = token.data;
-    await axios(`http://203.161.62.124:5001/singup`, {
-      method: "POST",
-      headers: {
-        Authorization: token?.access_token,
-      },
-      data: {
-        password: "12121212",
-      },
-    });
-  }
+  // for (const item of res?.result) {
+  // }
 }

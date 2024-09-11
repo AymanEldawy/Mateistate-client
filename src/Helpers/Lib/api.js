@@ -76,15 +76,15 @@ function CURD() {
   const read = async (tableName, params = {}) => {
     try {
       const tenant_id = Cookies.get("tenant_id");
-      if (tenant_id) {
-        params = {
-          ...params,
-          conditions: [
-            ...(params?.conditions || []),
-            { type: "and", conditions: [["tenant_id", "=", tenant_id]] },
-          ],
-        };
-      }
+      // if (tenant_id && tableName !== 'members') {
+      //   params = {
+      //     ...params,
+      //     conditions: [
+      //       ...(params?.conditions || []),
+      //       { type: "and", conditions: [["tenant_id", "=", tenant_id]] },
+      //     ],
+      //   };
+      // }
 
       const readRecordResponse = await matieStateClient.readRecords(
         tableName,

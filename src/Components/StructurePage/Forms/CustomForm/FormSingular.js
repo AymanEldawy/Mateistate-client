@@ -31,6 +31,7 @@ const FormSingular = ({ name, onClose, popupView }) => {
   const { isLoading } = useQuery({
     queryKey: [name, id],
     queryFn: async () => {
+      if (!id) return;
       const data = await ApiActions.read(name, {
         conditions: [
           {

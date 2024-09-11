@@ -96,7 +96,7 @@ export const getAccountCash = async (id) => {
   res = await ApiActions.read("account", {
     conditions: [
       { type: "or", conditions: [["name", "=", "Cash"]] },
-      { type: "or", conditions: [["number", "=", 131]] },
+      { type: "or", conditions: [["internal_number", "=", 131]] },
     ],
   });
 
@@ -292,6 +292,60 @@ const entry_main_data = async (name) => {
   return res?.result;
 };
 
+const category_problem = async (name) => {
+  const res = await ApiActions.read("category_problem", {
+    joins: [
+      {
+        type: "leftJoin",
+        table: "category as cate",
+        conditions: {
+          "cate.id": "category_problem.category_id",
+        },
+      },
+    ],
+    columns: ["category_problem.*", "cate.*"],
+  });
+  return res?.result;
+};
+const cost_center = async (name) => {
+  const res = await ApiActions.read("cost_center", {
+    joins: [
+      {
+        type: "leftJoin",
+        table: "cost_center as cost",
+        conditions: {
+          "cost.id": "cost_center.parent_id",
+        },
+      },
+    ],
+    columns: ["cost_center.*", "cost.name as parent_name"],
+  });
+  return res?.result;
+};
+
+const owner_expenses = async (name) => {
+  const res = await ApiActions.read("owner_expenses", {
+    joins: [
+      {
+        type: "leftJoin",
+        table: "building",
+        conditions: {
+          "building.id": "owner_expenses.building_id",
+        },
+      },
+      {
+        type: "leftJoin",
+        table: "owner",
+        conditions: {
+          "owner.id": "owner_expenses.owner_id",
+        },
+      },
+    ],
+    columns: ["owner_expenses.*", "building.name as building_name", "building.ltnname as building_ltnname", "owner.name as owner_name"],
+  });
+  return res?.result;
+};
+
 const data = {
   contract,
   account,
@@ -303,6 +357,10 @@ const data = {
   villa,
   service,
   entry_main_data,
+  category_problem,
+  cost_center,
+  owner_expenses
+
   // parking: unit,
 };
 

@@ -1,27 +1,30 @@
-import { INSERT_DEFAULT_ACCOUNTS, INSERT_DEFAULT_CATEGORY, INSERT_DEFAULT_DATA, INSERT_DEFAULT_LACK_REASONS, insertIntoDefaultService, insertIntoMaterials, insertIntoNotification, insertIntoProblems, insertTimes, updateDefaultService, updateMaterials, updateMaterialsPrice, updateProblems, updateUserToken } from "Helpers/GENERATE_STARTING_DATA";
+import { INSERT_DEFAULT_ACCOUNTS, INSERT_DEFAULT_CATEGORY, INSERT_DEFAULT_DATA, INSERT_DEFAULT_LACK_REASONS, insertIntoDefaultService, insertIntoMaterials, insertIntoNotification, insertIntoProblems, insertTimes, updateCategoryProblem, updateDefaultService, updateMaterials, updateMaterialsPrice, updateProblems, updateUserToken } from "Helpers/GENERATE_STARTING_DATA";
 import { ReportCount } from "./ReportCount";
 import { ReportLatest } from "./ReportLatest";
 
 export const DashboardGridLayout = () => {
 
   const loadData  = async () => {
+    // await INSERT_DEFAULT_DATA()
     // await INSERT_DEFAULT_ACCOUNTS()
     // await updateMaterials()
-    // await INSERT_DEFAULT_DATA()
+    // await updateUserToken();
+    // await insertTimes();
+    await updateCategoryProblem();
+
+    // await updateMaterialsPrice();
+    // await insertIntoProblems();
     // await INSERT_DEFAULT_CATEGORY();
     // await INSERT_DEFAULT_LACK_REASONS()
-    // await insertIntoProblems();
     // await insertIntoDefaultService();
-    // await updateMaterialsPrice();
-    await insertIntoNotification()
-    // await updateDefaultService()
-    await insertTimes();
-    // await updateUserToken();
+    // await insertIntoNotification()
   }
+
+
 
   return (
     <div className="flex gap-4 h-full px-8">
-      <button onClick={loadData}>load data</button>
+      {/* <button onClick={loadData}>load data</button> */}
       <div className="flex-1 flex flex-col -translate-y-4 h-full gap-4">
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
           <ReportLatest
