@@ -259,7 +259,7 @@ const authProtectedRoutes = [
 
   // Main forms
   { path: "/bill/:code/:name/:id", component: <BillForm /> },
-  { path: "/bill/:code/:name/", component: <BillForm /> },
+  { path: "/bill/:code/:name", component: <BillForm /> },
   { path: "/cheques/:code/:name/:id", component: <ChequeForm /> },
   { path: "/cheques/:code/:name/", component: <ChequeForm /> },
   { path: "/list/:name/", component: <List /> },

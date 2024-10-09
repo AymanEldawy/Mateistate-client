@@ -68,7 +68,6 @@ const Input = ({
         name={updatedName || field?.name}
         control={control}
         render={({ field: { onChange, onBlur, ref, value }, fieldState, formState }) => {
-          console.log("🚀 ~ value:", value)
           if (field?.type === "date") {
             return (
               <DatePicker
