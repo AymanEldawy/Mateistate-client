@@ -5,17 +5,16 @@ import { ReportLatest } from "./ReportLatest";
 export const DashboardGridLayout = () => {
 
   const loadData  = async () => {
-    // await INSERT_DEFAULT_DATA()
     // await INSERT_DEFAULT_ACCOUNTS()
+    // await INSERT_DEFAULT_DATA()
     // await updateMaterials()
-    // await updateUserToken();
-    // await insertTimes();
-    await updateCategoryProblem();
-
+    // await updateCategoryProblem();
     // await updateMaterialsPrice();
-    // await insertIntoProblems();
     // await INSERT_DEFAULT_CATEGORY();
     // await INSERT_DEFAULT_LACK_REASONS()
+    await insertIntoProblems();
+    // await updateUserToken();
+    // await insertTimes();
     // await insertIntoDefaultService();
     // await insertIntoNotification()
   }
@@ -24,7 +23,7 @@ export const DashboardGridLayout = () => {
 
   return (
     <div className="flex gap-4 h-full px-8">
-      {/* <button onClick={loadData}>load data</button> */}
+      <button onClick={loadData}>load data</button>
       <div className="flex-1 flex flex-col -translate-y-4 h-full gap-4">
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
           <ReportLatest

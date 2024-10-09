@@ -78,7 +78,6 @@ const cheque = [
         ],
       }).then((res) => {
         data = res?.data?.at(0);
-        console.log(res, "----type");
       });
       return (
         <Link
@@ -692,7 +691,6 @@ const category_problem = [
     header: "category_name",
     accessorKey: "category_name",
     cell: ({ row, getValue }) => {
-      console.log(row?.original, "--");
       return getValue();
     },
   },

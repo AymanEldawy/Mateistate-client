@@ -6,6 +6,7 @@ import { ApiActions } from "Helpers/Lib/api";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import useGlobalOptions from "Hooks/useGlobalOptions";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ const Login = () => {
   } = methods;
 
   const onSubmit = async () => {
+    console.log("🚀 ~ onSubmit ~ res:", isDirty);
+
     if (!isDirty) return;
     const res = await ApiActions.read("members", {
       conditions: [
@@ -33,16 +36,17 @@ const Login = () => {
       ],
       columns: ["members.*", "admins.tenant_id as tenant_id"],
     });
+    console.log("🚀 ~ onSubmit ~ res:", res);
 
-    console.log(res?.result);
-
-    if (res?.success) {
-      let data = res?.result?.at(0);
+    let data = res?.result?.at(0);
+    if (res?.success && data?.id) {
       Cookies.set("tenant_id", data?.tenant_id, {
         expires: 7,
       });
       setUser(data);
       navigate("/");
+    } else {
+      toast.error("user is not exist");
     }
   };
 

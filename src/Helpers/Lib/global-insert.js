@@ -27,6 +27,14 @@ import { getAccountCash } from "./global-read";
 import { CONTRACT_STATUS } from "./contract-helpers";
 
 const CONTRACT_GRID_FORMS_NAMES = {
+  bill_material_details: {
+    table: "bill_material_details",
+    conditions: ["material_id", "total_price"],
+  },
+  bill_discounts_details: {
+    table: "bill_discounts_details",
+    conditions: ["account_id"],
+  },
   contract_pictures: {
     table: "contract_pictures",
     conditions: [""],
@@ -88,33 +96,29 @@ const CONTRACT_GRID_FORMS_NAMES = {
 export const dynamicInsertIntoMultiStepsTable = async ({
   tableName,
   data,
+  tableListName,
   ...additionalParams
 }) => {
-  console.log("🚀 ~ tableName:", tableName);
   const SHOULD_UPDATES = data?.SHOULD_UPDATES;
 
   let steps = Object.values(
-    getFormByTableName(tableName === "service" ? "service_customer" : tableName)
-      ?.forms
+    getFormByTableName(
+      tableName === "service" ? "service_customer" : tableListName || tableName
+    )?.forms
   )?.map((c) => c?.tab_name);
-
-  console.log(steps, '----step', data);
-  
 
   let stepGeneralName = steps?.at(0);
 
   const list = {};
+
   // Loop through all the data and save each step with the table name in database which mean
   for (const step of steps) {
     list[step] = data?.[step];
   }
-
   // Insert to building
   let mainResponse = null;
   let tableId = null;
   let mainValues = list[stepGeneralName]; // removeNullValues(list[stepGeneralName]);
-  console.log("🚀 ~ list:", list)
-  console.log("🚀 ~ mainValues:", mainValues)
   if (!mainValues) return;
 
   if (mainValues?.id) {
@@ -223,7 +227,7 @@ const insertToBuilding = async (data) => {
   if (data?.id) {
     response = await ApiActions.update("building", {
       conditions: [{ type: "and", conditions: [["id", "=", data?.id]] }],
-      updates: data
+      updates: data,
     });
   } else {
     response = await ApiActions.insert("building", {
@@ -290,6 +294,15 @@ const insertToVilla = async (data) =>
     tableName: "villa",
     data: data?.data,
   });
+
+// Insert to material and other relation tables
+const insertIntoBill = async (data) => {
+  await dynamicInsertIntoMultiStepsTable({
+    tableName: "bill",
+    data,
+    tableListName: 'bill_invoice_group'
+  });
+};
 
 // Insert to material and other relation tables
 const insertToMaterial = async (data) =>
@@ -501,7 +514,6 @@ export const insertIntoContractInstallment = async ({
 
   // get CASH
   const observe_account_id = await getAccountCash(firstTabData?.building_id);
-  console.log("🚀 ~ observe_account_id:", observe_account_id);
 
   if (!observe_account_id) {
     toast.error(
@@ -556,8 +568,6 @@ export const insertIntoContractInstallment = async ({
 
     let prevVoucher = prevVoucherResponse?.result?.at(0);
     let voucher_main_data_id = prevVoucher?.id;
-
-    console.log(voucherMainData, voucher_main_data_id);
 
     if (prevVoucher?.id) {
       const res = await ApiActions.update("voucher_main_data", {
@@ -811,7 +821,6 @@ export const getAccountLastNumber = async (name, col, val) => {
     limit: 1,
     sorts: [{ column: "internal_number", order: "DESC", nulls: "last" }],
   });
-  console.log("🚀 ~ getAccountLastNumber ~ response:", response);
   return response?.result?.at(0);
 };
 
@@ -1041,7 +1050,7 @@ const updateUnits = async (unit, data, unitId) => {
 
 // insert To User
 const insertToUser = async (data) => {
-  let member_id = null;
+  let member_id = data?.member_id;
   if (!data?.member_id) {
     const memberRes = await ApiActions.insert("members", {
       data: {
@@ -1053,10 +1062,10 @@ const insertToUser = async (data) => {
     });
     member_id = memberRes?.record?.id;
   } else {
-    const memberRes = await ApiActions.update("members", {
-      conditions: [{ type: "and", conditions: [["id", "=", data?.member_id]] }],
-    });
-    member_id = memberRes?.result?.at(0)?.id;
+    // const memberRes = await ApiActions.read("members", {
+    //   conditions: [{ type: "and", conditions: [["id", "=", data?.member_id]] }],
+    // });
+    // member_id = memberRes?.result?.at(0)?.id;
   }
 
   if (!member_id) return;
@@ -1140,6 +1149,7 @@ const INSERT_FUNCTION = {
   villa: insertToVilla,
   material: insertToMaterial,
   lawsuit: insetIntoLawsuit,
+  bill: insertIntoBill,
   // Units
   // land
   // apartment

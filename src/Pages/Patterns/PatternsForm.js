@@ -31,8 +31,6 @@ const PatternsForm = ({ layout }) => {
     formState: { errors, isDirty },
     reset,
   } = methods;
-  console.log(watch());
-
   const { currentIndex, goTo, steps, fields, CACHE_LIST } = useFormSteps({
     name: pattern,
   });

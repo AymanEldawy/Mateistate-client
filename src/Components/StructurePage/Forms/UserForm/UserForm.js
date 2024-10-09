@@ -82,8 +82,6 @@ const UserForm = ({
     },
   });
 
-  console.log(buildingsIds, 'buildingsIds');
-  console.log(categoriesIds, 'categoriesIds');
 
   useEffect(() => {
     if (layout !== "update" && oldValues) {
@@ -134,7 +132,6 @@ const UserForm = ({
     if (!!onClose) onClose();
   };
 
-  console.log(watch());
   return (
     <FormWrapperLayout
       name={"user"}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { ApiActions } from "Helpers/Lib/api";
@@ -45,19 +45,79 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
 
   const onClickPrint = () => {};
 
+  // useEffect(() => {
+  //   const d = async () => {
+  //     const services = await ApiActions.read("service");
+  //     const ids = [];
+  //     for (const item of services?.result) {
+  //       ids.push(item?.id);
+  //     }
+
+  //     await ApiActions.remove("service_worker", {
+  //       conditions: [
+  //         {
+  //           type: "and",
+  //           conditions: [["service_id", "in", ids]],
+  //         },
+  //       ],
+  //     });
+  //     await ApiActions.remove("service_lack_reason", {
+  //       conditions: [
+  //         {
+  //           type: "and",
+  //           conditions: [["service_id", "in", ids]],
+  //         },
+  //       ],
+  //     });
+  //     await ApiActions.remove("service_customer_request", {
+  //       conditions: [
+  //         {
+  //           type: "and",
+  //           conditions: [["service_id", "in", ids]],
+  //         },
+  //       ],
+  //     });
+  //     await ApiActions.remove("worker_rate", {
+  //       conditions: [
+  //         {
+  //           type: "and",
+  //           conditions: [["service_id", "in", ids]],
+  //         },
+  //       ],
+  //     });
+  //     await ApiActions.remove("service_material", {
+  //       conditions: [
+  //         {
+  //           type: "and",
+  //           conditions: [["service_id", "in", ids]],
+  //         },
+  //       ],
+  //     });
+  //     await ApiActions.remove("service", {
+  //       conditions: [
+  //         {
+  //           type: "and",
+  //           conditions: [["id", "in", ids]],
+  //         },
+  //       ],
+  //     });
+  //   };
+  //   d()
+  // }, []);
+
   const deleteItem = async () => {
     let ids = [];
     let list = [];
     // let selected = table.getFilteredSelectedRowModel();
 
-    // for (const row of selected?.rows) {
-    //   list.push(row.original);
-    //   ids.push(row.original.id);
-    // }
+    for (const index of Object.keys(rowSelection)) {
+      list.push();
+      ids.push(data?.[index]?.id);
+    }
 
     let res = null;
 
-    res = await ApiActions.remove(tableName, {
+    res = await ApiActions.remove(name, {
       conditions: [
         {
           type: "and",
@@ -73,6 +133,8 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
     }
     // setOpenConfirmation(false);
   };
+  console.log("🚀 ~ deleteItem ~ tableName:", tableName);
+  console.log(rowSelection, "rowSelection");
 
   return (
     <>
@@ -165,6 +227,8 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
           isLoading={isLoading}
           openColumnsSetting={openColumnsSetting}
           setOpenColumnsSetting={setOpenColumnsSetting}
+          setRowSelection={setRowSelection}
+          rowSelection={rowSelection}
         />
       </BlockPaper>
     </>

@@ -979,13 +979,10 @@ export const insertIntoUserConnect = async ({
   });
 
   let length = Math.max(ids?.length, prevGrid?.result?.length || 0);
-  console.log("🚀 ~ length:", length)
 
   for (let i = 0; i < length; i++) {
     let prevItem = prevGrid?.result?.[i];
-    console.log("🚀 ~ prevItem:", prevItem)
     let id = ids?.[i];
-    console.log("🚀 ~ id:", id)
     if (id === prevItem?.[searchKey]) continue;
 
     if (id) {
@@ -998,4 +995,14 @@ export const insertIntoUserConnect = async ({
       });
     }
   }
+};
+
+
+// generate Entry From Bill
+export const generateEntryFromBill = async ({
+  values,
+  created_from,
+  created_from_id,
+  created_from_code,
+}) => {
 };

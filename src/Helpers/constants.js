@@ -338,6 +338,33 @@ export const CONTRACTS_ASSETS_TYPE = {
 
 export const SELECT_LISTS = (listName) => {
   let list = {
+    time_light_start: [
+      { name: "9:00 AM", id: "9" },
+      { name: "10:00 AM", id: "10" },
+      { name: "11:00 AM", id: "11" },
+      { name: "12:00 PM", id: "12" },
+      { name: "1:00 PM", id: "13" },
+    ],
+    time_light_end: [
+      { name: "2:00 PM", id: "14" },
+      { name: "3:00 PM", id: "15" },
+      { name: "4:00 PM", id: "16" },
+      { name: "5:00 PM", id: "17" },
+    ],
+    time_night_start: [
+      { name: "5:00 PM", id: "17" },
+      { name: "6:00 PM", id: "18" },
+      { name: "7:00 PM", id: "19" },
+      { name: "8:00 PM", id: "20" },
+      { name: "9:00 PM", id: "21" },
+    ],
+    time_night_end: [
+      { name: "10:00 PM", id: "22" },
+      { name: "11:00 PM", id: "23" },
+      { name: "12:00 AM", id: "00" },
+      { name: "1:00 AM", id: "01" },
+    ],
+
     service_material_status: [
       { id: 1, name: "Requested" },
       { id: 2, name: "Received" },
@@ -829,6 +856,12 @@ export const ACCOUNTING_VOUCHER_PATTERN_STEPS = {
   accounting_voucher_general: "accounting_voucher_general",
   accounting_voucher_fields: "accounting_voucher_fields",
   accounting_voucher_sms: "SMS",
+};
+
+export const BILL_STEPS = {
+  bill: "bill",
+  bill_discounts_details: "bill_discounts_details",
+  bill_material_details: "bill_material_details",
 };
 
 export const MATERIAL_STEPS = {

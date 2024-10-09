@@ -14,7 +14,6 @@ import UserForm from "../UserForm/UserForm";
 const PopupForm = () => {
   const { openForm, dispatchForm, setRecordResponse } = usePopupForm();
   const { table, open } = openForm;
-  console.log("🚀 ~ PopupForm ~ table:", table)
 
   if (!open) return;
 

@@ -25,6 +25,8 @@ const DynamicTable = ({
   name,
   openColumnsSetting,
   setOpenColumnsSetting,
+  setRowSelection,
+  rowSelection,
 }) => {
   const { t } = useTranslation();
   const { getTable, setTable } = useLocalStorage({});
@@ -32,7 +34,7 @@ const DynamicTable = ({
   const [columnVisibility, setColumnVisibility] = useState(
     getTable(name) || {}
   );
-  const [rowSelection, setRowSelection] = useState([]);
+
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnOrder, setColumnOrder] = useState([]);

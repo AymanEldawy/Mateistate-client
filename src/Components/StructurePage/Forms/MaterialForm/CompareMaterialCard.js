@@ -12,7 +12,6 @@ export const CompareMaterialCard = ({
 }) => {
   const [selectedMaterial, setSelectedMaterials] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  console.log("🚀 ~ CompareMaterialCard ~ selectedMaterial:", selectedMaterial);
 
   const onSave = async () => {
     setIsLoading(true);

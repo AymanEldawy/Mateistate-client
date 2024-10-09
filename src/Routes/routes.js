@@ -64,6 +64,7 @@ import List from "Components/Tables/List";
 import BillForm from "Components/StructurePage/Forms/BillForm/BillForm";
 import MaterialForm from "Components/StructurePage/Forms/MaterialForm/MaterialForm";
 import UnregisterMaterials from "Components/StructurePage/Forms/MaterialForm/UnregisterMaterials";
+import Timing from "Pages/Timing/Timing";
 
 const publicRoutes = [
   { path: "**", component: <NouFound /> },
@@ -74,6 +75,7 @@ const publicRoutes = [
 const authProtectedRoutes = [
   { path: "*", component: <NouFound /> },
   { path: "/", component: <Home /> },
+  { path: "/timing", component: <Timing /> },
   // { path: "/buildings/:name/tools/:Guid", component: <Tools /> },
   { path: "/tools/:id", component: <Tools /> },
 

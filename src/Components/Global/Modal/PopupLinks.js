@@ -11,33 +11,27 @@ import { PlusIcon } from "Components/Icons";
 import { DEFAULT_BILL_MENU, SERVICE_MENU } from "Helpers/constants";
 
 export const PopupLinks = ({ onClose, name }) => {
-  console.log("🚀 ~ PopupLinks ~ name:", name);
   const [open, setOpen] = useState(false);
   const [links, setLinks] = useState([]);
 
   const getLinks = async () => {
     switch (name) {
-      // case "entry_main_data":
-      //   setLinks([
-      //     {
-      //       key: 'entries',
-      //       name:'Entries',
-      //       subChild: [{
-      //         isForm: true,
-      //         key: "Journal entry",
-      //         link: "vouchers/entries/1",
-      //       }],
-      //     },
-      //   ]);
-      //   break;
+      case "entry_main_data":
+        setLinks([
+          {
+            key: 'entries',
+            name:'Entries',
+            subChild: [{
+              isForm: true,
+              key: "Journal entry",
+              link: "vouchers/entries/1",
+            }],
+          },
+        ]);
+        break;
       case "bill":
         const BillsMenu = await getBillsMenus();
-        console.log(
-          "🚀 ~ getLinks ~ BillsMenu:",
-          BillsMenu,
-          "DEFAULT_BILL_MENU",
-          DEFAULT_BILL_MENU
-        );
+       
         setLinks(BillsMenu || DEFAULT_BILL_MENU);
         break;
       case "service":

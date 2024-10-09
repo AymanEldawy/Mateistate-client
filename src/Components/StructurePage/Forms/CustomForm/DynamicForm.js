@@ -13,7 +13,6 @@ export const DynamicForm = ({
   normalForm,
   name: outerName,
 }) => {
-  console.log("🚀 ~ popupView:", popupView)
   const params = useParams();
   const name = outerName || params?.name;
 
@@ -23,7 +22,6 @@ export const DynamicForm = ({
     return;
   }, [name]);
 
-  console.log(name, "ss");
   return (
     <div key={name}>
       {/* <Suspense fallback={<>loading</>}> */}

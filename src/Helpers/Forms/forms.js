@@ -17,6 +17,7 @@ import {
   LAND_STEPS,
   BILL_PATTERN_STEPS,
   MATERIAL_STEPS,
+  BILL_STEPS,
 } from "Helpers/constants";
 import { CONTRACTS_FORM } from "./contract-forms";
 import FIELDS_STRUCTURE from "./fields-structure";
@@ -4386,6 +4387,12 @@ const material_specifications = [
 
 // Start Bill
 const bill = [
+  {
+    is_ref: true,
+    ref_table: "material",
+    ref_col: "id",
+    hide_in_form: true,
+  },
   { label: "number", name: "number", type: "number", required: false },
   {
     label: "currency_id",
@@ -4411,29 +4418,20 @@ const bill = [
     name: "connect_with",
     list: SELECT_LISTS("bill_connect_with"),
   }),
-  // {
-  //   label: "connect_with_id",
-  //   name: "connect_with_id",
-  //   type: "uuid",
-  //   required: false,
-  //   is_ref: true,
-  //   ref_table: "connect_with",
-  //   ref_col: "id",
-  // },
   {
     label: "currency_val",
     name: "currency_val",
     type: "number",
     required: false,
   },
-  { label: "issue_date", name: "issue_date", type: "date", required: false },
-  { label: "bill_date", name: "bill_date", type: "date", required: false },
-  { label: "bill_kind", name: "bill_kind", type: "number", required: false },
+  { label: "issue_date", name: "issue_date", type: "date", required: true },
+  { label: "bill_date", name: "bill_date", type: "date", required: true },
+  { label: "bill_kind", name: "bill_kind", type: "number", required: true },
   {
     label: "client_account_id",
     name: "client_account_id",
     type: "uuid",
-    required: false,
+    required: true,
     is_ref: true,
     ref_table: "account",
     ref_col: "id",
@@ -4456,7 +4454,7 @@ const bill = [
     label: "store_id",
     name: "store_id",
     type: "uuid",
-    required: false,
+    required: true,
     is_ref: true,
     ref_table: "store",
     ref_col: "id",
@@ -4465,7 +4463,7 @@ const bill = [
     label: "customer_account_id",
     name: "customer_account_id",
     type: "uuid",
-    required: false,
+    required: true,
     is_ref: true,
     ref_table: "account",
     ref_col: "id",
@@ -4474,7 +4472,7 @@ const bill = [
     label: "material_account_id",
     name: "material_account_id",
     type: "uuid",
-    required: false,
+    required: true,
     is_ref: true,
     ref_table: "account",
     ref_col: "id",
@@ -7221,6 +7219,26 @@ const material_group_steps = {
   },
 };
 
+const bill_invoice_group = {
+  forms: {
+    [BILL_STEPS.bill]: {
+      fields: bill,
+      tab_name: "bill",
+    },
+    [BILL_STEPS.bill_discounts_details]: {
+      fields: bill_discounts_details,
+      tab_name: "bill_discounts_details",
+      formType: "grid",
+    },
+
+    [BILL_STEPS.bill_material_details]: {
+      fields: bill_material_details,
+      tab_name: "bill_material_details",
+      formType: "grid",
+    },
+  },
+};
+
 const FORMS = {
   // Cards
   reservation_property,
@@ -7312,6 +7330,7 @@ const FORMS = {
   bill,
   bill_discounts_details,
   bill_material_details,
+  bill_invoice_group,
 };
 
 export default function getFormByTableName(name) {

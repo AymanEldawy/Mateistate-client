@@ -1796,8 +1796,8 @@ export async function insertTimes() {
     startDate.setDate(startDate.getDate() + i);
     endDate.setDate(endDate.getDate() + i);
 
-    startDate.setHours(9, 0, 0, 0);
-    endDate.setHours(17, 0, 0, 0);
+    startDate.setHours(8, 0, 0, 0);
+    endDate.setHours(23, 0, 0, 0);
     for (const worker of workerRes?.result) {
       insertWorkDay({
         user_id: worker.id,
@@ -1935,7 +1935,6 @@ export async function updateUserToken() {
       const token = response.data;
 
       // Log or use the token as needed
-      console.log("Token:", token);
       await axios(`http://203.161.62.124:5001/singup`, {
         method: "POST",
         headers: {

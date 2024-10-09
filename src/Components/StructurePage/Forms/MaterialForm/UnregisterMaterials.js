@@ -23,7 +23,6 @@ const UnregisterMaterials = () => {
     queryKey: [name, "all"],
     queryFn: async () => {
       const data = await ApiActions.read("material");
-      console.log("🚀 ~ queryFn: ~ data:", data);
       return data?.result;
     },
   });

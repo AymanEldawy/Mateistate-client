@@ -52,7 +52,6 @@ const MaterialForm = ({ popupView }) => {
       conditions: [{ type: "and", conditions: [["id", "=", materialId]] }],
     });
   };
-  console.log(watch());
 
   const onSubmit = async (value) => {
     if (!isDirty) return;

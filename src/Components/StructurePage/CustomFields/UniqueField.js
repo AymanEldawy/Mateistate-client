@@ -157,8 +157,6 @@ const UniqueField = ({
                 refTable = "user";
                 oldValues = { card_type: USER_WORKER_CODE };
               }
-              console.log(refTable, 'ref');
-
               dispatchForm({
                 open: true,
                 table: refTable,

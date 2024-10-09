@@ -53,7 +53,7 @@ function App() {
         </>
       ) : (
         <Login />
-      )}{" "}
+      )}
     </div>
   );
 }
