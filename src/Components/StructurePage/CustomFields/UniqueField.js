@@ -31,6 +31,7 @@ const UniqueField = ({
   inputClassName,
   selectClassName,
   labelClassName,
+  old,
   ...field
 }) => {
   const { dispatchForm } = usePopupForm();
@@ -109,7 +110,11 @@ const UniqueField = ({
                         : `${
                             inputClassName
                               ? inputClassName
-                              : "!bg-none !bg-transparent"
+                              : `!bg-none ${
+                                  old
+                                    ? "!bg-white dark:!bg-[#2C2C2C] w-full"
+                                    : "!bg-transparent"
+                                }`
                           } `
                     }  !border-none`,
                   singleValue: () => "dark:text-gray-200 unique-valid",

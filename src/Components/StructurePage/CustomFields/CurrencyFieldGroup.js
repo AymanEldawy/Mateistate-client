@@ -14,6 +14,7 @@ const CurrencyFieldGroup = ({
   error,
   list: defaultList,
   containerClassName,
+  old,
   ...field
 }) => {
   const { t } = useTranslation();
@@ -46,11 +47,11 @@ const CurrencyFieldGroup = ({
       <div className={`min-w-[200px] rounded-md ${containerClassName}`}>
         <label
           title="connect with id"
-          className="overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize"
+          className={`${old && "w-[120px]"} overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize`}
         >
           Currency
         </label>
-        <div className="flex">
+        <div className={`flex ${old && "w-full"}`}>
           <div
             className={`relative flex-1 flex items-center border dark:border-dark-border rounded-`}
           >
@@ -63,7 +64,9 @@ const CurrencyFieldGroup = ({
                   <Select
                     menuPlacement="auto"
                     menuPortalTarget={document?.body}
-                    styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}    
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
                     options={list}
                     name={currency_id}
                     className="w-full border-none"
@@ -71,7 +74,9 @@ const CurrencyFieldGroup = ({
                       indicatorsContainer: () => "!hidden bg-black",
                       control: (state) => "bg-transparent !border-none",
                       container: (state) =>
-                        "!bg-none !bg-transparent !border-none",
+                        `!bg-none ${
+                          old ? "bg-white dark:bg-[#2C2C2C]" : "!bg-transparent"
+                        } !border-none`,
                       singleValue: () => "dark:text-gray-200 unique-valid",
                       menuList: () => "dark:bg-dark-bg",
                     }}

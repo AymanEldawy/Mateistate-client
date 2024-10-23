@@ -20,6 +20,7 @@ const CustomSelect = ({
   selectClassNames,
   readOnly,
   tab,
+  old,
   ...field
 }) => {
   const { name } = field;
@@ -71,7 +72,9 @@ const CustomSelect = ({
               classNames={{
                 control: (state) => "bg-transparent !border-none",
                 container: (state) =>
-                  "!bg-none !bg-transparent dark:!border-dark-border",
+                  `!bg-none ${
+                    old ? "!bg-white dark:!bg-[#2C2C2C] w-full" : "!bg-transparent"
+                  } dark:!border-dark-border`,
                 singleValue: () => "dark:text-gray-200 unique-valid",
                 menuList: () => "dark:bg-dark-bg",
                 ...selectClassNames,

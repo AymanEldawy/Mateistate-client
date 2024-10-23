@@ -115,13 +115,14 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
       methods={methods}
       onSubmit={onSubmit}
     >
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 justify-between gap-4">
-        <div className="flex flex-col gap-2">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 justify-between gap-4 bg-[#EFF6FF] dark:bg-[#303030] p-2">
+        <div className="flex flex-col gap-5">
           <Input
             {...fields?.issue_date}
             updatedName="bill.issue_date"
             tab="bill"
             error={errors?.issue_date ? "Field is required" : ""}
+            old={true}
           />
           <Input
             {...fields?.bill_date}
@@ -129,6 +130,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             tab="bill"
             values={watch()}
             error={errors?.bill_date ? "Field is required" : ""}
+            old={true}
           />
           <CurrencyFieldGroup
             tab="bill"
@@ -136,6 +138,8 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
             values={watch()}
             error={errors?.currency_id ? "Field is required" : ""}
+            old={true}
+            containerClassName="flex"
           />
           <Select
             {...fields?.payment_method}
@@ -143,14 +147,19 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             tab="bill"
             values={watch()}
             error={errors?.payment_method ? "Field is required" : ""}
+            old={true}
+            containerClassName={"!flex-row"}
+            labelClassName="!w-[120px] !whitespace-normal"
           />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-5">
           <Input
             {...fields?.receipt_number}
             updatedName="bill.receipt_number"
             tab="bill"
             error={errors?.receipt_number ? "Field is required" : ""}
+            old={true}
+            // inputClassName="w-full"
           />
           <UniqueField
             {...fields?.cost_center_id}
@@ -160,9 +169,12 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             list={!!CACHE_LIST ? CACHE_LIST?.cost_center : []}
             values={watch()}
             error={errors?.cost_center_id ? "Field is required" : ""}
+            old={true}
+            containerClassName="flex"
+            labelClassName="!w-[120px] !whitespace-normal"
           />
           <div className="">
-            <BillConnectWithField tab={"bill"} />
+            <BillConnectWithField tab={"bill"} old={true} />
           </div>
           <Input
             {...fields?.note}
@@ -170,9 +182,11 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             tab="bill"
             values={watch()}
             error={errors?.note ? "Field is required" : ""}
+            old={true}
+            inputClassName="w-full"
           />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-5">
           <UniqueField
             {...fields?.store_id}
             updatedName="bill.store_id"
@@ -181,6 +195,9 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             list={!!CACHE_LIST ? CACHE_LIST?.store : []}
             values={watch()}
             error={errors?.store_id ? "Field is required" : ""}
+            old={true}
+            containerClassName="flex"
+            labelClassName="!w-[190px] !whitespace-normal"
           />
           <UniqueField
             {...fields?.customer_account_id}
@@ -190,6 +207,9 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             list={!!CACHE_LIST ? CACHE_LIST?.account : []}
             values={watch()}
             error={errors?.customer_account_id ? "Field is required" : ""}
+            old={true}
+            containerClassName="flex"
+            labelClassName="!w-[190px] !whitespace-normal"
           />
           <UniqueField
             {...fields?.material_account_id}
@@ -199,6 +219,9 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             list={!!CACHE_LIST ? CACHE_LIST?.account : []}
             values={watch()}
             error={errors?.material_account_id ? "Field is required" : ""}
+            old={true}
+            containerClassName="flex"
+            labelClassName="!w-[190px] !whitespace-normal"
           />
           <Input
             {...fields?.class}

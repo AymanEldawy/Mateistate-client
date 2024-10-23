@@ -19,7 +19,7 @@ const REF_TABLES = {
   [BILL_CONNECT_WITH_MAINTENANCES_CODE]: BILL_CONNECT_WITH_MAINTENANCES_NAME,
 };
 
-const BillConnectWithField = ({ tab, values, errors }) => {
+const BillConnectWithField = ({ tab, values, errors, old }) => {
   const { t } = useTranslation();
   const { control, watch } = useFormContext();
   const [list, setList] = useState([]);
@@ -70,11 +70,11 @@ const BillConnectWithField = ({ tab, values, errors }) => {
   };
 
   return (
-    <div className={`${watch(selectName) ? "flex gap-2": ''}`}>
-      <div className={"flex flex-col"}>
+    <div className={`${watch(selectName) ? "flex gap-2" : ""}`}>
+      <div className={`flex ${old ? "flex-row" : "flex-col"}`}>
         <label
           title="connect with"
-          className="overflow-selectName text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize "
+          className={`${old && "w-[120px]"} overflow-selectName text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize`}
         >
           connect with
         </label>
@@ -90,7 +90,11 @@ const BillConnectWithField = ({ tab, values, errors }) => {
                 classNames={{
                   control: (state) => "bg-transparent !border-none",
                   container: (state) =>
-                    "!bg-none !bg-transparent dark:!border-dark-border",
+                    `!bg-none dark:!border-dark-border ${
+                      old
+                        ? "!bg-white dark:!bg-[#2C2C2C] w-full"
+                        : "!bg-transparent"
+                    }`,
                   singleValue: () => "dark:text-gray-200 unique-valid",
                   menuList: () => "dark:bg-dark-bg",
                 }}
