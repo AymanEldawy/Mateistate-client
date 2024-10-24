@@ -249,8 +249,8 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
           tab={"bill_material_details"}
           tableError={errors?.["bill_material_details"]}
           // tableClassName="!border-collapse !border !border-gray-300"
-          thClassName="border border-2 !border-r-black border-b-black p-2 bg-gray-200 text-center"
-          numberClassName="border border-2 !border-r-black border-b-black p-2 bg-gray-200 text-center text-black"
+          thClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center dark:bg-black dark:text-white"
+          numberClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center text-black dark:bg-black dark:text-white"
           // increaseContainerClassNamed="border border-2 !border-black"
         />
         <TableFields
@@ -261,8 +261,8 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
           fields={getFormByTableName("bill_discounts_details")}
           tab={"bill_discounts_details"}
           tableError={errors?.["bill_discounts_details"]}
-          thClassName="border border-2 !border-r-black border-b-black p-2 bg-gray-200 text-center"
-          numberClassName="border border-2 !border-r-black border-b-black p-2 bg-gray-200 text-center text-black"
+          thClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center dark:bg-black dark:text-white"
+          numberClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center text-black dark:bg-black dark:text-white"
         />
       </div>
       <div className="grid grid-cols-2 gap-8 my-4 bg-[#EFF6FF] dark:bg-[#303030] p-2">
