@@ -239,7 +239,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
           error={errors?.note ? "Field is required" : ""}
         /> */}
       </div>
-      <div className="bg-gray-200 dark:bg-dark-border p-4 my-4">
+      <div className="bg-[#EFF6FF] dark:bg-[#303030] p-4 my-4 border-b-black">
         <TableFields
           containerClassName="bg-white dark:bg-dark-bg"
           theadClassName="!bg-transparent"
@@ -248,6 +248,10 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
           fields={getFormByTableName("bill_material_details")}
           tab={"bill_material_details"}
           tableError={errors?.["bill_material_details"]}
+          // tableClassName="!border-collapse !border !border-gray-300"
+          thClassName="border border-2 !border-r-black border-b-black p-2 bg-gray-200 text-center"
+          numberClassName="border border-2 !border-r-black border-b-black p-2 bg-gray-200 text-center text-black"
+          // increaseContainerClassNamed="border border-2 !border-black"
         />
         <TableFields
           containerClassName="bg-white dark:bg-dark-bg"
@@ -257,9 +261,11 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
           fields={getFormByTableName("bill_discounts_details")}
           tab={"bill_discounts_details"}
           tableError={errors?.["bill_discounts_details"]}
+          thClassName="border border-2 !border-r-black border-b-black p-2 bg-gray-200 text-center"
+          numberClassName="border border-2 !border-r-black border-b-black p-2 bg-gray-200 text-center text-black"
         />
       </div>
-      <div className="grid grid-cols-2 gap-8 my-4">
+      <div className="grid grid-cols-2 gap-8 my-4 bg-[#EFF6FF] dark:bg-[#303030] p-2">
         <div className="flex flex-col gap-2 overflow-hidden">
           <div className="grid grid-cols-3 gap-4">
             <Input

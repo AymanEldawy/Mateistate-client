@@ -6,9 +6,10 @@ export const IncreaseTableBar = ({
   increaseCount,
   setIncreaseCount,
   onDecrement,
+  increaseContainerClassName
 }) => {
   return (
-    <div className="flex items-center justify-between shadow bg-gray-100 dark:bg-dark-border">
+    <div className={`flex items-center justify-between shadow bg-gray-100 dark:bg-dark-border ${increaseContainerClassName}`}>
       <button
         type="button"
         className="bg-blue-500 text-white p-1 active:bg-primary active:text-white disabled:bg-gray-100 disabled:text-gray-400 disabled:border disabled:cursor-not-allowed"

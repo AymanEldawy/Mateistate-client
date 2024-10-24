@@ -40,6 +40,8 @@ const TableFields = ({
   onClickOnNumber,
   withPortal,
   availableColors,
+  numberClassName,
+  increaseContainerClassName,
   increasable = true,
   tableError,
 }) => {
@@ -149,7 +151,7 @@ const TableFields = ({
                       }
                     >
                       <td
-                        className={`min-w-[40px] ${tdClassName} border dark:border-dark-border relative`}
+                        className={`min-w-[40px] ${tdClassName} border dark:border-dark-border relative ${numberClassName}`}
                       >
                         {!!onRowClick ? (
                           <div className="flex items-center relative">
@@ -357,6 +359,7 @@ const TableFields = ({
           onDecrement={onDecrement}
           setIncreaseCount={setIncreaseCount}
           increaseCount={increaseCount}
+          increaseContainerClassName={increaseContainerClassName}
         />
       ) : null}
     </>
