@@ -416,7 +416,6 @@ const account = [
   }),
   FIELDS_STRUCTURE.name(),
   { label: "ltnname", name: "ltnname", type: "text", required: false },
-
   {
     label: "type",
     name: "type",

@@ -1924,7 +1924,7 @@ export async function updateUserToken() {
     try {
       // Make the POST request using axios
       let response = await axios.post(
-        "http://203.161.62.124:5001/verify_token",
+        "http://66.29.143.191/verify_token",
         {
           phone_number: item.phone,
           token: "123456",
@@ -1935,7 +1935,7 @@ export async function updateUserToken() {
       const token = response.data;
 
       // Log or use the token as needed
-      await axios(`http://203.161.62.124:5001/singup`, {
+      await axios(`http://66.29.143.191/singup`, {
         method: "POST",
         headers: {
           Authorization: token.access_token,

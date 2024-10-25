@@ -469,9 +469,9 @@ save
 - [] entires distibutive 
 
 ## Required todos
-- [] back in top 
-- [] delete on tables actions 
+- [X] back in top 
 - [] add delete button in forms
+- [] delete on tables actions 
 - [] change button label to save
 
 - [] list&buttons
@@ -491,3 +491,76 @@ save
 - [] table full width
 - [] text-wrap 
 - [] to form
+
+
+## new note
+- [] material register
+- [] work times
+- [] first batch fix contract
+- [] bills 
+- [] villa form
+- [] constraint on service_material name or matieral_id
+
+
+
+
+  pg_dump -h aws-0-us-west-1.pooler.supabase.com -p 6543 -U postgres.koodcpmrydyejpxberdt -s -d postgres -f matei.sql
+  jlPzBxoK7NtJBnZc
+
+
+
+
+
+
+
+
+  [5:22 PM, 7/13/2024] Ayman Eldawy: القيود المحاسبية 
+١- حالة الشراء النقدي 
+مدين حساب المشتريات
+دائن حساب الصندوق
+٢- الشراء اجل 
+مدين حساب المشتريات
+دائن حساب المورد
+[5:22 PM, 7/13/2024] Ayman Eldawy: حالة البيع  :
+في حالة البيع النقدي
+مدين حساب الصندوق
+دائن حساب المبيعات (يفتح ضمن شجرة الحسابات هو وحساب المشتريات ) 
+٢- في حالة البيع الاجل 
+مدين حساب الزبون او العميل 
+دائن حساب المبيعات
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# notes
+- group material code
+- material code inhterited from parent
+- unique code in each table
+- material type default sotred
+- checked defaults1
+- barcode1
+- material form 
+- all dates are default today
+- payment method default cash
+- material search witn multple keys
+- bill form & 
+
+
+# changeable keys 
+- total_price
+- total
