@@ -60,7 +60,7 @@ const Input = ({
           htmlFor={updatedName || field?.name}
           className={
             "overflow-hidden text-ellipsis min-w-fit text-sm font-normal whitespace-nowrap mb-1 capitalize flex items-center gap-2 " +
-              old && " w-[120px] !whitespace-normal " + labelClassName
+              (old && " w-[120px] !whitespace-normal ") + labelClassName
           }
         >
           {t(label)?.replace(/_/g, " ")}{" "}
