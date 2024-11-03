@@ -5,7 +5,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { SortIcon } from "Components/Icons";
 import { useTranslation } from "react-i18next";
 import { TableSkeleton } from "../StructurePage/CustomTable/TableSkeleton";
@@ -53,9 +53,49 @@ export const ReportResultsTable = ({ data, columns, loading }) => {
     table.setColumnOrder(currentCols);
   };
 
+  // Test Print
+  const tableRef = useRef();
+  // Dummy Data
+  const users = [];
+
+  for (let i = 1; i <= 200; i++) {
+    users.push({
+      id: i,
+      name: `User ${i}`,
+      age: Math.floor(Math.random() * 30) + 20,
+      job: ["Front-End Developer", "Backend Developer", "UI/UX Designer"][
+        Math.floor(Math.random() * 3)
+      ],
+    });
+  }
+
+  // Print Function
+  const handlePrint = () => {
+    const printContents = tableRef.current.innerHTML;
+    const originalContents = document.body.innerHTML;
+
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+  };
+
+  // Save Excel File
+  const handleSave = () => {
+    const csvContent = `data:text/csv;charset=utf-8,${[
+      ["ID", "Name", "Age", "Job"],
+      ...users.map((user) => [user.id, user.name, user.age, user.job]),
+    ]
+      .map((e) => e.join(","))
+      .join("\n")}`;
+
+    const link = document.createElement("a");
+    link.href = encodeURI(csvContent);
+    link.download = "users_data.csv";
+    link.click();
+  };
   return (
     <>
-      <div className={`relative overflow-x-auto w-full text-sm`}>
+      <div className={`relative overflow-x-auto w-full text-sm`} ref={tableRef}>
         <table
           className={`w-[${table.getTotalSize()}] w-full `}
           style={{ width: table.getTotalSize() }}
@@ -158,6 +198,20 @@ export const ReportResultsTable = ({ data, columns, loading }) => {
             )}
           </tbody>
         </table>
+      </div>
+      <div className="mt-4">
+        <button
+          onClick={handleSave}
+          className="bg-blue-500 text-white px-4 py-2 mr-2"
+        >
+          Save
+        </button>
+        {/* <button
+          onClick={handlePrint}
+          className="bg-green-500 text-white px-4 py-2"
+        >
+          Print
+        </button> */}
       </div>
     </>
   );
