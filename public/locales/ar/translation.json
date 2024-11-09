@@ -759,6 +759,7 @@
   "difference": "difference",
   "created_from": "created_from",
   "created_from_id": "created_from_id",
+  "class": "class",
   
   "entry_main_data_id": "entry_main_data_id"
 }

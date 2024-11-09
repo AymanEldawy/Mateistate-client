@@ -112,19 +112,37 @@ function CURD() {
   };
 
   // Remove Entry
-  const removeEntry = async (id) => {
-    return await matieStateClient.deleteRecords(`entry_main_data`, {
-      conditions: [{ type: "and", conditions: [["created_from_id", "=", id]] }],
+  const removeRecord = async (table, col, value) => {
+    const res = await matieStateClient.deleteRecords(table, {
+      conditions: [{ type: "and", conditions: [[col, "=", value]] }],
     });
+    return res;
   };
 
-  const deleteContract = async (params) => {};
+  // Remove Entry
+  const removeEntry = async (id) => {
+    const res = await matieStateClient.deleteRecords("entry_main_data", {
+      conditions: [{ type: "and", conditions: [["created_from_id", "=", id]] }],
+    });
+    return res;
+  };
+
+  const deleteContract = async (params) => {
+    let res = null;
+    for (const id of params?.conditions?.at(0)?.conditions) {
+      // await removeEntry(id);
+      await removeRecord("cheque", "connect_with_id", id);
+      await removeRecord("voucher_main_data", "connect_with_id", id);
+      res = await removeRecord("contract", "id", id);
+    }
+    return res;
+  };
 
   // Example Usage of deleteRecords method
   const remove = async (tableName, params = {}) => {
-    if (tableName === "contract") {
-      return await deleteContract(params);
-    }
+    // if (tableName === "contract") {
+    //   return await deleteContract(params);
+    // }
 
     try {
       const deleteRecordResponse = await matieStateClient.deleteRecords(
@@ -149,35 +167,11 @@ function CURD() {
     }
   };
 
-  // Search Example Usage of readRecords method
-  const search = async (tableName, params = {}) => {
-    try {
-      const readRecordResponse = await matieStateClient.readRecords(tableName, {
-        ...params,
-        tenant_id: Cookies.get("tenant_id"),
-      });
-      return readRecordResponse;
-    } catch (error) {
-      console.error("Error reading records:", error);
-      return error;
-    }
-  };
-
-  const getById = async (tableName, id, conditions) => {
-    return await read(tableName, {
-      conditions: conditions
-        ? conditions
-        : [{ type: "and", conditions: [["id", "=", id]] }],
-    });
-  };
-
   return {
     insert,
     read,
     update,
     remove,
-    search,
-    getById,
     report,
   };
 }

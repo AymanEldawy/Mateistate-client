@@ -41,7 +41,7 @@ const CustomSelect = ({
   }, [field?.list?.length]);
 
   return (
-    <div className={"flex flex-col " + containerClassName}>
+    <div className={`flex flex-col ${containerClassName} ${old ? '!items-center' : ''}`}>
       {label && !hideLabel ? (
         <label
           title={label}

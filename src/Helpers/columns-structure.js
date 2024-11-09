@@ -179,6 +179,30 @@ const bill_pattern = [
 ];
 const contract = [
   {
+    id: "select",
+    size: 40,
+    isResizingColumn: false,
+    header: ({ table }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: table.getIsAllRowsSelected(),
+          indeterminate: table.getIsSomeRowsSelected(),
+          onChange: table.getToggleAllRowsSelectedHandler(),
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: row.getIsSelected(),
+          disabled: !row.getCanSelect(),
+          indeterminate: row.getIsSomeSelected(),
+          onChange: row.getToggleSelectedHandler(),
+        }}
+      />
+    ),
+  },
+  {
     size: 40,
     header: "no",
     accessorKey: "number",

@@ -296,14 +296,14 @@ const category_problem = async (name) => {
   const res = await ApiActions.read("category_problem", {
     joins: [
       {
-        type: "leftJoin",
-        table: "category as cate",
+        type: "join",
+        table: "category as category",
         conditions: {
-          "cate.id": "category_problem.category_id",
+          "category.id": "category_problem.category_id",
         },
       },
     ],
-    columns: ["category_problem.*", "cate.*"],
+    columns: ["category_problem.*", "category.name as category_name"],
   });
   return res?.result;
 };

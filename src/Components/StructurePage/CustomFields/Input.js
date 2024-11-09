@@ -60,7 +60,7 @@ const Input = ({
           htmlFor={updatedName || field?.name}
           className={
             "overflow-hidden text-ellipsis min-w-fit text-sm font-normal whitespace-nowrap mb-1 capitalize flex items-center gap-2 " +
-              (old && " w-[120px] !whitespace-normal ") + labelClassName
+              (old && " w-[190px] !whitespace-normal ") + labelClassName
           }
         >
           {t(label)?.replace(/_/g, " ")}{" "}
@@ -72,6 +72,7 @@ const Input = ({
       <Controller
         name={updatedName || field?.name}
         control={control}
+        className="w-full"
         render={({
           field: { onChange, onBlur, ref, value },
           fieldState,
@@ -125,7 +126,7 @@ const Input = ({
               <input
                 ref={ref}
                 name={updatedName || field?.name}
-                className={`border h-[39px] read-only:bg-blue-100 dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${
+                className={`border h-[39px] read-only:bg-blue-100 w-full dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${
                   error ? "border-red-200 text-red-500" : ""
                 } 
               `}

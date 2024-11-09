@@ -1529,7 +1529,7 @@ export async function insertIntoProblems() {
 
   if (!CATEGORIES?.length) return;
 
-  for (let i = 0; i < 150; i++) {
+  for (let i = 0; i < 50; i++) {
     let problem = problems[Math.floor(Math.random() * problems?.length)];
 
     await ApiActions.insert("category_problem", {
@@ -1538,7 +1538,7 @@ export async function insertIntoProblems() {
         category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
         minutes: problem.minutes,
         is_available: true,
-        price: Math.floor(Math.random() * 50),
+        price: 0,
         ...problem,
       },
     });

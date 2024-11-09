@@ -297,7 +297,7 @@ const insertToVilla = async (data) =>
 
 // Insert to material and other relation tables
 const insertIntoBill = async (data) => {
-  await dynamicInsertIntoMultiStepsTable({
+  return await dynamicInsertIntoMultiStepsTable({
     tableName: "bill",
     data,
     tableListName: 'bill_invoice_group'

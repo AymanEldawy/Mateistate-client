@@ -70,11 +70,11 @@ const BillConnectWithField = ({ tab, values, errors, old }) => {
   };
 
   return (
-    <div className={`${watch(selectName) ? "flex gap-2" : ""}`}>
-      <div className={`flex ${old ? "flex-row" : "flex-col"}`}>
+    <>
+      <div className={`flex ${old ? "flex-row items-center" : "flex-col"}`}>
         <label
           title="connect with"
-          className={`${old && "w-[120px]"} overflow-selectName text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize`}
+          className={`${old && "w-[190px]"} overflow-selectName text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize`}
         >
           connect with
         </label>
@@ -109,10 +109,10 @@ const BillConnectWithField = ({ tab, values, errors, old }) => {
         />
       </div>
       {selectedItemNumber > CONNECT_WITH_NOTHING_CODE ? (
-        <div className=" min-w-[200px]">
+        <div className="flex flex-row items-center gap-4">
           <label
             title="connect with id"
-            className="overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize"
+            className="overflow-hidden w-[190px] whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize"
           >
             connect with id
           </label>
@@ -126,6 +126,7 @@ const BillConnectWithField = ({ tab, values, errors, old }) => {
               render={({ field: { onChange }, fieldState, formState }) => {
                 return (
                   <Select
+                    placeholder="Connect with"
                     isClearable={true}
                     menuPlacement="auto"
                     menuPortalTarget={document?.body}
@@ -139,7 +140,7 @@ const BillConnectWithField = ({ tab, values, errors, old }) => {
                       indicatorsContainer: () => "!hidden bg-black",
                       control: (state) => "bg-transparent !border-none",
                       container: (state) =>
-                        "!bg-none !bg-transparent !border-none",
+                        "!bg-none !bg-transparent !border-none w-full",
                       singleValue: () => "dark:text-gray-200 unique-valid",
                       menuList: () => "dark:bg-dark-bg",
                     }}
@@ -160,7 +161,7 @@ const BillConnectWithField = ({ tab, values, errors, old }) => {
           </div>
         </div>
       ) : null}
-    </div>
+    </>
   );
 };
 

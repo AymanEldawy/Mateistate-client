@@ -9,6 +9,7 @@ export const DashboardGridLayout = () => {
     // await INSERT_DEFAULT_DATA()
     // await updateMaterials()
     // await updateCategoryProblem();
+    // await insertIntoMaterials();
     // await updateMaterialsPrice();
     // await INSERT_DEFAULT_CATEGORY();
     // await INSERT_DEFAULT_LACK_REASONS()

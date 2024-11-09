@@ -27,6 +27,7 @@ const DynamicTable = ({
   setOpenColumnsSetting,
   setRowSelection,
   rowSelection,
+  outerSelectedId
 }) => {
   const { t } = useTranslation();
   const { getTable, setTable } = useLocalStorage({});
@@ -58,6 +59,11 @@ const DynamicTable = ({
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     columnResizeMode: "onChange",
+    getRowId: (row, relativeIndex, parent) => {
+      if (!!outerSelectedId) return outerSelectedId(row, relativeIndex, parent);
+      return row?.id;
+      // console.log(row, parent, relativeIndex);
+    },
     state: {
       sorting,
       columnFilters,

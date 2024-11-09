@@ -105,36 +105,30 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
   //   d()
   // }, []);
 
+  console.log(name, tableName);
+  
   const deleteItem = async () => {
-    let ids = [];
-    let list = [];
-    // let selected = table.getFilteredSelectedRowModel();
-
-    for (const index of Object.keys(rowSelection)) {
-      list.push();
-      ids.push(data?.[index]?.id);
-    }
-
-    let res = null;
-
-    res = await ApiActions.remove(name, {
+    let ids = Object.keys(rowSelection);
+    console.log("🚀 ~ deleteItem ~ ids:", ids);
+    const ress = await ApiActions.read(name)
+    console.log("🚀 ~ deleteItem ~ ress:", ress)
+    const res = await ApiActions.remove(name, {
       conditions: [
         {
           type: "and",
-          conditions:
-            ids.length > 1 ? [["id", "in", ids]] : [["id", "=", ids[0]]],
+          conditions: [["id", "in", ids]],
         },
       ],
     });
 
-    if (res.success) {
+    console.log(res, "-sss");
+
+    if (res?.success) {
       // setRowSelection([]);
       // await refetchData();
     }
-    // setOpenConfirmation(false);
+    setOpenConfirmation(false);
   };
-  console.log("🚀 ~ deleteItem ~ tableName:", tableName);
-  console.log(rowSelection, "rowSelection");
 
   return (
     <>

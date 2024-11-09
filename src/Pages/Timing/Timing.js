@@ -9,6 +9,7 @@ import {
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { SELECT_LISTS } from "Helpers/constants";
 import { generateUserTiming } from "Helpers/functions";
+import { ApiActions } from "Helpers/Lib/api";
 import useRefTable from "Hooks/useRefTables";
 import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -25,7 +26,7 @@ const Timing = () => {
   });
 
   const { CACHE_LIST, fieldsHash, fields } = useRefTable("user_work_times");
-  console.log("🚀 ~ Timing ~ fieldsHash:", fieldsHash);
+  console.log("🚀 ~ Timing ~ CACHE_LIST:", CACHE_LIST);
   const [isGenerating, setIsGenerating] = useState(false);
   const {
     reset,
@@ -44,6 +45,17 @@ const Timing = () => {
     setValue("views", data?.views);
     setIsGenerating(false);
   };
+  console.log(watch("timing"));
+
+  const handleSave = async () => {
+    for (const item of watch("timing")) {
+      await ApiActions.insert("user_work_times", {
+        data: item,
+      });
+    }
+    setValue('timing', [])
+    setValue('views', [])
+  };
   console.log(watch());
 
   return (
@@ -58,7 +70,7 @@ const Timing = () => {
             name="setting.account_id"
             CACHE_LIST={CACHE_LIST}
             error={errors?.user_id ? "Field is required" : ""}
-            list={CACHE_LIST?.account}
+            list={CACHE_LIST?.user}
             value={values?.user_id || ""}
           />
           <Select
@@ -189,14 +201,13 @@ const Timing = () => {
                 </div>
               </div>
             ))}
-            {/* <TableFields
-              tab={"timing"}
-              errors={errors}
-              CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
-              fields={fields}
-              values={watch()?.timing}
-              rowsCount={watch()?.timing?.length}
-            /> */}
+            <Button
+              type="button"
+              onClick={handleSave}
+              title="Save Timing"
+              loading={isSubmitting}
+              classes="whitespace-nowrap mt-4 w-[200px]"
+            />
           </>
         ) : null}
       </FormProvider>

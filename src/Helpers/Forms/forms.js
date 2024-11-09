@@ -4549,7 +4549,7 @@ const bill = [
   },
 ];
 const bill_discounts_details = [
-  // { label: "number", name: "number", type: "number", required: false },
+  { label: "number", name: "number", type: "number", required: false },
   // {
   //   label: "bill_id",
   //   name: "bill_id",

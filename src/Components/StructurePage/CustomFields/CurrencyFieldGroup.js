@@ -47,7 +47,9 @@ const CurrencyFieldGroup = ({
       <div className={`min-w-[200px] rounded-md ${containerClassName}`}>
         <label
           title="connect with id"
-          className={`${old && "w-[120px]"} overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize`}
+          className={`${
+            old && "w-[190px]"
+          } overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize`}
         >
           Currency
         </label>
@@ -91,7 +93,21 @@ const CurrencyFieldGroup = ({
               }}
             />
 
-            <button
+            {field?.hideValue ? null : (
+              <input
+                // name={currency_val}
+                // value={watch(currency_val)}
+                defaultValue={1}
+                // className="right-2 w-[20px] rtl:left-2 rtl:right-auto mx-2 rounded-full disabled:hover:bg-transparent disabled:text-gray-500 text-blue-500 hover:text-white hover:bg-blue-400"
+
+                className={`border h-[39px] absolute ltr:right-0 font-medium bg-gray-100 max-w-[50px] w-full read-only:bg-blue-100 flex items-center gap-2 dark:read-only:bg-[#444] rounded-sm px-4`}
+                type="number"
+                {...register(currency_val, {
+                  valueAsNumber: true,
+                })}
+              />
+            )}
+            {/* <button
               type="button"
               className="right-2 rtl:left-2 rtl:right-auto mx-2 rounded-full disabled:hover:bg-transparent disabled:text-gray-500 text-blue-500 hover:text-white hover:bg-blue-400"
               onClick={() => {
@@ -102,9 +118,9 @@ const CurrencyFieldGroup = ({
               }}
             >
               <PlusIcon circle />
-            </button>
+            </button> */}
           </div>
-          {field?.hideValue ? null : (
+          {/* {field?.hideValue ? null : (
             <input
               // name={currency_val}
               // value={watch(currency_val)}
@@ -115,7 +131,7 @@ const CurrencyFieldGroup = ({
                 valueAsNumber: true,
               })}
             />
-          )}
+          )} */}
         </div>
         {error ? (
           <ErrorText containerClassName="py-1">{error}</ErrorText>
