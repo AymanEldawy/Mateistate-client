@@ -1,10 +1,10 @@
-import { ApiActions } from "Helpers/Lib/api";
+import { CURD } from "Helpers/Lib/api";
 
 const useCurd = ({ name }) => {
-  const curd = ApiActions;
+  const curd = CURD();
 
   // get data
-  const get = async () => {
+  const get = async (name, params) => {
     return curd.read(name);
   };
 
@@ -24,8 +24,8 @@ const useCurd = ({ name }) => {
   };
 
   // insert data
-  const insert = async () => {
-    return curd.insert();
+  const insert = async (name, data) => {
+    return curd.insert(name, data);
   };
 
   // getReport

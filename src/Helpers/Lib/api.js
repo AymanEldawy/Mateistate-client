@@ -22,7 +22,7 @@ export const baseURL = "http://66.29.143.191/";
 // export const baseURL = "http://cratic-home.com:5000/";
 // export const baseURL = "http://localhost:5000";
 
-function CURD() {
+export function CURD() {
   const matieStateClient = new MatieStateClient(baseURL);
 
   // Example Usage of getReport method
