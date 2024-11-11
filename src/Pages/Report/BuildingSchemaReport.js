@@ -1,42 +1,40 @@
 import BlockPaper from "Components/Global/BlockPaper";
 import { Button } from "Components/Global/Button";
 import { Input, UniqueField } from "Components/StructurePage/CustomFields";
-import { ApiActions } from "Helpers/Lib/api";
 import { FLAT_PROPERTY_TABS } from "Helpers/constants";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { BuildingSchemaUnits } from "../../Components/ReportsComponents/BuildingSchemaReport/BuildingSchemaUnits";
 import { refetchBuildingAssets } from "Helpers/functions";
 import { BuildingSchemaResults } from "../../Components/ReportsComponents/BuildingSchemaReport/BuildingSchemaResults";
+import useCurd from "Hooks/useCurd";
 
-const RESULTS =  {
+const RESULTS = {
   empty: {
-    percentage: '23%',
-    count: 23
+    percentage: "23%",
+    count: 23,
   },
   rented: {
-    percentage: '23%',
-    count: 23
+    percentage: "23%",
+    count: 23,
   },
   contract_near_ending: {
-    percentage: '23%',
-    count: 23
+    percentage: "23%",
+    count: 23,
   },
   contract_expired: {
-    percentage: '23%',
-    count: 23
+    percentage: "23%",
+    count: 23,
   },
   reserved: {
-    percentage: '23%',
-    count: 23
+    percentage: "23%",
+    count: 23,
   },
   not_available: {
-    percentage: '23%',
-    count: 23
+    percentage: "23%",
+    count: 23,
   },
-
-}
-
+};
 
 const BuildingSchemaReport = () => {
   const methods = useForm();
@@ -45,9 +43,9 @@ const BuildingSchemaReport = () => {
   const [selectedBuilding, setSelectedBuilding] = useState({});
   const [selectedTab, setSelectedTab] = useState({});
   const [flatsDetails, setFlatsDetails] = useState({});
-
+  const { get } = useCurd();
   const fetchBuildings = async () => {
-    const res = await ApiActions.read("building");
+    const res = await get("building");
     if (res?.success) {
       setBuildings(res?.result);
     }
@@ -121,7 +119,7 @@ const BuildingSchemaReport = () => {
           flatsDetails={flatsDetails}
         />
       ) : null}
-      <BuildingSchemaResults results={RESULTS}/>
+      <BuildingSchemaResults results={RESULTS} />
       {/* units */}
       {/* result */}
       {/* result */}

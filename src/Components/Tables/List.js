@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-
-import { ApiActions } from "Helpers/Lib/api";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import getTableData from "Helpers/Lib/global-read";
 import { useQuery } from "@tanstack/react-query";
@@ -19,12 +17,14 @@ import { TableInfo } from "Components/DynamicTable/TableInfo";
 import DynamicTable from "Components/DynamicTable/DynamicTable";
 import { PopupLinks } from "Components/Global/Modal/PopupLinks";
 import { POPUP_LINKS_NAME } from "Helpers/constants";
+import useCurd from "Hooks/useCurd";
 
 let columnBeingDragged;
 
 const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
   const { t } = useTranslation();
   const params = useParams();
+  const { get, remove } = useCurd();
   const { name } = params;
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState([]);
@@ -106,20 +106,13 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
   // }, []);
 
   console.log(name, tableName);
-  
+
   const deleteItem = async () => {
     let ids = Object.keys(rowSelection);
     console.log("🚀 ~ deleteItem ~ ids:", ids);
-    const ress = await ApiActions.read(name)
-    console.log("🚀 ~ deleteItem ~ ress:", ress)
-    const res = await ApiActions.remove(name, {
-      conditions: [
-        {
-          type: "and",
-          conditions: [["id", "in", ids]],
-        },
-      ],
-    });
+    const ress = await get(name);
+    console.log("🚀 ~ deleteItem ~ ress:", ress);
+    const res = await remove(name, ids);
 
     console.log(res, "-sss");
 

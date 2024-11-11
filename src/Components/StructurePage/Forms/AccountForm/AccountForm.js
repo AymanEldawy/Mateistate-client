@@ -18,6 +18,7 @@ import { insertIntoGrid } from "Helpers/Lib/vouchers-insert";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
+import useCurd from "Hooks/useCurd";
 
 const automaticChangesOnAccount = async (name, watch, setValue) => {
   if (name === "parent_id") {
@@ -80,6 +81,7 @@ const calculatePercentage = (watch, setTotalPercentage) => {
 const AccountForm = ({ onClose, popupView }) => {
   const name = "account";
   const params = useParams();
+  const { set, insert } = useCurd();
   const { setRecordResponse, appendNewRecord } = usePopupForm();
   const methods = useForm();
 
@@ -204,14 +206,9 @@ const AccountForm = ({ onClose, popupView }) => {
     let account_id = values?.id;
 
     if (params?.id) {
-      res = await ApiActions.update(name, {
-        conditions: [{ type: "and", conditions: [["id", "=", watch("id")]] }],
-        updates: values,
-      });
+      res = await set(name, values, watch("id"));
     } else {
-      res = await ApiActions.insert(name, {
-        data: values,
-      });
+      res = await insert(name, values);
       account_id = res?.record?.id;
     }
 

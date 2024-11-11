@@ -9,7 +9,7 @@ import {
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { SELECT_LISTS } from "Helpers/constants";
 import { generateUserTiming } from "Helpers/functions";
-import { ApiActions } from "Helpers/Lib/api";
+import useCurd from "Hooks/useCurd";
 import useRefTable from "Hooks/useRefTables";
 import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -24,7 +24,7 @@ const Timing = () => {
       },
     },
   });
-
+  const { remove, insert, get } = useCurd();
   const { CACHE_LIST, fieldsHash, fields } = useRefTable("user_work_times");
   console.log("🚀 ~ Timing ~ CACHE_LIST:", CACHE_LIST);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -49,12 +49,10 @@ const Timing = () => {
 
   const handleSave = async () => {
     for (const item of watch("timing")) {
-      await ApiActions.insert("user_work_times", {
-        data: item,
-      });
+      await insert("user_work_times", item);
     }
-    setValue('timing', [])
-    setValue('views', [])
+    setValue("timing", []);
+    setValue("views", []);
   };
   console.log(watch());
 

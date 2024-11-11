@@ -1,7 +1,7 @@
-import { ApiActions } from "Helpers/Lib/api";
 import React, { useEffect, useState } from "react";
 import { ReportFilterColumns } from "./ReportFilterColumns";
 import { useFormContext } from "react-hook-form";
+import useCurd from "Hooks/useCurd";
 
 export const ReportFilterChequePattern = ({
   bodyClassName,
@@ -11,9 +11,9 @@ export const ReportFilterChequePattern = ({
 }) => {
   const { watch } = useFormContext();
   const [chqPatterns, setChqPatterns] = useState([]);
-
+  const { get } = useCurd();
   const getData = async () => {
-    const chqResponse = await ApiActions.read("cheque_pattern");
+    const chqResponse = await get("cheque_pattern");
     setChqPatterns(chqResponse?.result);
   };
 

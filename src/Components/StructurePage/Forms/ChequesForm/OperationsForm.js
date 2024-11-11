@@ -21,6 +21,7 @@ import { EyeIcon, TrashIcon } from "Components/Icons";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import { updateChqStatus } from "Helpers/Lib/cheque-helpers";
 import { ViewEntry } from "Components/Global/ViewEntry";
+import useCurd from "Hooks/useCurd";
 
 const getBuildingBank = async (values) => {
   let unit = "";
@@ -250,6 +251,7 @@ export const OperationsForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isDeletedSuccess, setIsDeletedSuccess] = useState(false);
   const [partialNumbers, setPartialNumbers] = useState(0);
+  const { remove, set, insert } = useCurd();
   const methods = useForm({
     defaultValues: {},
   });
@@ -295,9 +297,7 @@ export const OperationsForm = ({
   };
 
   const onDelete = async () => {
-    const response = await ApiActions.remove(name, {
-      conditions: [{ type: "and", conditions: [["id", "=", watch("id")]] }],
-    });
+    const response = await remove(name, watch("id"));
     if (response?.success) {
       setIsDeletedSuccess(true);
       updateStatus(false);
@@ -331,16 +331,11 @@ export const OperationsForm = ({
     }
 
     if (watch("id")) {
-      res = await ApiActions.update(name, {
-        conditions: [{ type: "and", conditions: [["id", "=", watch("id")]] }],
-        updates: value,
-      });
+      res = await set(name, value, watch("id"));
     } else {
       delete value?.id;
 
-      res = await ApiActions.insert(name, {
-        data: value,
-      });
+      res = await insert(name, value);
 
       if (res?.success) {
         updateStatus(true);

@@ -1,6 +1,6 @@
 import { CURD } from "Helpers/Lib/api";
 
-const useCurd = ({ name }) => {
+const useCurd = () => {
   const curd = CURD();
 
   // get data

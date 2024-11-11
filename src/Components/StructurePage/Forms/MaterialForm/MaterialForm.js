@@ -5,18 +5,19 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Fields } from "../CustomForm/Fields";
 import { toast } from "react-toastify";
 import INSERT_FUNCTION from "Helpers/Lib/global-insert";
-import { ApiActions } from "Helpers/Lib/api";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { MaterialFormStepOne } from "./MaterialFormStepOne";
 import { GET_UPDATE_DATE_BY_NUMBER } from "Helpers/Lib/global-read-update";
+import useCurd from "Hooks/useCurd";
 
 const MaterialForm = ({ popupView }) => {
   const name = "material";
   const params = useParams();
   const materialId = params?.id;
+  const { remove } = useCurd();
   const methods = useForm({
     defaultValues: getResetFields(name),
   });
@@ -48,9 +49,7 @@ const MaterialForm = ({ popupView }) => {
   
   const onDelete = async () => {
     let data = watch(name);
-    const response = await ApiActions.remove(name, {
-      conditions: [{ type: "and", conditions: [["id", "=", materialId]] }],
-    });
+    const response = await remove(name, materialId);
   };
 
   const onSubmit = async (value) => {

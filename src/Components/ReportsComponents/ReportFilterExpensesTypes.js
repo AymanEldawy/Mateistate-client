@@ -1,6 +1,6 @@
-import { ApiActions } from "Helpers/Lib/api";
 import React, { useEffect, useState } from "react";
 import { ReportFilterColumns } from "./ReportFilterColumns";
+import useCurd from "Hooks/useCurd";
 
 export const ReportFilterExpensesTypes = ({
   expensesIds,
@@ -9,9 +9,9 @@ export const ReportFilterExpensesTypes = ({
   containerClassName,
 }) => {
   const [expenses, setExpenses] = useState([]);
-
+  const { get } = useCurd();
   const getData = async () => {
-    const expensesTypes = await ApiActions.read("owner_expenses_types");
+    const expensesTypes = await get("owner_expenses_types");
     setExpenses(expensesTypes?.result);
   };
 

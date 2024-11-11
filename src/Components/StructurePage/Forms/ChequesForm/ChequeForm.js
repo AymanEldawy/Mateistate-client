@@ -30,6 +30,7 @@ import useRefTable from "Hooks/useRefTables";
 import { removeNullValues } from "Helpers/functions";
 import { useQuery } from "@tanstack/react-query";
 import { ViewEntry } from "Components/Global/ViewEntry";
+import useCurd from "Hooks/useCurd";
 
 const CACHE_CHEQUE_DATA = {};
 
@@ -57,6 +58,7 @@ const ChequeForm = ({
 }) => {
   const params = useParams();
   const chqId = params?.id;
+  const { set, insert } = useCurd();
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const { CACHE_LIST, setCACHE_LIST } = useRefTable("cheque");
   const methods = useForm();
@@ -156,14 +158,9 @@ const ChequeForm = ({
     let chq_id = watch("id");
 
     if (layout === "update" || values?.id) {
-      res = await ApiActions.update("cheque", {
-        conditions: [{ type: "and", conditions: [["id", "=", values?.id]] }],
-        updates: values,
-      });
+      res = await set("cheque", values, values?.id);
     } else {
-      res = await ApiActions.insert("cheque", {
-        data: values,
-      });
+      res = await insert("cheque", values);
       reset(res?.record);
       chq_id = res?.record?.id;
     }

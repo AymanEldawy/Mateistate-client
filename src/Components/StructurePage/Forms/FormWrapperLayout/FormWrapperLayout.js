@@ -1,4 +1,3 @@
-import { ApiActions } from "Helpers/Lib/api";
 import { useEffect, useState } from "react";
 import { FormProvider } from "react-hook-form";
 import BlockPaper from "Components/Global/BlockPaper";
@@ -10,6 +9,7 @@ import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import Loading from "Components/Global/Loading";
 import FormTitle from "Components/Global/FormTitle";
 import { useLocation } from "react-router-dom";
+import useCurd from "Hooks/useCurd";
 // const { Prompt } = "react-router-dom";
 
 const FormWrapperLayout = ({
@@ -36,6 +36,7 @@ const FormWrapperLayout = ({
   // const history = useHistory();
   const location = useLocation();
   const [refresh, setRefresh] = useState(false);
+  const { remove } = useCurd();
   const {
     reset,
     handleSubmit,
@@ -50,14 +51,7 @@ const FormWrapperLayout = ({
 
   const onDelete = async () => {
     if (outerDelete) return outerDelete();
-    let res = await ApiActions.remove(tableName || name, {
-      conditions: [
-        {
-          type: "and",
-          conditions: [["id", "=", itemId]],
-        },
-      ],
-    });
+    let res = await remove(tableName || name, itemId);
     if (res?.success) {
     }
     setOpenConfirmation(false);

@@ -1,5 +1,5 @@
 import { Button } from "Components/Global/Button";
-import { ApiActions } from "Helpers/Lib/api";
+import useCurd from "Hooks/useCurd";
 import React, { useState } from "react";
 import Select from "react-select";
 import { toast } from "react-toastify";
@@ -12,15 +12,16 @@ export const CompareMaterialCard = ({
 }) => {
   const [selectedMaterial, setSelectedMaterials] = useState();
   const [isLoading, setIsLoading] = useState(false);
-
+const { set } = useCurd();
   const onSave = async () => {
     setIsLoading(true);
-    const response = await ApiActions.update("service_material", {
-      conditions: [{ type: "and", conditions: [["id", "=", material?.id]] }],
-      updates: {
+    const response = await set(
+      "service_material",
+      {
         material_id: selectedMaterial,
       },
-    });
+      material?.id
+    );
     if (response?.success) {
       toast.success("Successfully registered the Material");
       refresh();

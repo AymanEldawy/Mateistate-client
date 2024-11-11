@@ -3,7 +3,6 @@ import { EntryHead } from "./EntryHead";
 import { EntryFooter } from "./EntryFooter";
 import getFormByTableName from "Helpers/Forms/forms";
 import { useForm } from "react-hook-form";
-import { ApiActions } from "Helpers/Lib/api";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
 import { toast } from "react-toastify";
@@ -12,11 +11,13 @@ import useRefTable from "Hooks/useRefTables";
 import FormWrapperLayout from "../../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import useCurd from "Hooks/useCurd";
 
 const EntryForm = ({ oldValue, onlyView, outerClose }) => {
   // const [number, setNumber] = useState(0)
   const name = "entry_main_data";
   const params = useParams();
+  const { set, insert } = useCurd();
   const id = params?.id;
   const { CACHE_LIST } = useRefTable("entry_grid_data");
   const methods = useForm();
@@ -125,14 +126,9 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
       delete value.grid;
       let res = null;
       if (value.id) {
-        res = await ApiActions.update(name, {
-          conditions: [{ type: "and", conditions: [["id", "=", value?.id]] }],
-          updates: value,
-        });
+        res = await set(name, value, value?.id);
       } else {
-        res = await ApiActions.insert(name, {
-          data: { ...value },
-        });
+        res = await insert(name, { ...value });
         if (res?.success) {
         }
       }
@@ -148,15 +144,10 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
   const insertIntoGrid = async (grid, itemId) => {
     for (const item of grid) {
       if (item?.id && item.account_id) {
-        ApiActions.update("entry_grid_data", {
-          conditions: [{ type: "and", conditions: [["id", "=", item?.id]] }],
-          updates: item,
-        });
+        set("entry_grid_data", item, item?.id);
       } else {
         if (item.account_id) {
-          ApiActions.insert("entry_grid_data", {
-            data: { ...item, entry_main_data_id: itemId },
-          });
+          insert("entry_grid_data", { ...item, entry_main_data_id: itemId });
         }
       }
     }
@@ -210,9 +201,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
             CACHE_LIST={CACHE_LIST}
             increasable={onlyView || watch("created_from") ? false : true}
             onlyView={onlyView || watch("created_from_id")}
-            rowsCount={
-              !id && !onlyView ? 5 : watch("grid")?.length
-            }
+            rowsCount={!id && !onlyView ? 5 : watch("grid")?.length}
           />
         </div>
 

@@ -2,8 +2,8 @@ import BlockPaper from "Components/Global/BlockPaper";
 import { Button } from "Components/Global/Button";
 import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
-import { ApiActions } from "Helpers/Lib/api";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
+import useCurd from "Hooks/useCurd";
 import useFormSteps from "Hooks/useFormSteps";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -18,7 +18,7 @@ const PatternsForm = ({ layout }) => {
   let pattern = params?.pattern;
   const [isLoading, setIsLoading] = useState(false);
   let name = pattern;
-
+  const { insert, set } = useCurd();
   const methods = useForm({
     defaultValues: params?.id
       ? async () => await GET_UPDATE_DATE(name, params?.id)
@@ -45,14 +45,9 @@ const PatternsForm = ({ layout }) => {
     let res = null;
 
     if (values?.id) {
-      res = await ApiActions.update(name, {
-        conditions: [{ type: "and", conditions: [["id", "=", values?.id]] }],
-        updates: values,
-      });
+      res = await set(name, values, values?.id);
     } else {
-      res = await ApiActions.insert(name, {
-        data: values,
-      });
+      res = await insert(name, values);
     }
 
     if (res?.success) {

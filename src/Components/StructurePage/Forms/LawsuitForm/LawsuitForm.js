@@ -7,19 +7,20 @@ import { Fields } from "../CustomForm/Fields";
 import { toast } from "react-toastify";
 import INSERT_FUNCTION from "Helpers/Lib/global-insert";
 import getFormByTableName from "Helpers/Forms/forms";
-import { ApiActions } from "Helpers/Lib/api";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
 import { SubStepsList } from "../CustomForm/SubStepsList";
 import { UploadFile } from "Components/StructurePage/CustomFields";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import useCurd from "Hooks/useCurd";
 
 const SUB_STEPS = ["lawsuit_expenses", "lawsuit_expenses_pictures"];
 
 const LawsuitForm = ({ popupView }) => {
   const name = "lawsuit";
   const params = useParams();
+  const { remove } = useCurd();
   const id = params?.id;
   const navigate = useNavigate();
 
@@ -58,21 +59,11 @@ const LawsuitForm = ({ popupView }) => {
 
   const onDelete = async () => {
     let data = watch(name);
-    const response = await ApiActions.remove(name, {
-      conditions: [{ type: "and", conditions: [["id", "=", data?.id]] }],
-    });
+    const response = await remove(name, data?.id);
 
     if (response?.success) {
-      await ApiActions.remove("cost_center", {
-        conditions: [
-          { type: "and", conditions: [["id", "=", data?.main_cost_center_id]] },
-        ],
-      });
-      await ApiActions.remove("account", {
-        conditions: [
-          { type: "and", conditions: [["id", "=", data?.building_account_id]] },
-        ],
-      });
+      await remove("cost_center", data?.main_cost_center_id);
+      await remove("account", data?.building_account_id);
 
       onDeleteItem(data?.number);
     }

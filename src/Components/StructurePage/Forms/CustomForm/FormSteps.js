@@ -10,9 +10,9 @@ import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
 import { useParams } from "react-router-dom";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { SHOULD_DELETE_COST_CENTER } from "Helpers/constants";
-import { ApiActions } from "Helpers/Lib/api";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
+import useCurd from "Hooks/useCurd";
 
 const FormSteps = ({
   name,
@@ -24,6 +24,7 @@ const FormSteps = ({
 }) => {
   const params = useParams();
   const id = params?.id;
+  const { remove} = useCurd();
   const { appendNewRecord } = usePopupForm();
   const methods = useForm({
     defaultValues: {},
@@ -67,21 +68,10 @@ const FormSteps = ({
   const onDelete = async () => {
     let data = watch(tabNames?.[0]);
 
-    let res = await ApiActions.remove(name, {
-      conditions: [
-        {
-          type: "and",
-          conditions: [["id", "=", data?.id]],
-        },
-      ],
-    });
+    let res = await remove(name, data?.id);
     if (res?.success) {
       if (SHOULD_DELETE_COST_CENTER?.[tabNames[0]]) {
-        await ApiActions.remove("cost_center", {
-          conditions: [
-            { type: "and", conditions: [["id", "=", data?.cost_center_id]] },
-          ],
-        });
+        await remove("cost_center", data?.cost_center_id);
       }
     }
   };

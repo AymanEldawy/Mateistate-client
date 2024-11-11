@@ -1,6 +1,4 @@
-import {
-  getServiceUpdate
-} from "Helpers/Lib/global-read-update";
+import { getServiceUpdate } from "Helpers/Lib/global-read-update";
 import useFormSteps from "Hooks/useFormSteps";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -12,10 +10,12 @@ import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import {
-  SERVICE_CUSTOMER_CODE, SERVICE_PROPERTY_PREPARING_CODE
+  SERVICE_CUSTOMER_CODE,
+  SERVICE_PROPERTY_PREPARING_CODE,
 } from "Helpers/GENERATE_STARTING_DATA";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import useCurd from "Hooks/useCurd";
 
 const ServiceForm = ({ popupView }) => {
   const name = "service";
@@ -55,7 +55,7 @@ const ServiceForm = ({ popupView }) => {
       }
     },
   });
-
+  const { remove } = useCurd();
   const autoCompleteProblemInfo = (name, cache) => {
     let problemValue = watch(name);
     let serviceWorkerName = name?.split(".").slice(0, 2).join(".");
@@ -98,9 +98,7 @@ const ServiceForm = ({ popupView }) => {
 
   const onDelete = async () => {
     let data = watch("service");
-    const response = await ApiActions.remove("service", {
-      conditions: [{ type: "and", conditions: [["id", "=", data?.id]] }],
-    });
+    const response = await remove("service", data?.id);
   };
 
   const onSubmit = async (value) => {

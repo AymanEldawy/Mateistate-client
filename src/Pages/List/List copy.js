@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-
-import { ApiActions } from "Helpers/Lib/api";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import { DynamicTable } from "Components/DynamicTable/DynamicTable";
 import { useReactTable } from "@tanstack/react-table";
 import getTableColumns from "Helpers/columns-structure";
 import { useLocalStorage } from "Hooks/useLocalStorage";
 import { TableBar } from "Components/DynamicTable/TableBar";
+import useCurd from "Hooks/useCurd";
 
 const List = ({ tableName }) => {
   const params = useParams();
@@ -18,7 +17,7 @@ const List = ({ tableName }) => {
   const [loading, setLoading] = useState(false);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [data, setData] = useState([]);
-
+  const { remove, get } = useCurd();
   const columns = useMemo(() => {
     const storageTable = getTable(name);
     if (storageTable) setColumnVisibility(storageTable);
@@ -33,27 +32,17 @@ const List = ({ tableName }) => {
   const table = useReactTable({
     columns,
     data,
-   
   });
- 
 
   const getData = async () => {
     setLoading(true);
-    const response = await ApiActions.read(name);
+    const response = await get(name);
     setData(response?.result);
     setLoading(false);
   };
 
   const deleteItem = async (list) => {
-    const res = await ApiActions.remove(name, {
-      conditions: [
-        {
-          type: "and",
-          conditions:
-            list.length > 1 ? [["guid", "in", list]] : [["guid", "=", list[0]]],
-        },
-      ],
-    });
+    const res = await remove(name, list.length > 1 ? list : list[0]);
     if (res.success) getData();
     setOpenConfirmation(false);
   };

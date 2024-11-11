@@ -1,6 +1,6 @@
-import { ApiActions } from "Helpers/Lib/api";
 import React, { useEffect, useState } from "react";
 import { ReportFilterColumns } from "./ReportFilterColumns";
+import useCurd from "Hooks/useCurd";
 
 export const ReportFilterVoucherPattern = ({
   bodyClassName,
@@ -9,8 +9,9 @@ export const ReportFilterVoucherPattern = ({
   setVoucherIds,
 }) => {
   const [voucherPatterns, setVoucherPatterns] = useState([]);
+  const { get } = useCurd();
   const getData = async () => {
-    const voucherResponse = await ApiActions.read("voucher_pattern");
+    const voucherResponse = await get("voucher_pattern");
     setVoucherPatterns(voucherResponse?.result);
   };
 

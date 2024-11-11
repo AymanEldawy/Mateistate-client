@@ -14,6 +14,7 @@ import {
   generateEntryFromReservation,
 } from "Helpers/Lib/vouchers-insert";
 import { SELECT_LISTS } from "Helpers/constants";
+import useCurd from "Hooks/useCurd";
 
 const CACHE_PROPERTY = {};
 
@@ -68,6 +69,7 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
   const { CACHE_LIST, fields } = useRefTable(name);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState([]);
+  const { set, insert } = useCurd();
   const reservationQueryClient = useQuery({
     queryKey: [name, id],
     queryFn: async () => {
@@ -111,14 +113,9 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
     let res = null;
 
     if (id) {
-      res = await ApiActions.update(name, {
-        conditions: [{ type: "and", conditions: [["id", "=", watch("id")]] }],
-        updates: values,
-      });
+      res = await set(name, values, watch("id"));
     } else {
-      res = await ApiActions.insert(name, {
-        data: values,
-      });
+      res = await insert(name, values);
     }
 
     if (res?.success) {
@@ -141,8 +138,7 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
     setIsLoading(false);
   };
 
-  console.log(fields, '----------f');
-  
+  console.log(fields, "----------f");
 
   return (
     <FormWrapperLayout

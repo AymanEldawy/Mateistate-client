@@ -6,9 +6,9 @@ import RenderTree from "Components/RenderTree/RenderTree";
 import { useTranslation } from "react-i18next";
 import Loading from "Components/Global/Loading";
 import { toast } from "react-toastify";
-import { ApiActions } from "Helpers/Lib/api";
 import { Checkbox } from "Components/StructurePage/CustomFields";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
+import useCurd from "Hooks/useCurd";
 
 function toTree(data, pid = null) {
   return data?.reduce((r, e) => {
@@ -26,9 +26,10 @@ const Chart = () => {
   const { t } = useTranslation();
   const params = useParams();
   const { name } = params;
+  const { remove, insert, get } = useCurd();
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [name],
-    queryFn: async () => await ApiActions.read(name),
+    queryFn: async () => await get(name),
   });
 
   const [chartTree, setChartTree] = useState([]);
@@ -42,23 +43,13 @@ const Chart = () => {
   }, [isLoading, name, data]);
 
   const deleteItem = async (itemId) => {
-    const res = await ApiActions.remove(name, {
-      conditions: [
-        {
-          type: "and",
-          conditions: [["id", "=", itemId]],
-        },
-      ],
-    });
+    const res = await remove(name, itemId);
 
     if (res.success) refetch();
   };
 
   const onSubmit = async (values) => {
-    const res = await ApiActions.insert(name, {
-      data: values,
-    });
-
+    const res = await insert(name, values);
     if (res?.status) {
       toast.success("Successfully added item in " + name);
       refetch();

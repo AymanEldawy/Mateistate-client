@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
 import { PaletteIcon } from "Components/Icons";
 import { SubStepsList } from "./../CustomForm/SubStepsList";
+import useCurd from "Hooks/useCurd";
 
 const SUB_STEPS = [
   "building_real_estate_management",
@@ -93,6 +94,7 @@ const BuildingForm = ({ popupView }) => {
   const name = "building";
   const params = useParams();
   const buildingId = params?.id;
+  const { remove } = useCurd();
   const navigate = useNavigate();
   const methods = useForm({
     defaultValues: getResetFields(name),
@@ -118,7 +120,7 @@ const BuildingForm = ({ popupView }) => {
   } = methods;
 
   const { isLoading } = useQuery({
-    queryKey: [name, ],
+    queryKey: [name],
     queryFn: async () => {
       const res = await ApiActions.read("building", {
         conditions: [
@@ -158,17 +160,8 @@ const BuildingForm = ({ popupView }) => {
     });
 
     if (response?.success) {
-      await ApiActions.remove("cost_center", {
-        conditions: [
-          { type: "and", conditions: [["id", "=", data?.main_cost_center_id]] },
-        ],
-      });
-      await ApiActions.remove("account", {
-        conditions: [
-          { type: "and", conditions: [["id", "=", data?.building_account_id]] },
-        ],
-      });
-
+      await remove("cost_center", data?.main_cost_center_id);
+      await remove("account", data?.building_account_id);
     }
   };
 
@@ -186,7 +179,9 @@ const BuildingForm = ({ popupView }) => {
 
     if (res?.success) {
       if (res?.record?.id) navigate(`/tools/${res?.record?.id}`);
-      toast.success(`Successfully ${params?.id ? 'updated': 'inserted'} item in Building`);
+      toast.success(
+        `Successfully ${params?.id ? "updated" : "inserted"} item in Building`
+      );
     } else {
       if (res?.constraint?.indexOf('building_name_key"') !== -1) {
         toast.error(`Field to insert Building, Name is already exist.`);
@@ -195,7 +190,6 @@ const BuildingForm = ({ popupView }) => {
       }
     }
   };
-
 
   return (
     <FormWrapperLayout

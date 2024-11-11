@@ -10,11 +10,13 @@ import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import getFormByTableName from "Helpers/Forms/forms";
 import { Fields } from "../CustomForm/Fields";
 import { insertIntoGrid } from "Helpers/Lib/vouchers-insert";
+import useCurd from "Hooks/useCurd";
 
 const OwnerExpensesForm = () => {
   const name = "owner_expenses";
   const params = useParams();
   const id = params?.id;
+  const { set, insert, get } = useCurd();
   const { setRecordResponse, appendNewRecord } = usePopupForm();
   const methods = useForm({
     defaultValues: {},
@@ -58,7 +60,7 @@ const OwnerExpensesForm = () => {
           owner_expenses_details: ownerDetailsRes?.result,
         });
       } else {
-        const ownerTypesRes = await ApiActions.read(`owner_expenses_types`);
+        const ownerTypesRes = await get(`owner_expenses_types`);
         if (ownerTypesRes?.success) {
           let owner_expenses_details = [];
           for (const item of ownerTypesRes?.result) {
@@ -81,16 +83,9 @@ const OwnerExpensesForm = () => {
     let res = null;
 
     if (id) {
-      res = await ApiActions.update(name, {
-        conditions: [
-          { type: "and", conditions: [["id", "=", watch(`${name}.id`)]] },
-        ],
-        updates: watch(name),
-      });
+      res = await set(name, watch(name), watch(`${name}.id`));
     } else {
-      res = await ApiActions.insert(name, {
-        data: watch(name),
-      });
+      res = await insert(name, watch(name));
     }
 
     if (res?.success) {
@@ -99,7 +94,7 @@ const OwnerExpensesForm = () => {
           ? `Successfully update row: ${name} in ${name}`
           : "Successfully added item in " + name
       );
-      
+
       insertIntoGrid({
         grid: watch("owner_expenses_details"),
         gridTableName: "owner_expenses_details",

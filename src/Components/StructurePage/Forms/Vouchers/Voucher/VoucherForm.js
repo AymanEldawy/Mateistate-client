@@ -18,6 +18,7 @@ import { CREATED_FROM_VOUCHER_CODE } from "Helpers/GENERATE_STARTING_DATA";
 import useRefTable from "Hooks/useRefTables";
 import { useQuery } from "@tanstack/react-query";
 import FormWrapperLayout from "../../FormWrapperLayout/FormWrapperLayout";
+import useCurd from "Hooks/useCurd";
 
 let CACHE_ROW_VALUE = {};
 
@@ -34,6 +35,7 @@ const VoucherForm = ({
   const name = params?.name || voucherName;
   const type = params?.type || voucherType;
   const methods = useForm();
+  const { set, insert } = useCurd();
   const { CACHE_LIST } = useRefTable("voucher_grid_data");
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const [gridFields, setGridFields] = useState([]);
@@ -166,13 +168,11 @@ const VoucherForm = ({
     let itemId = value.id;
 
     if (value?.id) {
-      res = await ApiActions.update("voucher_main_data", {
-        conditions: [{ type: "and", conditions: [["id", "=", value?.id]] }],
-        updates: value,
-      });
+      res = await set("voucher_main_data", value, value?.id);
     } else {
-      res = await ApiActions.insert("voucher_main_data", {
-        data: { ...value, voucher_type: +type },
+      res = await insert("voucher_main_data", {
+        ...value,
+        voucher_type: +type,
       });
       itemId = res?.record.id;
     }

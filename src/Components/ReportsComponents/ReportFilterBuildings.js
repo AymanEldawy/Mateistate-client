@@ -1,6 +1,6 @@
-import { ApiActions } from "Helpers/Lib/api";
 import React, { useEffect, useState } from "react";
 import { ReportFilterColumns } from "./ReportFilterColumns";
+import useCurd from "Hooks/useCurd";
 
 export const ReportFilterBuildings = ({
   buildingsIds,
@@ -9,9 +9,10 @@ export const ReportFilterBuildings = ({
   containerClassName,
 }) => {
   const [buildings, setBuildings] = useState([]);
+  const { get } = useCurd();
 
   const getData = async () => {
-    const buildingResponse = await ApiActions.read("building");
+    const buildingResponse = await get("building");
     setBuildings(buildingResponse?.result);
   };
 

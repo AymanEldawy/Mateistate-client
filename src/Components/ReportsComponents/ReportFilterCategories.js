@@ -1,6 +1,6 @@
-import { ApiActions } from "Helpers/Lib/api";
 import React, { useEffect, useState } from "react";
 import { ReportFilterColumns } from "./ReportFilterColumns";
+import useCurd from "Hooks/useCurd";
 
 export const ReportFilterCategories = ({
   categoriesIds,
@@ -9,9 +9,9 @@ export const ReportFilterCategories = ({
   containerClassName,
 }) => {
   const [categories, setCategories] = useState([]);
-
+  const { get } = useCurd();
   const getData = async () => {
-    const categoryResponse = await ApiActions.read("category");
+    const categoryResponse = await get("category");
     setCategories(categoryResponse?.result);
   };
 
