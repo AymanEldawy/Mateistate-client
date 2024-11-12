@@ -1,22 +1,21 @@
-import { ApiActions } from "Helpers/Lib/api";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FlatColoringProvider } from "Hooks/useFlatColoring";
 import { FormProvider, useForm } from "react-hook-form";
 import ToolsWarper from "./ToolsWarper";
 import { useQuery } from "@tanstack/react-query";
+import useCurd from "Hooks/useCurd";
 
 const Tools = () => {
   const { id } = useParams();
   const methods = useForm({ defaultValues: {} });
   const { reset } = methods;
   const [row, setRow] = useState({});
+  const { getOneBy } = useCurd();
   const { refetch } = useQuery({
     queryKey: ["property_values"],
     queryFn: async () => {
-      const response = await ApiActions.read("property_values", {
-        conditions: [{ type: "and", conditions: [["building_id", "=", id]] }],
-      });
+      const response = await getOneBy("property_values", id);
       reset({
         grid: response?.result?.sort((a, b) => a?.row_index - b?.row_index),
       });
@@ -25,9 +24,7 @@ const Tools = () => {
   useQuery({
     queryKey: ["building", id],
     queryFn: async () => {
-      const res = await ApiActions.read("building", {
-        conditions: [{ type: "and", conditions: [["id", "=", id]] }],
-      });
+      const res = await getOneBy("building", id);
       setRow(res.result.at(0));
     },
   });

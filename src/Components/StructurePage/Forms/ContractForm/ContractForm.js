@@ -1,7 +1,6 @@
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
 import InstallmentForm from "./InstallmentForm";
-import { ApiActions } from "Helpers/Lib/api";
 import INSERT_FUNCTION, {
   getLastNumberByColumn,
 } from "Helpers/Lib/global-insert";
@@ -16,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import GET_UPDATE_DATE, {
-  getContractUpdate
+  getContractUpdate,
 } from "Helpers/Lib/global-read-update";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import { ContractPayments } from "Components/StructurePage/Forms/ContractForm/ContractPayments";
@@ -46,6 +45,7 @@ import { Locked } from "Components/Global/Locked";
 import ContractTerminationForm from "./ContractTerminationForm";
 import { useQuery } from "@tanstack/react-query";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
+import useCurd from "Hooks/useCurd";
 
 const SHOULD_UPDATES = {};
 const CACHE_BUILDING_ASSETS = {};
@@ -96,7 +96,7 @@ const ContractForm = () => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const [oldContracts, setOldContracts] = useState([]);
   const methods = useForm();
-
+  const { getOneBy } = useCurd();
 
   const {
     handleSubmit,
@@ -125,9 +125,7 @@ const ContractForm = () => {
   useQuery({
     queryKey: ["contract_pattern", code],
     queryFn: async () => {
-      const response = await ApiActions.read("contract_pattern", {
-        conditions: [{ type: "and", conditions: [["code", "=", +code]] }],
-      });
+      const response = await getOneBy("contract_pattern", +code, "code");
       let pattern = response?.result?.at(0);
       setPATTERN_SETTINGS(pattern);
       autoMergePatternSettingsWithValues(pattern, watch, setValue, tabNames);
@@ -155,9 +153,7 @@ const ContractForm = () => {
   const contractQueryClient = useQuery({
     queryKey: ["contract", code, contractId],
     queryFn: async () => {
-      const response = await ApiActions.read("contract", {
-        conditions: [{ type: "and", conditions: [["id", "=", contractId]] }],
-      });
+      const response = await getOneBy("contract", contractId);
 
       if (response?.result?.length) {
         const res = await getContractUpdate(contractId);
@@ -386,7 +382,6 @@ const ContractForm = () => {
         if (watch("contract.paid_type") === 4) {
           setOpenInstallmentForm(true);
         }
-
       }
 
       toast.success("Successfully Saved contract ");
@@ -413,7 +408,7 @@ const ContractForm = () => {
       assetsType: assetType,
       assetsTypeNumber,
       buildingNumber,
-      contractNumber: watch('contract.internal_number'),
+      contractNumber: watch("contract.internal_number"),
       values: contract,
       commission: watch("contract_commission"),
     });
@@ -486,9 +481,9 @@ const ContractForm = () => {
               ) : (
                 <>
                   {currentIndex === 0 && tab ? (
-                    <div >
+                    <div>
                       <ContractFinancialForm
-                        number={watch('contract.internal_number')}
+                        number={watch("contract.internal_number")}
                         fields={fields}
                         tab={tab}
                         values={watch()?.[tab]}

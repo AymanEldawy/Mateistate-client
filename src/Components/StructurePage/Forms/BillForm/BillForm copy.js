@@ -19,6 +19,7 @@ import ReportInputField from "Components/ReportsComponents/ReportsFields/ReportI
 import BillConnectWithField from "Components/StructurePage/CustomFields/BillConnectWithField";
 import INSERT_FUNCTION from "Helpers/Lib/global-insert";
 import { generateEntryFromBill } from "Helpers/Lib/vouchers-insert";
+import useCurd from "Hooks/useCurd";
 
 const mergePatternWithBillData = (pattern) => {
   let patternValues = {};
@@ -33,6 +34,7 @@ const mergePatternWithBillData = (pattern) => {
 const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
   const params = useParams();
   const id = params?.id;
+  const { getOneBy } = useCurd();
   const { CACHE_LIST } = useRefTable("bill");
   const methods = useForm();
   let {
@@ -48,9 +50,8 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
   useQuery({
     queryKey: ["bill", "bill_pattern"],
     queryFn: async () => {
-      const response = await ApiActions.read("bill_pattern", {
-        conditions: [{ type: "and", conditions: [["code", "=", +code]] }],
-      });
+      const response = await getOneBy("bill_pattern", +code, "code");
+
       let pattern = response?.result?.at(0);
       mergePatternWithBillData(pattern, watch, setValue);
       setPATTERN_SETTINGS(pattern);

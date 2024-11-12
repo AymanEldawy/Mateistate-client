@@ -109,14 +109,11 @@ const AccountForm = ({ onClose, popupView }) => {
             account?.type === ACCOUNT_ASSEMBLY_TYPE_CODE
               ? ACCOUNT_ASSEMBLY_TYPE_NAME
               : ACCOUNT_DISTRIBUTIVE_TYPE_NAME;
-          const res = await ApiActions.read(subTableName, {
-            conditions: [
-              {
-                type: "and",
-                conditions: [["main_account_id", "=", account?.id]],
-              },
-            ],
-          });
+          const res = await getOneBy(
+            subTableName,
+            account?.id,
+            "main_account_id"
+          );
           if (res?.success) {
             account[subTableName] = res?.result;
           }

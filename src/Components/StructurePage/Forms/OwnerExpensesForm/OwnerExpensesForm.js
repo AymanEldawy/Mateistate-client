@@ -1,4 +1,3 @@
-import { ApiActions } from "Helpers/Lib/api";
 import useRefTable from "Hooks/useRefTables";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -16,7 +15,7 @@ const OwnerExpensesForm = () => {
   const name = "owner_expenses";
   const params = useParams();
   const id = params?.id;
-  const { set, insert, get } = useCurd();
+  const { set, insert, get, getOneBy } = useCurd();
   const { setRecordResponse, appendNewRecord } = usePopupForm();
   const methods = useForm({
     defaultValues: {},
@@ -33,27 +32,12 @@ const OwnerExpensesForm = () => {
   const { isLoading } = useQuery({
     queryKey: [name, id],
     queryFn: async () => {
-      const data = await ApiActions.read(name, {
-        conditions: [
-          {
-            type: "and",
-            conditions: [["id", "=", id]],
-          },
-        ],
-      });
+      const data = await getOneBy(name, id);
       if (data?.success) {
-        const ownerDetailsRes = await ApiActions.read(
+        const ownerDetailsRes = await getOneBy(
           `owner_expenses_details`,
-          {
-            conditions: [
-              {
-                type: "and",
-                conditions: [
-                  ["owner_expenses_id", "=", data?.result?.at(0)?.id],
-                ],
-              },
-            ],
-          }
+          data?.result?.at(0)?.id,
+          "owner_expenses_id"
         );
         reset({
           owner_expenses: data?.result?.at(0),

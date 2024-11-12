@@ -1,4 +1,3 @@
-import { ApiActions } from "Helpers/Lib/api";
 import { Fields } from "./Fields";
 import INSERT_FUNCTION from "../../../../Helpers/Lib/global-insert";
 import useRefTable from "Hooks/useRefTables";
@@ -16,7 +15,7 @@ import useCurd from "Hooks/useCurd";
 const FormSingular = ({ name, onClose, popupView }) => {
   const params = useParams();
   const id = params?.id;
-  const { set, insert } = useCurd();
+  const { set, insert, getOneBy } = useCurd();
   const { setRecordResponse, appendNewRecord } = usePopupForm();
   const methods = useForm({
     defaultValues: {},
@@ -34,14 +33,7 @@ const FormSingular = ({ name, onClose, popupView }) => {
     queryKey: [name, id],
     queryFn: async () => {
       if (!id) return;
-      const data = await ApiActions.read(name, {
-        conditions: [
-          {
-            type: "and",
-            conditions: [["id", "=", id]],
-          },
-        ],
-      });
+      const data = await getOneBy(name, id);
       if (data?.success) {
         reset(data?.result?.at(0));
       }

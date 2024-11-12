@@ -8,11 +8,11 @@ import {
   UniqueField,
 } from "Components/StructurePage/CustomFields";
 import getFormByTableName from "Helpers/Forms/forms";
-import { ApiActions } from "Helpers/Lib/api";
 import { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { ViewEntry } from "Components/Global/ViewEntry";
+import useCurd from "Hooks/useCurd";
 
 export const PartialCollectionFrom = ({
   CACHE_LIST,
@@ -24,7 +24,7 @@ export const PartialCollectionFrom = ({
   setOpenConfirmation,
   isDeletedSuccess,
   setPartialNumbers,
-  setIsDeletedSuccess
+  setIsDeletedSuccess,
 }) => {
   const name = "op_partial_collection";
   const {
@@ -36,13 +36,11 @@ export const PartialCollectionFrom = ({
   const [number, setNumber] = useState(1);
   const [maxLength, setMaxLength] = useState(1);
   const [listData, setListData] = useState([]);
-
+  const { getOneBy } = useCurd();
   const partialQueryClient = useQuery({
     queryKey: [name, chequeId],
     queryFn: async () => {
-      const response = await ApiActions.read(name, {
-        conditions: [{ type: "and", conditions: [["cheque_id", "=", chequeId]] }],
-      });
+      const response = await getOneBy(name, chequeId, "cheque_id");
       if (response?.success) {
         setListData(response?.result);
         setMaxLength(response?.result?.length);
@@ -72,7 +70,7 @@ export const PartialCollectionFrom = ({
   useEffect(() => {
     if (isSubmitSuccessful || isDeletedSuccess) {
       partialQueryClient?.refetch();
-      setIsDeletedSuccess(false)
+      setIsDeletedSuccess(false);
     }
   }, [isSubmitSuccessful, isDeletedSuccess]);
 

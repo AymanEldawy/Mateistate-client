@@ -3,7 +3,6 @@ import { Button } from "Components/Global/Button";
 import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import Modal from "Components/Global/Modal/Modal";
 import getFormByTableName from "Helpers/Forms/forms";
-import { ApiActions } from "Helpers/Lib/api";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -58,7 +57,7 @@ const ChequeForm = ({
 }) => {
   const params = useParams();
   const chqId = params?.id;
-  const { set, insert } = useCurd();
+  const { set, insert, getOneBy } = useCurd();
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const { CACHE_LIST, setCACHE_LIST } = useRefTable("cheque");
   const methods = useForm();
@@ -77,9 +76,7 @@ const ChequeForm = ({
   useQuery({
     queryKey: ["cheque", "cheque_pattern"],
     queryFn: async () => {
-      const response = await ApiActions.read("cheque_pattern", {
-        conditions: [{ type: "and", conditions: [["code", "=", +code]] }],
-      });
+      const response = await getOneBy("cheque_pattern", +code, "code");
       let pattern = response?.result?.at(0);
       mergePatternWithChequeData(pattern, watch, setValue);
       setPATTERN_SETTINGS(pattern);
@@ -89,14 +86,7 @@ const ChequeForm = ({
   const { isLoading, refetch } = useQuery({
     queryKey: ["cheque", name, code],
     queryFn: async () => {
-      const response = await ApiActions.read("cheque", {
-        conditions: [
-          {
-            type: "and",
-            conditions: [["id", "=", chqId]],
-          },
-        ],
-      });
+      const response = await getOneBy("cheque", chqId);
       reset(response?.result?.at(0));
     },
   });

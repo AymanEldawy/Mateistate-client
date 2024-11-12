@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { Fields } from "../CustomForm/Fields";
 import { dynamicInsertIntoMultiStepsTable } from "Helpers/Lib/global-insert";
-import { ApiActions } from "Helpers/Lib/api";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
@@ -55,7 +54,7 @@ const ServiceForm = ({ popupView }) => {
       }
     },
   });
-  const { remove } = useCurd();
+  const { remove, getOneBy } = useCurd();
   const autoCompleteProblemInfo = (name, cache) => {
     let problemValue = watch(name);
     let serviceWorkerName = name?.split(".").slice(0, 2).join(".");
@@ -69,9 +68,7 @@ const ServiceForm = ({ popupView }) => {
   };
 
   const fetchProblems = async (name, value) => {
-    const res = await ApiActions.read("category_problem", {
-      conditions: [{ type: "and", conditions: [["category_id", "=", value]] }],
-    });
+    const res = await getOneBy("category_problem",value, "category_id");
     setCACHE_LIST((prev) => ({
       ...prev,
       category_problem: res?.result,
