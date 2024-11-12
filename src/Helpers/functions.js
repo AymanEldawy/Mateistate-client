@@ -1,4 +1,4 @@
-import { ApiActions, baseURL } from "./Lib/api";
+import { ApiActions, baseURL, CURD } from "./Lib/api";
 import { getAccountLastNumber } from "./Lib/global-insert";
 import {
   APARTMENT_ASSET_TYPE_DEFAULT_NAME,
@@ -455,4 +455,10 @@ function getNewDate(newDate, number, start, end) {
 
 function isDateValid(dateStr) {
   return !isNaN(new Date(dateStr));
+}
+
+export function getOne(name, value, column = "id") {
+  return CURD.read(name, {
+    conditions: [{ type: "and", conditions: [[column, "=", value]] }],
+  });
 }

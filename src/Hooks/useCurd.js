@@ -1,3 +1,4 @@
+import { getOne } from "Helpers/functions";
 import { CURD } from "Helpers/Lib/api";
 
 const useCurd = () => {
@@ -6,12 +7,6 @@ const useCurd = () => {
   // get data
   const get = async (name, params) => {
     return curd.read(name);
-  };
-
-  const getOneBy = async (name, id, column) => {
-    return curd.read(name, {
-      conditions: [{ type: "and", conditions: [[column || "id", "=", id]] }],
-    });
   };
 
   // set data
@@ -49,7 +44,7 @@ const useCurd = () => {
     set,
     remove,
     insert,
-    getOneBy
+    getOneBy: getOne,
   };
 };
 

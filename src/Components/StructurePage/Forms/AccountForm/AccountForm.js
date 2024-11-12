@@ -81,7 +81,7 @@ const calculatePercentage = (watch, setTotalPercentage) => {
 const AccountForm = ({ onClose, popupView }) => {
   const name = "account";
   const params = useParams();
-  const { set, insert } = useCurd();
+  const { set, insert, getOneBy } = useCurd();
   const { setRecordResponse, appendNewRecord } = usePopupForm();
   const methods = useForm();
 
@@ -100,15 +100,7 @@ const AccountForm = ({ onClose, popupView }) => {
   const accountQueryClient = useQuery({
     queryKey: [name, params?.id],
     queryFn: async () => {
-      const res = await ApiActions.read("account", {
-        conditions: [
-          {
-            type: "and",
-            conditions: [["id", "=", params?.id]],
-          },
-        ],
-      });
-
+      const res = await getOneBy("account", params?.id);
       let account = res?.result?.at(0);
 
       if (account?.id) {
