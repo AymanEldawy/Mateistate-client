@@ -70,6 +70,7 @@ const FormWrapperLayout = ({
         bodyClassName={popupView ? "!p-0" : null}
         boxClassName={popupView ? "!shadow-none !p-0" : null}
         layoutBodyClassName={popupView ? "!my-0" : null}
+        popupView={popupView}
       >
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>

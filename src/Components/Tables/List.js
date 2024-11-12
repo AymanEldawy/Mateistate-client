@@ -117,6 +117,7 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
     console.log(res, "-sss");
 
     if (res?.success) {
+      refetch()
       // setRowSelection([]);
       // await refetchData();
     }

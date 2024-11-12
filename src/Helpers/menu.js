@@ -861,7 +861,7 @@ export async function getBillsMenus() {
         isForm: true,
         key: theItem.name,
         name,
-        link: `/bill/${theItem?.code}/${name}`,
+        link: `/bill/${theItem?.code}`,
       });
     } else {
       let subMenu = [];
@@ -870,7 +870,7 @@ export async function getBillsMenus() {
           isForm: true,
           key: subItem.name,
           name: subItem.name,
-          link: `/bill/${subItem?.code}/${subItem?.name}`,
+          link: `/bill/${subItem?.code}`,
         });
       }
       menus.push({

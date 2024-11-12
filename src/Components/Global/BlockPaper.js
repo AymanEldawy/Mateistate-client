@@ -4,6 +4,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const BlockPaper = ({
+  popupView,
   title,
   customTitle,
   subTitle,
@@ -19,14 +20,16 @@ const BlockPaper = ({
 
   return (
     <Layout bodyClassName={layoutBodyClassName}>
-      <div className="!mb-2 container ">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex gap-2 items-center border border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 duration-300 px-3 py-1 text-sm rounded-md"
-        >
-          <ChevronIcon className="rotate-90 w-4 h-4" /> Back
-        </button>
-      </div>{" "}
+      {popupView ? null : (
+        <div className="!mb-2 container ">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex gap-2 items-center border border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 duration-300 px-3 py-1 text-sm rounded-md"
+          >
+            <ChevronIcon className="rotate-90 w-4 h-4" /> Back
+          </button>
+        </div>
+      ) }
       <div className={`${containerClassName ? "" : "mb-16"}`}>
         <div
           className={`${

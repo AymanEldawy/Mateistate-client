@@ -52,7 +52,7 @@ export function CURD() {
   const insert = async (tableName, params) => {
     try {
       let data = {
-        ...params.data,
+        ...params,
       };
 
       if (tableName !== "members") {

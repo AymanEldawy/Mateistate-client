@@ -109,7 +109,7 @@ const BillConnectWithField = ({ tab, values, errors, old }) => {
         />
       </div>
       {selectedItemNumber > CONNECT_WITH_NOTHING_CODE ? (
-        <div className="flex flex-row items-center gap-4">
+        <div className="flex flex-row items-center ">
           <label
             title="connect with id"
             className="overflow-hidden w-[190px] whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize"
@@ -117,7 +117,7 @@ const BillConnectWithField = ({ tab, values, errors, old }) => {
             connect with id
           </label>
           <div
-            className={`relative flex items-center border dark:border-dark-border rounded-`}
+            className={`relative flex items-center border dark:border-dark-border w-full`}
           >
             <Controller
               name={selectNameId}

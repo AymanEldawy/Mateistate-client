@@ -82,7 +82,8 @@ export const insertIntoEntry = async ({
     responseData = entry?.result?.at(0);
   } else {
     res = await ApiActions.insert("entry_main_data", {
-      data: { ...data, number },
+      ...data,
+      number,
     });
     responseData = res?.record;
   }
@@ -124,7 +125,8 @@ export const insertIntoGrid = async ({
     } else {
       if (item) {
         await ApiActions.insert(gridTableName, {
-          data: { ...item, [itemSearchName]: itemId },
+          ...item,
+          [itemSearchName]: itemId,
         });
       } else {
         await ApiActions.remove(gridTableName, {
@@ -220,7 +222,8 @@ export const insertIntoVoucher = async ({
     });
 
     res = await ApiActions.insert("voucher_main_data", {
-      data: { ...data, number: +response?.result?.at(0)?.number + 1 || 1 },
+      ...data,
+      number: +response?.result?.at(0)?.number + 1 || 1,
     });
     responseData = res?.record;
   }
@@ -586,7 +589,8 @@ export const generateChequesFromInstallment = async ({
     } else {
       if (item) {
         const resInsert = await ApiActions.insert("cheque", {
-          data: { ...item, connect_with_id: contract_id },
+          ...item,
+          connect_with_id: contract_id,
         });
 
         if (resInsert?.success) {
@@ -987,7 +991,8 @@ export const insertIntoUserConnect = async ({
 
     if (id) {
       await ApiActions.insert(name, {
-        data: { [searchKey]: id, user_id: userId },
+        [searchKey]: id,
+        user_id: userId,
       });
     } else {
       await ApiActions.remove(name, {
@@ -997,12 +1002,131 @@ export const insertIntoUserConnect = async ({
   }
 };
 
-
 // generate Entry From Bill
 export const generateEntryFromBill = async ({
   values,
   created_from,
   created_from_id,
   created_from_code,
+  pattern,
 }) => {
+  console.log({
+    values,
+    created_from,
+    created_from_id,
+    created_from_code,
+  });
+
+  const {
+    customer_account_id,
+    client_account_id,
+    // material_account_id,
+    cost_center_id,
+    currency_id,
+    currency_val,
+    note,
+    bill_date,
+    total,
+  } = values?.bill;
+
+  // material_account_id debit
+  // client_account_id credit
+  // material_account_id debit
+  // client_account_id credit
+
+  let entry = {
+    created_at: bill_date,
+    currency_id: currency_id,
+    currency_val: currency_val || 1,
+    note,
+    debit: total,
+    credit: total,
+    difference: 0,
+    created_from,
+    created_from_id,
+    created_from_code,
+  };
+
+  const kind = +values?.bill?.bill_kind;
+  const type = +values?.bill?.payment_method;
+
+  const cash_account = pattern?.cash_account_id;
+  const material_account_id = pattern?.material_account_id;
+  const vat_account_id = pattern?.vat_account_id;
+
+  // cash 2
+  // credit 1
+
+  // input 1
+  // output 2
+
+  let account_id = null;
+  let observe_account_id = null;
+
+  if (kind === 1) {
+    if (type === 1) {
+      // ١- حالة الشراء النقدي
+      // مدين حساب المشتريات
+      // دائن حساب الصندوق
+      // account_id = client_account_id;
+      observe_account_id = cash_account;
+    } else if (type === 2) {
+      // ٢- الشراء اجل
+      // مدين حساب المشتريات
+      // دائن حساب المورد
+      // account_id = client_account_id;
+      observe_account_id = material_account_id;
+    }
+  } else {
+    if (type === 1) {
+      // ٢- في حالة البيع الاجل
+      // مدين حساب الزبون او العميل
+      // دائن حساب المبيعات
+      account_id = client_account_id;
+      observe_account_id = cash_account;
+    } else if (type === 2) {
+      account_id = cash_account;
+      observe_account_id = client_account_id;
+      // في حالة البيع النقدي
+      // مدين حساب الصندوق
+      // دائن حساب المبيعات (يفتح ضمن شجرة الحسابات هو وحساب المشتريات )
+    }
+  }
+
+  // insert into Entry
+  const response = await insertIntoEntry(entry);
+
+  if (response?.id) {
+    const grid = [
+      {
+        account_id: material_account_id,
+        observe_account_id: customer_account_id,
+        currency_id,
+        cost_center_id,
+        debit: total,
+        credit: 0,
+        note,
+      },
+
+      {
+        account_id: customer_account_id,
+        observe_account_id: material_account_id,
+        currency_id,
+        cost_center_id,
+        debit: 0,
+        credit: total,
+        note,
+      },
+    ];
+
+    await insertIntoGrid({
+      grid,
+      itemId: response?.id,
+      tableName: "entry_main_data",
+      gridTableName: "entry_grid_data",
+      itemSearchName: "entry_main_data_id",
+    });
+
+    return;
+  }
 };

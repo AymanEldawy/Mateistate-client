@@ -128,9 +128,7 @@ export const dynamicInsertIntoMultiStepsTable = async ({
       updates: mainValues,
     });
   } else {
-    mainResponse = await ApiActions.insert(tableName, {
-      data: mainValues,
-    });
+    mainResponse = await ApiActions.insert(tableName, mainValues);
     tableId = mainResponse?.record?.id;
   }
 
@@ -161,10 +159,8 @@ export const dynamicInsertIntoMultiStepsTable = async ({
             subItemId = list[name]?.id;
           } else {
             subResponse = await ApiActions.insert(name, {
-              data: {
-                ...list[name],
-                [`${tableName}_id`]: tableId,
-              },
+              ...list[name],
+              [`${tableName}_id`]: tableId,
             });
             subItemId = subResponse?.record?.id;
           }
@@ -230,9 +226,7 @@ const insertToBuilding = async (data) => {
       updates: data,
     });
   } else {
-    response = await ApiActions.insert("building", {
-      data,
-    });
+    response = await ApiActions.insert("building", data);
 
     if (response?.success) {
       buildingId = data?.id || response?.record?.id;
@@ -245,9 +239,7 @@ const insertToBuilding = async (data) => {
         let accountData = await getInsertAccountTrigger(123);
         accountData.name = data?.name;
 
-        const responseAccount = await ApiActions.insert("account", {
-          data: accountData,
-        });
+        const responseAccount = await ApiActions.insert("account", accountData);
         responseAccountId = responseAccount?.record?.id;
       }
 
@@ -259,10 +251,8 @@ const insertToBuilding = async (data) => {
           : 101;
 
         const responseCostCenter = await ApiActions.insert("cost_center", {
-          data: {
-            internal_number,
-            name: data?.name,
-          },
+          internal_number,
+          name: data?.name,
         });
         responseCostCenterId = responseCostCenter?.record?.id;
       }
@@ -300,7 +290,7 @@ const insertIntoBill = async (data) => {
   return await dynamicInsertIntoMultiStepsTable({
     tableName: "bill",
     data,
-    tableListName: 'bill_invoice_group'
+    tableListName: "bill_invoice_group",
   });
 };
 
@@ -360,11 +350,9 @@ const dynamicInsertIntoContract = async ({
     // Insert into contract or update
     const internal_number = await getNewContractNumber(data?.contract?.code);
     response = await ApiActions.insert("contract", {
-      data: {
-        ...data?.contract,
-        contract_type: contractType,
-        internal_number: internal_number || Math.floor(Math.random() * 100),
-      },
+      ...data?.contract,
+      contract_type: contractType,
+      internal_number: internal_number || Math.floor(Math.random() * 100),
     });
     contract_id = response?.record?.id;
   } else {
@@ -418,10 +406,8 @@ const dynamicInsertIntoContract = async ({
           } else {
             if (Object.values(values)?.length) {
               const response = ApiActions.insert(name, {
-                data: {
-                  ...values,
-                  contract_id,
-                },
+                ...values,
+                contract_id,
               });
               subItemId = response?.record?.id;
             }
@@ -472,10 +458,8 @@ export const insertIntoContractInstallment = async ({
     });
   } else {
     const response = await ApiActions.insert("installment", {
-      data: {
-        ...installment,
-        contract_id,
-      },
+      ...installment,
+      contract_id,
     });
 
     installment_id = response?.record?.id;
@@ -585,10 +569,8 @@ export const insertIntoContractInstallment = async ({
       }
     } else {
       let response = await ApiActions.insert("voucher_main_data", {
-        data: {
-          ...voucherMainData,
-          voucher_type: VOUCHER_RECEIPTS_CODE,
-        },
+        ...voucherMainData,
+        voucher_type: VOUCHER_RECEIPTS_CODE,
       });
 
       if (response?.success) {
@@ -682,9 +664,7 @@ const insertIntoContractPictures = async ({
       contract_id,
     };
 
-    await ApiActions.insert("contract_pictures", {
-      data,
-    });
+    await ApiActions.insert("contract_pictures", data);
   }
 };
 
@@ -735,10 +715,8 @@ const insertIntoGridTabs = async ({
       } else {
         if (item) {
           await ApiActions.insert(table, {
-            data: {
-              ...item,
-              [itemNameId]: item_id,
-            },
+            ...item,
+            [itemNameId]: item_id,
           });
         } else {
           await ApiActions.remove(table, {
@@ -909,11 +887,9 @@ export const generateApartments = async (
         hashPropertyIds[item?.row_index] = item.id;
       } else {
         res = await ApiActions.insert("property_values", {
-          data: {
-            ...properties?.[i],
-            building_id: building?.id,
-            row_index: i,
-          },
+          ...properties?.[i],
+          building_id: building?.id,
+          row_index: i,
         });
         if (res?.success) {
           hashPropertyIds[i] = res?.record?.id;
@@ -992,11 +968,9 @@ export const generateApartments = async (
 
         if (cost_center_id) {
           const newFlatResponse = await ApiActions.insert(flatTableName, {
-            data: {
-              ...data,
-              cost_center_id,
-              main_cost_center_id: building?.main_cost_center_id,
-            },
+            ...data,
+            cost_center_id,
+            main_cost_center_id: building?.main_cost_center_id,
           });
 
           if (!newFlatResponse?.success) {
@@ -1029,9 +1003,7 @@ const generateCostCenterFromUnits = async (data, id = null) => {
       updates: data,
     });
   } else {
-    const response = await ApiActions.insert("cost_center", {
-      data,
-    });
+    const response = await ApiActions.insert("cost_center", data);
     return response?.record?.id;
   }
 };
@@ -1053,12 +1025,10 @@ const insertToUser = async (data) => {
   let member_id = data?.member_id;
   if (!data?.member_id) {
     const memberRes = await ApiActions.insert("members", {
-      data: {
-        name: data?.name,
-        email: data?.email,
-        phone: data?.phone,
-        user_type: 3,
-      },
+      name: data?.name,
+      email: data?.email,
+      phone: data?.phone,
+      user_type: 3,
     });
     member_id = memberRes?.record?.id;
   } else {
@@ -1085,7 +1055,8 @@ const insertToUser = async (data) => {
 
   if (data?.card_type > 2) {
     const userResponse = await ApiActions.insert("user", {
-      data: { ...data, member_id },
+      ...data,
+      member_id,
     });
     return userResponse;
   } else {
@@ -1094,14 +1065,14 @@ const insertToUser = async (data) => {
     // account.ltnname = data?.ltnname;
 
     // automatic insert a new account in suppliers or customers before insert the user
-    const accountResponse = await ApiActions.insert("account", {
-      data: account,
-    });
+    const accountResponse = await ApiActions.insert("account", account);
 
     if (accountResponse?.success) {
       // insert the USER after connect it with the inserted ACCOUNT
       const userResponse = await ApiActions.insert("user", {
-        data: { ...data, member_id, account_id: accountResponse?.record?.id },
+        ...data,
+        member_id,
+        account_id: accountResponse?.record?.id,
       });
 
       if (!userResponse?.success) {
@@ -1129,16 +1100,14 @@ const insertToUser = async (data) => {
 //   if (accountResponse?.success) {
 //     // insert the USER after connect it with the inserted ACCOUNT
 //     const ownerResponse = await ApiActions.insert("owner", {
-//       data: { ...data, account_id: accountResponse?.record?.id },
+//      ...data, account_id: accountResponse?.record?.id
 //     });
 //     return ownerResponse;
 //   }
 // };
 // insert To User
 const insertToOwner = async (data) => {
-  const ownerResponse = await ApiActions.insert("owner", {
-    data,
-  });
+  const ownerResponse = await ApiActions.insert("owner", data);
   return ownerResponse;
 };
 

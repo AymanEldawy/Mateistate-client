@@ -8,6 +8,12 @@ const useCurd = () => {
     return curd.read(name);
   };
 
+  const getOneBy = async (name, id, column) => {
+    return curd.read(name, {
+      conditions: [{ type: "and", conditions: [[column || "id", "=", id]] }],
+    });
+  };
+
   // set data
   const set = async (name, values, id) => {
     return curd.update(name, {
@@ -19,7 +25,12 @@ const useCurd = () => {
   // remove data
   const remove = async (name, id) => {
     return await curd.remove(name, {
-      conditions: [{ type: "and", conditions: [["id", "=", id]] }],
+      conditions: [
+        {
+          type: "and",
+          conditions: [["id", typeof id === "object" ? "in" : "=", id]],
+        },
+      ],
     });
   };
 
@@ -38,6 +49,7 @@ const useCurd = () => {
     set,
     remove,
     insert,
+    getOneBy
   };
 };
 

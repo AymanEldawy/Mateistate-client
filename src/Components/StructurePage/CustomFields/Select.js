@@ -118,7 +118,9 @@ const CustomSelect = ({
             />
           );
         }}
-        rules={{ required: field?.required }}
+        rules={{
+          required: field?.required,
+        }}
       />
       {error ? <ErrorText containerClassName="py-1">{error}</ErrorText> : null}
     </div>

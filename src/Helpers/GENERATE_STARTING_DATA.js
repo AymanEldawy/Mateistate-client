@@ -625,11 +625,9 @@ let levels = {};
 // insert default LACK_REASONS
 export async function INSERT_DEFAULT_LACK_REASONS() {
   await ApiActions.insert("store", {
-    data: {
-      name: "store 1",
-      code: 1,
-      type: 1,
-    },
+    name: "store 1",
+    code: 1,
+    type: 1,
   });
 
   const reasons = [
@@ -645,20 +643,16 @@ export async function INSERT_DEFAULT_LACK_REASONS() {
     },
   ];
   for (const item of reasons) {
-    await ApiActions.insert("lack_reason", {
-      data: item,
-    });
+    await ApiActions.insert("lack_reason", item);
   }
 }
 
 // insert default ACCOUNTS
 export async function INSERT_DEFAULT_ACCOUNTS() {
   const currencyResponse = await ApiActions.insert("currency", {
-    data: {
-      name: DEFAULT_CURRENCY_NAME,
-      code: DEFAULT_CURRENCY_CODE,
-      rate: DEFAULT_CURRENCY_RATE,
-    },
+    name: DEFAULT_CURRENCY_NAME,
+    code: DEFAULT_CURRENCY_CODE,
+    rate: DEFAULT_CURRENCY_RATE,
   });
   let currency_id = null;
   if (currencyResponse?.success) {
@@ -709,9 +703,7 @@ export async function INSERT_DEFAULT_ACCOUNTS() {
 }
 
 async function insertAccount(data) {
-  const response = await ApiActions.insert("account", {
-    data,
-  });
+  const response = await ApiActions.insert("account", data);
   if (response?.success) return response?.record;
 }
 
@@ -785,9 +777,7 @@ async function INSERT_DEFAULT_BANKS() {
   const bankIds = [];
   for (let bank of BANKS) {
     const response = await ApiActions.insert("bank", {
-      data: {
-        name: bank,
-      },
+      name: bank,
     });
     if (response?.success) {
       bankIds.push(response?.record.id);
@@ -805,9 +795,7 @@ async function INSERT_DEFAULT_VOUCHERS(ACCOUNT_IDS) {
       voucher.default_account_id = ACCOUNT_IDS["131"];
     }
 
-    await ApiActions.insert("voucher_pattern", {
-      data: voucher,
-    });
+    await ApiActions.insert("voucher_pattern", voucher);
   }
 }
 
@@ -844,17 +832,15 @@ export async function INSERT_DEFAULT_CONTRACTS(ACCOUNT_IDS) {
     contract.default_insurance_account_id = ACCOUNT_IDS["223"];
 
     const response = await ApiActions.insert("contract_pattern", {
-      data: {
-        contract_type: contract.type,
-        name: contract.name,
-        list_name: contract.list,
-        assets_type: contract.assets_type,
-        auto_gen_entries: true,
-        auto_transfer_entry: true,
-        gen_entries: true,
-        insurance_required: true,
-        record_date_created: 1,
-      },
+      contract_type: contract.type,
+      name: contract.name,
+      list_name: contract.list,
+      assets_type: contract.assets_type,
+      auto_gen_entries: true,
+      auto_transfer_entry: true,
+      gen_entries: true,
+      insurance_required: true,
+      record_date_created: 1,
     });
   }
 }
@@ -893,9 +879,7 @@ export async function INSERT_DEFAULT_CATEGORY() {
     },
   ];
   for (const cate of category) {
-    await ApiActions.insert("category", {
-      data: cate,
-    });
+    await ApiActions.insert("category", cate);
   }
 }
 
@@ -912,9 +896,7 @@ export async function INSERT_DEFAULT_CHEQUES(ACCOUNT_IDS) {
       cheque.default_account_id = ACCOUNT_IDS["122"];
     }
 
-    await ApiActions.insert("cheque_pattern", {
-      data: cheque,
-    });
+    await ApiActions.insert("cheque_pattern", cheque);
   }
 }
 
@@ -925,10 +907,8 @@ export async function INSERT_DEFAULT_MULTIPLE_DATA() {
   const lessorIds = [];
   for (let i = 0; i < 5; i++) {
     const response = await ApiActions.insert("lessor", {
-      data: {
-        number: i + 1,
-        full_name: "lessor" + (i + 1),
-      },
+      number: i + 1,
+      full_name: "lessor" + (i + 1),
     });
     if (response?.success) {
       lessorIds.push(response?.record.id);
@@ -937,11 +917,9 @@ export async function INSERT_DEFAULT_MULTIPLE_DATA() {
   const sellerIds = [];
   for (let i = 1; i < 5; i++) {
     const response = await ApiActions.insert("seller", {
-      data: {
-        full_name: "seller" + (i + 1),
-        minimum_commission: i * 20,
-        maximum_discount: i * 20,
-      },
+      full_name: "seller" + (i + 1),
+      minimum_commission: i * 20,
+      maximum_discount: i * 20,
     });
     if (response?.success) {
       sellerIds.push(response?.record.id);
@@ -951,10 +929,8 @@ export async function INSERT_DEFAULT_MULTIPLE_DATA() {
   const assets_groupIds = [];
   for (let i = 1; i < 5; i++) {
     const response = await ApiActions.insert("assets_group", {
-      data: {
-        number: i,
-        name: "assets group" + i,
-      },
+      number: i,
+      name: "assets group" + i,
     });
     if (response?.success) {
       assets_groupIds.push(response?.record.id);
@@ -964,11 +940,9 @@ export async function INSERT_DEFAULT_MULTIPLE_DATA() {
   const assetsIds = [];
   for (let i = 1; i < 5; i++) {
     const response = await ApiActions.insert("assets", {
-      data: {
-        number: i,
-        name: "assets" + i,
-        assets_group_id: assets_groupIds[i],
-      },
+      number: i,
+      name: "assets" + i,
+      assets_group_id: assets_groupIds[i],
     });
     if (response?.success) {
       assetsIds.push(response?.record.id);
@@ -978,10 +952,8 @@ export async function INSERT_DEFAULT_MULTIPLE_DATA() {
   const material_groupIds = [];
   for (let i = 1; i < 5; i++) {
     const response = await ApiActions.insert("material_group", {
-      data: {
-        number: i,
-        name: "material group" + i,
-      },
+      number: i,
+      name: "material group" + i,
     });
     if (response?.success) {
       material_groupIds.push(response?.record.id);
@@ -991,11 +963,9 @@ export async function INSERT_DEFAULT_MULTIPLE_DATA() {
   const materialsIds = [];
   for (let i = 1; i < 5; i++) {
     const response = await ApiActions.insert("materials", {
-      data: {
-        number: i,
-        name: "materials" + i,
-        materials_group_id: material_groupIds[i],
-      },
+      number: i,
+      name: "materials" + i,
+      materials_group_id: material_groupIds[i],
     });
     if (response?.success) {
       materialsIds.push(response?.record.id);
@@ -1047,18 +1017,16 @@ export async function insertIntoNotification() {
   }
   for (let i = 0; i < 150; i++) {
     await ApiActions.insert("notification", {
-      data: {
-        title: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
-        description: randomString(
-          Math.floor(Math.random() * (100 - 50 + 1)) + 50
-        ),
-        url: `https://example.com/${randomString(
-          Math.floor(Math.random() * (10 - 5 + 1)) + 5
-        )}`,
-        // tenant_id: TENANT_ID,
-        user_id: USERS[Math.floor(Math.random() * USERS?.length)],
-        status: i % 2 === 0,
-      },
+      title: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+      description: randomString(
+        Math.floor(Math.random() * (100 - 50 + 1)) + 50
+      ),
+      url: `https://example.com/${randomString(
+        Math.floor(Math.random() * (10 - 5 + 1)) + 5
+      )}`,
+      // tenant_id: TENANT_ID,
+      user_id: USERS[Math.floor(Math.random() * USERS?.length)],
+      status: i % 2 === 0,
     });
   }
 }
@@ -1081,22 +1049,20 @@ export async function insertIntoDefaultService() {
         Math.floor(Math.random() * default_service_update?.length)
       ];
     await ApiActions.insert("default_service", {
-      data: {
-        name: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+      name: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
 
-        description: randomString(
-          Math.floor(Math.random() * (100 - 50 + 1)) + 50
-        ),
-        category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
-        picture: `https://example.com/${randomString(
-          Math.floor(Math.random() * (10 - 5 + 1)) + 5
-        )}`,
-        price: Math.floor(Math.random() * 400),
-        display: true,
-        available: true,
-        service_type: 0,
-        ...service,
-      },
+      description: randomString(
+        Math.floor(Math.random() * (100 - 50 + 1)) + 50
+      ),
+      category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
+      picture: `https://example.com/${randomString(
+        Math.floor(Math.random() * (10 - 5 + 1)) + 5
+      )}`,
+      price: Math.floor(Math.random() * 400),
+      display: true,
+      available: true,
+      service_type: 0,
+      ...service,
     });
   }
 }
@@ -1105,11 +1071,9 @@ export async function updateMaterialsPrice() {
   const matRes = await ApiActions.read("material");
   for (const mat of matRes?.result) {
     await ApiActions.insert("material_prices", {
-      data: {
-        material_id: mat.id,
-        last_price: Math.floor(Math.random() * 200),
-        vat_rate: Math.floor(Math.random() * 5),
-      },
+      material_id: mat.id,
+      last_price: Math.floor(Math.random() * 200),
+      vat_rate: Math.floor(Math.random() * 5),
     });
   }
 }
@@ -1167,18 +1131,16 @@ export async function insertIntoMaterials() {
 
   for (let i = 0; i < 150; i++) {
     await ApiActions.insert("material", {
-      data: {
-        material_type: 1,
-        code: i + 1,
-        name: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
-        unit1: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
-        unit2: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
-        unit3: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
-        exchange2: Math.floor(Math.random() * (30 - 10 + 1)) + 10,
-        category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
-        material_group_id:
-          MATERIAL_GROUP[Math.floor(Math.random() * MATERIAL_GROUP?.length)],
-      },
+      material_type: 1,
+      code: i + 1,
+      name: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+      unit1: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+      unit2: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+      unit3: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
+      exchange2: Math.floor(Math.random() * (30 - 10 + 1)) + 10,
+      category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
+      material_group_id:
+        MATERIAL_GROUP[Math.floor(Math.random() * MATERIAL_GROUP?.length)],
     });
   }
 }
@@ -1533,14 +1495,12 @@ export async function insertIntoProblems() {
     let problem = problems[Math.floor(Math.random() * problems?.length)];
 
     await ApiActions.insert("category_problem", {
-      data: {
-        description: problem.description?.slice(0, 55),
-        category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
-        minutes: problem.minutes,
-        is_available: true,
-        price: 0,
-        ...problem,
-      },
+      description: problem.description?.slice(0, 55),
+      category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
+      minutes: problem.minutes,
+      is_available: true,
+      price: 0,
+      ...problem,
     });
   }
 }
@@ -1816,9 +1776,7 @@ export async function insertTimes() {
 }
 
 async function insertWorkDay(data) {
-  await ApiActions.insert("user_work_times", {
-    data,
-  });
+  await ApiActions.insert("user_work_times", data);
 }
 
 //
@@ -1849,7 +1807,7 @@ async function insertWorkDay(data) {
 
 //   for (let i = 0; i < 150; i++) {
 //     await ApiActions.insert("contract", {
-//       data: {
+//
 //         material_type: 1,
 //         code: i+1,
 //         name: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
@@ -1923,13 +1881,10 @@ export async function updateUserToken() {
 
     try {
       // Make the POST request using axios
-      let response = await axios.post(
-        "http://66.29.143.191/verify_token",
-        {
-          phone_number: item.phone,
-          token: "123456",
-        }
-      );
+      let response = await axios.post("http://66.29.143.191/verify_token", {
+        phone_number: item.phone,
+        token: "123456",
+      });
 
       // Access the response data
       const token = response.data;
@@ -1940,9 +1895,8 @@ export async function updateUserToken() {
         headers: {
           Authorization: token.access_token,
         },
-        data: {
-          password: "12121212",
-        },
+
+        password: "12121212",
       });
     } catch (error) {
       console.error("Error verifying token:", error);

@@ -146,7 +146,7 @@ const UniqueField = ({
             type="button"
             className="right-2 rtl:left-2 rtl:right-auto mx-2 rounded-full text-blue-500 hover:text-white hover:bg-blue-400"
             onClick={() => {
-              let refTable = table;
+              let refTable = field?.ref_table;
               let oldValues = null;
 
               if (field?.ref_table === UNIQUE_REF_TABLES.clients) {
@@ -162,6 +162,8 @@ const UniqueField = ({
                 refTable = "user";
                 oldValues = { card_type: USER_WORKER_CODE };
               }
+              console.log(refTable,'refTable');
+              
               dispatchForm({
                 open: true,
                 table: refTable,

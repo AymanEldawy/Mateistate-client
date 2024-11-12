@@ -3,7 +3,6 @@ import { ApiActions } from "Helpers/Lib/api";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import useRefTable from "Hooks/useRefTables";
 import { useQuery } from "@tanstack/react-query";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
@@ -11,14 +10,47 @@ import {
   CurrencyFieldGroup,
   Input,
   Select,
-  Textarea,
   UniqueField,
 } from "Components/StructurePage/CustomFields";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
-import ReportInputField from "Components/ReportsComponents/ReportsFields/ReportInputField";
 import BillConnectWithField from "Components/StructurePage/CustomFields/BillConnectWithField";
 import INSERT_FUNCTION from "Helpers/Lib/global-insert";
 import { generateEntryFromBill } from "Helpers/Lib/vouchers-insert";
+import { CREATED_FROM_BILL_CODE } from "Helpers/GENERATE_STARTING_DATA";
+import { ViewEntry } from "Components/Global/ViewEntry";
+import useCurd from "Hooks/useCurd";
+
+let data = {
+  issue_date: "2024-10-30T21:00:00.000Z",
+  bill_date: "2024-10-28T21:00:00.000Z",
+  currency_val: 1,
+  currency_id: "27e841e4-20f5-4b74-8e55-f2f4efa5a9b2",
+  payment_method: 2,
+  receipt_number: "34",
+  cost_center_id: "8fc113a6-5300-49be-887b-30c1a8c49d02",
+  connect_with: 1,
+  note: "2",
+  store_id: "9b2770c2-9369-4f4e-a512-3f9d97e10f89",
+  customer_account_id: "6b2e51a5-eda4-4fe6-a008-055b43aac149",
+  client_account_id: "6b2e51a5-eda4-4fe6-a008-055b43aac149",
+  material_account_id: "8348c4b2-9908-4235-8e25-b3503113c326",
+  total_quantities: "434",
+  total_quantities_percentage: "43",
+  total_quantities_percentage2: "34",
+  refunded_taxable_amount: "34",
+  non_refunded_taxable_amount: "534",
+  not_taxable: "34",
+  taxable: "534",
+  discounts: "232",
+  discounts_extra: "43",
+  non_refundable_vat: "53",
+  non_refundable_vat2: "434",
+  total: "534",
+  grand_total: "43",
+  net: "53",
+  connect_with_id: "12c61adf-b364-49c6-9655-d7a7d84b47fe",
+  bill_kind: 1,
+};
 
 const mergePatternWithBillData = (pattern) => {
   let patternValues = {};
@@ -32,7 +64,9 @@ const mergePatternWithBillData = (pattern) => {
 
 const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
   const params = useParams();
+  const { getOneBy } = useCurd();
   const id = params?.id;
+
   const { CACHE_LIST } = useRefTable("bill");
   const methods = useForm();
   let {
@@ -42,35 +76,31 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
     formState: { errors },
   } = methods;
 
-  const name = params?.name || tableName;
   const code = params?.code || patternCode;
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
 
   useQuery({
     queryKey: ["bill", "bill_pattern"],
     queryFn: async () => {
-      const response = await ApiActions.read("bill_pattern", {
-        conditions: [{ type: "and", conditions: [["code", "=", +code]] }],
-      });
+      const response = await getOneBy("bill_pattern", +code, "code");
       let pattern = response?.result?.at(0);
-      mergePatternWithBillData(pattern, watch, setValue);
       setPATTERN_SETTINGS(pattern);
+      if (!id) {
+        reset({
+          bill: mergePatternWithBillData(PATTERN_SETTINGS, watch, setValue),
+        });
+      }
     },
   });
 
-  const { isLoading, refetch } = useQuery({
-    queryKey: ["bill", name, code, id],
+  const { isLoading } = useQuery({
+    queryKey: ["bill", code, id],
     queryFn: async () => {
-      const response = await ApiActions.read("bill", {
-        conditions: [
-          {
-            type: "and",
-            conditions: [["id", "=", id]],
-          },
-          { type: "and", conditions: [["kind", "=", +code]] },
-        ],
+      if (!code || !id) return;
+      const response = await getOneBy("bill", id);
+      reset({
+        bill: response?.result?.at(0),
       });
-      reset(response?.result?.at(0));
     },
   });
 
@@ -82,24 +112,22 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
     return hash;
   }, []);
 
-  useEffect(() => {
-    if (oldValues && PATTERN_SETTINGS) {
-      reset({
-        ...mergePatternWithBillData(PATTERN_SETTINGS, watch, setValue),
-        ...oldValues,
-      });
-    }
-  }, [oldValues, PATTERN_SETTINGS?.id]);
-
+  console.log(PATTERN_SETTINGS,'pattern');
+  
   const onSubmit = async () => {
     const getTheFunInsert = INSERT_FUNCTION?.bill;
     setValue("bill.bill_kind", +code);
     const response = await getTheFunInsert(watch());
 
-    if (response?.succuss) {
+    if (response?.success) {
+      await generateEntryFromBill({
+        values: watch(),
+        created_from: CREATED_FROM_BILL_CODE,
+        created_from_id: params?.id || response.record?.id,
+        created_from_code: +code,
+        pattern: PATTERN_SETTINGS
+      });
       //
-      // generateEntryFromBill({
-      // })
     }
 
     // bill_material_details
@@ -108,11 +136,12 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
 
   return (
     <FormWrapperLayout
-      name={name}
+      name={PATTERN_SETTINGS?.name}
       isLoading={isLoading}
       popupView={popupView}
       methods={methods}
       onSubmit={onSubmit}
+      additionalButtons={params?.id && <ViewEntry id={params?.id} />}
     >
       <div className="grid md:grid-cols-2 lg:grid-cols-3 justify-between gap-4 bg-[#EFF6FF] dark:bg-[#303030] p-2">
         <Input

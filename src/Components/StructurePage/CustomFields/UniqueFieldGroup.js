@@ -116,7 +116,7 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
         ) : null}
       </div>
       {selectedItemNumber > CONNECT_WITH_NOTHING_CODE ? (
-        <div className=" min-w-[200px]">
+        <div className=" min-w-[200px] w-full">
           <label
             title="connect with id"
             className="overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize"
@@ -124,12 +124,13 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
             connect with id
           </label>
           <div
-            className={`relative flex items-center border dark:border-dark-border rounded-`}
+            className={`relative flex items-center border dark:border-dark-border rounded w-full`}
           >
             <Controller
               name={selectNameId}
               control={control}
               defaultValue={null}
+              className="w-full"
               render={({ field: { onChange }, fieldState, formState }) => {
                 return (
                   <Select
@@ -141,10 +142,10 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
                     name={selectNameId}
                     className="w-full border-none"
                     classNames={{
-                      indicatorsContainer: () => "!hidden bg-black",
+                      indicatorsContainer: () => "!hidden bg-black w-full",
                       control: (state) => "bg-transparent !border-none",
                       container: (state) =>
-                        "!bg-none !bg-transparent !border-none",
+                        "!bg-none !bg-transparent !border-none w-full",
                       singleValue: () => "dark:text-gray-200 unique-valid",
                       menuList: () => "dark:bg-dark-bg",
                     }}

@@ -60,7 +60,8 @@ const Input = ({
           htmlFor={updatedName || field?.name}
           className={
             "overflow-hidden text-ellipsis min-w-fit text-sm font-normal whitespace-nowrap mb-1 capitalize flex items-center gap-2 " +
-              (old && " w-[190px] !whitespace-normal ") + labelClassName
+            (old && " w-[190px] !whitespace-normal ") +
+            labelClassName
           }
         >
           {t(label)?.replace(/_/g, " ")}{" "}
@@ -73,6 +74,7 @@ const Input = ({
         name={updatedName || field?.name}
         control={control}
         className="w-full"
+        required={field?.required}
         render={({
           field: { onChange, onBlur, ref, value },
           fieldState,
@@ -117,6 +119,7 @@ const Input = ({
                 onChange={(date) => {
                   onChange(date);
                 }}
+                required={field?.required}
                 // dateFormat="dd-mm-yyyy"
                 dateFormat={`${old ? " dd/MM/yyyy" : "MMMM d, yyyy"}`}
               />
@@ -149,7 +152,9 @@ const Input = ({
             );
           }
         }}
-        rules={{ required: field?.required }}
+        rules={{
+          required: field?.required,
+        }}
       />
 
       {error ? <ErrorText containerClassName="py-1">{error}</ErrorText> : null}

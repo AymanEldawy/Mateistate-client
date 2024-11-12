@@ -53,12 +53,12 @@ export const DEFAULT_BILL_MENU = [
       {
         isForm: true,
         key: "Input Bill",
-        link: "/bill/1/input/",
+        link: "/bill/1/",
       },
       {
         isForm: true,
         key: "Output Bill",
-        link: "/bill/2/output/",
+        link: "/bill/2/",
       },
     ],
   },
