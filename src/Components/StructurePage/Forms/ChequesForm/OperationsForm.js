@@ -251,7 +251,7 @@ export const OperationsForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isDeletedSuccess, setIsDeletedSuccess] = useState(false);
   const [partialNumbers, setPartialNumbers] = useState(0);
-  const { remove, set, insert } = useCurd();
+  const { remove, set, insert, getOneBy } = useCurd();
   const methods = useForm({
     defaultValues: {},
   });
@@ -285,9 +285,7 @@ export const OperationsForm = ({
   }, [PATTERN_SETTINGS?.name, name, chqValues]);
 
   const getOperationData = async () => {
-    const response = await ApiActions.read(name, {
-      conditions: [{ type: "and", conditions: [["cheque_id", chqValues?.id]] }],
-    });
+    const response = await getOneBy(name, chqValues?.id, "cheque_id");
     let data = response?.result?.at(0);
     if (response?.success && data?.id) {
       reset(data);

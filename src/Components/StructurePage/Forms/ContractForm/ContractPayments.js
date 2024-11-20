@@ -8,13 +8,13 @@ import {
   VOUCHER_RECEIPTS_CODE,
   VOUCHER_RECEIPTS_NAME,
 } from "Helpers/GENERATE_STARTING_DATA";
-import { ApiActions } from "Helpers/Lib/api";
 import {
   COUNTER_CHQ_NUMBER,
   DESPATCH_TABLES_NAME,
 } from "Helpers/Lib/contract-helpers";
 import { getAccountCash, getVoucherLastNumber } from "Helpers/Lib/global-read";
 import { METHODS } from "Helpers/constants";
+import useCurd from "Hooks/useCurd";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import { useEffect, useMemo, useState } from "react";
@@ -58,7 +58,7 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
   const [selectedVoucherRows, setSelectedVoucherRows] = useState({});
   const [refresh, setRefresh] = useState(false);
   const { dispatchForm, recordResponse, setRecordResponse } = usePopupForm();
-
+  const { getOneBy } = useCurd();
   let cheque_grid = useMemo(() => getFormByTableName("cheque_grid"), []);
   let voucher_grid = useMemo(
     () =>
@@ -271,14 +271,11 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
             withPortal
             onClickPrint={(data) => console.log(data, "----")}
             onClickOnNumber={async (oldValues) => {
-              const res = await ApiActions.read("voucher_grid_data", {
-                conditions: [
-                  {
-                    type: "and",
-                    conditions: [["voucher_main_data_id", "=", oldValues?.id]],
-                  },
-                ],
-              });
+              const res = await getOneBy(
+                "voucher_grid_data",
+                oldValues?.id,
+                "voucher_main_data_id"
+              );
               dispatchForm({
                 open: true,
                 table: DESPATCH_TABLES_NAME.VOUCHER,

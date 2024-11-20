@@ -1,38 +1,27 @@
 import Modal from "Components/Global/Modal/Modal";
-import { ApiActions } from "Helpers/Lib/api";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import { useEffect, useState } from "react";
 import EntryForm from "../Entry/EntryForm";
 import { CloseIcon, NotAllowIcon } from "Components/Icons";
 import Loading from "Components/Global/Loading";
+import useCurd from "Hooks/useCurd";
 
 export const VoucherView = () => {
   const { voucherInfo, setVoucherInfo } = useVoucherEntriesView();
   const [values, setValues] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const{getOneBy}= useCurd()
 
   const fetchVoucher = async () => {
     setIsLoading(true);
-    const response = await ApiActions.read(voucherInfo?.table, {
-      conditions: [
-        {
-          type: "and",
-          conditions: [[voucherInfo?.ref_name, "=", voucherInfo?.id]],
-        },
-      ],
-    });
+    const response = await getOneBy(voucherInfo?.table, voucherInfo?.id,voucherInfo?.ref_name);
 
     if (response?.success) {
-      const responseGrid = await ApiActions.read(voucherInfo?.grid, {
-        conditions: [
-          {
-            type: "and",
-            conditions: [
-              [`${voucherInfo?.table}_id`, "=", response?.result?.at(0)?.id],
-            ],
-          },
-        ],
-      });
+      const responseGrid = await getOneBy(
+        voucherInfo?.grid,
+        response?.result?.at(0)?.id,
+        `${voucherInfo?.table}_id`
+      );
 
       setValues({
         ...response?.result?.at(0),

@@ -4,7 +4,6 @@ import { VoucherFooter } from "./VoucherFooter";
 import getFormByTableName from "Helpers/Forms/forms";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { ApiActions } from "Helpers/Lib/api";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { toast } from "react-toastify";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
@@ -35,7 +34,7 @@ const VoucherForm = ({
   const name = params?.name || voucherName;
   const type = params?.type || voucherType;
   const methods = useForm();
-  const { set, insert } = useCurd();
+  const { set, insert, getOneBy } = useCurd();
   const { CACHE_LIST } = useRefTable("voucher_grid_data");
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const [gridFields, setGridFields] = useState([]);
@@ -114,9 +113,7 @@ const VoucherForm = ({
 
   useEffect(() => {
     const getVoucherPattern = async () => {
-      const response = await ApiActions.read("voucher_pattern", {
-        conditions: [{ type: "and", conditions: [["code", "=", type]] }],
-      });
+      const response = await getOneBy("voucher_pattern", type, "code");
       setPATTERN_SETTINGS(response?.result?.at(0));
     };
     getVoucherPattern();

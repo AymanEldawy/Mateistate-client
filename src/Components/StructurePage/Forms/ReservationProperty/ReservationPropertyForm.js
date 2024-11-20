@@ -69,18 +69,11 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
   const { CACHE_LIST, fields } = useRefTable(name);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState([]);
-  const { set, insert } = useCurd();
+  const { set, insert, getOneBy } = useCurd();
   const reservationQueryClient = useQuery({
     queryKey: [name, id],
     queryFn: async () => {
-      const res = await ApiActions.read(name, {
-        conditions: [
-          {
-            type: "and",
-            conditions: [["id", "=", id]],
-          },
-        ],
-      });
+      const res = await getOneBy(name, id);
 
       let reservationProperty = res?.result?.at(0);
       if (reservationProperty) {

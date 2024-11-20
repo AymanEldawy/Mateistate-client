@@ -5,19 +5,16 @@ import useFlatColoring from "Hooks/useFlatColoring";
 import { useFormContext } from "react-hook-form";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { SELECT_LISTS } from "Helpers/constants";
-import { ApiActions } from "Helpers/Lib/api";
+import useCurd from "Hooks/useCurd";
 
 export const ToolsTabsTableForm = ({ errors, row }) => {
   const { watch, setValue } = useFormContext();
-  const { onSelectColor, selectedColor, roomCounts, availableColors } = useFlatColoring();
+  const { onSelectColor, selectedColor, roomCounts, availableColors } =
+    useFlatColoring();
   const [fields, setFields] = useState([]);
-
+  const { getOneBy } = useCurd();
   const getBuildingOwning = async () => {
-    const res = await ApiActions.read("building", {
-      conditions: [
-        { type: "and", conditions: [["id", "=", row?.id]] },
-      ],
-    });
+    const res = await getOneBy("building", row?.id);
     if (res?.result?.length) {
       let list = [];
       for (const field of getFormByTableName("property_values")) {
@@ -65,7 +62,9 @@ export const ToolsTabsTableForm = ({ errors, row }) => {
         if (!hex || hex === "#000000") return;
         onSelectColor(index, hex);
       }}
-      rowClassName={(index) => (index === selectedColor ? "bg-gray-200 dark:!bg-[#333]" : "")}
+      rowClassName={(index) =>
+        index === selectedColor ? "bg-gray-200 dark:!bg-[#333]" : ""
+      }
     />
   );
 };

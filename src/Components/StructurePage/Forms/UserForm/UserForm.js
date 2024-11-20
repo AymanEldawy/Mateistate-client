@@ -18,6 +18,7 @@ import {
   USER_WORKER_CODE,
 } from "Helpers/GENERATE_STARTING_DATA";
 import { insertIntoUserConnect } from "Helpers/Lib/vouchers-insert";
+import useCurd from "Hooks/useCurd";
 
 async function getUserConnect(user_id, setIds, name, searchKey) {
   if (!user_id) return;
@@ -45,6 +46,7 @@ const UserForm = ({
   const name = "user";
   const params = useParams();
   const id = params?.id;
+  const { getOneBy } = useCurd();
   const { goTo, currentIndex, steps, fields, CACHE_LIST, setCurrentIndex } =
     useFormSteps({ name });
 
@@ -61,27 +63,29 @@ const UserForm = ({
   const { isLoading } = useQuery({
     queryKey: [name, id],
     queryFn: async () => {
-      const res = await ApiActions.read(name, {
-        conditions: [
-          {
-            type: "and",
-            conditions: [["id", "=", id]],
-          },
-        ],
-      });
+      const res = await getOneBy(name, id);
       let data = res?.result?.at(0);
       reset(data);
 
       if (data?.card_type >= USER_SUPERVISOR_CODE) {
-        await getUserConnect(data?.id, setBuildingsIds, "worker_building", 'building_id');
+        await getUserConnect(
+          data?.id,
+          setBuildingsIds,
+          "worker_building",
+          "building_id"
+        );
       }
 
       if (data?.card_type === USER_WORKER_CODE) {
-        await getUserConnect(data?.id, setCategoriesIds, "worker_category", 'category_id');
+        await getUserConnect(
+          data?.id,
+          setCategoriesIds,
+          "worker_category",
+          "category_id"
+        );
       }
     },
   });
-
 
   useEffect(() => {
     if (layout !== "update" && oldValues) {

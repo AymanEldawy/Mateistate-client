@@ -1,20 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import BlockPaper from "Components/Global/BlockPaper";
 import Loading from "Components/Global/Loading";
-import { ApiActions } from "Helpers/Lib/api";
 import React from "react";
 import { CompareMaterialCard } from "./CompareMaterialCard";
 import { ErrorText } from "Components/Global/ErrorText";
+import useCurd from "Hooks/useCurd";
 
 const UnregisterMaterials = () => {
   const name = "material";
-
+  const { getOneBy, get } = useCurd();
   const { isLoading, data, refresh } = useQuery({
     queryKey: [name, "unregister"],
     queryFn: async () => {
-      const data = await ApiActions.read("service_material", {
-        conditions: [{ type: "and", conditions: [["status", "=", 1]] }],
-      });
+      const data = await getOneBy("service_material", 1, "status");
       return data?.result?.filter((c) => !c?.material_id);
     },
   });
@@ -22,7 +20,7 @@ const UnregisterMaterials = () => {
   const { data: materials } = useQuery({
     queryKey: [name, "all"],
     queryFn: async () => {
-      const data = await ApiActions.read("material");
+      const data = await get("material");
       return data?.result;
     },
   });

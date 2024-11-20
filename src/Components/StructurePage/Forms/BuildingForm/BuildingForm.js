@@ -8,7 +8,6 @@ import INSERT_FUNCTION from "Helpers/Lib/global-insert";
 import { Input } from "Components/StructurePage/CustomFields";
 import getFormByTableName from "Helpers/Forms/forms";
 import { FLATS } from "Helpers/constants";
-import { ApiActions } from "Helpers/Lib/api";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
@@ -94,7 +93,7 @@ const BuildingForm = ({ popupView }) => {
   const name = "building";
   const params = useParams();
   const buildingId = params?.id;
-  const { remove } = useCurd();
+  const { remove, getOneBy } = useCurd();
   const navigate = useNavigate();
   const methods = useForm({
     defaultValues: getResetFields(name),
@@ -122,15 +121,7 @@ const BuildingForm = ({ popupView }) => {
   const { isLoading } = useQuery({
     queryKey: [name],
     queryFn: async () => {
-      const res = await ApiActions.read("building", {
-        conditions: [
-          {
-            type: "and",
-            conditions: [["id", "=", buildingId]],
-          },
-        ],
-      });
-
+      const res = await getOneBy("building", buildingId);
       if (res?.success) {
         reset(res?.result?.at(0));
         reCalculateFlats(watch);
