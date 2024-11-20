@@ -13,7 +13,6 @@ import { ReportFieldBetweenValues } from "./ReportFieldBetweenValues";
 export const ReportFields = ({
   fields,
   values,
-  errors,
   CACHE_LIST,
   tab,
   containerClassName,
@@ -36,11 +35,6 @@ export const ReportFields = ({
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST[field?.ref_table] : []}
               values={values}
-              error={
-                tab
-                  ? errors?.[tab]?.[field?.name]?.type
-                  : errors?.[field?.name]?.type
-              }
               labelClassName={sharedLabelClassName}
               containerClassName={sharedContainerClassName}
               inputClassName={sharedInputClassName}
@@ -54,11 +48,6 @@ export const ReportFields = ({
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               values={values}
               value={watch(tab ? `${tab}.${field?.name}` : field?.name)}
-              error={
-                tab
-                  ? errors?.[tab]?.[field?.name]?.type
-                  : errors?.[field?.name]?.type
-              }
               labelClassName={sharedLabelClassName}
               containerClassName={sharedContainerClassName}
               selectContainerClassName={sharedInputClassName}
@@ -72,7 +61,6 @@ export const ReportFields = ({
               key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               values={values}
-              error={errors?.[field?.name] ? "Field is required" : ""}
               labelClassName={sharedLabelClassName}
               containerClassName={sharedContainerClassName}
               inputClassName={sharedInputClassName}
@@ -83,7 +71,6 @@ export const ReportFields = ({
             <ReportFieldBetweenValues
               {...field}
               key={`${field?.name}-${i}`}
-              error={errors?.[field?.name] ? "Field is required" : ""}
               labelClassName={sharedLabelClassName}
               containerClassName={sharedContainerClassName}
               inputClassName={sharedInputClassName}
@@ -97,11 +84,6 @@ export const ReportFields = ({
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               values={values}
               tab={tab}
-              error={
-                tab
-                  ? errors?.[tab]?.[field?.name]?.type
-                  : errors?.[field?.name]?.type
-              }
               labelClassName={sharedLabelClassName}
               containerClassName={sharedContainerClassName}
               inputClassName={sharedInputClassName}

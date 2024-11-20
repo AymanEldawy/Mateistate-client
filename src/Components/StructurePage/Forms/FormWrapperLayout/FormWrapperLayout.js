@@ -10,6 +10,7 @@ import Loading from "Components/Global/Loading";
 import FormTitle from "Components/Global/FormTitle";
 import { useLocation } from "react-router-dom";
 import useCurd from "Hooks/useCurd";
+import useRefTable from "Hooks/useRefTables";
 // const { Prompt } = "react-router-dom";
 
 const FormWrapperLayout = ({
@@ -34,15 +35,17 @@ const FormWrapperLayout = ({
   additionalButtons,
 }) => {
   // const history = useHistory();
+  const { loadingRefTableData } = useRefTable(name);
   const location = useLocation();
   const [refresh, setRefresh] = useState(false);
   const { remove } = useCurd();
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitting, isDirty },
+    formState: { isSubmitting, isDirty, errors },
     watch,
   } = methods;
+  console.log("🚀 ~ errors:", errors)
   const [openConfirmation, setOpenConfirmation] = useState(false);
 
   useEffect(() => {
@@ -59,6 +62,7 @@ const FormWrapperLayout = ({
 
   return (
     <>
+      {/* {isLoading || isSubmitting || loadingRefTableData ? <Loading withBackdrop /> : null} */}
       {isLoading || isSubmitting ? <Loading withBackdrop /> : null}
       <ConfirmModal
         onConfirm={onDelete}

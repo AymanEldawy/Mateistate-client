@@ -72,9 +72,13 @@ const UploadFile = ({
           <div className="relative">
             <Controller
               name={updatedName || field.name}
-              render={({ field: { onChange } }) => {
+              render={({
+                field: { onChange, onBlur, ref, value },
+                fieldState: { error },
+              }) => {
                 return (
                   <input
+                    ref={ref}
                     id={label}
                     type="file"
                     {...field}
@@ -99,7 +103,7 @@ const UploadFile = ({
             </span>
           </div>
           {error ? (
-            <ErrorText containerClassName="py-1">{error}</ErrorText>
+            <ErrorText containerClassName="py-1">{error?.message}</ErrorText>
           ) : null}
         </div>
         {field?.allowScan ? (

@@ -41,7 +41,7 @@ const ReportInputField = ({
       <Controller
         name={updatedName || field?.name}
         control={control}
-        render={({ field: { onChange, onBlur, ref, value } }) => {
+        render={({ field: { onChange, onBlur, ref, value } ,fieldState: { error }}) => {
           if (field?.type === "date") {
             return (
               <DatePicker

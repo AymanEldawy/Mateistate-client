@@ -23,7 +23,10 @@ const useCurd = () => {
       conditions: [
         {
           type: "and",
-          conditions: [["id", typeof id === "object" ? "in" : "=", id]],
+          conditions:
+            typeof id === "object" && id?.length > 1
+              ? [["id", "in", id]]
+              : [["id", "=", id]],
         },
       ],
     });
@@ -39,12 +42,19 @@ const useCurd = () => {
     return curd.report();
   };
 
+  // getOneBy
+  const getOneBy = async (name, value, column = "id") => {
+    return curd.read(name, {
+      conditions: [{ type: "and", conditions: [[column, "=", value]] }],
+    });
+  };
+
   return {
     get,
     set,
     remove,
     insert,
-    getOneBy: getOne,
+    getOneBy,
   };
 };
 

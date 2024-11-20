@@ -22,7 +22,6 @@ export const VoucherHead = ({
           value={values?.feedback || ""}
           className="border-0 !rounded-none !h-full"
           name="feedback"
-          error={errors?.feedback ? "Field is required" : ""}
         />
         {/* <Input
             {...fields["number"]}
@@ -32,7 +31,6 @@ export const VoucherHead = ({
             className="border-0 !rounded-none !h-full"
             containerClassName="flex-1"
             name="number"
-            error={errors?.number ? "Field is required" : ""}
           /> */}
       </div>
       <Input
@@ -41,7 +39,6 @@ export const VoucherHead = ({
         value={values?.created_at || ""}
         className="border-0 !rounded-none !h-full"
         name="created_at"
-        error={errors?.created_at ? "Field is required" : ""}
       />
       <UniqueField
         {...fields["account_id"]}
@@ -49,7 +46,6 @@ export const VoucherHead = ({
         table={"account"}
         name="account_id"
         CACHE_LIST={CACHE_LIST}
-        error={errors?.account_id ? "Field is required" : ""}
         list={CACHE_LIST?.account}
         value={values?.account_id || ""}
       />
@@ -57,7 +53,6 @@ export const VoucherHead = ({
         <>
           <UniqueFieldGroup
             value={values?.connect_with}
-            error={errors?.connect_with ? "Field is required" : ""}
           />
           {/* <UniqueField {...fields["connect_with_id"]} /> */}
         </>
@@ -70,7 +65,6 @@ export const VoucherHead = ({
             table={"currency"}
             name="currency_id"
             CACHE_LIST={CACHE_LIST}
-            error={errors?.currency_id ? "Field is required" : ""}
             list={CACHE_LIST?.currency}
             value={values?.currency_id || ""}
           />
@@ -83,7 +77,6 @@ export const VoucherHead = ({
         labelClassName={"mb-2 h-6"}
         className="border rounded-md !h-full"
         name="note"
-        error={errors?.note ? "Field is required" : ""}
       />
     </div>
   );

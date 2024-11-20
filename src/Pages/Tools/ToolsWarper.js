@@ -124,6 +124,7 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
             if (val)
               return (
                 <span
+                  key={key}
                   className={`rounded-md py-1 px-2 ${
                     val - assetsColoringCount
                       ? "text-red-500 bg-red-50 font-normal border-red-500"

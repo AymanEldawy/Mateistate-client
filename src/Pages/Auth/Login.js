@@ -19,8 +19,6 @@ const Login = () => {
   } = methods;
 
   const onSubmit = async () => {
-    console.log("🚀 ~ onSubmit ~ res:", isDirty);
-
     if (!isDirty) return;
     const res = await ApiActions.read("members", {
       conditions: [
@@ -36,7 +34,6 @@ const Login = () => {
       ],
       columns: ["members.*", "admins.tenant_id as tenant_id"],
     });
-    console.log("🚀 ~ onSubmit ~ res:", res);
 
     let data = res?.result?.at(0);
     if (res?.success && data?.id) {

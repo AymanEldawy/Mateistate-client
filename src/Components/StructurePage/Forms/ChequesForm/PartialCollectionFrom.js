@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { ViewEntry } from "Components/Global/ViewEntry";
+import { toast } from "react-toastify";
 
 export const PartialCollectionFrom = ({
   CACHE_LIST,
@@ -24,11 +25,12 @@ export const PartialCollectionFrom = ({
   setOpenConfirmation,
   isDeletedSuccess,
   setPartialNumbers,
-  setIsDeletedSuccess
+  setIsDeletedSuccess,
 }) => {
   const name = "op_partial_collection";
   const {
     watch,
+    setError,
     formState: { isDirty, isSubmitSuccessful },
     reset,
     setValue,
@@ -41,7 +43,9 @@ export const PartialCollectionFrom = ({
     queryKey: [name, chequeId],
     queryFn: async () => {
       const response = await ApiActions.read(name, {
-        conditions: [{ type: "and", conditions: [["cheque_id", "=", chequeId]] }],
+        conditions: [
+          { type: "and", conditions: [["cheque_id", "=", chequeId]] },
+        ],
       });
       if (response?.success) {
         setListData(response?.result);
@@ -72,7 +76,7 @@ export const PartialCollectionFrom = ({
   useEffect(() => {
     if (isSubmitSuccessful || isDeletedSuccess) {
       partialQueryClient?.refetch();
-      setIsDeletedSuccess(false)
+      setIsDeletedSuccess(false);
     }
   }, [isSubmitSuccessful, isDeletedSuccess]);
 
@@ -89,6 +93,18 @@ export const PartialCollectionFrom = ({
         let theTotalRest = total - prev - amount;
         let theTotalSum = prev + amount;
 
+        if (theTotalRest < 0) {
+          toast.error(
+            "Failed to enter value the rest can't be less than 0",
+            {
+              autoClose: false,
+            }
+          );
+          setError("rest", {
+            type: "manual",
+            message: "Failed to enter value the rest can't be less than 0",
+          });
+        }
         setValue("rest", theTotalRest);
         setValue("total_sum", theTotalSum);
       }
@@ -115,19 +131,10 @@ export const PartialCollectionFrom = ({
   return (
     <div className="md:w-[550px] w-full">
       <div className="grid grid-cols-2 gap-8 xl:gap-14 items-center">
-        <Input
-          {...fields?.created_at}
-          error={errors?.created_at ? "Field is required" : ""}
-        />
+        <Input {...fields?.created_at} />
         <div className="flex items-end justify-end gap-2">
-          <Switch
-            {...fields?.feedback}
-            error={errors?.feedback ? "Field is required" : ""}
-          />
-          <Switch
-            {...fields?.gen_entries}
-            error={errors?.gen_entries ? "Field is required" : ""}
-          />
+          <Switch {...fields?.feedback} />
+          <Switch {...fields?.gen_entries} />
           {watch("id") && PATTERN_SETTINGS?.auto_gen_entries ? (
             <ViewEntry id={watch("id")} />
           ) : null}
@@ -139,12 +146,8 @@ export const PartialCollectionFrom = ({
             {...fields?.currency_id}
             CACHE_LIST={CACHE_LIST}
             list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
-            error={errors?.currency_id ? "Field is required" : ""}
           />
-          <Input
-            {...fields?.amount}
-            error={errors?.amount ? "Field is required" : ""}
-          />
+          <Input {...fields?.amount} />
           {["debit_account_id", "credit_account_id", "cost_center_id"]?.map(
             (field) => {
               let name =
@@ -160,7 +163,6 @@ export const PartialCollectionFrom = ({
                   CACHE_LIST={CACHE_LIST}
                   list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
                   values={watch()}
-                  error={errors?.[field] ? "Field is required" : ""}
                 />
               );
             }
@@ -169,27 +171,12 @@ export const PartialCollectionFrom = ({
         <div className="flex flex-col gap-2 ">
           {["total_value", "total_sum_prev", "total_sum", "rest"]?.map(
             (field) => (
-              <Input
-                {...fields?.[field]}
-                key={field}
-                error={
-                  errors?.[field]
-                    ? "Field is required"
-                    : field === "rest" && +watch("rest") < 0
-                    ? "Failed to enter value the rest must be more or equal 0"
-                    : ""
-                }
-                readOnly={true}
-              />
+              <Input {...fields?.[field]} key={field} readOnly={true} />
             )
           )}
         </div>
       </div>
-      <Textarea
-        {...fields?.note}
-        error={errors?.note ? "Field is required" : ""}
-        readOnly={true}
-      />
+      <Textarea {...fields?.note} readOnly={true} />
       <div className="grid grid-cols-2 gap-8 xl:gap-14 my-4">
         <div className="flex flex-col gap-2 ">
           <UniqueField
@@ -197,36 +184,24 @@ export const PartialCollectionFrom = ({
             CACHE_LIST={CACHE_LIST}
             list={!!CACHE_LIST ? CACHE_LIST?.account : []}
             values={watch()}
-            error={errors?.commission_debit_id ? "Field is required" : ""}
           />
           <UniqueField
             {...fields?.commission_credit_id}
             CACHE_LIST={CACHE_LIST}
             list={!!CACHE_LIST ? CACHE_LIST?.account : []}
             values={watch()}
-            error={errors?.commission_credit_id ? "Field is required" : ""}
           />
           <UniqueField
             {...fields?.commission_cost_center_id}
             CACHE_LIST={CACHE_LIST}
             list={!!CACHE_LIST ? CACHE_LIST?.cost_center : []}
             values={watch()}
-            error={errors?.commission_cost_center_id ? "Field is required" : ""}
           />
         </div>
         <div className="flex flex-col gap-2 ">
-          <Input
-            {...fields?.commission_percentage}
-            error={errors?.commission_percentage ? "Field is required" : ""}
-          />
-          <Input
-            {...fields?.commission_value}
-            error={errors?.commission_value ? "Field is required" : ""}
-          />
-          <Input
-            {...fields?.commission_note}
-            error={errors?.commission_note ? "Field is required" : ""}
-          />
+          <Input {...fields?.commission_percentage} />
+          <Input {...fields?.commission_value} />
+          <Input {...fields?.commission_note} />
         </div>
       </div>
       <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">

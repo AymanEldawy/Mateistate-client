@@ -20,13 +20,13 @@ export const ReportLatest = ({
 }) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: [name],
-    queryFn: async () => await ApiActions.read(name, {
-      columns: ["id", "created_at", colSearchName],
-      limit: limit,
-      sorts: [{ column: colSearchName, order: "DESC", nulls: "last" }],
-    }),
+    queryFn: async () =>
+      await ApiActions.read(name, {
+        columns: ["id", "created_at", colSearchName],
+        limit: limit,
+        sorts: [{ column: colSearchName, order: "DESC", nulls: "last" }],
+      }),
   });
-
 
   return (
     <div className={`${containerClassName} flex flex-col  w-full h-full`}>
@@ -50,11 +50,12 @@ export const ReportLatest = ({
           <>
             {data?.result?.length ? (
               <>
-                {data?.result?.slice(0, 4)?.map((item) => {
+                {data?.result?.slice(0, 4)?.map((item,index) => {
                   if (renderItem) return renderItem(item);
                   else
                     return (
                       <ReportLatestCard
+                        key={index}
                         item={item}
                         itemClassName={itemClassName}
                         itemHref={itemHref}

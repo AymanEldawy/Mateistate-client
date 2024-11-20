@@ -138,8 +138,6 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
     setIsLoading(false);
   };
 
-  console.log(fields, "----------f");
-
   return (
     <FormWrapperLayout
       name={name}

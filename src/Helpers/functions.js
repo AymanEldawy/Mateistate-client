@@ -444,7 +444,6 @@ function getNewDate(newDate, number, start, end) {
   endDate.setHours(end, 0, 0, 0);
   startDate.setDate(startDate.getDate());
   endDate.setDate(endDate.getDate());
-  console.log("🚀 ~ getNewDate ~ date:", date);
 
   return {
     startDate,
@@ -457,8 +456,69 @@ function isDateValid(dateStr) {
   return !isNaN(new Date(dateStr));
 }
 
-export function getOne(name, value, column = "id") {
-  return CURD.read(name, {
-    conditions: [{ type: "and", conditions: [[column, "=", value]] }],
-  });
+export function numberToText(num) {
+  if (typeof num !== 'number' || num < 0) {
+      return "Please provide a positive number";
+  }
+
+  const ones = [
+      "zero", "one", "two", "three", "four", "five", 
+      "six", "seven", "eight", "nine"
+  ];
+  const teens = [
+      "eleven", "twelve", "thirteen", "fourteen", 
+      "fifteen", "sixteen", "seventeen", 
+      "eighteen", "nineteen"
+  ];
+  const tens = [
+      "", "ten", "twenty", "thirty", "forty", 
+      "fifty", "sixty", "seventy", "eighty", "ninety"
+  ];
+  const scales = [
+      "", "thousand", "million", "billion", 
+      "trillion", "quadrillion"
+  ];
+
+  function convertChunk(chunk) {
+      let result = "";
+
+      if (chunk >= 100) {
+          const hundred = Math.floor(chunk / 100);
+          result += `${ones[hundred]} hundred`;
+          chunk %= 100;
+          if (chunk > 0) result += " and ";
+      }
+
+      if (chunk >= 20) {
+          const ten = Math.floor(chunk / 10);
+          result += `${tens[ten]}`;
+          chunk %= 10;
+          if (chunk > 0) result += `-${ones[chunk]}`;
+      } else if (chunk >= 11) {
+          result += `${teens[chunk - 11]}`;
+      } else if (chunk > 0) {
+          result += `${ones[chunk]}`;
+      }
+
+      return result;
+  }
+
+  if (num === 0) {
+      return ones[0];
+  }
+
+  let result = "";
+  let scaleIndex = 0;
+
+  while (num > 0) {
+      const chunk = num % 1000;
+      if (chunk > 0) {
+          const chunkText = convertChunk(chunk);
+          result = chunkText + (scales[scaleIndex] ? ` ${scales[scaleIndex]} ` : "") + result;
+      }
+      num = Math.floor(num / 1000);
+      scaleIndex++;
+  }
+
+  return result.trim();
 }

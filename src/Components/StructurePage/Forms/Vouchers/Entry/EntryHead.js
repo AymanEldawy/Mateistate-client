@@ -25,7 +25,6 @@ export const EntryHead = ({
           readOnly={!isNewOne}
           {...fields["number"]}
           className="border-0 !rounded-none !h-full"
-          error={errors?.number ? "Field is required" : ""}
         /> */}
         {/* <div className="flex gap-2">
           <p
@@ -38,7 +37,6 @@ export const EntryHead = ({
           {...fields["created_at"]}
           value={values?.created_at || ""}
           className="border-0 !rounded-none !h-full"
-          error={errors?.created_at ? "Field is required" : ""}
         />
         <CurrencyFieldGroup
           {...fields["currency_id"]}
@@ -46,7 +44,6 @@ export const EntryHead = ({
           table={"currency"}
           name="currency_id"
           CACHE_LIST={CACHE_LIST}
-          error={errors?.currency_id ? "Field is required" : ""}
           list={CACHE_LIST?.currency}
           value={values?.currency_id || ""}
         />
@@ -57,7 +54,6 @@ export const EntryHead = ({
         value={values?.note || ""}
         labelClassName={"h-6"}
         className="border rounded-md !h-full"
-        error={errors?.note ? "Field is required" : ""}
       />
     </div>
   );

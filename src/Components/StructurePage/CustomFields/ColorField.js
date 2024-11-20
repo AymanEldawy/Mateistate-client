@@ -77,12 +77,12 @@ const ColorField = ({
           readOnly
           type={"hidden"}
           {...register(updatedName || field.name, {
-            required: field?.required,
+            required: field?.required && `${field?.name} is required`,
             validate: (value) => {},
           })}
         />
         {error ? (
-          <ErrorText containerClassName="py-1">{error}</ErrorText>
+          <ErrorText containerClassName="py-1">{error?.message}</ErrorText>
         ) : null}
       </div>
       <>

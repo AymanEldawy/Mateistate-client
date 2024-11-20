@@ -76,7 +76,7 @@ export const AccountFormFields = ({
       <Textarea
         {...fieldsHash?.note}
         updatedName={`note`}
-        error={errors?.note ? "Field is required" : ""}
+      
       />
       {/* {watch('type') === 2 ? (<></>) : null} */}
       {watch("type") === 3 ? (

@@ -155,9 +155,7 @@ const BuildingForm = ({ popupView }) => {
 
   const onDelete = async () => {
     let data = watch("building");
-    const response = await ApiActions.remove("building", {
-      conditions: [{ type: "and", conditions: [["id", "=", buildingId]] }],
-    });
+    const response = await remove("building", buildingId);
 
     if (response?.success) {
       await remove("cost_center", data?.main_cost_center_id);
@@ -293,7 +291,7 @@ const BuildingForm = ({ popupView }) => {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {Object.entries(FLATS)?.map(([key, val]) => {
                 return (
-                  <span className="bg-blue-50 rounded-md py-1 px-2 whitespace-nowrap text-blue-500 border text-center capitalize">
+                  <span key={key} className="bg-blue-50 rounded-md py-1 px-2 whitespace-nowrap text-blue-500 border text-center capitalize">
                     {key?.replace("_", " ")} : {val}
                   </span>
                 );

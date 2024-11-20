@@ -24,7 +24,7 @@ const REF_TABLES = {
   [CONNECT_WITH_BILL_CODE]: CONNECT_WITH_BILL_NAME,
 };
 
-const UniqueFieldGroup = ({ tab, values, errors }) => {
+const UniqueFieldGroup = ({ tab }) => {
   const { t } = useTranslation();
   const { control, watch, setValue } = useFormContext();
   const [list, setList] = useState([]);
@@ -88,12 +88,16 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
         <Controller
           name={selectName}
           control={control}
-          render={({ field: { onChange }, value, ref }) => {
+          render={({
+            field: { onChange, onBlur, ref, value },
+            fieldState: { error },
+          }) => {
             return (
               <Select
-              menuPortalTarget={document?.body}
-              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-              className={`border rounded-md bg-none bg-transparent`}
+                ref={ref}
+                menuPortalTarget={document?.body}
+                styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+                className={`border rounded-md bg-none bg-transparent`}
                 classNames={{
                   control: (state) => "bg-transparent !border-none",
                   container: (state) =>
@@ -131,13 +135,19 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
               control={control}
               defaultValue={null}
               className="w-full"
-              render={({ field: { onChange }, fieldState, formState }) => {
+              render={({
+                field: { onChange, onBlur, ref, value },
+                fieldState: { error },
+              }) => {
                 return (
                   <Select
+                    ref={ref}
                     isClearable={true}
                     menuPlacement="auto"
                     menuPortalTarget={document?.body}
-                    styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}    
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
                     options={list}
                     name={selectNameId}
                     className="w-full border-none"
@@ -166,7 +176,9 @@ const UniqueFieldGroup = ({ tab, values, errors }) => {
           </div>
 
           {selectNameIdError ? (
-            <ErrorText containerClassName="py-1">{selectNameIdError}</ErrorText>
+            <ErrorText containerClassName="py-1">
+              {selectNameIdError?.message}
+            </ErrorText>
           ) : null}
         </div>
       ) : null}

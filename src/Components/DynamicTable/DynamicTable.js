@@ -29,6 +29,8 @@ const DynamicTable = ({
   rowSelection,
   outerSelectedId
 }) => {
+
+  
   const { t } = useTranslation();
   const { getTable, setTable } = useLocalStorage({});
   const [sorting, setSorting] = useState({});
@@ -62,7 +64,6 @@ const DynamicTable = ({
     getRowId: (row, relativeIndex, parent) => {
       if (!!outerSelectedId) return outerSelectedId(row, relativeIndex, parent);
       return row?.id;
-      // console.log(row, parent, relativeIndex);
     },
     state: {
       sorting,
@@ -184,7 +185,7 @@ const DynamicTable = ({
             )}
           </tbody>
         </table>
-        {data?.length ? null : (
+        {data?.length || isLoading ? null : (
           <div className="p-2 bg-red-100 w-full">
             <span className="sticky left-1/2 -translate-x-1/2 text-red-500">
               {t("empty_result")}

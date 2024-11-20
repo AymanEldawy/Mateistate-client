@@ -11,7 +11,6 @@ export const TableFilterBar = () => {
         }}
         list={[]}
         tab={""}
-        error={""}
       />
       <Select
         containerClassName="flex-1"
@@ -21,7 +20,6 @@ export const TableFilterBar = () => {
         }}
         list={[]}
         tab={""}
-        error={""}
       />
       <Select
         containerClassName="flex-1"
@@ -31,7 +29,6 @@ export const TableFilterBar = () => {
         }}
         list={[]}
         tab={""}
-        error={""}
       />
       <Select
         containerClassName="flex-1"
@@ -41,7 +38,6 @@ export const TableFilterBar = () => {
         }}
         list={[]}
         tab={""}
-        error={""}
       />
       <Select
         containerClassName="flex-1"
@@ -51,7 +47,6 @@ export const TableFilterBar = () => {
         }}
         list={[]}
         tab={""}
-        error={""}
       />
     </div>
   );

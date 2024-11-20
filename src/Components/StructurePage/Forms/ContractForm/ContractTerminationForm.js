@@ -73,16 +73,8 @@ const ContractTerminationForm = ({
       ) : null}
       <div>
         <div className="flex items-end gap-4">
-          <Switch
-            {...fields?.terminated}
-            updatedName={`${tab}.terminated`}
-            error={errors?.[tab]?.terminated ? "Field is required" : ""}
-          />
-          <Switch
-            {...fields?.gen_entries}
-            updatedName={`${tab}.gen_entries`}
-            error={errors?.[tab]?.gen_entries ? "Field is required" : ""}
-          />
+          <Switch {...fields?.terminated} updatedName={`${tab}.terminated`} />
+          <Switch {...fields?.gen_entries} updatedName={`${tab}.gen_entries`} />
           {watch(`${tab}.id`) ? <ViewEntry id={watch("id")} /> : null}
         </div>
         <div className="grid sm:grid-cols-2 gap-4 md:gap-8 lg:gap-12 my-4">
@@ -92,16 +84,12 @@ const ContractTerminationForm = ({
               updatedName={`${tab}.termination_date`}
               // values={values}
               tab={tab}
-              error={errors?.[tab]?.termination_date ? "Field is required" : ""}
             />
             <Input
               {...fields?.owner_total_amount}
               updatedName={`${tab}.owner_total_amount`}
               // values={values}
               tab={tab}
-              error={
-                errors?.[tab]?.owner_total_amount ? "Field is required" : ""
-              }
             />
             <div className="flex items-center gap-2">
               <Input
@@ -110,9 +98,6 @@ const ContractTerminationForm = ({
                 updatedName={`${tab}.owner_rest_amount`}
                 // values={values}
                 tab={tab}
-                error={
-                  errors?.[tab]?.owner_rest_amount ? "Field is required" : ""
-                }
               />
               <Select
                 {...fields?.round_to}
@@ -120,7 +105,6 @@ const ContractTerminationForm = ({
                 containerClassName="min-w-[120px] w-1/3"
                 // values={values}
                 tab={tab}
-                error={errors?.[tab]?.round_to ? "Field is required" : ""}
                 value={watch(`${tab}.round_to`)}
               />
             </div>
@@ -130,9 +114,6 @@ const ContractTerminationForm = ({
               table={"account"}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
-              error={
-                errors?.[tab]?.revenue_account_id ? "Field is required" : ""
-              }
             />
             <Textarea
               {...fields?.revenue_note}
@@ -140,7 +121,6 @@ const ContractTerminationForm = ({
               updatedName={`${tab}.revenue_note`}
               // values={values}
               tab={tab}
-              error={errors?.[tab]?.revenue_note ? "Field is required" : ""}
             />
           </div>
           <div className="flex flex-col gap-4">
@@ -148,9 +128,6 @@ const ContractTerminationForm = ({
               <Switch
                 {...fields?.evacuation_request}
                 updatedName={`${tab}.evacuation_request`}
-                error={
-                  errors?.[tab]?.evacuation_request ? "Field is required" : ""
-                }
               />
               <Input
                 {...fields?.evacuation_date}
@@ -159,9 +136,6 @@ const ContractTerminationForm = ({
                 // values={values}
                 readOnly={!watch(`${tab}.evacuation_request`)}
                 tab={tab}
-                error={
-                  errors?.[tab]?.evacuation_date ? "Field is required" : ""
-                }
               />
             </div>
             <Input
@@ -169,7 +143,6 @@ const ContractTerminationForm = ({
               updatedName={`${tab}.fines`}
               // values={values}
               tab={tab}
-              error={errors?.[tab]?.fines ? "Field is required" : ""}
             />
             <UniqueField
               {...fields?.fines_revenue_account_id}
@@ -177,18 +150,12 @@ const ContractTerminationForm = ({
               table={"account"}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
-              error={
-                errors?.[tab]?.fines_revenue_account_id
-                  ? "Field is required"
-                  : ""
-              }
             />
             <Textarea
               {...fields?.fine_note}
               updatedName={`${tab}.fine_note`}
               // values={values}
               tab={tab}
-              error={errors?.[tab]?.fine_note ? "Field is required" : ""}
             />
           </div>
         </div>
@@ -199,9 +166,6 @@ const ContractTerminationForm = ({
             <Switch
               {...fields?.clearance_printed}
               updatedName={`${tab}.clearance_printed`}
-              error={
-                errors?.[tab]?.clearance_printed ? "Field is required" : ""
-              }
               readOnly
             />
             {watch(`${tab}.clearance_printed_date`) ? (
@@ -210,11 +174,6 @@ const ContractTerminationForm = ({
                 updatedName={`${tab}.clearance_printed_date`}
                 // values={values}
                 tab={tab}
-                error={
-                  errors?.[tab]?.clearance_printed_date
-                    ? "Field is required"
-                    : ""
-                }
               />
             ) : null}
             <button className="text-sm py-2 rounded-md px-4 flex items-center gap-2 bg-green-500 text-white">

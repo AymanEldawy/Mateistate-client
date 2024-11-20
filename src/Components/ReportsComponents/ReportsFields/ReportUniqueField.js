@@ -73,7 +73,7 @@ const ReportUniqueField = ({
           name={updatedName || field.name}
           control={control}
           defaultValue={null}
-          render={({ field: { onChange }, fieldState, formState }) => {
+          render={({ field: { onChange, onBlur, ref, value }}) => {
             return (
               <Select
                 isClearable={true}
@@ -110,7 +110,7 @@ const ReportUniqueField = ({
             );
           }}
           rules={{
-            required: field?.required,
+            required: field?.required && `${field?.name} is required`,
           }}
         />
 
@@ -121,7 +121,7 @@ const ReportUniqueField = ({
           <SearchIcon className="text-inherit w-5 h-5" />
         </button>
       </div>
-      {error ? <ErrorText containerClassName="py-1">{error}</ErrorText> : null}
+      {error ? <ErrorText containerClassName="py-1">{error?.message}</ErrorText> : null}
     </div>
   );
 };

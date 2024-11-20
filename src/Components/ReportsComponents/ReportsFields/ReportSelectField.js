@@ -56,9 +56,10 @@ const ReportSelectField = ({
       <Controller
         name={updatedName || field?.name}
         control={control}
-        render={({ field: { onChange }, value, ref }) => {
+        render={({ field: { onChange, onBlur, ref, value } ,fieldState: { error }}) => {
           return (
             <Select
+              ref={ref}
               id={updatedName || field?.name}
               menuPlacement="auto"
               menuPortalTarget={document?.body}
@@ -72,7 +73,6 @@ const ReportSelectField = ({
                 menuList: () => "dark:bg-dark-bg",
                 ...selectClassNames,
               }}
-            
               placeholder={field?.label}
               options={list}
               value={list?.find(

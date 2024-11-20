@@ -59,7 +59,7 @@ const SheetReport = ({ name }) => {
               </div>
               <div className="grid gap-4">
                 {REPORT_OPTIONS?.map((option) => (
-                  <CheckboxField label={option} name={option} />
+                  <CheckboxField label={option} name={option} key={option} />
                 ))}
               </div>
             </div>

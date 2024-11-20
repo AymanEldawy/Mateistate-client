@@ -1197,6 +1197,8 @@ export const UNIQUE_REF_TABLES = {
   suppliers: "suppliers",
   supervisor: "supervisor",
   employee: "employee",
+  user_supplier: "user_supplier",
+  user_customer: "user_customer",
 };
 
 export const FLATS = {

@@ -1,7 +1,9 @@
 import getFormByTableName from "Helpers/Forms/forms";
 import {
   MAIN_USERS_CODE,
+  USER_CUSTOMER_CODE,
   USER_SUPERVISOR_CODE,
+  USER_SUPPLIER_CODE,
   USER_WORKER_CODE,
 } from "Helpers/GENERATE_STARTING_DATA";
 import { ApiActions } from "Helpers/Lib/api";
@@ -16,6 +18,7 @@ import { UNIQUE_REF_TABLES } from "Helpers/constants";
 import { useEffect, useMemo, useState } from "react";
 
 const useRefTable = (name, type = "form") => {
+  const [isLoading, setIsLoading] = useState(false);
   const [CACHE_LIST, setCACHE_LIST] = useState({});
   const [fieldsHash, setFieldsHash] = useState({});
 
@@ -30,6 +33,8 @@ const useRefTable = (name, type = "form") => {
 
   const getRefTables = async () => {
     if (!fields?.length) return;
+    setIsLoading(true);
+    
     let hash = {};
     let fieldsHash = {};
     for (let i = 0; i < fields?.length; i++) {
@@ -77,6 +82,20 @@ const useRefTable = (name, type = "form") => {
         continue;
       }
 
+      if (field?.ref_table === UNIQUE_REF_TABLES.user_supplier) {
+        hash[UNIQUE_REF_TABLES.user_supplier] = await getUserList(
+          USER_SUPPLIER_CODE
+        );
+        continue;
+      }
+
+      if (field?.ref_table === UNIQUE_REF_TABLES.user_customer) {
+        hash[UNIQUE_REF_TABLES.user_customer] = await getUserList(
+          USER_CUSTOMER_CODE
+        );
+        continue;
+      }
+
       if (field?.ref_table === UNIQUE_REF_TABLES.suppliers) {
         hash[UNIQUE_REF_TABLES.suppliers] = await getAccountsChildrenByName(
           MAIN_USERS_CODE[2]
@@ -98,9 +117,10 @@ const useRefTable = (name, type = "form") => {
       ...hash,
     }));
     setFieldsHash(fieldsHash);
+    setIsLoading(false)
   };
-
-  return { fields, fieldsHash, CACHE_LIST, setCACHE_LIST };
+  
+  return { fields, fieldsHash, CACHE_LIST, setCACHE_LIST, loadingRefTableData: isLoading };
 };
 
 export default useRefTable;

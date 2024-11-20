@@ -4388,6 +4388,18 @@ const material_specifications = [
 const bill = [
   {
     is_ref: true,
+    ref_table: UNIQUE_REF_TABLES.user_customer,
+    ref_col: "id",
+    hide_in_form:true,
+  },
+  {
+    is_ref: true,
+    ref_table: UNIQUE_REF_TABLES.user_supplier,
+    ref_col: "id",
+    hide_in_form: true,
+  },
+  {
+    is_ref: true,
     ref_table: "material",
     ref_col: "id",
     hide_in_form: true,
@@ -4423,25 +4435,27 @@ const bill = [
     type: "number",
     required: false,
   },
-  { label: "issue_date", name: "issue_date", type: "date", required: true },
-  { label: "bill_date", name: "bill_date", type: "date", required: true },
+  { label: "issue_date", name: "issue_date", type: "date", required: true, defaultValue: new Date() },
+  { label: "bill_date", name: "bill_date", type: "date", required: true, defaultValue: new Date() },
   { label: "bill_kind", name: "bill_kind", type: "number", required: true },
   {
-    label: "client_account_id",
-    name: "client_account_id",
+    label: "customer_id",
+    name: "customer_id",
     type: "uuid",
     required: true,
     is_ref: true,
-    ref_table: "account",
+    ref_table: 'user',
     ref_col: "id",
   },
+ 
+
   FIELDS_STRUCTURE.selectField({
     label: "payment_method",
     name: "payment_method",
     list: [
       { id: 1, name: "credit" },
       { id: 2, name: "cash" },
-    ], // update future
+    ],
   }),
   {
     label: "receipt_number",
@@ -4456,6 +4470,15 @@ const bill = [
     required: true,
     is_ref: true,
     ref_table: "store",
+    ref_col: "id",
+  },
+  {
+    label: "vat_account_id",
+    name: "vat_account_id",
+    type: "uuid",
+    required: true,
+    is_ref: true,
+    ref_table: "account",
     ref_col: "id",
   },
   {
@@ -4476,76 +4499,47 @@ const bill = [
     ref_table: "account",
     ref_col: "id",
   },
-  { label: "kind", name: "kind", type: "text", required: false },
+  { label: "kind", name: "kind", type: "text", required: true },
   {
     label: "total_quantities",
     name: "total_quantities",
     type: "number",
     required: false,
+    readOnly: true
   },
-  {
-    label: "total_quantities_percentage",
-    name: "total_quantities_percentage",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "total_quantities_percentage2",
-    name: "total_quantities_percentage2",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "refunded_taxable_amount",
-    name: "refunded_taxable_amount",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "non_refunded_taxable_amount",
-    name: "non_refunded_taxable_amount",
-    type: "number",
-    required: false,
-  },
-  {
-    label: "not_taxable",
-    name: "not_taxable",
-    type: "number",
-    required: false,
-  },
+
   { label: "taxable", name: "taxable", type: "number", required: false },
-  { label: "total", name: "total", type: "number", required: false },
-  { label: "discounts", name: "discounts", type: "number", required: false },
+  { label: "total", name: "total", type: "number", required: true,  readOnly: true },
+  { label: "discounts", name: "discounts", type: "number", required: false,  readOnly: true },
   {
-    label: "discounts_extra",
-    name: "discounts_extra",
+    label: "extras",
+    name: "extras",
     type: "number",
     required: false,
+     readOnly: true
   },
   {
-    label: "non_refundable_vat",
-    name: "non_refundable_vat",
+    label: "vat_amount",
+    name: "vat_amount",
     type: "number",
     required: false,
+     readOnly: true
   },
+ 
   {
-    label: "non_refundable_vat2",
-    name: "non_refundable_vat2",
+    label: "subtotal",
+    name: "subtotal",
     type: "number",
-    required: false,
+    required: true,
+    readOnly: true
   },
-  {
-    label: "grand_total",
-    name: "grand_total",
-    type: "number",
-    required: false,
-  },
-  { label: "net", name: "net", type: "number", required: false },
+  { label: "net", name: "net", type: "number", required: true, readOnly: true },
   {
     label: "bill_total_text",
     name: "bill_total_text",
     type: "text",
-    required: false,
+    required: true,
+    readOnly: true
   },
 ];
 const bill_discounts_details = [

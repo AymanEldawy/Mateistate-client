@@ -133,7 +133,6 @@ const LawsuitForm = ({ popupView }) => {
                 updatedName={`lawsuit_expenses_pictures.picture`}
                 containerClassName="col-span-2"
                 values={watch()}
-                error={errors?.lawsuit_expenses_pictures?.picture?.type}
                 multiple
               />
             ) : null}

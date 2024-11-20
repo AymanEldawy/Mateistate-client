@@ -46,6 +46,7 @@ const SearchBar = ({
           <ul className="absolute z-40 bg-white shadow rounded-md w-full overflow-auto max-h-96">
             {columns?.map((col) => (
               <li
+                key={col}
                 className="whitespace-nowrap px-2 py-2 hover:bg-gray-200"
                 onClick={() => {
                   setSearchKey(col);

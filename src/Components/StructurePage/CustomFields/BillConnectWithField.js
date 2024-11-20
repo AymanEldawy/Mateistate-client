@@ -14,12 +14,13 @@ import {
   CONNECT_WITH_NOTHING_CODE,
 } from "Helpers/GENERATE_STARTING_DATA";
 import { ErrorText } from "Components/Global/ErrorText";
+import { getServiceWithRequestedMaterials } from "Helpers/Lib/global-read";
 
 const REF_TABLES = {
   [BILL_CONNECT_WITH_MAINTENANCES_CODE]: BILL_CONNECT_WITH_MAINTENANCES_NAME,
 };
 
-const BillConnectWithField = ({ tab, values, errors, old }) => {
+const BillConnectWithField = ({ tab, old }) => {
   const { t } = useTranslation();
   const { control, watch } = useFormContext();
   const [list, setList] = useState([]);
@@ -41,9 +42,9 @@ const BillConnectWithField = ({ tab, values, errors, old }) => {
 
   useEffect(() => {
     async function fetchList(table) {
-      const response = await ApiActions.read(table);
-      if (response?.success) {
-        const list = response?.result?.map((item) => ({
+      const data = await getServiceWithRequestedMaterials()
+      if (data?.success) {
+        const list = data?.result?.map((item) => ({
           value: item?.id,
           label:
             table === BILL_CONNECT_WITH_MAINTENANCES_NAME?.toLocaleLowerCase()
@@ -81,7 +82,7 @@ const BillConnectWithField = ({ tab, values, errors, old }) => {
         <Controller
           name={selectName}
           control={control}
-          render={({ field: { onChange }, value, ref }) => {
+          render={({ field: { onChange, onBlur, ref, value } ,fieldState: { error }}) => {
             return (
               <Select
                 menuPortalTarget={document?.body}
@@ -123,7 +124,7 @@ const BillConnectWithField = ({ tab, values, errors, old }) => {
               name={selectNameId}
               control={control}
               defaultValue={null}
-              render={({ field: { onChange }, fieldState, formState }) => {
+              render={({ field: { onChange, onBlur, ref, value } ,fieldState: { error }}) => {
                 return (
                   <Select
                     placeholder="Connect with"

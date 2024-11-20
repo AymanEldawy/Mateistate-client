@@ -51,7 +51,7 @@ const AreaField = ({
         defaultValue={SELECT_LISTS("property_values_area")[0]}
       >
         {SELECT_LISTS("property_values_area")?.map((area) => (
-          <option>{area}</option>
+          <option key={area}>{area}</option>
         ))}
       </select>
     </div>

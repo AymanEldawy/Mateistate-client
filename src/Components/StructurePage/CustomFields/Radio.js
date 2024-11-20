@@ -9,15 +9,16 @@ const Radio = ({
   subLabelClassName,
   inputClassName,
   label,
-  error,
-  values,
   updatedName,
   hideLabel,
   ...field
 }) => {
   const { t } = useTranslation();
-  const { register } = useFormContext();
-
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
+  const error = errors?.[updatedName || field?.name];
   return (
     <div className={"flex flex-col " + containerClassName}>
       {label && !hideLabel ? (
@@ -49,14 +50,19 @@ const Radio = ({
               >
                 <Controller
                   name={`${updatedName || field?.name}.${item}`}
-                  render={({ field: { onChange } }) => {
+                  render={({
+                    field: { onChange, onBlur, ref, value },
+                    fieldState: { error },
+                  }) => {
                     return (
                       <input
+                        ref={ref}
                         type="checkbox"
                         className={inputClassName}
                         list={field?.list}
                         {...register(name, {
-                          required: field?.required,
+                          required:
+                            field?.required && `${field?.name} is required`,
                           onChange: (e) => {
                             let val = e.target.checked;
                             onChange(val);
@@ -84,16 +90,21 @@ const Radio = ({
               >
                 <Controller
                   name={updatedName || field?.name}
-                  render={({ field: { onChange } }) => {
+                  render={({
+                    field: { onChange, onBlur, ref, value },
+                    fieldState: { error },
+                  }) => {
                     return (
                       <input
                         {...field}
+                        ref={ref}
                         type="radio"
-                        checked={values?.[item]}
+                        checked={value}
                         className={inputClassName}
                         list={field?.list}
                         {...register(field.name, {
-                          required: field?.required,
+                          required:
+                            field?.required && `${field?.name} is required`,
                           onChange: (e) => {
                             let val = e.target.checked;
                             onChange(val);
@@ -111,7 +122,11 @@ const Radio = ({
           </>
         )}
       </div>
-      {error ? <ErrorText containerClassName="py-1">{error}</ErrorText> : null}
+      {error ? (
+        <ErrorText containerClassName="py-1">
+          {error?.message}
+        </ErrorText>
+      ) : null}
     </div>
   );
 };

@@ -19,19 +19,21 @@ export const PopupLinks = ({ onClose, name }) => {
       case "entry_main_data":
         setLinks([
           {
-            key: 'entries',
-            name:'Entries',
-            subChild: [{
-              isForm: true,
-              key: "Journal entry",
-              link: "vouchers/entries/1",
-            }],
+            key: "entries",
+            name: "Entries",
+            subChild: [
+              {
+                isForm: true,
+                key: "Journal entry",
+                link: "vouchers/entries/1",
+              },
+            ],
           },
         ]);
         break;
       case "bill":
         const BillsMenu = await getBillsMenus();
-       
+
         setLinks(BillsMenu || DEFAULT_BILL_MENU);
         break;
       case "service":
@@ -68,9 +70,9 @@ export const PopupLinks = ({ onClose, name }) => {
           <div className="flex gap-4 items-center mt-2">
             {list?.subChild
               ?.filter((_) => _?.isForm)
-              ?.map((item) => (
+              ?.map((item, index) => (
                 <Link
-                  key={item?.link}
+                  key={item?.link + index}
                   to={item?.link}
                   className="flex items-center gap-2 bg-gray-400 hover:bg-blue-500 text-sm text-white py-2 rounded px-2 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
                 >

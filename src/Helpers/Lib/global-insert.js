@@ -136,7 +136,7 @@ export const dynamicInsertIntoMultiStepsTable = async ({
     for (const name in list) {
       if (list[name] && name !== stepGeneralName) {
         if (CONTRACT_GRID_FORMS_NAMES?.[name]) {
-          insertIntoGridTabs({
+          await insertIntoGridTabs({
             grid: list[name],
             tab: CONTRACT_GRID_FORMS_NAMES?.[name],
             itemNameId: `${tableName}_id`,

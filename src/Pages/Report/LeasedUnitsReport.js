@@ -51,7 +51,7 @@ const LeasedUnitsReport = () => {
         buildings: Object.keys(buildingsIds),
       }),
     });
-    const json = await res.json()
+    const json = await res.json();
 
     console.log("🚀 ~ onSubmit ~ res:", json);
   };
@@ -76,7 +76,7 @@ const LeasedUnitsReport = () => {
               </ReportFilterFields>
               <div className="grid gap-4">
                 {REPORT_OPTIONS?.map((option) => (
-                  <CheckboxField label={option} name={option} />
+                  <CheckboxField label={option} name={option} key={option} />
                 ))}
                 <ReportReviewField containerClassName="!m-0" />
                 <ReportStatementField

@@ -7,6 +7,36 @@ export const getUserList = async (code) => {
   return response?.result;
 };
 
+export const getServiceWithRequestedMaterials = async (code) => {
+  const response = await ApiActions.read("service", {
+    joins: [
+      {
+        type: "join",
+        table: "service_material",
+        conditions: {
+          "service.id": "service_material.service_id",
+        },
+      },
+    ],
+    conditions: [
+      { type: "and", conditions: [["service_material.status", "=", 1]] },
+    ],
+    columns: ["service.id as id", "service.number as number"],
+  });
+  return response;
+};
+
+export const getRequestedMaterialsByServiceId = async (id) => {
+  const response = await ApiActions.read("service_material", {
+    conditions: [
+      { type: "and", conditions: [["status", "=", 1]] },
+      { type: "and", conditions: [["service_id", "=", id]] },
+    ],
+    columns: ['id', 'name', 'price as unit_price', 'quantity', 'material_id']
+  });
+  return response;
+};
+
 export const getAccountsChildrenByName = async (code) => {
   const response = await ApiActions.read("account", {
     conditions: [{ type: "and", conditions: [["internal_number", "=", code]] }],
@@ -341,7 +371,12 @@ const owner_expenses = async (name) => {
         },
       },
     ],
-    columns: ["owner_expenses.*", "building.name as building_name", "building.ltnname as building_ltnname", "owner.name as owner_name"],
+    columns: [
+      "owner_expenses.*",
+      "building.name as building_name",
+      "building.ltnname as building_ltnname",
+      "owner.name as owner_name",
+    ],
   });
   return res?.result;
 };
@@ -359,7 +394,7 @@ const data = {
   entry_main_data,
   category_problem,
   cost_center,
-  owner_expenses
+  owner_expenses,
 
   // parking: unit,
 };

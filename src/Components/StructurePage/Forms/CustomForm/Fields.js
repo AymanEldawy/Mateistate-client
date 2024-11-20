@@ -52,12 +52,6 @@ export const Fields = ({
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               containerClassName="col-span-full"
               textareaClassName="min-h-[250px]"
-              values={values}
-              error={
-                tab
-                  ? errors?.[tab]?.[field?.name]?.type
-                  : errors?.[field?.name]?.type
-              }
             />
           );
         } else if (field?.name === "btn_action") {
@@ -75,7 +69,6 @@ export const Fields = ({
               {...field}
               key={`${field?.name}-${i}`}
               tab={tab}
-              values={values}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST[field?.ref_table] : []}
               errors={errors}
@@ -86,7 +79,6 @@ export const Fields = ({
             <UniqueFieldGroup
               key={`${field?.name}-${i}`}
               tab={tab}
-              values={values}
               errors={errors}
             />
           );
@@ -106,26 +98,6 @@ export const Fields = ({
               table={field?.ref_table}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST[field?.ref_table] : []}
-              values={values}
-              error={
-                tab
-                  ? errors?.[tab]?.[field?.name]?.type
-                  : errors?.[field?.name]?.type
-              }
-            />
-          );
-        } else if (field?.key === "radio") {
-          return (
-            <Radio
-              {...field}
-              key={`${field?.name}-${i}`}
-              updatedName={tab ? `${tab}.${field?.name}` : ""}
-              values={values}
-              error={
-                tab
-                  ? errors?.[tab]?.[field?.name]?.type
-                  : errors?.[field?.name]?.type
-              }
             />
           );
         } else if (field?.key === "select") {
@@ -141,13 +113,7 @@ export const Fields = ({
               menuPortalTarget={document?.body}
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
-              values={values}
               value={watch(tab ? `${tab}.${field?.name}` : field?.name)}
-              error={
-                tab
-                  ? errors?.[tab]?.[field?.name]?.type
-                  : errors?.[field?.name]?.type
-              }
             />
           );
         } else if (field?.key === "image") {
@@ -159,23 +125,15 @@ export const Fields = ({
               containerClassName="col-span-2"
               index={i}
               readonly={field?.readonly}
-              values={values}
-              error={
-                tab
-                  ? errors?.[tab]?.[field?.name]?.type
-                  : errors?.[field?.name]?.type
-              }
             />
           );
         } else if (field?.key === "switch") {
           return (
-            <CheckboxField 
+            <CheckboxField
               {...field}
               defaultChecked={values?.[field?.name]}
               key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
-              values={values}
-              error={errors?.[field?.name] ? "Field is required" : ""}
               labelClassName="flex flex-col-reverse !items-start"
             />
             // <Switch
@@ -183,8 +141,6 @@ export const Fields = ({
             //   defaultChecked={values?.[field?.name]}
             //   key={`${field?.name}-${i}`}
             //   updatedName={tab ? `${tab}.${field?.name}` : ""}
-            //   values={values}
-            //   error={errors?.[field?.name] ? "Field is required" : ""}
             // />
             // <></>
           );
@@ -196,11 +152,10 @@ export const Fields = ({
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               type={field.key === "choose" ? "checkbox" : ""}
               list={field?.list}
-              values={values}
               error={
-                tab
-                  ? errors?.[tab]?.[field?.name]?.type
-                  : errors?.[field?.name]?.type
+                errors && tab
+                  ? errors?.[tab]?.[field?.name]?.message
+                  : errors?.[field?.name]?.message
               }
             />
           );
@@ -210,13 +165,7 @@ export const Fields = ({
               {...field}
               key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
-              values={values}
               tab={tab}
-              error={
-                tab
-                  ? errors?.[tab]?.[field?.name]?.type
-                  : errors?.[field?.name]?.type
-              }
             />
           );
         } else {
@@ -232,13 +181,7 @@ export const Fields = ({
               }
               inputClassName={fieldsRow ? "!flex-1 h-[30px]" : ""}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
-              values={values}
               tab={tab}
-              error={
-                tab
-                  ? errors?.[tab]?.[field?.name]?.type
-                  : errors?.[field?.name]?.type
-              }
             />
           );
         }

@@ -201,11 +201,6 @@ const TableFields = ({
                                   containerClassName="!min-w-[190px] border-0 !rounded-none !h-full"
                                   className="!min-w-[190px] border-0 !rounded-none !h-full"
                                   selectContainerClassName="border-none"
-                                  error={
-                                    errors?.[tab]?.[field?.name]
-                                      ? "Field is required"
-                                      : ""
-                                  }
                                   list={
                                     !!CACHE_LIST
                                       ? CACHE_LIST?.[field?.ref_table]
@@ -233,11 +228,6 @@ const TableFields = ({
                                         control: (state) =>
                                           "dark:!bg-[#2c2c2c] !rounded-none",
                                       }}
-                                      error={
-                                        errors?.[tab]?.[field?.name]
-                                          ? "Field is required"
-                                          : ""
-                                      }
                                       readOnly={onlyView || field?.readOnly}
                                     />
                                   ) : (
@@ -249,11 +239,6 @@ const TableFields = ({
                                           key={`${field?.name}-${index}`}
                                           updatedName={`${tab}.${index}.${field?.name}`}
                                           hideLabel
-                                          error={
-                                            errors?.[tab]?.[field?.name]
-                                              ? "Field is required"
-                                              : ""
-                                          }
                                           inputClassName={
                                             "border-0 !rounded-none"
                                           }
@@ -264,11 +249,6 @@ const TableFields = ({
                                           key={`${field?.name}-${index}`}
                                           updatedName={`${tab}.${index}.${field?.name}`}
                                           hideLabel
-                                          error={
-                                            errors?.[tab]?.[field?.name]
-                                              ? "Field is required"
-                                              : ""
-                                          }
                                           containerClassName="h-10 !h-full min-w-[55px]"
                                           inputClassName={
                                             "border-0 !rounded-none"
@@ -298,11 +278,6 @@ const TableFields = ({
                                             key={`${field?.name}-${index}`}
                                             updatedName={`${tab}.${index}.${field?.name}`}
                                             hideLabel
-                                            error={
-                                              errors?.[tab]?.[field?.name]
-                                                ? "Field is required"
-                                                : ""
-                                            }
                                             containerClassName="h-10 !h-full min-w-[55px]"
                                             inputClassName={`
                                               border-0 !rounded-none 

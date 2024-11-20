@@ -46,7 +46,7 @@ export const FilePreviews = ({ images }) => {
             </button>
             {images?.map((imgSrc, index) => (
               <FullImage
-                key={imgSrc}
+                key={imgSrc+index}
                 src={imgSrc}
                 alt={`file ${index}`}
                 className="w-full shadow-lg border max-w-none rounded-md object-cover "

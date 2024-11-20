@@ -232,16 +232,8 @@ const ChequeForm = ({
               {/* Fields */}
               <div className="flex justify-between items-center flex-wrap gap-4">
                 <div className="flex items-end gap-6">
-                  <Switch
-                    {...fields?.feedback}
-                    values={watch()}
-                    error={errors?.feedback ? "Field is required" : ""}
-                  />
-                  <Switch
-                    {...fields?.gen_entries}
-                    values={watch()}
-                    error={errors?.gen_entries ? "Field is required" : ""}
-                  />
+                  <Switch {...fields?.feedback} values={watch()} />
+                  <Switch {...fields?.gen_entries} values={watch()} />
                   {watch("id") && PATTERN_SETTINGS?.auto_gen_entries ? (
                     <ViewEntry id={watch("id")} />
                   ) : null}
@@ -254,25 +246,21 @@ const ChequeForm = ({
                 <Input
                   {...fields?.internal_number}
                   // inputClassName="bg-gray-100"
-                  error={errors?.internal_number ? "Field is required" : ""}
                 />
                 <Input
                   {...fields?.amount}
                   // inputClassName="bg-gray-100"
                   values={watch()}
-                  error={errors?.amount ? "Field is required" : ""}
                 />
                 <CurrencyFieldGroup
                   CACHE_LIST={CACHE_LIST}
                   list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
                   values={watch()}
-                  error={errors?.currency_id ? "Field is required" : ""}
                 />
                 <Input
                   {...fields?.beneficiary_name}
                   // inputClassName="bg-gray-100"
                   values={watch()}
-                  error={errors?.beneficiary_name ? "Field is required" : ""}
                 />
                 {["parking_id", "shop_id", "apartment_id"]?.map((field) => {
                   let name = field?.replace(/_id/g, "");
@@ -285,7 +273,6 @@ const ChequeForm = ({
                         CACHE_LIST={CACHE_LIST}
                         list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
                         values={watch()}
-                        error={errors?.[field] ? "Field is required" : ""}
                       />
                     );
                   }
@@ -306,41 +293,29 @@ const ChequeForm = ({
                       CACHE_LIST={CACHE_LIST}
                       list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
                       values={watch()}
-                      error={errors?.[field] ? "Field is required" : ""}
                     />
                   );
                 })}
 
                 <div className="flex items-center justify-between">
-                  <Switch
-                    {...fields?.deposit_status}
-                    values={watch()}
-                    error={errors?.deposit_status ? "Field is required" : ""}
-                  />
-                  <Switch
-                    {...fields?.without_due_date}
-                    values={watch()}
-                    error={errors?.without_due_date ? "Field is required" : ""}
-                  />
+                  <Switch {...fields?.deposit_status} values={watch()} />
+                  <Switch {...fields?.without_due_date} values={watch()} />
                 </div>
                 <Input
                   {...fields?.due_date}
                   updatedName={`.due_date`}
                   values={watch()}
-                  error={errors?.due_date ? "Field is required" : ""}
                 />
                 <Input
                   {...fields?.end_due_date}
                   updatedName={`.end_due_date`}
                   values={watch()}
-                  error={errors?.end_due_date ? "Field is required" : ""}
                 />
                 <UniqueField
                   {...fields?.bank_id}
                   CACHE_LIST={CACHE_LIST}
                   list={!!CACHE_LIST ? CACHE_LIST?.bank : []}
                   values={watch()}
-                  error={errors?.bank_id ? "Field is required" : ""}
                 />
               </div>
               <div className="my-4 grid gap-6 grid-cols-2">
@@ -348,13 +323,11 @@ const ChequeForm = ({
                   {...fields?.note1}
                   updatedName={`.note1`}
                   values={watch()}
-                  error={errors?.note1 ? "Field is required" : ""}
                 />
                 <Textarea
                   {...fields?.note2}
                   updatedName={`.note2`}
                   values={watch()}
-                  error={errors?.note2 ? "Field is required" : ""}
                 />
               </div>
 

@@ -45,77 +45,9 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
 
   const onClickPrint = () => {};
 
-  // useEffect(() => {
-  //   const d = async () => {
-  //     const services = await ApiActions.read("service");
-  //     const ids = [];
-  //     for (const item of services?.result) {
-  //       ids.push(item?.id);
-  //     }
-
-  //     await ApiActions.remove("service_worker", {
-  //       conditions: [
-  //         {
-  //           type: "and",
-  //           conditions: [["service_id", "in", ids]],
-  //         },
-  //       ],
-  //     });
-  //     await ApiActions.remove("service_lack_reason", {
-  //       conditions: [
-  //         {
-  //           type: "and",
-  //           conditions: [["service_id", "in", ids]],
-  //         },
-  //       ],
-  //     });
-  //     await ApiActions.remove("service_customer_request", {
-  //       conditions: [
-  //         {
-  //           type: "and",
-  //           conditions: [["service_id", "in", ids]],
-  //         },
-  //       ],
-  //     });
-  //     await ApiActions.remove("worker_rate", {
-  //       conditions: [
-  //         {
-  //           type: "and",
-  //           conditions: [["service_id", "in", ids]],
-  //         },
-  //       ],
-  //     });
-  //     await ApiActions.remove("service_material", {
-  //       conditions: [
-  //         {
-  //           type: "and",
-  //           conditions: [["service_id", "in", ids]],
-  //         },
-  //       ],
-  //     });
-  //     await ApiActions.remove("service", {
-  //       conditions: [
-  //         {
-  //           type: "and",
-  //           conditions: [["id", "in", ids]],
-  //         },
-  //       ],
-  //     });
-  //   };
-  //   d()
-  // }, []);
-
-  console.log(name, tableName);
-
   const deleteItem = async () => {
     let ids = Object.keys(rowSelection);
-    console.log("🚀 ~ deleteItem ~ ids:", ids);
-    const ress = await get(name);
-    console.log("🚀 ~ deleteItem ~ ress:", ress);
     const res = await remove(name, ids);
-
-    console.log(res, "-sss");
-
     if (res?.success) {
       refetch()
       // setRowSelection([]);

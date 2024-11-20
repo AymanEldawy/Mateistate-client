@@ -59,6 +59,7 @@ export const ChequeStatus = ({ onOpenFormOperation, pattern, chqValues }) => {
               chqValues?.return_status;
             return (
               <button
+                key={btn}
                 // disabled={!watch("id") || preventOperation || watch()}
                 type="button"
                 className={`${btn.classes} disabled:bg-gray-200  flex gap-2 items-center disabled:text-gray-500 rounded-md px-4 py-2 capitalize hover:opacity-70 text-xs`}

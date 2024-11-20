@@ -26,7 +26,6 @@ const Timing = () => {
   });
   const { remove, insert, get } = useCurd();
   const { CACHE_LIST, fieldsHash, fields } = useRefTable("user_work_times");
-  console.log("🚀 ~ Timing ~ CACHE_LIST:", CACHE_LIST);
   const [isGenerating, setIsGenerating] = useState(false);
   const {
     reset,
@@ -45,7 +44,6 @@ const Timing = () => {
     setValue("views", data?.views);
     setIsGenerating(false);
   };
-  console.log(watch("timing"));
 
   const handleSave = async () => {
     for (const item of watch("timing")) {
@@ -54,7 +52,6 @@ const Timing = () => {
     setValue("timing", []);
     setValue("views", []);
   };
-  console.log(watch());
 
   return (
     <BlockPaper title="User Working time">
@@ -67,7 +64,6 @@ const Timing = () => {
             label="user"
             name="setting.account_id"
             CACHE_LIST={CACHE_LIST}
-            error={errors?.user_id ? "Field is required" : ""}
             list={CACHE_LIST?.user}
             value={values?.user_id || ""}
           />
@@ -96,7 +92,6 @@ const Timing = () => {
             label="start_day"
             name="setting.start_day"
             type="date"
-            error={errors?.start_date ? "Field is required" : ""}
             containerClassName="h-10 !h-full min-w-[55px]"
           />
 

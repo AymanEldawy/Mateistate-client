@@ -10,8 +10,6 @@ import { ErrorText } from "Components/Global/ErrorText";
 
 const CurrencyFieldGroup = ({
   tab,
-  values,
-  error,
   list: defaultList,
   containerClassName,
   old,
@@ -19,8 +17,9 @@ const CurrencyFieldGroup = ({
 }) => {
   const { t } = useTranslation();
   const { dispatchForm } = usePopupForm();
-  const { control, watch, setValue, register } = useFormContext();
+  const { control, watch, setValue, register, formState: {errors} } = useFormContext();
   const [list, setList] = useState([]);
+  const error = tab ? errors?.[tab]?.[field?.name] : errors?.[field?.name]  
 
   const currency_id = tab ? `${tab}.currency_id` : "currency_id";
   const currency_val = tab ? `${tab}.currency_val` : "currency_val";
@@ -61,9 +60,10 @@ const CurrencyFieldGroup = ({
               name={currency_id}
               control={control}
               defaultValue={null}
-              render={({ field: { onChange }, fieldState, formState }) => {
+              render={({ field: { onChange, onBlur, ref, value } ,fieldState: { error }}) => {
                 return (
                   <Select
+                    ref={ref}
                     menuPlacement="auto"
                     menuPortalTarget={document?.body}
                     styles={{
@@ -134,7 +134,7 @@ const CurrencyFieldGroup = ({
           )} */}
         </div>
         {error ? (
-          <ErrorText containerClassName="py-1">{error}</ErrorText>
+          <ErrorText containerClassName="py-1">{error?.message}</ErrorText>
         ) : null}
       </div>
     </>

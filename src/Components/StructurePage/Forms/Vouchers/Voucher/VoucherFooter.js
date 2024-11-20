@@ -28,7 +28,6 @@ export const VoucherFooter = ({
               value={values?.debit_amount || ""}
               className="border-0 !rounded-none !h-full"
               name="debit_amount"
-              error={errors?.debit_amount ? "Field is required" : ""}
             />
           </div>
           <div className="w-1/3">
@@ -40,7 +39,6 @@ export const VoucherFooter = ({
               value={values?.credit_amount || ""}
               className="border-0 !rounded-none !h-full"
               name="credit_amount"
-              error={errors?.credit_amount ? "Field is required" : ""}
             />
           </div>
           <div className="w-1/3 whitespace-nowrap">Total current amount</div>
@@ -55,7 +53,6 @@ export const VoucherFooter = ({
               value={values?.debit_total || ""}
               className="border-0 !rounded-none !h-full"
               name="debit_total"
-              error={errors?.debit_total ? "Field is required" : ""}
             />
           </div>
           <div className="w-1/3">
@@ -67,7 +64,6 @@ export const VoucherFooter = ({
               value={values?.credit_total || ""}
               className="border-0 !rounded-none !h-full"
               name="credit_total"
-              error={errors?.credit_total ? "Field is required" : ""}
             />
           </div>
           <div className="w-1/3 whitespace-nowrap">Final amount</div>
@@ -81,7 +77,6 @@ export const VoucherFooter = ({
             values={values}
             label="Pictures"
             multiple
-            error={errors?.picture?.type}
           />
         )}
         {PATTERN_SETTINGS?.gen_entires ? (
@@ -93,7 +88,6 @@ export const VoucherFooter = ({
             value={values?.gen_entires || ""}
             name="gen_entries"
             label="Generate a constraint"
-            error={errors?.gen_entries ? "Field is required" : ""}
           />
         ) : null}
       </div>

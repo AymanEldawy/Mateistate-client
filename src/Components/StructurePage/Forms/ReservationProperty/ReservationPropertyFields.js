@@ -36,7 +36,6 @@ export const ReservationPropertyFields = ({
               {...fieldsHash?.[field]}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
-              error={errors?.[field] ? "Field is required" : ""}
             />
           );
         })} */}
@@ -46,7 +45,6 @@ export const ReservationPropertyFields = ({
           }}
           CACHE_LIST={CACHE_LIST}
           list={CACHE_LIST?.account}
-          error={errors?.account_id ? "Field is required" : ""}
         />
         <UniqueField
           {...{
@@ -54,11 +52,9 @@ export const ReservationPropertyFields = ({
           }}
           CACHE_LIST={CACHE_LIST}
           list={CACHE_LIST.building}
-          error={errors?.building_id ? "Field is required" : ""}
         />
         <Select
           {...fieldsHash?.property_type}
-          error={errors?.property_type ? "Field is required" : ""}
         />
         <UniqueField
           {...{
@@ -67,19 +63,17 @@ export const ReservationPropertyFields = ({
           }}
           CACHE_LIST={CACHE_LIST}
           list={selectedProperty?.list}
-          error={errors?.property_id ? "Field is required" : ""}
         />
         {["created_at", "book_date", "end_book_date"]?.map((field) => (
           <Input
+            key={field}
             {...fieldsHash?.[field]}
-            error={errors?.[field] ? "Field is required" : ""}
           />
         ))}
 
         <div className="flex gap-2 items-end">
           <Switch
             {...fieldsHash?.has_payment}
-            error={errors?.has_payment ? "Field is required" : ""}
           />
           {watch("id") && watch("has_payment") ? (
             <ViewEntry id={watch("id")} />
@@ -87,7 +81,6 @@ export const ReservationPropertyFields = ({
         </div>
         <Switch
           {...fieldsHash?.reservation_expired}
-          error={errors?.reservation_expired ? "Field is required" : ""}
         />
       </div>
       {watch("has_payment") ? (
@@ -100,13 +93,11 @@ export const ReservationPropertyFields = ({
           <div className="grid grid-cols-2 gap-4 mt-4">
             <Input
               {...fieldsHash?.payment_amount}
-              error={errors?.payment_amount ? "Field is required" : ""}
             />
 
             <CurrencyFieldGroup
               {...fieldsHash?.currency_id}
               list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
-              error={errors?.currency_i ? "Field is required" : ""}
             />
             {[
               "debit_account_id",
@@ -118,17 +109,16 @@ export const ReservationPropertyFields = ({
                 field?.indexOf("account") !== -1 ? "account" : "cost_center";
               return (
                 <UniqueField
+                  key={field}
                   {...fieldsHash?.[field]}
                   CACHE_LIST={CACHE_LIST}
                   list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
-                  error={errors?.[field] ? "Field is required" : ""}
                 />
               );
             })}
             <Textarea
               {...fieldsHash?.note}
               updatedName={`note`}
-              error={errors?.note ? "Field is required" : ""}
             />
           </div>
         </div>

@@ -1018,115 +1018,335 @@ export const generateEntryFromBill = async ({
   });
 
   const {
-    customer_account_id,
-    client_account_id,
-    // material_account_id,
-    cost_center_id,
-    currency_id,
-    currency_val,
-    note,
-    bill_date,
-    total,
-  } = values?.bill;
+    currency_id = null,
+    currency_val = 1,
+    note = "",
+    bill_date = new Date().toISOString(),
+    total = 0,
+    discounts = 0,
+    extras = 0,
+    vat_amount = 0,
+  } = values?.bill || {};
 
-  // material_account_id debit
-  // client_account_id credit
-  // material_account_id debit
-  // client_account_id credit
+  const totalAmount = total + discounts + extras + vat_amount;
 
   let entry = {
     created_at: bill_date,
-    currency_id: currency_id,
-    currency_val: currency_val || 1,
+    currency_id,
+    currency_val,
     note,
-    debit: total,
-    credit: total,
+    debit: totalAmount,
+    credit: totalAmount,
     difference: 0,
     created_from,
     created_from_id,
     created_from_code,
   };
 
-  const kind = +values?.bill?.bill_kind;
-  const type = +values?.bill?.payment_method;
-
-  const cash_account = pattern?.cash_account_id;
-  const material_account_id = pattern?.material_account_id;
-  const vat_account_id = pattern?.vat_account_id;
-
-  // cash 2
-  // credit 1
-
-  // input 1
-  // output 2
-
-  let account_id = null;
-  let observe_account_id = null;
-
-  if (kind === 1) {
-    if (type === 1) {
-      // ١- حالة الشراء النقدي
-      // مدين حساب المشتريات
-      // دائن حساب الصندوق
-      // account_id = client_account_id;
-      observe_account_id = cash_account;
-    } else if (type === 2) {
-      // ٢- الشراء اجل
-      // مدين حساب المشتريات
-      // دائن حساب المورد
-      // account_id = client_account_id;
-      observe_account_id = material_account_id;
-    }
-  } else {
-    if (type === 1) {
-      // ٢- في حالة البيع الاجل
-      // مدين حساب الزبون او العميل
-      // دائن حساب المبيعات
-      account_id = client_account_id;
-      observe_account_id = cash_account;
-    } else if (type === 2) {
-      account_id = cash_account;
-      observe_account_id = client_account_id;
-      // في حالة البيع النقدي
-      // مدين حساب الصندوق
-      // دائن حساب المبيعات (يفتح ضمن شجرة الحسابات هو وحساب المشتريات )
-    }
-  }
-
+  const type = +pattern?.bill_type;
   // insert into Entry
   const response = await insertIntoEntry(entry);
+  const entry_main_data_id = response?.id;
 
-  if (response?.id) {
-    const grid = [
-      {
-        account_id: material_account_id,
-        observe_account_id: customer_account_id,
-        currency_id,
-        cost_center_id,
-        debit: total,
-        credit: 0,
-        note,
-      },
+  if (type === 1) {
+    return await generateEntryFromBilInput({
+      values,
+      pattern,
+      entry_main_data_id,
+    });
+  }
 
-      {
-        account_id: customer_account_id,
-        observe_account_id: material_account_id,
-        currency_id,
-        cost_center_id,
-        debit: 0,
-        credit: total,
-        note,
-      },
-    ];
+  if (type === 2) {
+    return await generateEntryFromBilOutput({
+      values,
+      pattern,
+      entry_main_data_id,
+    });
+  }
+};
 
-    await insertIntoGrid({
-      grid,
-      itemId: response?.id,
-      tableName: "entry_main_data",
-      gridTableName: "entry_grid_data",
-      itemSearchName: "entry_main_data_id",
+export const generateEntryFromBilInput = async ({
+  values,
+  pattern,
+  entry_main_data_id,
+}) => {
+  const {
+    customer_account_id,
+    material_account_id,
+    cost_center_id,
+    currency_id,
+    currency_val,
+    note,
+    bill_date,
+    total,
+    payment_method: type,
+    vat_amount,
+    discounts,
+    extras,
+  } = values?.bill;
+
+  const stock_account_id = pattern?.cash_account_id;
+  const cash_account_id = pattern?.cash_account_id;
+  let discount_account_id = pattern?.discount_account_id;
+  let extra_account_id = pattern?.extra_account_id;
+  const vat_account_id =
+    values?.bill?.vat_account_id || pattern?.vat_account_id;
+
+  const gridRows = [];
+  const defaultRow = {
+    created_at: bill_date,
+    currency_id,
+    currency_val,
+    cost_center_id,
+    note,
+  };
+
+  const credit_account_id = +type === 2 ? cash_account_id : customer_account_id;
+  let observe_discount_account_id = credit_account_id;
+  let observe_extras_account_id = credit_account_id;
+
+  gridRows.push({
+    ...defaultRow,
+    account_id: material_account_id,
+    observe_account_id: credit_account_id,
+    debit: total,
+    credit: 0,
+  });
+
+  gridRows.push({
+    ...defaultRow,
+    account_id: credit_account_id,
+    observe_account_id: material_account_id,
+    debit: 0,
+    credit: total,
+  });
+
+  // If there is a VAT
+  if (vat_amount) {
+    gridRows.push({
+      ...defaultRow,
+      account_id: vat_account_id,
+      observe_account_id: credit_account_id,
+      debit: vat_amount,
+      credit: 0,
     });
 
-    return;
+    gridRows.push({
+      ...defaultRow,
+      account_id: credit_account_id,
+      observe_account_id: vat_account_id,
+      debit: 0,
+      credit: vat_amount,
+    });
   }
+  // If there is a DISCOUNTS
+  if (discounts) {
+    for (const row of values?.bill_discounts_details) {
+      if (row?.discount) {
+        discount_account_id = row?.account_id || discount_account_id;
+        observe_discount_account_id =
+          row?.observe_account_id || observe_discount_account_id;
+      }
+      gridRows.push({
+        ...defaultRow,
+        account_id: discount_account_id,
+        observe_account_id: observe_discount_account_id,
+        debit: discounts,
+        credit: 0,
+        cost_center_id: row?.cost_center_id || cost_center_id,
+        note: row?.note || `note`,
+      });
+
+      gridRows.push({
+        ...defaultRow,
+        account_id: observe_discount_account_id,
+        observe_account_id: discount_account_id,
+        debit: 0,
+        credit: discounts,
+        cost_center_id: row?.cost_center_id || cost_center_id,
+        note: row?.note || `note`,
+      });
+    }
+  }
+  // If there is a EXTRAS
+  if (extras) {
+    for (const row of values?.bill_discounts_details) {
+      if (row?.extra) {
+        extra_account_id = row?.account_id || extra_account_id;
+        observe_extras_account_id =
+          row?.observe_account_id || observe_extras_account_id;
+
+        gridRows.push({
+          ...defaultRow,
+          account_id: extra_account_id,
+          observe_account_id: observe_extras_account_id,
+          debit: extras,
+          credit: 0,
+          cost_center_id: row?.cost_center_id || cost_center_id,
+          note: row?.note || `note`,
+        });
+
+        gridRows.push({
+          ...defaultRow,
+          account_id: observe_extras_account_id,
+          observe_account_id: extra_account_id,
+          debit: 0,
+          credit: extras,
+          cost_center_id: row?.cost_center_id || cost_center_id,
+          note: row?.note || `note`,
+        });
+      }
+    }
+  }
+
+  await insertIntoGrid({
+    itemId: entry_main_data_id,
+    grid: gridRows,
+    gridTableName: "entry_grid_data",
+    tableName: "entry_main_data",
+    itemSearchName: "entry_main_data_id",
+  });
+};
+
+export const generateEntryFromBilOutput = async ({
+  values,
+  pattern,
+  entry_main_data_id,
+}) => {
+  const {
+    customer_account_id,
+    material_account_id,
+    cost_center_id,
+    currency_id,
+    currency_val,
+    note,
+    bill_date,
+    total,
+    payment_method: type,
+    vat_amount,
+    discounts,
+    extras,
+  } = values?.bill;
+
+  const stock_account_id = pattern?.cash_account_id;
+  const cash_account_id = pattern?.cash_account_id;
+  const vat_account_id = pattern?.vat_account_id;
+  let extra_account_id = pattern?.extra_account_id;
+  let discount_account_id = pattern?.discount_account_id;
+
+  const gridRows = [];
+  const defaultRow = {
+    created_at: bill_date,
+    currency_id,
+    currency_val,
+    cost_center_id,
+    note,
+  };
+
+  const debit_account_id = +type === 2 ? cash_account_id : customer_account_id;
+
+  let observe_discount_account_id = debit_account_id;
+  let observe_extras_account_id = debit_account_id;
+
+  gridRows.push({
+    ...defaultRow,
+    account_id: debit_account_id,
+    observe_account_id: material_account_id,
+    debit: total,
+    credit: 0,
+  });
+
+  gridRows.push({
+    ...defaultRow,
+    account_id: material_account_id,
+    observe_account_id: debit_account_id,
+    debit: 0,
+    credit: total,
+  });
+
+  // If there is a VAT
+  if (vat_amount) {
+    gridRows.push({
+      ...defaultRow,
+      account_id: debit_account_id,
+      observe_account_id: vat_account_id,
+      debit: vat_amount,
+      credit: 0,
+    });
+
+    gridRows.push({
+      ...defaultRow,
+      account_id: vat_account_id,
+      observe_account_id: debit_account_id,
+      debit: 0,
+      credit: vat_amount,
+    });
+  }
+  // If there is a DISCOUNTS
+  if (discounts) {
+    for (const row of values?.bill_discounts_details) {
+      if (row?.discount) {
+        discount_account_id = row?.account_id || discount_account_id;
+        observe_discount_account_id =
+          row?.observe_account_id || observe_discount_account_id;
+
+        gridRows.push({
+          ...defaultRow,
+          account_id: observe_discount_account_id,
+          observe_account_id: discount_account_id,
+          debit: discounts,
+          credit: 0,
+          cost_center_id: row?.cost_center_id || cost_center_id,
+          note: row?.note || `note`,
+        });
+        gridRows.push({
+          ...defaultRow,
+          account_id: discount_account_id,
+          observe_account_id: observe_discount_account_id,
+          debit: 0,
+          credit: discounts,
+          cost_center_id: row?.cost_center_id || cost_center_id,
+          note: row?.note || `note`,
+        });
+      }
+    }
+  }
+  // If there is a EXTRAS
+  if (extras) {
+    for (const row of values?.bill_discounts_details) {
+      if (row?.extra) {
+        extra_account_id = row?.account_id || extra_account_id;
+        observe_extras_account_id =
+          row?.observe_account_id || observe_extras_account_id;
+
+        gridRows.push({
+          ...defaultRow,
+          account_id: observe_extras_account_id,
+          observe_account_id: extra_account_id,
+          debit: extras,
+          credit: 0,
+          cost_center_id: row?.cost_center_id || cost_center_id,
+          note: row?.note || `note`,
+        });
+
+        gridRows.push({
+          ...defaultRow,
+          account_id: extra_account_id,
+          observe_account_id: observe_extras_account_id,
+          debit: 0,
+          credit: extras,
+          cost_center_id: row?.cost_center_id || cost_center_id,
+          note: row?.note || `note`,
+        });
+      }
+    }
+  }
+
+  await insertIntoGrid({
+    itemId: entry_main_data_id,
+    grid: gridRows,
+    gridTableName: "entry_grid_data",
+    tableName: "entry_main_data",
+    itemSearchName: "entry_main_data_id",
+  });
 };

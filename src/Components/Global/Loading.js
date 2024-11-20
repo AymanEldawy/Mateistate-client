@@ -13,15 +13,15 @@ const Loading = ({ withBackdrop, logo, backdropClasses, hideText }) => {
         ) : (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
             <linearGradient id="a11">
-              <stop offset="0" stop-color="#16FF83" stop-opacity="0"></stop>
-              <stop offset="1" stop-color="#16FF83"></stop>
+              <stop offset="0" stopColor="#16FF83" stopOpacity="0"></stop>
+              <stop offset="1" stopColor="#16FF83"></stop>
             </linearGradient>
             <circle
               fill="none"
               stroke="url(#a11)"
-              stroke-width="15"
-              stroke-linecap="round"
-              stroke-dasharray="0 44 0 44 0 44 0 44 0 360"
+              strokeWidth="15"
+              strokeLinecap="round"
+              strokeDasharray="0 44 0 44 0 44 0 44 0 360"
               cx="100"
               cy="100"
               r="70"

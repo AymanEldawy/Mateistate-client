@@ -48,11 +48,6 @@ export const ContractFinancialForm = ({
               // values={values}
               readOnly
               tab={"contract"}
-              error={
-                errors?.contract?.contracts_number_prev
-                  ? "Field is required"
-                  : ""
-              }
             />
           ) : null}
           <Input
@@ -60,7 +55,6 @@ export const ContractFinancialForm = ({
             updatedName={`contract.gov_number`}
             // values={values}
             tab={"contract"}
-            error={errors?.contract?.gov_number ? "Field is required" : ""}
           />
         </div>
         <div className="flex items-end gap-4 justify-end">
@@ -68,19 +62,16 @@ export const ContractFinancialForm = ({
             {...fieldsHash?.feedback}
             updatedName={`contract.feedback`}
             // values={values}
-            error={errors?.contract?.feedback ? "Field is required" : ""}
           />
           <Switch
             {...fieldsHash?.lawsuit}
             updatedName={`contract.lawsuit`}
             // values={values}
-            error={errors?.contract?.lawsuit ? "Field is required" : ""}
           />
           <Switch
             {...fieldsHash?.gen_entries}
             updatedName={`contract.gen_entries`}
             // values={values}
-            error={errors?.contract?.gen_entries ? "Field is required" : ""}
           />
           {contract_id && watch(`contract.gen_entries`) ? (
             <ViewEntry id={contract_id} />
@@ -104,7 +95,6 @@ export const ContractFinancialForm = ({
                   CACHE_LIST={CACHE_LIST}
                   list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
                   // values={values}
-                  error={errors?.contract?.[field] ? "Field is required" : ""}
                 />
               );
             }
@@ -115,7 +105,6 @@ export const ContractFinancialForm = ({
             containerClassName=" col-span-full"
             // values={values}
             tab={"contract"}
-            error={errors?.contract?.description ? "Field is required" : ""}
           />
         </div>
         <div className="grid grid-cols-2 gap-8">
@@ -131,10 +120,6 @@ export const ContractFinancialForm = ({
               table={"account"}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
-              // values={values}
-              error={
-                errors?.contract?.revenue_account_id ? "Field is required" : ""
-              }
             />
             <UniqueField
               // containerClassName="w-[250px]"
@@ -146,10 +131,6 @@ export const ContractFinancialForm = ({
               table={"account"}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
-              // values={values}
-              error={
-                errors?.contract?.discount_account_id ? "Field is required" : ""
-              }
             />
             <UniqueField
               // containerClassName="w-[250px]"
@@ -161,12 +142,6 @@ export const ContractFinancialForm = ({
               table={"account"}
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
-              // values={values}
-              error={
-                errors?.contract?.insurance_account_id
-                  ? "Field is required"
-                  : ""
-              }
             />
           </div>
         </div>
@@ -186,7 +161,6 @@ export const ContractFinancialForm = ({
             tab="contract"
             inputClassName={field === "final_price" ? "bg-blue-100" : ""}
             readOnly={field === "final_price"}
-            error={errors?.contract?.[field] ? "Field is required" : ""}
           />
         ))}
       </div>
@@ -196,7 +170,6 @@ export const ContractFinancialForm = ({
           updatedName={`contract.status`}
           // values={values}
           tab={"contract"}
-          error={errors?.contract?.status ? "Field is required" : ""}
           value={watch(`contract.status`)}
         />
         {[
@@ -210,7 +183,6 @@ export const ContractFinancialForm = ({
             updatedName={`contract.${field}`}
             // values={values}
             tab="contract"
-            error={errors?.contract?.[field] ? "Field is required" : ""}
           />
         ))}
       </div>
@@ -228,9 +200,6 @@ export const ContractFinancialForm = ({
               updatedName={`contract.contract_duration`}
               // values={values}
               tab={"contract"}
-              error={
-                errors?.contract?.contract_duration ? "Field is required" : ""
-              }
               value={watch(`contract.contract_duration`)}
             />
             <Input
@@ -238,18 +207,12 @@ export const ContractFinancialForm = ({
               updatedName={`contract.start_duration_date`}
               // values={values}
               tab={"contract"}
-              error={
-                errors?.contract?.start_duration_date ? "Field is required" : ""
-              }
             />
             <Input
               {...fieldsHash?.end_duration_date}
               updatedName={`contract.end_duration_date`}
               // values={values}
               tab={"contract"}
-              error={
-                errors?.contract?.end_duration_date ? "Field is required" : ""
-              }
               readOnly={watch(`contract.contract_duration`) < 4}
             />
           </>
@@ -260,18 +223,12 @@ export const ContractFinancialForm = ({
               updatedName={`contract.issue_date`}
               // values={values}
               tab={"contract"}
-              error={errors?.contract?.issue_date ? "Field is required" : ""}
             />
             <Input
               {...fieldsHash?.property_delivery_date}
               updatedName={`contract.property_delivery_date`}
               // values={values}
               tab={"contract"}
-              error={
-                errors?.contract?.property_delivery_date
-                  ? "Field is required"
-                  : ""
-              }
             />
           </>
         )}
@@ -280,7 +237,6 @@ export const ContractFinancialForm = ({
           updatedName={`contract.paid_type`}
           // values={values}
           tab={"contract"}
-          error={errors?.contract?.paid_type ? "Field is required" : ""}
           value={watch(`contract.paid_type`)}
         />
         {watch(`contract.paid_type`) === 4 ? (
@@ -298,7 +254,6 @@ export const ContractFinancialForm = ({
         containerClassName="mt-4"
         updatedName={`contract.note`}
         tab={"contract"}
-        error={errors?.contract?.note ? "Field is required" : ""}
         value={watch(`contract.note`)}
       />
       <ContractStatus contract_id={contract_id} tab={"contract"} />

@@ -23,21 +23,18 @@ export const EntryFooter = ({
           {...fields["debit"]}
           value={values?.["debit"] || ""}
           className="border-0 !rounded-none !h-full"
-          error={errors?.debit ? "Field is required" : ""}
         />
         <Input
           readOnly
           {...fields["credit"]}
           value={values?.["credit"] || ""}
           className="border-0 !rounded-none !h-full"
-          error={errors?.credit ? "Field is required" : ""}
         />
         <Input
           readOnly
           {...fields["difference"]}
           value={values?.["debit"] || ""}
           className="border-0 !rounded-none !h-full"
-          error={errors?.debit ? "Field is required" : ""}
         />
         {values?.created_from_id ? (
           <Link

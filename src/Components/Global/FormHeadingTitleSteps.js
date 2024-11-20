@@ -34,9 +34,9 @@ const FormHeadingTitleSteps = ({
           <div className="flex items-center shadow text-left bg-gray-100 dark:bg-dark-bg border-t border-gray-100 dark:border-dark-border overflow-auto">
             {steps?.map((step, index) => (
               <button
+                key={step}
                 type="button"
                 onClick={() => goTo(index)}
-                key={step}
                 className={`${
                   activeStage === index
                     ? "!text-black !font-medium dark:bg-dark-border dark:!text-white bg-white rounded-t"
