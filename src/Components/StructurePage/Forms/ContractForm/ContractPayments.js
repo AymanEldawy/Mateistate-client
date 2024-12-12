@@ -144,8 +144,6 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
         due_date: new Date(),
         end_due_date: new Date(date),
         bank_id: watch("installment.bank_id"),
-        internal_number:
-          +watch("installment_grid")?.at(-1)?.internal_number + 1 || null,
         note2: `${COUNTER_CHQ_NUMBER?.[len - 1]} Payment (${len})`,
       },
     });

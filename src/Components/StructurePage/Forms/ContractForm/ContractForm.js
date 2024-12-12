@@ -144,8 +144,8 @@ const ContractForm = () => {
     queryFn: async () => {
       const lastNumber = await getLastNumberByColumn("contract", "code", +code);
 
-      if (!watch("contract.internal_number")) {
-        setValue(`contract.internal_number`, +lastNumber + 1);
+      if (!watch("contract.number")) {
+        setValue(`contract.number`, +lastNumber + 1);
       }
     },
   });
@@ -263,7 +263,7 @@ const ContractForm = () => {
         let subName = name?.split(".")?.at(-1);
         switch (subName) {
           case "due_date":
-          case "internal_number":
+          case "number":
           case "amount":
           case "bank_id":
           case "end_due_date": {
@@ -351,6 +351,7 @@ const ContractForm = () => {
     }
 
     setValue("contract.code", +code);
+    setValue("contract.contract_pattern_id", PATTERN_SETTINGS?.id);
     setValue(
       "contract.flat_type",
       CONTRACTS_ASSETS_TYPE?.[searchQuery.get("flat_type")]
@@ -408,7 +409,7 @@ const ContractForm = () => {
       assetsType: assetType,
       assetsTypeNumber,
       buildingNumber,
-      contractNumber: watch("contract.internal_number"),
+      contractNumber: watch("contract.number"),
       values: contract,
       commission: watch("contract_commission"),
     });
@@ -489,7 +490,7 @@ const ContractForm = () => {
                   {currentIndex === 0 && tab ? (
                     <div>
                       <ContractFinancialForm
-                        number={watch("contract.internal_number")}
+                        number={watch("contract.number")}
                         fields={fields}
                         tab={tab}
                         values={watch()?.[tab]}

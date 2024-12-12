@@ -27,7 +27,7 @@ export const ReportFilterChequePattern = ({
       bodyClassName={bodyClassName}
       title="Cheque Patterns"
       columns={chqPatterns?.map((c) => ({
-        name: c?.code,
+        name: c?.id,
         label: c?.name,
       }))}
       selectedColumns={chqIds}

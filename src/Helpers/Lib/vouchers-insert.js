@@ -529,11 +529,10 @@ export const generateChequesFromInstallment = async ({
   const cheques = [];
 
   for (const item of installment_grid) {
-    // let internal_number = item?.number;
-    // delete item?.number;
+    let number = item?.number;
     cheques.push({
       ...item,
-      // internal_number,
+      number,
       installment_id,
       currency_id,
       type: CHQ_RECEIVED_CODE,
@@ -585,7 +584,7 @@ export const generateChequesFromInstallment = async ({
         updates: item,
       });
 
-      if (repUpdate?.success) updatedChq.push(item?.internal_number);
+      if (repUpdate?.success) updatedChq.push(item?.number);
     } else {
       if (item) {
         const resInsert = await ApiActions.insert("cheque", {
@@ -594,11 +593,11 @@ export const generateChequesFromInstallment = async ({
         });
 
         if (resInsert?.success) {
-          insertChq.push(item?.internal_number);
+          insertChq.push(item?.number);
           chq_id = resInsert?.record?.id;
         }
       } else {
-        deletedChq.push(item?.internal_number);
+        deletedChq.push(item?.number);
         const resDelete = await ApiActions.remove("cheque", {
           conditions: [
             { type: "and", conditions: [["id", "=", prevItem?.id]] },
@@ -613,7 +612,7 @@ export const generateChequesFromInstallment = async ({
           });
           if (res?.success) chq_id = null;
         } else {
-          deletedChq?.filter((c) => c !== item?.internal_number);
+          deletedChq?.filter((c) => c !== item?.number);
         }
       }
     }
@@ -669,10 +668,10 @@ export const generateEntryFromCheque = async ({
     due_date,
     note: note1,
     observe_account_id,
-    internal_number,
+    number,
   } = values;
 
-  let note = `Generated Entry From chq number ${internal_number} amount ${amount}`;
+  let note = `Generated Entry From chq number ${number} amount ${amount}`;
 
   let entry = {
     created_at: due_date,

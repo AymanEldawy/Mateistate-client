@@ -278,7 +278,7 @@
 
   | key                    |    table    |
   | :--------------------- | :---------: |
-  | internal_number        |    bill     |
+  | code        |    bill     |
   | feedback               |    bill     |
   | connect_with           |    bill     |
   | amount                 |    bill     |

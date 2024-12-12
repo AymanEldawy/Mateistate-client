@@ -30,38 +30,6 @@ import {
 import { toast } from "react-toastify";
 // import { numberToText } from "Helpers/functions";
 
-let data = {
-  issue_date: "2024-10-30T21:00:00.000Z",
-  bill_date: "2024-10-28T21:00:00.000Z",
-  currency_val: 1,
-  currency_id: "27e841e4-20f5-4b74-8e55-f2f4efa5a9b2",
-  payment_method: 2,
-  receipt_number: "34",
-  cost_center_id: "8fc113a6-5300-49be-887b-30c1a8c49d02",
-  connect_with: 1,
-  note: "2",
-  store_id: "9b2770c2-9369-4f4e-a512-3f9d97e10f89",
-  customer_account_id: "6b2e51a5-eda4-4fe6-a008-055b43aac149",
-  client_account_id: "6b2e51a5-eda4-4fe6-a008-055b43aac149",
-  material_account_id: "8348c4b2-9908-4235-8e25-b3503113c326",
-  total_quantities: "434",
-  total_quantities_percentage: "43",
-  total_quantities_percentage2: "34",
-  refunded_taxable_amount: "34",
-  non_refunded_taxable_amount: "534",
-  not_taxable: "34",
-  taxable: "534",
-  discounts: "232",
-  discounts_extra: "43",
-  non_refundable_vat: "53",
-  non_refundable_vat2: "434",
-  total: "534",
-  grand_total: "43",
-  net: "53",
-  connect_with_id: "12c61adf-b364-49c6-9655-d7a7d84b47fe",
-  bill_kind: 1,
-};
-
 const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
   const params = useParams();
   const { t } = useTranslation();
@@ -324,6 +292,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
     }
     const getTheFunInsert = INSERT_FUNCTION?.bill;
     setValue("bill.bill_kind", +code);
+    setValue("bill.bill_pattern_id", PATTERN_SETTINGS?.id);
     const response = await getTheFunInsert(watch());
     if (response?.success) {
       await generateEntryFromBill({

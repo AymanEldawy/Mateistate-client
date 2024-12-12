@@ -242,11 +242,10 @@ export function onWatchChangesInstallmentGridTab(name, setValue, watch, cache) {
   switch (name?.split(".")?.at(-1)) {
     case "due_date":
     case "number":
-    case "internal_number":
     case "amount":
     case "bank_id":
     case "end_due_date":
-      const number = watch(`${row}.internal_number`);
+      const number = watch(`${row}.number`);
       const clientId = watch(`contract.client_id`);
       const amount = watch(`${row}.amount`);
 

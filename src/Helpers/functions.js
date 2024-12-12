@@ -76,11 +76,11 @@ export function getMonthsDiff(start_date, end_date, price) {
   return { monthlyPrice, remainingPrice, startDate, endDate, monthsDiff };
 }
 
-export async function getInsertAccountTrigger(code, conditions) {
+export async function getInsertAccountTrigger(currentCode, conditions) {
   // get suppliers or customers id
   const parentAccount = await ApiActions.read("account", {
-    conditions: code
-      ? [{ type: "and", conditions: [["internal_number", "=", code]] }]
+    conditions: currentCode
+      ? [{ type: "and", conditions: [["code", "=", currentCode]] }]
       : conditions,
   });
 
@@ -101,13 +101,13 @@ export async function getInsertAccountTrigger(code, conditions) {
     ],
   });
 
-  let internal_number =
-    +parentAccountData?.internal_number + 1 ||
-    parseInt(`${parentAccount?.result?.at(0)?.internal_number}01`);
+  let code =
+    +parentAccountData?.code + 1 ||
+    parseInt(`${parentAccount?.result?.at(0)?.code}01`);
   let level = +parentAccountData?.level || 0;
 
   let account = {
-    internal_number,
+    code,
     type: 1,
     currency_id: currencyResponse?.result?.at(0)?.id,
     parent_id,
@@ -372,7 +372,7 @@ export function getUniqueFieldLabel(item, table, refName, locale) {
   // }
 
   return item?.number && !IGNORED_SHOW_NUMBER_TABLE[table]
-    ? `${item?.internal_number || item?.number}-${item?.[refName || "name"]}${
+    ? `${item?.code || item?.number}-${item?.[refName || "name"]}${
         item?.parent_name ? `-(${item?.parent_name})` : ""
       }`
     : item[refName || "name"];

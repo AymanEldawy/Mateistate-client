@@ -142,7 +142,11 @@ const ChequeForm = ({
   // Handel Submit
   const onSubmit = async (value) => {
     if (!isDirty) return;
-    let values = { type: +PATTERN_SETTINGS?.code, ...removeNullValues(value) };
+    let values = {
+      type: +PATTERN_SETTINGS?.code,
+      cheque_pattern_id: PATTERN_SETTINGS?.id,
+      ...removeNullValues(value),
+    };
 
     let res = null;
     let chq_id = watch("id");
@@ -234,7 +238,7 @@ const ChequeForm = ({
               </div>
               <div className="my-4 grid gap-6 grid-cols-2 lg:grid-cols-4">
                 <Input
-                  {...fields?.internal_number}
+                  {...fields?.number}
                   // inputClassName="bg-gray-100"
                 />
                 <Input

@@ -449,6 +449,16 @@ export const menuData = [
     icon: <StoreIcon />,
     children: [
       {
+        key: "store",
+        name: "stores",
+        link: "/list/store",
+      },
+      {
+        key: "store chart",
+        name: "stores chart",
+        link: "/chart/store",
+      },
+      {
         key: "materials",
         name: "Materials",
         subChild: [
@@ -462,12 +472,17 @@ export const menuData = [
             name: "Material Card",
             link: "/list/material",
           },
-
           {
-            key: "warehouse report",
-            name: "warehouse report",
-            link: "/reports/warehouse-report",
+            key: "Material",
+            name: "Material Chart",
+            link: "/chart/material",
           },
+
+          // {
+          //   key: "warehouse report",
+          //   name: "warehouse report",
+          //   link: "/reports/warehouse-report",
+          // },
         ],
       },
       {
@@ -499,11 +514,6 @@ export const menuData = [
         key: "Bill profit report",
         name: "Bill profit report",
         link: "/reports/bill-profit-report",
-      },
-      {
-        key: "store",
-        name: "stores",
-        link: "/list/store",
       },
     ],
   },

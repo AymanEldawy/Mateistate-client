@@ -27,7 +27,7 @@ const TreeViewItem = ({
       <div onClick={toggleOpen} className="flex capitalize cursor-pointer">
         <div className="group options flex ltr:pl-8 rtl:pr-8 min-w-[190px] hover:text-black dark:hover:text-white dark:hover:bg-dark-bg dark:hover:border-dark-border hover:bg-gray-100 border-transparent rounded border hover:border-gray-300">
           <button className="scale-75">{icon}</button>
-          <span className={`mx-2 ${row?.type && row?.type !== 1 ? 'text-blue-500' : ''}`}>{`${row?.internal_number}-${row?.name}`}</span>
+          <span className={`mx-2 ${row?.type && row?.type !== 1 ? 'text-blue-500' : ''}`}>{`${row?.code}-${row?.name}`}</span>
           {row?.status && showStatus ? <span className={`text-xs p-1 rounded-md font-medium ${row?.status?.toLowerCase() === 'balance sheet' ? 'text-orange-500' : 'text-purple-500'}`}>{row?.status}</span> : null}
           <span className="ltr:ml-8 rtl:mr-8" />
           <button

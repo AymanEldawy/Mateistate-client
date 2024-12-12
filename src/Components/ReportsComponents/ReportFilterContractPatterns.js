@@ -13,7 +13,7 @@ export const ReportFilterContractPatterns = ({
   const [contractPatterns, setContractPatterns] = useState([]);
   const getData = async () => {
     const contractResponse = await ApiActions.read("contract_pattern", {
-      columns: ["code", "name", "id"],
+      columns: ["code", "name", "id", "number"],
     });
     setContractPatterns(contractResponse?.result);
   };
@@ -26,7 +26,7 @@ export const ReportFilterContractPatterns = ({
     <ReportFilterColumns
       title="Contract Patterns"
       columns={contractPatterns?.map((c) => ({
-        name: c?.code,
+        name: c?.id,
         label: c?.name,
       }))}
       disabledItem={watch("linked_contract_only")}

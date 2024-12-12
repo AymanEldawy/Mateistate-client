@@ -11,8 +11,9 @@ import { useParams } from "react-router-dom";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import getFormByTableName from "Helpers/Forms/forms";
 import useCurd from "Hooks/useCurd";
+import { useEffect } from "react";
 
-const FormSingular = ({ name, onClose, popupView }) => {
+const FormSingular = ({ name, onClose, popupView, oldValues}) => {
   const params = useParams();
   const id = params?.id;
   const { set, insert, getOneBy } = useCurd();
@@ -32,13 +33,21 @@ const FormSingular = ({ name, onClose, popupView }) => {
   const { isLoading } = useQuery({
     queryKey: [name, id],
     queryFn: async () => {
-      if (!id) return;
       const data = await getOneBy(name, id);
       if (data?.success) {
         reset(data?.result?.at(0));
       }
     },
+    enabled: !!id,
   });
+
+  console.log(watch(), "ssds", CACHE_LIST);
+
+  useEffect(() => {
+    if(!id && oldValues) {
+      reset(oldValues)
+    }
+  }, [oldValues])
 
   // Handel Submit
   const onSubmit = async (value) => {

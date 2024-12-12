@@ -260,7 +260,7 @@ const TableFields = ({
                                           {showNumberAsLink &&
                                           (field?.name === "number" ||
                                             field?.name ===
-                                              "internal_number") &&
+                                              "code") &&
                                           watch(`${tab}.${index}.id`) ? (
                                             // <ViewRowFrom />
                                             <button

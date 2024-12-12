@@ -26,8 +26,8 @@ const MaterialChart = () => {
   } = useQuery({
     queryKey: [name, "chart"],
     queryFn: async () => {
-      const data = await get("store");
-      return toTree(data?.result?.slice(0, 50));
+      const data = await get("material_group");
+      return toTree(data?.result);
     },
   });
 
@@ -58,16 +58,13 @@ const MaterialChart = () => {
   };
 
   return (
-    <BlockPaper
-      title={t("stores")}
-      key={name}
-    >
+    <BlockPaper title={t("stores")} key={name}>
       {!isLoading ? (
         <>
           {chartTree?.length ? (
             <MaterialRenderTree
               chartTree={chartTree}
-              name={'store'}
+              name={"material_group"}
               deleteItem={deleteItem}
               onSubmit={onSubmit}
               refetchData={refetch}

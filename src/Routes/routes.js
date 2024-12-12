@@ -1,79 +1,45 @@
-import Chart from "Pages/Chart/Chart";
-import Home from "Pages/Home/Home";
-import Login from "Pages/Auth/Login";
-import Tools from "Pages/Tools/Tools";
-import NouFound from "Pages/NouFound/NouFound";
-import ContractForm from "Components/StructurePage/Forms/ContractForm/ContractForm";
-import PatternsForm from "Pages/Patterns/PatternsForm";
-import EntryForm from "Components/StructurePage/Forms/Vouchers/Entry/EntryForm";
-import VoucherForm from "Components/StructurePage/Forms/Vouchers/Voucher/VoucherForm";
+import BillDetailsReport from "Pages/Report/Maintenances/BillDetailsReport";
+import BillProfitReport from "Pages/Report/Maintenances/BillProfitReport";
+import EndingInventoryReport from "Pages/Report/Maintenances/EndingInventoryReport";
+import InventoryReport from "Pages/Report/Maintenances/InventoryReport";
+import ItemActivityReport from "Pages/Report/Maintenances/ItemActivityReport";
+import AccountForm from "Components/StructurePage/Forms/AccountForm/AccountForm";
+import BillForm from "Components/StructurePage/Forms/BillForm/BillForm";
 import BuildingForm from "Components/StructurePage/Forms/BuildingForm/BuildingForm";
 import ChequeForm from "Components/StructurePage/Forms/ChequesForm/ChequeForm";
-import AccountForm from "Components/StructurePage/Forms/AccountForm/AccountForm";
-import UserForm from "Components/StructurePage/Forms/UserForm/UserForm";
+import ContractForm from "Components/StructurePage/Forms/ContractForm/ContractForm";
 import { DynamicForm } from "Components/StructurePage/Forms/CustomForm/DynamicForm";
-import ReservationPropertyForm from "Components/StructurePage/Forms/ReservationProperty/ReservationPropertyForm";
-import {
-  TrialBalanceReport,
-  BuildingSchemaReport,
-  ChequeReport,
-  CollectionChqReport,
-  ContractNearToExpireReport,
-  ContractPaymentsReport,
-  EarningRentalIncomeEarnedReport,
-  ContractsExpiredReport,
-  LeasedPropertyActivityReport,
-  ContractsReport,
-  DueNotePaperReport,
-  ReturnedChqReport,
-  GeneralLedgerReport,
-  LeasedUnitsReport,
-  LeasedLandsReport,
-  LeasedVillasReport,
-  LeasedParkingReport,
-  UnitsWillVacatedReport,
-  ReservedUnitsReport,
-  ContractsDepositReport,
-  SheetReport,
-  JournalLedgerReport,
-  CostCenterGeneralLedgerReport,
-  CostCenterTrialBalanceReport,
-  CustomersAccountStatementReport,
-  SoldUnitsReport,
-  ContractChequeReport,
-  SoldLandsReport,
-  SoldVillasReport,
-  OverduePaymentsReport,
-  ChangesFlatsRentPricingReport,
-  ChangesFlatsSalePricingReport,
-  MangerChequeReport,
-  UnitConditionConstructionReport,
-  ServicesContractsReport,
-  ContractCycleReport,
-  CreditorsAgesReport,
-  VATBillsReport,
-  WarehouseReport,
-  WorkerReport,
-  OwnerExpensesReport,
-} from "Pages/Report";
 import LawsuitForm from "Components/StructurePage/Forms/LawsuitForm/LawsuitForm";
-import ComplaintsReport from "Pages/Report/ComplaintsReport";
-import ServiceForm from "Components/StructurePage/Forms/ServiceForm/ServiceForm";
-import OwnerExpensesForm from "Components/StructurePage/Forms/OwnerExpensesForm/OwnerExpensesForm";
-import List from "Components/Tables/List";
-import BillForm from "Components/StructurePage/Forms/BillForm/BillForm";
 import MaterialForm from "Components/StructurePage/Forms/MaterialForm/MaterialForm";
 import UnregisterMaterials from "Components/StructurePage/Forms/MaterialForm/UnregisterMaterials";
+import OwnerExpensesForm from "Components/StructurePage/Forms/OwnerExpensesForm/OwnerExpensesForm";
+import ReservationPropertyForm from "Components/StructurePage/Forms/ReservationProperty/ReservationPropertyForm";
+import ServiceForm from "Components/StructurePage/Forms/ServiceForm/ServiceForm";
+import UserForm from "Components/StructurePage/Forms/UserForm/UserForm";
+import EntryForm from "Components/StructurePage/Forms/Vouchers/Entry/EntryForm";
+import VoucherForm from "Components/StructurePage/Forms/Vouchers/Voucher/VoucherForm";
+import List from "Components/Tables/List";
+import Login from "Pages/Auth/Login";
+import Chart from "Pages/Chart/Chart";
+import MaterialChart from "Pages/Chart/MaterialChart";
+import Home from "Pages/Home/Home";
+import NotFound from "Pages/NotFound/NotFound";
+import PatternsForm from "Pages/Patterns/PatternsForm";
+import { BuildingSchemaReport, ChangesFlatsRentPricingReport, ChangesFlatsSalePricingReport, ChequeReport, CollectionChqReport, ContractChequeReport, ContractCycleReport, ContractNearToExpireReport, ContractPaymentsReport, ContractsDepositReport, ContractsExpiredReport, ContractsReport, CostCenterGeneralLedgerReport, CostCenterTrialBalanceReport, CreditorsAgesReport, CustomersAccountStatementReport, DueNotePaperReport, EarningRentalIncomeEarnedReport, GeneralLedgerReport, JournalLedgerReport, LeasedLandsReport, LeasedParkingReport, LeasedPropertyActivityReport, LeasedUnitsReport, LeasedVillasReport, MangerChequeReport, OverduePaymentsReport, OwnerExpensesReport, ReservedUnitsReport, ReturnedChqReport, ServicesContractsReport, SoldLandsReport, SoldUnitsReport, SoldVillasReport, TrialBalanceReport, UnitConditionConstructionReport, UnitsWillVacatedReport, VATBillsReport, WarehouseReport, WorkerReport } from "Pages/Report";
 import Timing from "Pages/Timing/Timing";
+import Tools from "Pages/Tools/Tools";
+import ComplaintsReport from "Pages/Report/ComplaintsReport";
+import ProfitAndLossReport from "Pages/Report/Accounting/ProfitAndLossReport";
+import SalesReport from "Components/ReportsComponents/SalesReport";
 
 const publicRoutes = [
-  { path: "**", component: <NouFound /> },
+  { path: "**", component: <NotFound /> },
   { path: "/login", component: <Login /> },
   { path: "/signup", component: <Login /> },
 ];
 
 const authProtectedRoutes = [
-  { path: "*", component: <NouFound /> },
+  { path: "*", component: <NotFound /> },
   { path: "/", component: <Home /> },
   { path: "/timing", component: <Timing /> },
   // { path: "/buildings/:name/tools/:Guid", component: <Tools /> },
@@ -159,15 +125,15 @@ const authProtectedRoutes = [
   },
   {
     path: "/reports/trading-sheet-report/",
-    component: <SheetReport name="trading_sheet_report" />,
+    component: <ProfitAndLossReport name="trading_sheet_report" />,
   },
   {
     path: "/reports/profit-and-loss-report/",
-    component: <SheetReport name="profit_and_loss_report" />,
+    component: <ProfitAndLossReport name="profit_and_loss_report" />,
   },
   {
     path: "/reports/balance-sheet-report/",
-    component: <SheetReport name="balance_sheet_report" />,
+    component: <ProfitAndLossReport name="balance_sheet_report" />,
   },
   {
     path: "/reports/due-note-papers-report",
@@ -282,8 +248,8 @@ const authProtectedRoutes = [
   { path: "/buildings/", component: <BuildingForm /> },
   { path: "/maintenances/:code/:id", component: <ServiceForm /> },
   { path: "/maintenances/:code", component: <ServiceForm /> },
-  { path: "/:name/:id", component: <DynamicForm /> },
-  { path: "/:name", component: <DynamicForm /> },
+  { path: "/form/:name/:id", component: <DynamicForm /> },
+  { path: "/form/:name", component: <DynamicForm /> },
   // { path: "/tools/:name/:id", component: <DynamicForm /> },
   {
     path: "/reservation_property/",
@@ -294,6 +260,7 @@ const authProtectedRoutes = [
     component: <ReservationPropertyForm />,
   },
   { path: "/account/:id", component: <AccountForm /> },
+  { path: "/account/", component: <AccountForm /> },
   { path: "/user/:id", component: <UserForm /> },
   { path: "/user/", component: <UserForm /> },
   {
@@ -309,6 +276,36 @@ const authProtectedRoutes = [
   { path: "/lawsuit/:id", component: <LawsuitForm /> },
   // Chart forms
   { path: "/chart/:name", component: <Chart /> },
+  { path: "/chart/material", component: <MaterialChart /> },
+  
+  
+  // New Report
+  {
+    path: "/reports/item-activity",
+    component: <ItemActivityReport />,
+  },
+  {
+    path: "/reports/inventory-report",
+    component: <InventoryReport />,
+  },
+  {
+    path: "/reports/ending-inventory-report",
+    component: <EndingInventoryReport />,
+  },
+  {
+    path: "/reports/sales-report",
+    component: <SalesReport />,
+  },
+  {
+    path: "/reports/bill-details-report",
+    component: <BillDetailsReport />,
+  },
+  {
+    path: "/reports/bill-profit-report",
+    component: <BillProfitReport />,
+  },
+
 ];
 
 export { authProtectedRoutes, publicRoutes };
+

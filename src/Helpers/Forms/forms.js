@@ -413,7 +413,8 @@ const account = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
   FIELDS_STRUCTURE.number({
-    name: "internal_number",
+    label: 'code',
+    name: "code",
   }),
   FIELDS_STRUCTURE.name(),
   { label: "ltnname", name: "ltnname", type: "text", required: false },
@@ -790,8 +791,8 @@ const cost_center = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
   {
-    label: "number",
-    name: "internal_number",
+    label: 'code',
+    name: "code",
     type: "number",
 
     // hide_in_form: true,
@@ -2095,18 +2096,9 @@ const cheque = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
   {
-    label: "internal_number",
-    name: "internal_number",
-    type: "number",
-
-    // readOnly: false,
-  },
-  {
     label: "number",
     name: "number",
     type: "number",
-
-    // readOnly: false,
   },
   {
     label: "feedback",
@@ -2277,7 +2269,7 @@ const cheque = [
 const cheque_grid = [
   {
     label: "chq_number",
-    name: "internal_number",
+    name: "number",
     type: "text",
   },
   {
@@ -3285,7 +3277,7 @@ const op_return = [
     name: "connect_with_chq_id",
     is_ref: true,
     ref_table: "cheque",
-    ref_name: "internal_number",
+    ref_name: "number",
   },
   // {
   //   label: "accounting_voucher_main_data_id",
@@ -5961,8 +5953,8 @@ export const store = [
   //   required: true,
   // },
   {
-    label: "internal_number",
-    name: "internal_number",
+    label: "code",
+    name: "code",
     type: "number",
   },
   FIELDS_STRUCTURE.name(),
@@ -6699,7 +6691,7 @@ const service_customer_request = [
     is_ref: true,
     ref_table: "contract",
     ref_col: "id",
-    ref_name: "internal_number",
+    ref_name: "number",
   },
   { label: "description", name: "description", type: "text", readOnly: false },
   {

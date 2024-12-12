@@ -64,5 +64,5 @@ Normal
 
 
 ## Database
-- change internal_number to code
+-X change internal_number to code
 - change pattern.code to patter_id

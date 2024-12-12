@@ -25,7 +25,7 @@ export const ReportFilterBillPattern = ({
       bodyClassName={bodyClassName}
       title="Bill Types"
       columns={billPatterns?.map((c) => ({
-        name: c?.code,
+        name: c?.id,
         label: c?.name,
       }))}
       selectedColumns={billIds}

@@ -25,14 +25,15 @@ const RenderTree = ({
   const [open, setOpen] = useState({});
 
   const onSelectItemHandler = async (item) => {
+    console.log("🚀 ~ onSelectItemHandler ~ item:", item)
     const response = await ApiActions.read(name, {
       conditions: [{ type: "and", conditions: [["parent_id", "=", item?.id]] }],
       limit: 1,
-      sorts: [{ column: "internal_number", order: "DESC", nulls: "last" }],
+      sorts: [{ column: "code", order: "DESC", nulls: "last" }],
     });
 
     let defaultValues = {
-      internal_number: parseInt(`${item?.internal_number}01`),
+      code: parseInt(`${item?.code}01`),
       parent_id: item?.id || null,
       final_id: item?.final_id || item?.parent_id || null,
     };
@@ -40,10 +41,9 @@ const RenderTree = ({
     let responseItem = response?.result?.at(0);
 
     if (responseItem) {
-      defaultValues.internal_number = +responseItem?.internal_number + 1;
+      defaultValues.code = +responseItem?.code + 1;
     }
     if (item?.level) defaultValues.level = +item?.level + 1;
-
     setSelectedItem(defaultValues);
   };
 
@@ -137,6 +137,7 @@ const RenderTree = ({
           onClose={() => setSelectedItem(null)}
           refetchData={refetchData}
           normalForm
+          popupView
         />
       </Modal>
       <ul

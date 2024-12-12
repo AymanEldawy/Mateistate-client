@@ -47,7 +47,7 @@ export const getRequestedMaterialsByServiceId = async (id) => {
 
 export const getAccountsChildrenByName = async (code) => {
   const response = await ApiActions.read("account", {
-    conditions: [{ type: "and", conditions: [["internal_number", "=", code]] }],
+    conditions: [{ type: "and", conditions: [["code", "=", code]] }],
   });
   let accountId = response?.result?.at(0)?.id;
 
@@ -143,7 +143,7 @@ export const getAccountCash = async (id) => {
   res = await ApiActions.read("account", {
     conditions: [
       { type: "or", conditions: [["name", "=", "Cash"]] },
-      { type: "or", conditions: [["internal_number", "=", 131]] },
+      { type: "or", conditions: [["code", "=", 131]] },
     ],
   });
 

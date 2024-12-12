@@ -139,7 +139,6 @@ const cheque = [
   },
 
   { header: "number", accessorKey: "number" },
-  { header: "internal_number", accessorKey: "internal_number" },
   { header: "account", accessorKey: "account" },
   { header: "cost_center", accessorKey: "cost_center" },
   { header: "note", accessorKey: "note" },

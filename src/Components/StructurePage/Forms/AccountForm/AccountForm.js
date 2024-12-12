@@ -34,16 +34,16 @@ const automaticChangesOnAccount = async (name, watch, setValue) => {
         "account",
         "parent_id",
         watch("parent_id"),
-        "internal_number"
+        "code"
       );
 
       let record = response?.result?.at(0);
       const accountNumber = number
         ? +number + 1
-        : record?.internal_number + "1";
+        : record?.code + "1";
 
       setValue("final_id", record?.final_id || record?.parent_id);
-      setValue("internal_number", accountNumber);
+      setValue("code", accountNumber);
     }
   }
 };
@@ -51,7 +51,6 @@ const automaticChangesOnAccount = async (name, watch, setValue) => {
 const onChangeAccountType = async (value, setValue) => {
   if (value < 2) return;
 
-  // const res = await getLastNumberByName("account", 'internal_number');
   const res = await ApiActions.read("account", {
     limit: 1,
     conditions: [
@@ -60,10 +59,10 @@ const onChangeAccountType = async (value, setValue) => {
         conditions: [["parent_id", "==", "null"]],
       },
     ],
-    sorts: [{ column: "internal_number", order: "DESC", nulls: "last" }],
+    sorts: [{ column: "code", order: "DESC", nulls: "last" }],
   });
   if (res?.result?.length) {
-    setValue("internal_number", +res?.result?.at(0)?.internal_number + 1);
+    setValue("code", +res?.result?.at(0)?.code + 1);
   }
 };
 

@@ -44,7 +44,7 @@ const cost_center = {
   note: null,
   parent_id: null,
   name: null,
-  internal_number: null,
+  code: null,
 };
 
 const bank = {

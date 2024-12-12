@@ -8,7 +8,7 @@ const cheques_report = [
 
   {
     header: "account_number",
-    accessorKey: "account_internal_number",
+    accessorKey: "account_number",
   },
   {
     header: "account_id",
@@ -20,7 +20,7 @@ const cheques_report = [
   },
   {
     header: "number",
-    accessorKey: "internal_number",
+    accessorKey: "number",
   },
   {
     header: "amount",
@@ -111,7 +111,7 @@ const returned_cheque_report = [
   },
   {
     header: "account_number",
-    accessorKey: "account_internal_number",
+    accessorKey: "account_number",
   },
   {
     header: "account_id",
@@ -123,7 +123,7 @@ const returned_cheque_report = [
   },
   {
     header: "number",
-    accessorKey: "internal_number",
+    accessorKey: "number",
   },
   { header: "amount", accessorKey: "amount" },
   {
@@ -180,7 +180,7 @@ const collection_cheque_report = [
   },
   {
     header: "account_number",
-    accessorKey: "account_internal_number",
+    accessorKey: "account_number",
   },
   {
     header: "account_id",
@@ -192,7 +192,7 @@ const collection_cheque_report = [
   },
   {
     header: "number",
-    accessorKey: "internal_number",
+    accessorKey: "number",
   },
   { header: "amount", accessorKey: "amount" },
   { header: "collected_date", accessorKey: "created_at" },
@@ -340,8 +340,6 @@ const contract_reports = [
   // { header: "Check box", accessorKey: "" },
   { header: "Processing", accessorKey: "processing" },
 ];
-
-// building_id	apartment_no	floor_no	description	category	area	area_unit	view	bathroom_count	balcony_count	has_lawsuit	main_cost_center_id	cost_center_id	property_type	water_meter	electricity_meter	statement	x_index	y_index	room_count	property_values_id	hex	cost_price	amount_paid	cost_currency_id	note	apartment_kind	row_index	asset_hash	number	internal_number
 
 const leased_units_report = [
   { header: "Property No", accessorKey: "property_no" },

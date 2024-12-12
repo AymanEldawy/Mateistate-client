@@ -668,7 +668,7 @@ export async function INSERT_DEFAULT_ACCOUNTS() {
 
   for (const item of DEFAULT_ACCOUNTS) {
     let data = {
-      internal_number: item?.code,
+      code: item?.code,
       name: item?.name,
       // ltnnanme: item?.ltnnanme,
       type: 1,

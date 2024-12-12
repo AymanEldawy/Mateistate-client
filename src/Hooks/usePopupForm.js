@@ -21,8 +21,8 @@ export const PopupFormProvider = ({ children }) => {
     if (openForm.table) {
       let record = res?.record;
       let additional = openForm?.additional;
-      let numberSearchKey = record?.internal_number
-        ? "internal_number"
+      let numberSearchKey = record?.code
+        ? "code"
         : "number";
       let label = record?.[numberSearchKey]
         ? `${record?.[numberSearchKey]}-${record?.name}`

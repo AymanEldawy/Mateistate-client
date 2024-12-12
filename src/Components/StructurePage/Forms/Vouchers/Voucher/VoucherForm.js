@@ -155,6 +155,8 @@ const VoucherForm = ({
 
   const onSubmit = async () => {
     if (!isDirty) return;
+    
+    setValue("voucher_pattern_id", PATTERN_SETTINGS?.id);
 
     let value = watch();
     let grid = watch("grid");

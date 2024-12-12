@@ -26,7 +26,7 @@ export const ReportFilterContractPatterns = ({
     <ReportFilterColumns
       title="Contract Patterns"
       columns={contractPatterns?.map((c) => ({
-        name: c?.code,
+        name: c?.id,
         label: c?.name,
       }))}
       disabledItem={watch("linked_contract_only")}

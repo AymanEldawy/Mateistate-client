@@ -246,12 +246,12 @@ const insertToBuilding = async (data) => {
       if (data?.main_cost_center_id) {
       } else {
         let lastCostCenterNumber = await getLastCostCenterNumber();
-        let internal_number = lastCostCenterNumber
+        let code = lastCostCenterNumber
           ? +lastCostCenterNumber + 1
           : 101;
 
         const responseCostCenter = await ApiActions.insert("cost_center", {
-          internal_number,
+          code,
           name: data?.name,
         });
         responseCostCenterId = responseCostCenter?.record?.id;
@@ -305,12 +305,12 @@ const getNewContractNumber = async (code) => {
   const contractRes = await ApiActions.read("contract", {
     conditions: [{ type: "and", conditions: [["code", "=", code]] }],
     limit: 1,
-    sorts: [{ column: "internal_number", order: "DESC", nulls: "last" }],
-    columns: ["internal_number"],
+    sorts: [{ column: "code", order: "DESC", nulls: "last" }],
+    columns: ["code"],
   });
 
-  return contractRes?.response?.at(0)?.internal_number
-    ? +contractRes?.response?.at(0)?.internal_number + 1
+  return contractRes?.response?.at(0)?.code
+    ? +contractRes?.response?.at(0)?.code + 1
     : 1;
 };
 
@@ -348,11 +348,11 @@ const dynamicInsertIntoContract = async ({
 
   if (!contract_id) {
     // Insert into contract or update
-    const internal_number = await getNewContractNumber(data?.contract?.code);
+    const number = await getNewContractNumber(data?.contract?.code);
     response = await ApiActions.insert("contract", {
       ...data?.contract,
       contract_type: contractType,
-      internal_number: internal_number || Math.floor(Math.random() * 100),
+      number: number || Math.floor(Math.random() * 100),
     });
     contract_id = response?.record?.id;
   } else {
@@ -797,7 +797,7 @@ export const getAccountLastNumber = async (name, col, val) => {
   const response = await ApiActions.read(name, {
     conditions: [{ type: "and", conditions: [[col, "=", val]] }],
     limit: 1,
-    sorts: [{ column: "internal_number", order: "DESC", nulls: "last" }],
+    sorts: [{ column: "code", order: "DESC", nulls: "last" }],
   });
   return response?.result?.at(0);
 };
@@ -816,27 +816,13 @@ export const getLastNumberByColumn = async (
   return response?.result?.at(0)?.[col_number] || 0;
 };
 
-export const getLastNumberByName = async (name, col = "number") => {
-  const response = await ApiActions.read(name, {
-    limit: 1,
-    sorts: [{ column: [col], order: "DESC", nulls: "last" }],
-  });
-  if (response?.success) {
-    return (
-      response?.result?.at(0)?.internal_number ||
-      response?.result?.at(0)?.number ||
-      0
-    );
-  }
-};
-
 export const getLastCostCenterNumber = async () => {
   const response = await ApiActions.read("cost_center");
 
   let bigNumber = 0;
   for (const item of response?.result) {
     if (item?.number > bigNumber && !item?.parent_id)
-      bigNumber = item?.internal_number;
+      bigNumber = item?.code;
   }
 
   return bigNumber ? +bigNumber : 1;
@@ -846,7 +832,7 @@ export const getCostCenterNumberById = async (id) => {
   const response = await ApiActions.read("cost_center", {
     conditions: [{ type: "and", conditions: [["id", "=", id]] }],
   });
-  return response?.result?.at(0)?.internal_number;
+  return response?.result?.at(0)?.code;
 };
 
 // Generate Apartments & Parking & Shops
@@ -861,7 +847,7 @@ export const generateApartments = async (
     "cost_center",
     "parent_id",
     building?.main_cost_center_id,
-    "internal_number"
+    "code"
   );
 
   let costCenterNumber = await getCostCenterNumberById(
@@ -951,12 +937,12 @@ export const generateApartments = async (
         assetLastNumber = assetLastNumber
           ? +assetLastNumber + 1
           : `${costCenterNumber}0101`;
-        data.internal_number = assetLastNumber;
+        data.code = assetLastNumber;
         data.number = i + 12;
 
         let costCenterData = {
           parent_id: building?.main_cost_center_id,
-          internal_number: assetLastNumber,
+          code: assetLastNumber,
           name: data?.[typeSettings?.no], // change name
         };
 

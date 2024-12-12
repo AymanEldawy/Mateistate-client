@@ -114,12 +114,12 @@ const generatePaymentBatches = async (
   for (let i = 0; i < result.length; i++) {
     let dueDate = new Date(result[i]?.month)?.toLocaleDateString("en-UK");
     let endDueDate = new Date(result[i]?.end)?.toLocaleDateString("en-UK");
-    let internal_number = +(begin_number || 1) + i;
+    let number = +(begin_number || 1) + i;
     const note2 = `${COUNTER_CHQ_NUMBER?.[i]} Payment (${i + 1})`;
-    const note1 = `received chq number ${internal_number} from mr ${client?.name} ${result[i]?.price} due date ${dueDate} end date ${endDueDate} bank name ${bank?.name}`;
+    const note1 = `received chq number ${number} from mr ${client?.name} ${result[i]?.price} due date ${dueDate} end date ${endDueDate} bank name ${bank?.name}`;
 
     cheques.push({
-      internal_number,
+      number,
       due_date: result[i]?.month,
       amount: result[i]?.price,
       end_due_date: result[i]?.end,

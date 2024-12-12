@@ -40,7 +40,7 @@ const ReportUniqueField = ({
           value: item?.[field?.ref_col || "id"],
           label:
             item?.number && !IGNORED_SHOW_NUMBER_TABLE[field?.ref_table]
-              ? `${item?.internal_number || item?.number}-${
+              ? `${item?.code || item?.number}-${
                   item?.[field?.ref_name || "name"]
                 }${item?.parent_name ? `-(${item?.parent_name})` : ""}`
               : item[field?.ref_name || "name"],

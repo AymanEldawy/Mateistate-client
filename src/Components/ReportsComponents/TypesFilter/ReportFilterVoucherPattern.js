@@ -25,7 +25,7 @@ export const ReportFilterVoucherPattern = ({
       bodyClassName={bodyClassName}
       title="Voucher Types"
       columns={voucherPatterns?.map((c) => ({
-        name: c?.code,
+        name: c?.id,
         label: c?.name,
       }))}
       selectedColumns={voucherIds}
