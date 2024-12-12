@@ -417,6 +417,7 @@ NOTES: complicated tasks
 - [] Report Print
 
 ## Latest notes
+
 - [✔️] add property floor in tools page
 - [✔️] rediesng shop and parking and apartment forms & tabls sturcture
 - [✔️] contracts sales in database
@@ -426,147 +427,85 @@ NOTES: complicated tasks
 - [] account assembly and distributive in entry
 - [] add new key in table `reservation_property` called `payment_method` <!-- update futrue -->
 
-
-
 ## required TODOS
 
 - [✔️] Reports Supervisor Maintaines
 - [✔️] Reports Customer Maintaines
 - [✔️] Materials group
-- [✔️] Materials 
-- [✔️] category 
-- [✔️] evacuation_request 
+- [✔️] Materials
+- [✔️] category
+- [✔️] evacuation_request
 - [✔️] worker report time - rate - services
 
 - [] worker card
 - [] supervisor card
-- [✔️] services order page 
-- [✔️] services materials page 
+- [✔️] services order page
+- [✔️] services materials page
 - [✔️] all requests with tenant_id
-- [✔️] admin-> create tanent 
+- [✔️] admin-> create tanent
 
+## Database
 
-## Database 
 - shop & apartment more details
-- handle dupllicate and not null  
-
+- handle dupllicate and not null
 
 - [] test all actions
 - [] lawsuit card
 - [] service card
 
-
 - []
-بطاقة مشرف و عامل 
-تحدد ساعات العمل و الاجازات و متاح و غير متاح الخ 
-
+  بطاقة مشرف و عامل
+  تحدد ساعات العمل و الاجازات و متاح و غير متاح الخ
 
 Back in update
 delete
 save
 
-
-- [] entires distibutive 
+- [] entires distibutive
 
 ## Required todos
-- [X] back in top 
-- [] add delete button in forms
-- [] delete on tables actions 
-- [] change button label to save
+- [x] bill patterns default
+- [x] bill form
+- [x] material form
+- [x] back in top
 
+
+## new note
+- [X] group material code 
+- [X] material code inhterited from parent 
+- [X] unique code in each table 
+- [X] material type default sotred 
+- [X] material form 
+- [X] all dates are default today 
+- [X] payment method default cash 
+- [X] material search witn multple keys 
+- [X] bill form
+- [x] material register
+- [x] work times
+- [x] first batch fix contract
+- [x] bills
+- [x] villa form
+- [x] constraint on service_material name or matieral_id
+
+# notes
+
+- [x] add delete button in forms
+- [] delete on tables actions
+- [x] change button label to save
 - [] list&buttons
 - [] filtersbar&search
 - [] filter&sort
 - [] table
-- [] bill patterns default
-- [] bill form
-- [] material form
-
-
-
-- [] dropdown search 
-- [] pagaintaion 
+- [] dropdown search
+- [] pagaintaion
 - [] filters
-- [] popup 
+- [] popup
 - [] table full width
-- [] text-wrap 
+- [] text-wrap
 - [] to form
 
-
-## new note
-- [] material register
-- [] work times
-- [] first batch fix contract
-- [] bills 
-- [] villa form
-- [] constraint on service_material name or matieral_id
-
-
-
-
-  pg_dump -h aws-0-us-west-1.pooler.supabase.com -p 6543 -U postgres.koodcpmrydyejpxberdt -s -d postgres -f matei.sql
-  jlPzBxoK7NtJBnZc
-
-
-
-
-
-
-
-
-[5:22 PM, 7/13/2024] Ayman Eldawy: القيود المحاسبية 
-١- حالة الشراء النقدي 
-مدين حساب المشتريات
-دائن حساب الصندوق
-٢- الشراء اجل 
-مدين حساب المشتريات
-دائن حساب المورد
-
-
-[5:22 PM, 7/13/2024] Ayman Eldawy: حالة البيع  :
-في حالة البيع النقدي
-مدين حساب الصندوق
-دائن حساب المبيعات (يفتح ضمن شجرة الحسابات هو وحساب المشتريات ) 
-٢- في حالة البيع الاجل 
-مدين حساب الزبون او العميل 
-دائن حساب المبيعات
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# notes
-- group material code
-- material code inhterited from parent
-- unique code in each table
-- material type default sotred
-- checked defaults1
-- barcode1
-- material form 
-- all dates are default today
-- payment method default cash
-- material search witn multple keys
-- bill form & 
-
-
-# changeable keys 
-- total_price
-- total
-
-
-
-## 
+## Latest Notes
+- stroe tree view 
+- materials & class tree view
+- material form
+- new report layoutx

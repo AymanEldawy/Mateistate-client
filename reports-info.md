@@ -1,139 +1,251 @@
-# Contract Payments Report
+# Item activity
 
-## Filters
+## filters
 
-@properties in contract
+- item
+- class
+- store
+- client
+- code
+- cost_center
+- currency
 
-    account_id
-    apartment_kind
-    automatic_selection
-    clearance
-    client_id
-    lawsuit
-    lessor_id
-    owner_account_id
+date from & to
 
-@properties in units
+- bills[] `bill.id`
 
-    blocked_units
+groups account & class & item
 
-- reviewed
-- unreviewed
-  contract_status `0 All` `1 expired` `2 not expired`
-  payment_method `0 All` `1 cash` `2 installment` `3 by plan` `4 credit`
-  termination_status `0 All` `1 terminated` `2 not terminated`
-  installments `0 All` `1 with installments` `2 without installments`
-  @property allow_cheques_date start_cheques_date end_cheques_date
-  @property allow_date start_date end_date
-  @property allow_collection_date start_collection_date end_collection_date
-  # ?? expiry_date
+## columns
 
-## Columns
+| col | table |
+| --- | ----- |
 
-Note: (n) one of theme `apartment` `shop` `parking` `land` `villa`
+bill_no
+bill_type
+bill_date
+material
+quantity + or - count
+input quantity
+output quantity
+balance -> quantity
+input prices
+output prices
+price
+value
+code
+barcode
+class
 
-| col               | table                    | description                                                                                |
-| ----------------- | ------------------------ | ------------------------------------------------------------------------------------------ |
-| number            | service                  |
-| start_date        | service                  |
-| end_date          | service                  |
-| building          | building                 |
-| unit_no           | (n)                      |
-| unit_type         | (n)                      |
-| is_default        | service                  |
-| is_paid           | service                  |
-| total             | service                  |
-| code              | service                  |
-| status            | service                  |
-| contract_id       | contract                 |
-| payment_method    | service_customer_request |
-| customer_user     | user                     |
-| phone             | service_customer_request |
-| approved          | service_customer_request |
-| returned          | service_customer_request |
-| title             | service_worker           |
-| description       | service_worker           |
-| category          | service_worker           |
-| worker            | user                     |
-| worker_status     | service_worker           |
-| worker_rate       | service_worker           |
-| has_material      | service_material         | if in `service_material` true                                                              |
-| lack_reason_count | service_lack_reason      | the count of records in table `service_lack_reason` that has `server_id` equal `server.id` |
+## Metadata
 
-## Columns
-
-| col              | table     | description |
-| ---------------- | --------- | ----------- |
-| created_at       | materials |
-| barcode          | materials |
-| name             | materials |
-| description      | materials |
-| category_name    | category  |
-| purchasing_price | materials |
-| selling_price    | materials |
-| currency_id      | currency  |
-| currency_value   | materials |
-| note             | materials |
-| is_available     | materials |
-
-## Filters
-
-- name
-- category `category.id`
-- material_group `materia_group.id`
-- @property `purchasing_price` purchasing_form purchasing_to purchasing between
-- @property `selling_price` sale_form sale_to sale between
-- available
-- @property date `form` `to`
-
-<!--  -->
-
-Time
-
-##
-
-ترتيب ابجدي
-في حالة شركة مختلفة انشاء
-في حالة عمل
+- input
+- output
+- balance
+- price
+- input price
+- output price
+- value
 
 ---
 
-## Columns
-
-| col         | table    | description               |
-| ----------- | -------- | ------------------------- |
-| name        | user     |
-| orders      |          | the total of orders       |
-| category    | category |
-| total_hours |          |
-| status      |          |
-| rate        |          | the calculation of rating |
+# Inventory
 
 ## Filters
 
-- name `user.id`
-- category `category.id`
-- building `building.id`
-- contract `contract.id`
-- problem `category_problem.id`
-- @property hours `form` `to`
+- item
+- class
+- store
+- client
+- code
+- cost_center
+- currency
+
+date from & to
+
+## columns
+
+- code
+- barcode
+- class
+- unit
+- vender
+- store
+- previous balance
+- current balance
+- total
+
+## Metadata
+
+- total quantity
 
 ---
 
-## Columns
-
-| col      | table                  |
-| -------- | ---------------------- |
-| date     | owner_expenses_details |
-| building | owner_expenses         |
-| owner    | owner_expenses         |
-| account  | owner_expenses_details |
-| amount   | owner_expenses_details |
-| note     | owner_expenses_details |
+# Ending Inventory
 
 ## Filters
 
-- owner_id `owner.id`
-- expenses_types[] `owner_expenses_types.id`
-- buildings[] `building.id`
-- @property date `form` `to`
+- item
+- class
+- store
+- client
+- code
+- cost_center
+- currency
+
+- unit
+
+  - main unit
+  - sell unit
+  - buy unit
+
+- price type
+
+date from & to
+
+- ignore 0 balance
+- display empty material
+- ignore navigable items
+
+## columns
+
+- code
+- item
+- class
+- store
+- quantity
+- price
+- value
+
+## Metadata
+
+- total value
+- total quantity
+
+---
+
+# Sales Report
+
+## Filters
+
+- item
+- class
+- store
+- client
+- code
+- cost_center
+- currency
+- classes_level
+
+- date
+- every `maybe merge all result in one`
+  every_number
+  every_duration - week - month - year
+
+- bills[]
+
+## columns
+
+- unit
+- class
+- vendor
+- bill_type
+- clients
+- item
+- store
+- input quantity
+- output quantity
+- net quantity (input quantity - output quantity)
+- input value
+- output value
+- net value (input value - output value)
+
+## Metadata
+
+- input value
+- output value
+- input quantity
+- output quantity
+- balance
+
+---
+
+# Bill Details
+
+## Filters
+
+- account
+- client -> user
+- currency
+- cost_center
+
+- date
+
+## Column
+`bill and materials`
+- type
+- receipt no
+- date
+- client
+- payment type
+- class
+- item
+- quantity
+-
+
+## Metadata
+
+- bill type
+- cash
+- credit
+- total (cash +credit)
+
+
+---
+
+# Bill Profit
+
+
+## Filters
+
+- account
+- client -> user
+- cost_center
+
+
+- bill no
+- bill_type
+- currency
+- price cost
+- view
+- note
+
+- date
+- bills [] (only output)
+
+- show bill Details
+- view under purchase price item 
+
+
+## Column
+`bill and materials`
+
+- bill no
+- type
+- date
+- client
+- class
+- item
+- quantity
+- unit
+- sale price
+- cost
+- extra/discount
+- Profit
+
+## Metadata
+- total bill (total materials output)
+- total cost ( total material price )
+- gross Profit (total bill - total cost)
+- Profit/bills rate ()
+- Profit/cost rate
