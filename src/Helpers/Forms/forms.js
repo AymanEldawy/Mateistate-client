@@ -318,6 +318,7 @@ const reservation_property = [
   // }),
   FIELDS_STRUCTURE.account({
     required: true,
+    ref_table: "account",
     ref_table: UNIQUE_REF_TABLES.clients,
   }),
 
@@ -1174,6 +1175,7 @@ const building_real_estate_management = [
   FIELDS_STRUCTURE.account({
     label: "owner_account_id",
     name: "owner_account_id",
+    ref_table: "account",
     ref_table: UNIQUE_REF_TABLES.suppliers,
   }),
   // {
@@ -4388,12 +4390,14 @@ const material_specifications = [
 const bill = [
   {
     is_ref: true,
+    ref_table: "user",
     ref_table: UNIQUE_REF_TABLES.user_customer,
     ref_col: "id",
-    hide_in_form:true,
+    hide_in_form: true,
   },
   {
     is_ref: true,
+    ref_table: "user",
     ref_table: UNIQUE_REF_TABLES.user_supplier,
     ref_col: "id",
     hide_in_form: true,
@@ -4435,8 +4439,20 @@ const bill = [
     type: "number",
     required: false,
   },
-  { label: "issue_date", name: "issue_date", type: "date", required: true, defaultValue: new Date() },
-  { label: "bill_date", name: "bill_date", type: "date", required: true, defaultValue: new Date() },
+  {
+    label: "issue_date",
+    name: "issue_date",
+    type: "date",
+    required: true,
+    defaultValue: new Date(),
+  },
+  {
+    label: "bill_date",
+    name: "bill_date",
+    type: "date",
+    required: true,
+    defaultValue: new Date(),
+  },
   { label: "bill_kind", name: "bill_kind", type: "number", required: true },
   {
     label: "customer_id",
@@ -4444,10 +4460,9 @@ const bill = [
     type: "uuid",
     required: true,
     is_ref: true,
-    ref_table: 'user',
+    ref_table: "user",
     ref_col: "id",
   },
- 
 
   FIELDS_STRUCTURE.selectField({
     label: "payment_method",
@@ -4505,33 +4520,45 @@ const bill = [
     name: "total_quantities",
     type: "number",
     required: false,
-    readOnly: true
+    readOnly: true,
   },
 
   { label: "taxable", name: "taxable", type: "number", required: false },
-  { label: "total", name: "total", type: "number", required: true,  readOnly: true },
-  { label: "discounts", name: "discounts", type: "number", required: false,  readOnly: true },
+  {
+    label: "total",
+    name: "total",
+    type: "number",
+    required: true,
+    readOnly: true,
+  },
+  {
+    label: "discounts",
+    name: "discounts",
+    type: "number",
+    required: false,
+    readOnly: true,
+  },
   {
     label: "extras",
     name: "extras",
     type: "number",
     required: false,
-     readOnly: true
+    readOnly: true,
   },
   {
     label: "vat_amount",
     name: "vat_amount",
     type: "number",
     required: false,
-     readOnly: true
+    readOnly: true,
   },
- 
+
   {
     label: "subtotal",
     name: "subtotal",
     type: "number",
     required: true,
-    readOnly: true
+    readOnly: true,
   },
   { label: "net", name: "net", type: "number", required: true, readOnly: true },
   {
@@ -4539,7 +4566,7 @@ const bill = [
     name: "bill_total_text",
     type: "text",
     required: true,
-    readOnly: true
+    readOnly: true,
   },
 ];
 const bill_discounts_details = [
@@ -4622,11 +4649,19 @@ const bill_material_details = [
   { label: "quantity", name: "quantity", type: "number", required: false },
   { label: "unit_price", name: "unit_price", type: "number", required: false },
   {
+    label: "vat_percentage",
+    name: "vat_percentage",
+    type: "number",
+    required: false,
+  },
+  { label: "vat_amount", name: "vat_amount", type: "number", required: false },
+  {
     label: "total_price",
     name: "total_price",
     type: "number",
     required: false,
   },
+  { label: "net", name: "net", type: "text", required: false },
   { label: "note", name: "note", type: "text", required: false },
 ];
 // End Bill
@@ -5917,18 +5952,17 @@ export const store = [
     label: "number",
     name: "number",
     type: "text",
-
     hide_in_form: true,
   },
+  // {
+  //   label: "type",
+  //   name: "type",
+  //   type: "number",
+  //   required: true,
+  // },
   {
-    label: "type",
-    name: "type",
-    type: "number",
-    required: true,
-  },
-  {
-    label: "code",
-    name: "code",
+    label: "internal_number",
+    name: "internal_number",
     type: "number",
   },
   FIELDS_STRUCTURE.name(),
@@ -6057,14 +6091,14 @@ const entry_grid_data = [
     hide_in_form: true,
   },
   FIELDS_STRUCTURE.currency({ hideValue: true, hide_in_form: true }),
-  {
-    label: "entry_main_data_id",
-    name: "entry_main_data_id",
-    is_ref: true,
-    ref_table: "entry_main_data",
+  // {
+  //   label: "entry_main_data_id",
+  //   name: "entry_main_data_id",
+  //   is_ref: true,
+  //   ref_table: "entry_main_data",
 
-    hide_in_form: true,
-  },
+  //   hide_in_form: true,
+  // },
 ];
 // ==== End entry
 
@@ -6597,6 +6631,7 @@ const service = [
     type: "uuid",
     readOnly: false,
     is_ref: true,
+    ref_table: "account",
     ref_table: UNIQUE_REF_TABLES.suppliers,
     ref_col: "id",
   },
@@ -6649,6 +6684,7 @@ const service = [
     type: "uuid",
     readOnly: false,
     is_ref: true,
+    ref_table: "user",
     ref_table: UNIQUE_REF_TABLES.supervisor,
     ref_col: "id",
   },
@@ -6708,6 +6744,7 @@ const service_lack_reason = [
     type: "uuid",
     required: false,
     is_ref: true,
+    ref_table: "user",
     ref_table: UNIQUE_REF_TABLES.employee,
     ref_col: "id",
   },
@@ -6739,6 +6776,7 @@ const service_material = [
     type: "uuid",
     required: false,
     is_ref: true,
+    ref_table: "user",
     ref_table: UNIQUE_REF_TABLES.employee,
     ref_col: "id",
   },
@@ -6771,6 +6809,7 @@ const service_worker = [
     type: "uuid",
     readOnly: false,
     is_ref: true,
+    ref_table: "user",
     ref_table: UNIQUE_REF_TABLES.employee,
     ref_col: "id",
   },
@@ -7161,10 +7200,10 @@ const bill_group = {
       fields: bill_pattern_options,
       tab_name: "bill_pattern",
     },
-    [BILL_PATTERN_STEPS.bill_pattern_bill_details]: {
-      fields: bill_pattern_bill_details,
-      tab_name: "bill_pattern",
-    },
+    // [BILL_PATTERN_STEPS.bill_pattern_bill_details]: {
+    //   fields: bill_pattern_bill_details,
+    //   tab_name: "bill_pattern",
+    // },
 
     [BILL_PATTERN_STEPS.bill_pattern_references]: {
       fields: bill_pattern_references,

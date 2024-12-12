@@ -20,12 +20,12 @@ export const EntryHead = ({
   return (
     <div className="">
       <div className={`grid grid-cols-2 md:grid-cols-3 gap-4`}>
-        {/* <Input
+        <Input
           value={number}
           readOnly={!isNewOne}
           {...fields["number"]}
           className="border-0 !rounded-none !h-full"
-        /> */}
+        />
         {/* <div className="flex gap-2">
           <p
             className={`border h-[39px] bg-blue-100 dark:bg-[#444] rounded p-1 `}

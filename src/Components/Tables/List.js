@@ -21,6 +21,31 @@ import useCurd from "Hooks/useCurd";
 
 let columnBeingDragged;
 
+const ContextMenuComponent = ({ items, x, y }) => (
+  <ul
+    style={{
+      position: "absolute",
+      top: y,
+      left: x,
+      backgroundColor: "white",
+      border: "1px solid #ccc",
+      listStyle: "none",
+      padding: "10px",
+      zIndex: 1000,
+    }}
+  >
+    {items.map((item, index) => (
+      <li
+        key={index}
+        style={{ padding: "5px 10px", cursor: "pointer" }}
+        onClick={item.onClick}
+      >
+        {item.label}
+      </li>
+    ))}
+  </ul>
+);
+
 const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
   const { t } = useTranslation();
   const params = useParams();
@@ -34,6 +59,25 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
   const [openColumnsSetting, setOpenColumnsSetting] = useState(false);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [filters, setFilters] = useState({});
+  const [contextMenu, setContextMenu] = useState(null);
+
+  const handleContextMenu = (event) => {
+    event.preventDefault();
+    setContextMenu({
+      x: event.pageX,
+      y: event.pageY,
+      items: [
+        {
+          label: "About Option 1",
+          onClick: () => alert("About Option 1 clicked"),
+        },
+        {
+          label: "About Option 2",
+          onClick: () => alert("About Option 2 clicked"),
+        },
+      ],
+    });
+  };
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [name, "table"],
@@ -49,12 +93,14 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
     let ids = Object.keys(rowSelection);
     const res = await remove(name, ids);
     if (res?.success) {
-      refetch()
+      refetch();
       // setRowSelection([]);
       // await refetchData();
     }
     setOpenConfirmation(false);
   };
+
+  const closeContextMenu = () => setContextMenu(null);
 
   return (
     <>
@@ -69,7 +115,14 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
       <BlockPaper
         title={name}
         contentBar={
-          <div className="flex gap-4 items-center justify-between mb-4">
+          <div
+            className="flex gap-4 items-center justify-between mb-4"
+            onContextMenu={handleContextMenu}
+            onClick={closeContextMenu}
+            // style={{ height: "100vh" }}
+          >
+            {contextMenu && <ContextMenuComponent {...contextMenu} />}
+
             <div className="flex gap-2 items-center">
               <div className="relative">
                 <div className="relative md:block ">
@@ -104,7 +157,7 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
                 </button>
               ) : (
                 <Link
-                  to={urlToAdd ? urlToAdd(name) : `/${name}`}
+                  to={urlToAdd ? urlToAdd(name) : `/form/${name}`}
                   className="flex items-center gap-2 bg-blue-500 text-sm text-white py-2 rounded px-2 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
                 >
                   <PlusIcon className="w-6 h-6" circle />

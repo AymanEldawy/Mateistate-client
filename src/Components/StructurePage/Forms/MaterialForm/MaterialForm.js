@@ -16,6 +16,7 @@ import useCurd from "Hooks/useCurd";
 const MaterialForm = ({ popupView }) => {
   const name = "material";
   const params = useParams();
+  const navigate = useNavigate();
   const materialId = params?.id;
   const { remove } = useCurd();
   const methods = useForm({
@@ -46,15 +47,16 @@ const MaterialForm = ({ popupView }) => {
       reset(data);
     },
   });
-  
+
   const onDelete = async () => {
     let data = watch(name);
     const response = await remove(name, materialId);
+    navigate(-1);
   };
 
   const onSubmit = async (value) => {
     if (!isDirty) return;
-    
+
     const getTheFunInsert = INSERT_FUNCTION?.material;
     const res = await getTheFunInsert(value);
 

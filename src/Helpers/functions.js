@@ -364,9 +364,12 @@ export async function uploadAttachment({
 }
 
 export function getUniqueFieldLabel(item, table, refName, locale) {
-  if (locale === "en" && item?.ltnName) {
-    return item?.ltnName;
+  if (locale === "en" && table === 'material') {
+    return item?.ltnName ? `${item?.code}-${item?.ltnName}` : `${item?.code}-${item?.name}`;
   }
+  // if (locale === "en" && item?.ltnName) {
+  //   return item?.ltnName;
+  // }
 
   return item?.number && !IGNORED_SHOW_NUMBER_TABLE[table]
     ? `${item?.internal_number || item?.number}-${item?.[refName || "name"]}${
@@ -555,4 +558,17 @@ export function getOne(name, value, column = "id") {
   return CURD.read(name, {
     conditions: [{ type: "and", conditions: [[column, "=", value]] }],
   });
+}
+
+
+export function toTree(data, pid = null) {
+  return data?.reduce((r, e) => {
+    if (e.parent_id == pid) {
+      const obj = { ...e };
+      const children = toTree(data, e.id);
+      if (children.length) obj.children = children;
+      r.push(obj);
+    }
+    return r;
+  }, []);
 }

@@ -13,6 +13,7 @@ import {
   ACCOUNT_ASSEMBLY_TYPE_NAME,
   ACCOUNT_DISTRIBUTIVE_TYPE_NAME,
 } from "Helpers/GENERATE_STARTING_DATA";
+import NewUniqueField from "Components/StructurePage/CustomFields/NewUniqueField";
 
 export const AccountFormFields = ({
   fields,
@@ -30,6 +31,8 @@ export const AccountFormFields = ({
     return hash;
   }, []);
 
+  console.log(watch());
+  
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">
@@ -45,10 +48,8 @@ export const AccountFormFields = ({
         <Select
           {...fieldsHash?.type}
           error={errors?.type ? "Field is required" : ""}
-          
         />
       </div>
-
       {watch("type") === 1 ? (
         <div className="flex-1 grid grid-cols-1 my-4 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">
           {/* <CurrencyFieldGroup
@@ -73,11 +74,7 @@ export const AccountFormFields = ({
           />
         </div>
       ) : null}
-      <Textarea
-        {...fieldsHash?.note}
-        updatedName={`note`}
-      
-      />
+      <Textarea {...fieldsHash?.note} updatedName={`note`} />
       {/* {watch('type') === 2 ? (<></>) : null} */}
       {watch("type") === 3 ? (
         <div

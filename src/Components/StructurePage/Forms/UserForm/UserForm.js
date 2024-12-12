@@ -11,7 +11,7 @@ import { removeNullValues } from "Helpers/functions";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { ReportFilterBuildings } from "Components/ReportsComponents/ReportFilterBuildings";
+import { ReportFilterBuildings } from "Components/ReportsComponents/TypesFilter/ReportFilterBuildings";
 import { ReportFilterCategories } from "Components/ReportsComponents/ReportFilterCategories";
 import {
   USER_SUPERVISOR_CODE,

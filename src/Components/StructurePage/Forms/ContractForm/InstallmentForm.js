@@ -305,7 +305,7 @@ const InstallmentForm = ({
           watch("installment_grid")?.length < 1 ? null : (
             <Button
               type="button"
-              title={watch("installment.id") ? "Modify" : "Submit"}
+              title={watch("installment.id") ? "Modify" : "Save"}
               disabled={watch("installment_grid")?.length < 1}
               onClick={onSubmitInstallment}
             />

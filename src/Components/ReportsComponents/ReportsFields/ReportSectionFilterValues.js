@@ -32,7 +32,10 @@ export const ReportSectionFilterValues = ({
         label="field"
         name="field"
         isArray
-        list={["debit", "credit"]}
+        list={[
+          { id: 1, name: "debit" },
+          { id: 2, name: "credit" },
+        ]}
         labelClassName="w-[120px]"
       />
       <ReportSelectField
@@ -40,13 +43,13 @@ export const ReportSectionFilterValues = ({
         name="transaction"
         isArray
         list={[
-          "Without",
-          "less than",
-          "more than",
-          "equal",
-          "between",
-          "less or equal",
-          "largest or equal",
+          { id: 0, name: "Without" },
+          { id: 1, name: "less than" },
+          { id: 2, name: "more than" },
+          { id: 3, name: "equal" },
+          { id: 4, name: "between" },
+          { id: 5, name: "less or equal" },
+          { id: 6, name: "largest or equal" },
         ]}
         labelClassName="w-[120px]"
       />

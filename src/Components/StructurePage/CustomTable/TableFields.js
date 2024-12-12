@@ -73,7 +73,7 @@ const TableFields = ({
           }`}
         >
           <thead
-            className={`text-xs text-gray-700 uppercase dark:bg-dark-border dark:text-gray-300 bg-gray-200 ${theadClassName}`}
+            className={`sticky top-0 z-20 text-xs text-gray-700 uppercase dark:bg-dark-border dark:text-gray-300 bg-gray-200 ${theadClassName}`}
           >
             <tr>
               <th
@@ -149,6 +149,7 @@ const TableFields = ({
                           ? rowStyles(index)
                           : rowStyles
                       }
+                      
                     >
                       <td
                         className={`min-w-[40px] ${tdClassName} border dark:border-dark-border relative ${numberClassName}`}

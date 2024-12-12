@@ -1022,13 +1022,15 @@ export const generateEntryFromBill = async ({
     currency_val = 1,
     note = "",
     bill_date = new Date().toISOString(),
+    subtotal = 0,
     total = 0,
     discounts = 0,
     extras = 0,
     vat_amount = 0,
   } = values?.bill || {};
 
-  const totalAmount = total + discounts + extras + vat_amount;
+  const totalAmount = total // subtotal + extras + vat_amount - discounts;
+  // const totalAmount = subtotal + extras + vat_amount - discounts;
 
   let entry = {
     created_at: bill_date,
@@ -1079,6 +1081,7 @@ export const generateEntryFromBilInput = async ({
     note,
     bill_date,
     total,
+    subtotal,
     payment_method: type,
     vat_amount,
     discounts,
@@ -1109,7 +1112,7 @@ export const generateEntryFromBilInput = async ({
     ...defaultRow,
     account_id: material_account_id,
     observe_account_id: credit_account_id,
-    debit: total,
+    debit: subtotal,
     credit: 0,
   });
 
@@ -1118,7 +1121,7 @@ export const generateEntryFromBilInput = async ({
     account_id: credit_account_id,
     observe_account_id: material_account_id,
     debit: 0,
-    credit: total,
+    credit: subtotal,
   });
 
   // If there is a VAT
@@ -1222,6 +1225,7 @@ export const generateEntryFromBilOutput = async ({
     note,
     bill_date,
     total,
+    subtotal,
     payment_method: type,
     vat_amount,
     discounts,
@@ -1252,7 +1256,7 @@ export const generateEntryFromBilOutput = async ({
     ...defaultRow,
     account_id: debit_account_id,
     observe_account_id: material_account_id,
-    debit: total,
+    debit: subtotal,
     credit: 0,
   });
 
@@ -1261,7 +1265,7 @@ export const generateEntryFromBilOutput = async ({
     account_id: material_account_id,
     observe_account_id: debit_account_id,
     debit: 0,
-    credit: total,
+    credit: subtotal,
   });
 
   // If there is a VAT

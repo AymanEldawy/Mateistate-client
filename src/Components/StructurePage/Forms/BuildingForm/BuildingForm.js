@@ -152,6 +152,7 @@ const BuildingForm = ({ popupView }) => {
       await remove("cost_center", data?.main_cost_center_id);
       await remove("account", data?.building_account_id);
     }
+    navigate(-1)
   };
 
   const onSubmit = async (value) => {

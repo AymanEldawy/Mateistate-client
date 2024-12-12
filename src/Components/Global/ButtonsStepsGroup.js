@@ -46,7 +46,7 @@ export const ButtonsStepsGroup = ({
           </Link>
         ) : null}
         <Button
-          title={layout ? "Modify" : "submit"}
+          title={layout ? "Modify" : "Save"}
           loading={loading}
           disabled={disabled || loading}
         />

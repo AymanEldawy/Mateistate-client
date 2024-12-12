@@ -6,16 +6,27 @@ import {
   getContractMenus,
   getVouchersMenus,
 } from "Helpers/menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PlusIcon } from "Components/Icons";
 import { DEFAULT_BILL_MENU, SERVICE_MENU } from "Helpers/constants";
 
 export const PopupLinks = ({ onClose, name }) => {
+  console.log("🚀 ~ PopupLinks ~ name:", name);
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [links, setLinks] = useState([]);
 
   const getLinks = async () => {
     switch (name) {
+      case "user":
+        navigate("/user");
+        break;
+      case "user_work_times":
+        navigate("/timing");
+        break;
+      case "account":
+        navigate("/account");
+        break;
       case "entry_main_data":
         setLinks([
           {

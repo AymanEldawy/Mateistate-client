@@ -1,0 +1,42 @@
+[
+  {
+    "id": "8b0f89b3-1ca8-4c2f-918f-f94532130775",
+    "parent_id": null,
+    "final_id": null,
+    "internal_number": "1",
+    "total_debit": "153189",
+    "total_credit": "103000",
+    "level": 1,
+    "depth": 1
+  },
+  {
+    "id": "9ad1e43c-4986-4df3-8f86-037b0f8a8f87",
+    "parent_id": null,
+    "final_id": null,
+    "internal_number": "2",
+    "total_debit": "3000",
+    "total_credit": "1019.5",
+    "level": 1,
+    "depth": 1
+  },
+  {
+    "id": "1e286c27-80c5-4480-a5c9-68a658a1d14c",
+    "parent_id": null,
+    "final_id": null,
+    "internal_number": "3",
+    "total_debit": "28466.6",
+    "total_credit": "3149.5",
+    "level": 1,
+    "depth": 1
+  },
+  {
+    "id": "b8e0085e-78fb-4f82-95ba-0adb8ed9326c",
+    "parent_id": null,
+    "final_id": null,
+    "internal_number": "4",
+    "total_debit": "49000",
+    "total_credit": "50000",
+    "level": 1,
+    "depth": 1
+  }
+]

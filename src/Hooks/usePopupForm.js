@@ -5,6 +5,7 @@ export const PopupFormContext = createContext();
 
 export const PopupFormProvider = ({ children }) => {
   const [openForm, setOpenForm] = useState({});
+  const [shouldRefresh, setShouldRefresh] = useState(false);
   const [recordResponse, setRecordResponse] = useState(null);
 
   const dispatchForm = (form) => {
@@ -41,6 +42,7 @@ export const PopupFormProvider = ({ children }) => {
         ];
       });
       additional?.setValue(additional?.name, value);
+      setShouldRefresh((p) => !p);
     }
   };
 
@@ -52,6 +54,7 @@ export const PopupFormProvider = ({ children }) => {
         setRecordResponse,
         recordResponse,
         appendNewRecord,
+        shouldRefresh
       }}
     >
       {children}

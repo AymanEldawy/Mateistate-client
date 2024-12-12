@@ -16,8 +16,10 @@ import {
 import { getReportFields } from "Helpers/Reports";
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
 import { useEffect, useMemo, useState } from "react";
+import { usePopupForm } from "./usePopupForm";
 
 const useRefTable = (name, type = "form") => {
+  // const { shouldRefresh } = usePopupForm();
   const [isLoading, setIsLoading] = useState(false);
   const [CACHE_LIST, setCACHE_LIST] = useState({});
   const [fieldsHash, setFieldsHash] = useState({});
@@ -34,7 +36,7 @@ const useRefTable = (name, type = "form") => {
   const getRefTables = async () => {
     if (!fields?.length) return;
     setIsLoading(true);
-    
+
     let hash = {};
     let fieldsHash = {};
     for (let i = 0; i < fields?.length; i++) {
@@ -117,10 +119,16 @@ const useRefTable = (name, type = "form") => {
       ...hash,
     }));
     setFieldsHash(fieldsHash);
-    setIsLoading(false)
+    setIsLoading(false);
   };
-  
-  return { fields, fieldsHash, CACHE_LIST, setCACHE_LIST, loadingRefTableData: isLoading };
+
+  return {
+    fields,
+    fieldsHash,
+    CACHE_LIST,
+    setCACHE_LIST,
+    loadingRefTableData: isLoading,
+  };
 };
 
 export default useRefTable;

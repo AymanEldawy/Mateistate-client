@@ -1,4 +1,12 @@
+import { UNIQUE_REF_TABLES } from "Helpers/constants";
 import { ApiActions } from "./api";
+import {
+  MAIN_USERS_CODE,
+  USER_CUSTOMER_CODE,
+  USER_SUPERVISOR_CODE,
+  USER_SUPPLIER_CODE,
+  USER_WORKER_CODE,
+} from "Helpers/GENERATE_STARTING_DATA";
 
 export const getUserList = async (code) => {
   const response = await ApiActions.read("user", {
@@ -32,7 +40,7 @@ export const getRequestedMaterialsByServiceId = async (id) => {
       { type: "and", conditions: [["status", "=", 1]] },
       { type: "and", conditions: [["service_id", "=", id]] },
     ],
-    columns: ['id', 'name', 'price as unit_price', 'quantity', 'material_id']
+    columns: ["id", "name", "price as unit_price", "quantity", "material_id"],
   });
   return response;
 };
@@ -99,6 +107,15 @@ export const getAccountList = async () => {
   }
 
   return response?.result?.filter((item) => !hashIndexes?.[item?.id]);
+};
+
+export const getBillLastNumber = async (code) => {
+  const response = await ApiActions.read("bill", {
+    conditions: [{ type: "and", conditions: [["bill_kind", "=", +code]] }],
+    limit: 1,
+    sorts: [{ column: "number", order: "DESC", nulls: "last" }],
+  });
+  return +response?.result?.at(0)?.number || 0;
 };
 
 export const getVoucherLastNumber = async (code) => {
@@ -379,6 +396,54 @@ const owner_expenses = async (name) => {
     ],
   });
   return res?.result;
+};
+
+export const fetchSearch = async (field, value) => {
+  if (field?.is_ref && field?.no_filter) {
+    const response = await ApiActions.read(
+      field?.ref_table,
+      field?.conditions || {}
+    );
+    return response?.result;
+  }
+
+  if (field?.ref_table === "account") {
+    return await getAccountList();
+  }
+
+  if (field?.ref_table === "cost_center") {
+    return await getCostCenterList();
+  }
+
+  if (field?.ref_table === UNIQUE_REF_TABLES.clients) {
+    return await getAccountsChildrenByName(MAIN_USERS_CODE[1]);
+    // return await getAccountList();
+  }
+
+  if (field?.ref_table === UNIQUE_REF_TABLES.supervisor) {
+    return await getUserList(USER_SUPERVISOR_CODE);
+  }
+
+  if (field?.ref_table === UNIQUE_REF_TABLES.employee) {
+    return await getUserList(USER_WORKER_CODE);
+  }
+
+  if (field?.ref_table === UNIQUE_REF_TABLES.user_supplier) {
+    return await getUserList(USER_SUPPLIER_CODE);
+  }
+
+  if (field?.ref_table === UNIQUE_REF_TABLES.user_customer) {
+    return await getUserList(USER_CUSTOMER_CODE);
+  }
+
+  if (field?.ref_table === UNIQUE_REF_TABLES.suppliers) {
+    return await getAccountsChildrenByName(MAIN_USERS_CODE[2]);
+    // return await getAccountList();
+  }
+
+  if (field.is_ref) {
+    return await ApiActions.read(field?.ref_table, field?.conditions || {});
+  }
 };
 
 const data = {

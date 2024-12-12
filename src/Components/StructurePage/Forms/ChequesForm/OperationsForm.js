@@ -358,7 +358,7 @@ export const OperationsForm = ({
           await generateEntryFromChqOperation({
             created_from_id: id,
             created_from: CREATED_FROM_CHQ_OPERATION_CODE,
-            created_from_code: +PATTERN_SETTINGS?.code,
+            created_from_code: name,
             values: watch(),
           });
         }
@@ -424,7 +424,7 @@ export const OperationsForm = ({
                     </button>
                   ) : null}
                   <Button
-                    title="Submit"
+                    title="Save"
                     loading={loading}
                     disabled={!isDirty || isSubmitting || loading}
                   />

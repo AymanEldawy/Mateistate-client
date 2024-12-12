@@ -7,6 +7,7 @@ import {
   ClipboardIcon,
   PuzzleIcon,
   BuildingIcon,
+  StoreIcon,
 } from "../Components/Icons";
 import { ApiActions } from "./Lib/api";
 import { SELECT_LISTS } from "./constants";
@@ -441,6 +442,71 @@ export const menuData = [
       },
     ],
   },
+  {
+    key: "Stores",
+    name: "Stores",
+    link: "",
+    icon: <StoreIcon />,
+    children: [
+      {
+        key: "materials",
+        name: "Materials",
+        subChild: [
+          {
+            key: "Group",
+            name: "materials Group Card",
+            link: "/list/material_group",
+          },
+          {
+            key: "Material",
+            name: "Material Card",
+            link: "/list/material",
+          },
+
+          {
+            key: "warehouse report",
+            name: "warehouse report",
+            link: "/reports/warehouse-report",
+          },
+        ],
+      },
+      {
+        key: "item activity",
+        name: "item activity",
+        link: "/reports/item-activity",
+      },
+      {
+        key: "Inventory report",
+        name: "Inventory report",
+        link: "/reports/inventory-report",
+      },
+      {
+        key: "Ending Inventory report",
+        name: "Ending Inventory report",
+        link: "/reports/ending-inventory-report",
+      },
+      {
+        key: "Sales Report",
+        name: "Sales Report",
+        link: "/reports/sales-report",
+      },
+      {
+        key: "Bill Details report",
+        name: "Bill Details report",
+        link: "/reports/bill-details-report",
+      },
+      {
+        key: "Bill profit report",
+        name: "Bill profit report",
+        link: "/reports/bill-profit-report",
+      },
+      {
+        key: "store",
+        name: "stores",
+        link: "/list/store",
+      },
+    ],
+  },
   // Reports End
 
   // {
@@ -526,35 +592,9 @@ export const menuData = [
         ],
       },
       {
-        key: "materials",
-        name: "Materials",
-        subChild: [
-          {
-            key: "Group",
-            name: "materials Group Card",
-            link: "/list/material_group",
-          },
-          {
-            key: "Material",
-            name: "Material Card",
-            link: "/list/material",
-          },
-          {
-            key: "Unregister Material",
-            name: "Unregister Material",
-            link: "/materials/unregister-material",
-          },
-          {
-            key: "warehouse report",
-            name: "warehouse report",
-            link: "/reports/warehouse-report",
-          },
-        ],
-      },
-      {
-        key: "store",
-        name: "stores",
-        link: "/list/store",
+        key: "Unregister Material",
+        name: "Unregister Material",
+        link: "/materials/unregister-material",
       },
       {
         key: "user_work_times",

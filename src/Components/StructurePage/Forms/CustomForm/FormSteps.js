@@ -7,7 +7,7 @@ import INSERT_FUNCTION from "Helpers/Lib/global-insert";
 import { useForm } from "react-hook-form";
 import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { SHOULD_DELETE_COST_CENTER } from "Helpers/constants";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
@@ -23,6 +23,7 @@ const FormSteps = ({
   oldValues = null,
 }) => {
   const params = useParams();
+  const navigate = useNavigate();
   const id = params?.id;
   const { remove} = useCurd();
   const { appendNewRecord } = usePopupForm();
@@ -73,7 +74,9 @@ const FormSteps = ({
       if (SHOULD_DELETE_COST_CENTER?.[tabNames[0]]) {
         await remove("cost_center", data?.cost_center_id);
       }
+      navigate(-1)
     }
+
   };
 
   // Handel Submit

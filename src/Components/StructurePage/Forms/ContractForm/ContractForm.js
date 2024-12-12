@@ -468,6 +468,12 @@ const ContractForm = () => {
                 fields={fields}
                 values={watch()?.[tab]}
                 rowsCount={watch()?.[tab]?.length}
+                rowStyles={(index) => ({
+                  background:
+                    index % 2
+                      ? PATTERN_SETTINGS?.table_color1
+                      : PATTERN_SETTINGS?.table_color2,
+                })}
               />
             </div>
           ) : (

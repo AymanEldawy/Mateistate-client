@@ -3,7 +3,7 @@ import "number-to-text/converters/en-us";
 import getFormByTableName from "Helpers/Forms/forms";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useRefTable from "Hooks/useRefTables";
 import { useQuery } from "@tanstack/react-query";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
@@ -23,7 +23,10 @@ import { ViewEntry } from "Components/Global/ViewEntry";
 import useCurd from "Hooks/useCurd";
 import { useTranslation } from "react-i18next";
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
-import { getRequestedMaterialsByServiceId } from "Helpers/Lib/global-read";
+import {
+  getBillLastNumber,
+  getRequestedMaterialsByServiceId,
+} from "Helpers/Lib/global-read";
 import { toast } from "react-toastify";
 // import { numberToText } from "Helpers/functions";
 
@@ -62,8 +65,9 @@ let data = {
 const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
   const params = useParams();
   const { t } = useTranslation();
-  const { getOneBy } = useCurd();
+  const { getOneBy, remove } = useCurd();
   const id = params?.id;
+  const navigate = useNavigate();
   const [refresh, setRefresh] = useState(false);
 
   const { CACHE_LIST } = useRefTable("bill");
@@ -79,12 +83,21 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
     watch,
     setValue,
     reset,
-    formState: { errors },
-    clearErrors
+    formState: { errors, isDirty },
+    clearErrors,
   } = methods;
-  console.log(errors, "errors");
   const code = params?.code || patternCode;
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
+
+  useQuery({
+    queryKey: ["auto-increment", code],
+    queryFn: async () => {
+      const number = await getBillLastNumber(code);
+      setValue("bill.number", number + 1);
+      mergePatternWithBillData(PATTERN_SETTINGS);
+    },
+    enabled: !id,
+  });
 
   const { isLoading: LoadingPattern } = useQuery({
     queryKey: ["bill_pattern", code],
@@ -94,13 +107,12 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
       setPATTERN_SETTINGS(pattern);
       if (!id) {
         await mergePatternWithBillData(pattern, watch, setValue);
-        // reset({
-        //   bill:
-        // });
       }
       return pattern;
     },
   });
+
+  console.log("bill", watch());
 
   const { isLoading } = useQuery({
     queryKey: ["bill", id],
@@ -126,7 +138,6 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
     },
     // enabled: !id,
   });
-  console.log(id, "---sds");
 
   let fields = useMemo(() => {
     let hash = {};
@@ -155,7 +166,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
           (c) => c?.id === watch(name)
         )?.account_id;
         setValue("bill.customer_account_id", customer_account_id);
-        clearErrors('bill.customer_account_id')
+        clearErrors("bill.customer_account_id");
         setRefresh((p) => !p);
       }
 
@@ -183,18 +194,31 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
 
   const calculateMaterialsTotal = () => {
     const bill_material_details = watch("bill_material_details");
+    let taxable = 0;
+    let vat_amount = 0;
     let total = 0;
     let quantities = 0;
     for (let i = 0; i < bill_material_details?.length; i++) {
       let quantity = bill_material_details?.[i].quantity;
+      let percentage = bill_material_details?.[i].vat_percentage || 0;
       let unit_price = bill_material_details?.[i].unit_price;
       let currentTotal = quantity * unit_price;
+
+      taxable += +bill_material_details?.[i].vat_percentage;
       total += currentTotal || 0;
       quantities += +quantity || 0;
+
+      let amount = percentage ? (currentTotal * percentage) / 100 : 0;
+
       setValue(`bill_material_details.${i}.total_price`, currentTotal);
+      setValue(`bill_material_details.${i}.net`, currentTotal + amount);
+      setValue(`bill_material_details.${i}.vat_amount`, amount);
+      vat_amount += amount;
     }
     setValue("bill.total_quantities", parseInt(quantities));
     setValue("bill.subtotal", total);
+    setValue("bill.taxable", taxable);
+    setValue("bill.vat_amount", vat_amount);
     calculateTotal();
   };
 
@@ -204,12 +228,32 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
     let extras = 0;
     for (let i = 0; i < bill_discounts_details?.length; i++) {
       discounts += +bill_discounts_details?.[i]?.discount || 0;
+      if (
+        +bill_discounts_details?.[i]?.discount &&
+        !bill_discounts_details?.[i]?.account_id &&
+        PATTERN_SETTINGS?.discount_account_id
+      ) {
+        setValue(
+          `bill_discounts_details.${i}.account_id`,
+          PATTERN_SETTINGS?.discount_account_id
+        );
+      }
+      if (
+        +bill_discounts_details?.[i]?.extra &&
+        !bill_discounts_details?.[i]?.account_id &&
+        PATTERN_SETTINGS?.extra_account_id
+      ) {
+        setValue(
+          `bill_discounts_details.${i}.account_id`,
+          PATTERN_SETTINGS?.extra_account_id
+        );
+      }
+
       extras += +bill_discounts_details?.[i].extra || 0;
     }
-    console.log();
-
     setValue("bill.discounts", +discounts);
     setValue("bill.extras", +extras);
+
     calculateTotal();
   };
 
@@ -247,27 +291,40 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
     const extras = watch("bill.extras") || 0;
     // total always is calc all materials price
     let total = subtotal + (extras || 0);
-
     const vatAmount = (total * vatPercentage) / 100;
     let newTotal = total - discounts;
     newTotal += vatAmount;
 
-    setValue("bill.vat_amount", vatAmount);
+    // setValue("bill.vat_amount", vatAmount);
     setValue("bill.total", newTotal);
-    setValue("bill.net", newTotal - subtotal);
+    // setValue("bill.net", newTotal - subtotal);
     setValue("bill.bill_total_text", numberToText.convertToText(total));
   };
 
   const onSubmit = async () => {
+    const materials = watch("bill_material_details");
     if (Object.keys(errors).length) {
       toast.error("please fill the required fields");
       return;
     }
-    console.log("🚀 ~ onSubmit ~ response called :fsfsd");
+
+    if (watch("bill.total") <= 0) {
+      toast.error(
+        `Failed to add new ${PATTERN_SETTINGS?.name}, please fill required fields`
+      );
+      return;
+    }
+    if (!materials?.length || !materials?.at(0)?.total_price) {
+      toast.error(
+        `Failed to add new ${PATTERN_SETTINGS?.name}, please fill required fields`
+      );
+      return;
+    }
+    for (const material of materials) {
+    }
     const getTheFunInsert = INSERT_FUNCTION?.bill;
     setValue("bill.bill_kind", +code);
     const response = await getTheFunInsert(watch());
-    console.log("🚀 ~ onSubmit ~ response:", response);
     if (response?.success) {
       await generateEntryFromBill({
         values: watch(),
@@ -276,9 +333,23 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
         created_from_code: +code,
         pattern: PATTERN_SETTINGS,
       });
+      toast.success(
+        `Successfully ${params?.id ? "updated" : "inserted"} Bill ${watch(
+          "bill.number"
+        )}`
+      );
+      if (!params?.id) navigate(`/bill/${code}/${response?.record?.id}`);
+    } else {
+      toast.error(`Field to save Bill ${watch("bill.number")}`);
     }
   };
   console.log({ PATTERN_SETTINGS });
+  const onDelete = async () => {
+    const response = await remove("bill", params?.id);
+    if (response?.success) {
+      navigate(-1);
+    }
+  };
 
   return (
     <FormWrapperLayout
@@ -288,21 +359,27 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
       methods={methods}
       onSubmit={onSubmit}
       additionalButtons={params?.id && <ViewEntry id={params?.id} />}
+      key={code}
+      outerDelete={onDelete}
+      // disabledSubmit={isDirty||+watch("bill.total") <= 0 || !watch("bill_material_details")?.length}
     >
       <div className=" bg-[#EFF6FF] dark:bg-[#303030] p-4">
         <div className="grid grid-cols-3 items-start justify-between gap-4">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2" key={code}>
             {" "}
             <Input
               {...fields?.number}
               updatedName="bill.number"
+              key={code}
               tab="bill"
               error={errors?.bill?.number?.message}
               old={true}
+              readOnly
             />
             <Input
               {...fields?.issue_date}
               updatedName="bill.issue_date"
+              key={code}
               tab="bill"
               error={errors?.bill?.issue_date?.message}
               old={true}
@@ -310,6 +387,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <Input
               {...fields?.bill_date}
               updatedName="bill.bill_date"
+              key={code}
               tab="bill"
               values={watch()}
               error={errors?.bill?.bill_date?.message}
@@ -319,6 +397,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             {/* <Input
               {...fields?.kind}
               updatedName="bill.kind"
+              key={code}
               tab="bill"
               values={watch()}
               error={errors?.bill?.kind?.message}
@@ -328,6 +407,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <UniqueField
               {...fields?.customer_id}
               updatedName="bill.customer_id"
+              key={code}
               tab="bill"
               CACHE_LIST={CACHE_LIST}
               list={
@@ -343,11 +423,11 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
                   ? "Customer Name"
                   : "Supplier name"
               }
-              ref_table={
-                +PATTERN_SETTINGS?.bill_type === 2
-                  ? UNIQUE_REF_TABLES.user_customer
-                  : UNIQUE_REF_TABLES.user_supplier
-              }
+              // ref_table={
+              //   +PATTERN_SETTINGS?.bill_type === 2
+              //     ? UNIQUE_REF_TABLES.user_customer
+              //     : UNIQUE_REF_TABLES.user_supplier
+              // }
               error={errors?.bill?.customer_id?.message}
               old={true}
               containerClassName="flex !items-center"
@@ -358,6 +438,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <UniqueField
               {...fields?.cost_center_id}
               updatedName="bill.cost_center_id"
+              key={code}
               tab="bill"
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.cost_center : []}
@@ -379,6 +460,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <Select
               {...fields?.payment_method}
               updatedName="bill.payment_method"
+              key={code}
               tab="bill"
               values={watch()}
               error={errors?.bill?.payment_method?.message}
@@ -389,6 +471,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <Input
               {...fields?.receipt_number}
               updatedName="bill.receipt_number"
+              key={code}
               tab="bill"
               error={errors?.bill?.receipt_number?.message}
               old={true}
@@ -399,6 +482,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <UniqueField
               {...fields?.store_id}
               updatedName="bill.store_id"
+              key={code}
               tab="bill"
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.store : []}
@@ -411,6 +495,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <UniqueField
               {...fields?.customer_account_id}
               updatedName="bill.customer_account_id"
+              key={code}
               tab="bill"
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
@@ -427,6 +512,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <UniqueField
               {...fields?.material_account_id}
               updatedName="bill.material_account_id"
+              key={code}
               tab="bill"
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
@@ -442,6 +528,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             {/* <UniqueField
               {...fields?.vat_account_id}
               updatedName="bill.vat_account_id"
+              key={code}
               tab="bill"
               CACHE_LIST={CACHE_LIST}
               list={!!CACHE_LIST ? CACHE_LIST?.account : []}
@@ -461,6 +548,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
         <Textarea
           {...fields?.note}
           updatedName="bill.note"
+          key={code}
           tab="bill"
           containerClassName="col-span-full mt-2"
           textareaClassName="h-[60px]"
@@ -472,7 +560,8 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
           {t("materials")}
         </h3>
         <TableFields
-          containerClassName="bg-white dark:bg-dark-bg"
+          key={code}
+          containerClassName="bg-white dark:bg-dark-bg max-h-[240px]"
           theadClassName="!bg-transparent"
           CACHE_LIST={CACHE_LIST}
           errors={errors}
@@ -480,6 +569,12 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
           fields={getFormByTableName("bill_material_details")}
           tab={"bill_material_details"}
           tableError={errors?.bill?.["bill_material_details"]}
+          rowStyles={(index) => ({
+            background:
+              index % 2
+                ? PATTERN_SETTINGS?.table_color1
+                : PATTERN_SETTINGS?.table_color2,
+          })}
           // tableClassName="!border-collapse !border !border-gray-300"
           thClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center dark:bg-black dark:text-white"
           numberClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center text-black dark:bg-black dark:text-white"
@@ -491,7 +586,8 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
           {t("Accounts")}
         </h3>
         <TableFields
-          containerClassName="bg-white dark:bg-dark-bg"
+          key={code}
+          containerClassName="bg-white dark:bg-dark-bg max-h-[240px]"
           theadClassName="!bg-transparent"
           CACHE_LIST={CACHE_LIST}
           errors={errors}
@@ -501,6 +597,12 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
           tableError={errors?.bill?.["bill_discounts_details"]}
           thClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center dark:bg-black dark:text-white"
           numberClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center text-black dark:bg-black dark:text-white"
+          rowStyles={(index) => ({
+            background:
+              index % 2
+                ? PATTERN_SETTINGS?.table_color1
+                : PATTERN_SETTINGS?.table_color2,
+          })}
         />
       </div>
       <div className="my-4 bg-[#EFF6FF] dark:bg-[#303030] p-2">
@@ -509,6 +611,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <Input
               {...fields?.total_quantities}
               updatedName="bill.total_quantities"
+              key={code}
               tab="bill"
               // inputClassName="max-w-[80px]"
               error={errors?.bill?.total_quantities?.message}
@@ -517,6 +620,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <Input
               {...fields?.discounts}
               updatedName="bill.discounts"
+              key={code}
               tab="bill"
               error={errors?.bill?.discounts?.message}
               old={true}
@@ -524,6 +628,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <Input
               {...fields?.extras}
               updatedName="bill.extras"
+              key={code}
               tab="bill"
               error={errors?.bill?.extras?.message}
               old={true}
@@ -531,6 +636,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <Input
               {...fields?.taxable}
               updatedName="bill.taxable"
+              key={code}
               tab="bill"
               error={errors?.bill?.taxable?.message}
               old={true}
@@ -538,6 +644,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <Input
               {...fields?.vat_amount}
               updatedName="bill.vat_amount"
+              key={code}
               tab="bill"
               error={errors?.bill?.vat_amount?.message}
               old={true}
@@ -547,22 +654,25 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <Input
               {...fields?.subtotal}
               updatedName="bill.subtotal"
+              key={code}
               labelClassName="max-w-[80px]"
               tab="bill"
               error={errors?.bill?.subtotal?.message}
               old={true}
             />
-            <Input
+            {/* <Input
               {...fields?.net}
               updatedName="bill.net"
+              key={code}
               labelClassName="max-w-[80px]"
               tab="bill"
               error={errors?.bill?.net?.message}
               old={true}
-            />
+            /> */}
             <Input
               {...fields?.total}
               updatedName="bill.total"
+              key={code}
               labelClassName="max-w-[80px]"
               tab="bill"
               error={errors?.bill?.total?.message}
@@ -571,6 +681,7 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
             <Textarea
               {...fields?.bill_total_text}
               updatedName="bill.bill_total_text"
+              key={code}
               tab="bill"
               textareaClassName="h-[60px]"
               error={errors?.bill?.bill_total_text?.message}

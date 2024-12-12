@@ -8,7 +8,7 @@ import { CONSTANT_COLUMNS_NAME } from "Helpers/constants";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import Loading from "Components/Global/Loading";
 import FormTitle from "Components/Global/FormTitle";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useCurd from "Hooks/useCurd";
 import useRefTable from "Hooks/useRefTables";
 // const { Prompt } = "react-router-dom";
@@ -35,6 +35,8 @@ const FormWrapperLayout = ({
   additionalButtons,
 }) => {
   // const history = useHistory();
+  const params = useParams();
+  const navigate = useNavigate();
   const { loadingRefTableData } = useRefTable(name);
   const location = useLocation();
   const [refresh, setRefresh] = useState(false);
@@ -45,7 +47,7 @@ const FormWrapperLayout = ({
     formState: { isSubmitting, isDirty, errors },
     watch,
   } = methods;
-  console.log("🚀 ~ errors:", errors)
+  console.log("🚀 ~ errors:", errors);
   const [openConfirmation, setOpenConfirmation] = useState(false);
 
   useEffect(() => {
@@ -56,6 +58,7 @@ const FormWrapperLayout = ({
     if (outerDelete) return outerDelete();
     let res = await remove(tableName || name, itemId);
     if (res?.success) {
+      navigate("-1");
     }
     setOpenConfirmation(false);
   };
@@ -105,13 +108,23 @@ const FormWrapperLayout = ({
                 className={`flex justify-end gap-4 items-center mt-4 border-t pt-4`}
               >
                 {additionalButtons ? additionalButtons : null}
-                {onSubmit ? (
-                  <Button
-                    title={"Save"}
-                    classes="ltr:ml-auto rtl:mr-auto"
-                    disabled={!isDirty || disabledSubmit}
-                  />
-                ) : null}
+                <div className="flex gap-4 items-center ltr:ml-auto rtl:mr-auto">
+                  {onSubmit ? (
+                    <Button
+                      title={"Save"}
+                      classes=""
+                      disabled={!isDirty || disabledSubmit}
+                    />
+                  ) : null}
+                  {!!onDelete && params?.id ? (
+                    <Button
+                      title={"Delete"}
+                      type="button"
+                      classes="bg-red-500 hover:bg-red-700"
+                      onClick={() => setOpenConfirmation(true)}
+                    />
+                  ) : null}
+                </div>
               </div>
             )}
           </form>

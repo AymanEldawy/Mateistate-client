@@ -1,7 +1,7 @@
 import { getServiceUpdate } from "Helpers/Lib/global-read-update";
 import useFormSteps from "Hooks/useFormSteps";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Fields } from "../CustomForm/Fields";
 import { dynamicInsertIntoMultiStepsTable } from "Helpers/Lib/global-insert";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
@@ -19,6 +19,7 @@ import useCurd from "Hooks/useCurd";
 const ServiceForm = ({ popupView }) => {
   const name = "service";
   const params = useParams();
+  const navigate = useNavigate();
   const id = params?.id;
   const code = +params?.code;
 
@@ -68,7 +69,7 @@ const ServiceForm = ({ popupView }) => {
   };
 
   const fetchProblems = async (name, value) => {
-    const res = await getOneBy("category_problem",value, "category_id");
+    const res = await getOneBy("category_problem", value, "category_id");
     setCACHE_LIST((prev) => ({
       ...prev,
       category_problem: res?.result,
@@ -96,6 +97,7 @@ const ServiceForm = ({ popupView }) => {
   const onDelete = async () => {
     let data = watch("service");
     const response = await remove("service", data?.id);
+    navigate(-1);
   };
 
   const onSubmit = async (value) => {

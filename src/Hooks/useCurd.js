@@ -44,8 +44,20 @@ const useCurd = () => {
 
   // getOneBy
   const getOneBy = async (name, value, column = "id") => {
+    console.log(name, value, column);
+
     return curd.read(name, {
       conditions: [{ type: "and", conditions: [[column, "=", value]] }],
+    });
+  };
+
+  const getSearch = async (name, value, column = "name") => {
+    console.log(name, value, column);
+
+    return curd.read(name, {
+      conditions: [
+        { type: "and", conditions: [[column, "ilike", `%${value}%`]] },
+      ],
     });
   };
 
@@ -55,6 +67,7 @@ const useCurd = () => {
     remove,
     insert,
     getOneBy,
+    getSearch,
   };
 };
 

@@ -825,11 +825,11 @@ const journal_ledger_report = [
     label: "entry_number",
     field1Props: {
       type: "number",
-      name: "form",
+      name: "entry_num_from",
     },
     field2Props: {
       type: "number",
-      name: "to",
+      name: "entry_num_to",
     },
   },
 ];
@@ -1440,7 +1440,202 @@ const owner_expenses_report = [
   }),
 ];
 
+const item_activity_report = [
+  FIELDS_STRUCTURE.uniqueField({
+    label: "material/item",
+    name: "material",
+    ref_table: "material",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "class/group",
+    name: "material_group",
+    ref_table: "material_group",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "store",
+    name: "store",
+    ref_table: "store",
+  }),
+  FIELDS_STRUCTURE.client({
+    label: "client",
+  }),
+  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.currency(),
+  FIELDS_STRUCTURE.number({
+    name: "code",
+    label: "code",
+  }),
+];
+
+const inventory_report = [
+  FIELDS_STRUCTURE.uniqueField({
+    label: "material/item",
+    name: "material",
+    ref_table: "material",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "class/group",
+    name: "material_group",
+    ref_table: "material_group",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "store",
+    name: "store",
+    ref_table: "store",
+  }),
+  FIELDS_STRUCTURE.client({
+    label: "client",
+  }),
+  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.currency(),
+  FIELDS_STRUCTURE.number({
+    name: "code",
+    label: "code",
+  }),
+];
+
+const ending_inventory_report = [
+  FIELDS_STRUCTURE.uniqueField({
+    label: "material/item",
+    name: "material",
+    ref_table: "material",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "class/group",
+    name: "material_group",
+    ref_table: "material_group",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "store",
+    name: "store",
+    ref_table: "store",
+  }),
+  FIELDS_STRUCTURE.client({
+    label: "client",
+  }),
+  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.currency(),
+  FIELDS_STRUCTURE.number({
+    label: "code",
+    name: "code",
+  }),
+  FIELDS_STRUCTURE.selectField({
+    label: "unit",
+    name: "unit",
+    list: [
+      { id: 1, name: "Main unit" },
+      { id: 2, name: "Sell unit" },
+      { id: 3, name: "Buy unit" },
+    ],
+  }),
+  FIELDS_STRUCTURE.selectField({
+    label: "price type",
+    name: "price_type",
+    list: [
+      { id: 1, name: "Cost" },
+      { id: 2, name: "Weighted purchase chase average" },
+      { id: 3, name: "sale avg" },
+      { id: 4, name: "Max purchase" },
+      { id: 5, name: "Less purchase" },
+      { id: 6, name: "Max sale" },
+      { id: 7, name: "Less sale" },
+    ],
+  }),
+];
+
+const sales_report = [
+  FIELDS_STRUCTURE.uniqueField({
+    label: "material/item",
+    name: "material",
+    ref_table: "material",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "class/group",
+    name: "material_group",
+    ref_table: "material_group",
+  }),
+  FIELDS_STRUCTURE.uniqueField({
+    label: "store",
+    name: "store",
+    ref_table: "store",
+  }),
+  FIELDS_STRUCTURE.client({
+    label: "client",
+  }),
+  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.currency(),
+  FIELDS_STRUCTURE.number({
+    label: "code",
+    name: "code",
+  }),
+  FIELDS_STRUCTURE.number({
+    label: "classes_level",
+    name: "classes_level",
+  }),
+  FIELDS_STRUCTURE.number({
+    label: "every_number",
+    name: "every_number",
+  }),
+  FIELDS_STRUCTURE.selectField({
+    label: "every_duration",
+    name: "every_duration",
+    list: [
+      { id: 1, name: "week" },
+      { id: 2, name: "month" },
+      { id: 3, name: "year" },
+    ],
+  }),
+];
+
+const bill_details_report = [
+  FIELDS_STRUCTURE.account(),
+  FIELDS_STRUCTURE.client({
+    label: "client",
+  }),
+  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.currency(),
+];
+
+const bill_profit_report = [
+  FIELDS_STRUCTURE.account(),
+  FIELDS_STRUCTURE.client({
+    label: "client",
+  }),
+  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.currency(),
+  FIELDS_STRUCTURE.number({
+    label: "bill no",
+    name: "bill",
+  }),
+  FIELDS_STRUCTURE.selectField({
+    label: "price cost",
+    name: "price cost",
+    list: [
+      { id: 1, name: "Cost" },
+      { id: 2, name: "Weighted purchase chase average" },
+      { id: 3, name: "sale avg" },
+      { id: 4, name: "Max purchase" },
+      { id: 5, name: "Less purchase" },
+      { id: 6, name: "Max sale" },
+      { id: 7, name: "Less sale" },
+    ],
+  }),
+  FIELDS_STRUCTURE.note({
+    name: "view",
+    label: "view",
+  }),
+  FIELDS_STRUCTURE.note(),
+];
+
 const REPORTS_STRUCTURE = {
+  // New reports
+  bill_details_report,
+  bill_profit_report,
+  sales_report,
+  ending_inventory_report,
+  inventory_report,
+  item_activity_report,
+  // New reports
   contract_payments_report,
   returned_cheque_report,
   collection_cheque_report,

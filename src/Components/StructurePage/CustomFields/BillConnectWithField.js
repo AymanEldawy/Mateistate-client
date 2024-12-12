@@ -42,16 +42,19 @@ const BillConnectWithField = ({ tab, old }) => {
 
   useEffect(() => {
     async function fetchList(table) {
-      const data = await getServiceWithRequestedMaterials()
+      const data = await getServiceWithRequestedMaterials();
       if (data?.success) {
-        const list = data?.result?.map((item) => ({
-          value: item?.id,
-          label:
-            table === BILL_CONNECT_WITH_MAINTENANCES_NAME?.toLocaleLowerCase()
-              ? item?.number
-              : item?.name,
-        }));
-        setList(list);
+        let uniqueList = {};
+        for (const item of data?.result) {
+          uniqueList[item?.id] = {
+            value: item?.id,
+            label:
+              table === BILL_CONNECT_WITH_MAINTENANCES_NAME?.toLocaleLowerCase()
+                ? item?.number
+                : item?.name,
+          };
+        }
+        setList(Object.values(uniqueList));
       }
     }
     setSelectedItemNumber(watch(selectName));
@@ -75,14 +78,19 @@ const BillConnectWithField = ({ tab, old }) => {
       <div className={`flex ${old ? "flex-row items-center" : "flex-col"}`}>
         <label
           title="connect with"
-          className={`${old && "w-[190px]"} overflow-selectName text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize`}
+          className={`${
+            old && "w-[190px]"
+          } overflow-selectName text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize`}
         >
           connect with
         </label>
         <Controller
           name={selectName}
           control={control}
-          render={({ field: { onChange, onBlur, ref, value } ,fieldState: { error }}) => {
+          render={({
+            field: { onChange, onBlur, ref, value },
+            fieldState: { error },
+          }) => {
             return (
               <Select
                 menuPortalTarget={document?.body}
@@ -124,7 +132,10 @@ const BillConnectWithField = ({ tab, old }) => {
               name={selectNameId}
               control={control}
               defaultValue={null}
-              render={({ field: { onChange, onBlur, ref, value } ,fieldState: { error }}) => {
+              render={({
+                field: { onChange, onBlur, ref, value },
+                fieldState: { error },
+              }) => {
                 return (
                   <Select
                     placeholder="Connect with"

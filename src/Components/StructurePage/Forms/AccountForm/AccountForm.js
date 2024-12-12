@@ -19,6 +19,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import useCurd from "Hooks/useCurd";
+import { UniqueField } from "Components/StructurePage/CustomFields";
+import NewUniqueField from "Components/StructurePage/CustomFields/NewUniqueField";
 
 const automaticChangesOnAccount = async (name, watch, setValue) => {
   if (name === "parent_id") {
@@ -254,7 +256,12 @@ const AccountForm = ({ onClose, popupView }) => {
     }
     setIsLoading(false);
   };
+  const changeValue = () => {
+    setValue("account_id", "7c566459-8455-4b01-bb44-22298606273f");
+  };
 
+  console.log(watch());
+  
   return (
     <FormWrapperLayout
       name={name}
@@ -271,6 +278,13 @@ const AccountForm = ({ onClose, popupView }) => {
           watch(ACCOUNT_DISTRIBUTIVE_TYPE_NAME)?.length < 2)
       }
     >
+      {/* <button type="button" onClick={changeValue}>test</button>
+      <NewUniqueField
+        updatedName="account_id"
+        table="account"
+        ref_table="account"
+        ref_name="name"
+      /> */}
       <AccountFormFields
         CACHE_LIST={CACHE_LIST}
         fields={fields}

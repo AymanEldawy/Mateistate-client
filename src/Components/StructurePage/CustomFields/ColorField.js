@@ -72,15 +72,6 @@ const ColorField = ({
           style={{ backgroundColor: watch(updatedName || field?.name) }}
           onClick={() => setOpenColorList(true)}
         />
-
-        <input
-          readOnly
-          type={"hidden"}
-          {...register(updatedName || field.name, {
-            required: field?.required && `${field?.name} is required`,
-            validate: (value) => {},
-          })}
-        />
         {error ? (
           <ErrorText containerClassName="py-1">{error?.message}</ErrorText>
         ) : null}
@@ -105,14 +96,14 @@ const ColorField = ({
                   id="color"
                   type="color"
                   name="color"
+                  value={watch(updatedName || field.name)}
+                  defaultValue={watch(updatedName || field.name)}
                   onChange={(e) => setColor(e.target.value)}
-                  className={`border-none outline-none bg-transparent absolute top-0 left-0 w-full h-full opacity-0 flex items-center justify-center`}
+                  {...register(updatedName || field.name, {
+                    required: field?.required && `${field?.name} is required`,
+                  })}
+                  className={`border-none outline-none bg-transparent absolute top-0 left-0 w-full h-full flex items-center justify-center`}
                 />
-                {color === inputRef?.current?.value ? (
-                  <span className="h-6 w-6 rounded-full border-[3px] border-white block" />
-                ) : (
-                  <PlusIcon />
-                )}
               </div>
               <div className="grid grid-cols-5 gap-1">
                 {(availableColors || DEFAULT_COLORS)?.map((currentColor) => (

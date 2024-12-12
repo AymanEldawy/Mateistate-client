@@ -12,7 +12,7 @@ import TreeViewItem from "./TreeViewItem";
 import { DynamicForm } from "Components/StructurePage/Forms/CustomForm/DynamicForm";
 import { ApiActions } from "Helpers/Lib/api";
 
-const RenderTree = ({
+const MaterialRenderTree = ({
   chartTree,
   name,
   deleteItem,
@@ -131,6 +131,7 @@ const RenderTree = ({
         layoutBodyClassName={"!my-0"}
       >
         <DynamicForm
+          popupView
           oldValues={selectedItem}
           onSubmit={submit}
           name={name}
@@ -148,4 +149,4 @@ const RenderTree = ({
   );
 };
 
-export default RenderTree;
+export default MaterialRenderTree;

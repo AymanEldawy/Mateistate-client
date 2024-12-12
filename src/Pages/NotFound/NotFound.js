@@ -5,7 +5,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-const NouFound = () => {
+const NotFound = () => {
   const { t } = useTranslation();
   return (
     <Layout>
@@ -22,4 +22,4 @@ const NouFound = () => {
   );
 };
 
-export default NouFound;
+export default NotFound;

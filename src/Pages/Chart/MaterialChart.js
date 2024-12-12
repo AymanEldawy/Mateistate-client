@@ -10,30 +10,38 @@ import { Checkbox } from "Components/StructurePage/CustomFields";
 import { useQuery } from "@tanstack/react-query";
 import useCurd from "Hooks/useCurd";
 import { toTree } from "Helpers/functions";
+import MaterialRenderTree from "Components/MaterialTree/MaterialRenderTree";
 
-const Chart = () => {
+const MaterialChart = () => {
+  const name = "material";
   const { t } = useTranslation();
-  const params = useParams();
-  const { name } = params;
   const { remove, insert, get } = useCurd();
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: [name],
-    queryFn: async () => await get(name),
+  const [showStatus, setShowStatus] = useState(false);
+  const [storeId, setStoreId] = useState(false);
+  const {
+    data: chartTree,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: [name, "chart"],
+    queryFn: async () => {
+      const data = await get("store");
+      return toTree(data?.result?.slice(0, 50));
+    },
   });
 
-  const [chartTree, setChartTree] = useState([]);
-  const [showStatus, setShowStatus] = useState(false);
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (data?.result?.length) setChartTree(toTree(data?.result));
-    else setChartTree([]);
-  }, [isLoading, name, data]);
+  const { data: materialGroupChart, isLoading: isLoadingMaterialGroup } =
+    useQuery({
+      queryKey: [name, "material_group", storeId],
+      queryFn: async () => {
+        const data = await get("material_group");
+        return toTree(data?.result?.slice(0, 50));
+      },
+    });
 
   const deleteItem = async (itemId) => {
     const res = await remove(name, itemId);
-
     if (res.success) refetch();
   };
 
@@ -51,28 +59,19 @@ const Chart = () => {
 
   return (
     <BlockPaper
-      subTitle={
-        name === "account" ? (
-          <Checkbox
-            containerClassName="w-fit max-w-[120px] rounded-md"
-            text="Show Type"
-            onChange={(e) => setShowStatus(e.target.checked)}
-          />
-        ) : null
-      }
-      title={t("chart")}
+      title={t("stores")}
       key={name}
     >
       {!isLoading ? (
         <>
           {chartTree?.length ? (
-            <RenderTree
+            <MaterialRenderTree
               chartTree={chartTree}
-              name={name}
+              name={'store'}
               deleteItem={deleteItem}
               onSubmit={onSubmit}
               refetchData={refetch}
-              showStatus={showStatus}
+              onClickItem={(id) => setStoreId(id)}
             />
           ) : (
             <p className="bg-red-100 text-red-600 p-1 rounded-md text-center mt-2">
@@ -87,4 +86,4 @@ const Chart = () => {
   );
 };
 
-export default Chart;
+export default MaterialChart;

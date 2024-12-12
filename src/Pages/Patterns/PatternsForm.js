@@ -74,7 +74,7 @@ const PatternsForm = ({ layout }) => {
               activeStage={currentIndex}
               customName={
                 <span className="capitalize">
-                  {pattern?.replace(/_/g, " ")}
+                  {pattern?.replace(/_/g, " ")} ({watch('name')})
                 </span>
               }
             />
