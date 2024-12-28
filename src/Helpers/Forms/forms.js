@@ -413,7 +413,7 @@ const account = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
   FIELDS_STRUCTURE.number({
-    label: 'code',
+    label: "code",
     name: "code",
   }),
   FIELDS_STRUCTURE.name(),
@@ -791,7 +791,7 @@ const cost_center = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
   {
-    label: 'code',
+    label: "code",
     name: "code",
     type: "number",
 
@@ -4194,11 +4194,10 @@ const material_group = [
   FIELDS_STRUCTURE.id(),
   FIELDS_STRUCTURE.created_at(),
   {
-    label: "number",
-    name: "number",
-    type: "text",
-
-    hide_in_form: true,
+    label: "code",
+    name: "code",
+    type: "number",
+    required: true,
   },
   FIELDS_STRUCTURE.name(),
   { label: "ltnname", name: "ltnname", type: "text", required: false },
@@ -4450,7 +4449,7 @@ const bill = [
     label: "customer_id",
     name: "customer_id",
     type: "uuid",
-    required: true,
+    // required: true,
     is_ref: true,
     ref_table: "user",
     ref_col: "id",
@@ -4562,7 +4561,7 @@ const bill = [
   },
 ];
 const bill_discounts_details = [
-  { label: "number", name: "number", type: "number", required: false },
+  // { label: "number", name: "number", type: "number", required: false },
   // {
   //   label: "bill_id",
   //   name: "bill_id",
@@ -4638,6 +4637,7 @@ const bill_material_details = [
     ref_table: "material",
     ref_col: "id",
   },
+  { label: "unit", name: "unit" },
   { label: "quantity", name: "quantity", type: "number", required: false },
   { label: "unit_price", name: "unit_price", type: "number", required: false },
   {
@@ -4741,23 +4741,7 @@ const bill_pattern_accounts = [
     ref_table: "account",
     ref_col: "id",
   },
-  {
-    label: "vat_account_id",
-    name: "vat_account_id",
-    type: "uuid",
-    required: false,
-    is_ref: true,
-    ref_table: "account",
-    ref_col: "id",
-  },
-
-  {
-    label: "use_vat_account_from_customer_card",
-    name: "use_vat_account_from_customer_card",
-    type: "checkbox",
-    key: "switch",
-    required: false,
-  },
+ 
   FIELDS_STRUCTURE.selectField({
     label: "payment_method",
     name: "payment_method",
@@ -4788,6 +4772,28 @@ const bill_pattern_accounts = [
     is_ref: true,
     ref_table: "calculate_sale_cost_center",
     ref_col: "id",
+  },
+ 
+  {
+    label: "vat_account_id",
+    name: "vat_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+    ref_col: "id",
+  },
+  {
+    label: "vat_percentage",
+    name: "vat_percentage",
+    type: "number",
+  },
+  {
+    label: "use_vat_account_from_customer_card",
+    name: "use_vat_account_from_customer_card",
+    type: "checkbox",
+    key: "switch",
+    required: false,
   },
 ];
 const bill_pattern_entries = [
@@ -4965,7 +4971,7 @@ const bill_pattern_references = [
 
   { label: "references", name: "references", type: "jsonb[]", required: false },
 ];
-const bill_pattern_materials = [];
+// const bill_pattern_materials = [];
 
 // End Bill Pattern
 
@@ -7202,10 +7208,10 @@ const bill_group = {
       tab_name: "bill_pattern",
     },
 
-    [BILL_PATTERN_STEPS.bill_pattern_materials]: {
-      fields: bill_pattern_materials,
-      tab_name: "bill_pattern",
-    },
+    // [BILL_PATTERN_STEPS.bill_pattern_materials]: {
+    //   fields: bill_pattern_materials,
+    //   tab_name: "bill_pattern",
+    // },
   },
 };
 

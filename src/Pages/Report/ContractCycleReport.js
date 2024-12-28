@@ -25,7 +25,7 @@ const ContractCycleReport = () => {
   const [contractIds, setContractIds] = useState({});
   const [buildingsIds, setBuildingsIds] = useState({});
   const [data, setData] = useState([]);
-
+  
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 

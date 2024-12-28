@@ -1,24 +1,17 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { ApiActions } from "Helpers/Lib/api";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { baseURL } from "Helpers/Lib/api";
 
-const fetchQuery = async ({ table, limit, offset, page = 1 }) => {
-  try {
-    const response = await ApiActions.read(table, {
-      // You can include limit, offset, or any other parameters here
-      // limit,
-      // offset,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error("Unable to fetch data.");
-  }
+const fetchData = async (url) => {
+  const response = await axios.get(url);
+  return response.data;
 };
 
-const useFetchQuery = ({ table, limit, offset, page = 1 }) => {
-  const queryClient = useQueryClient();
-  return queryClient.fetchQuery([table, page], () =>
-    fetchQuery({ table, limit, offset, page })
-  );
+const useFetchData = (keys, url) => {
+  return useQuery({
+    queryKey:keys, 
+    queryFn: () => fetchData(`${baseURL + url}`)
+  });
 };
 
-export default useFetchQuery;
+export default useFetchData;

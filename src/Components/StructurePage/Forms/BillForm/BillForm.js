@@ -107,6 +107,8 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
     // enabled: !id,
   });
 
+  console.log(PATTERN_SETTINGS, "-dds");
+
   let fields = useMemo(() => {
     let hash = {};
     for (const field of getFormByTableName("bill")) {
@@ -125,6 +127,14 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
           numberToText.convertToText(+watch(name))
         );
       }
+      if (name === "bill.payment_method") {
+        if (watch(name) === 2) {
+          setValue(
+            "bill.customer_account_id",
+            PATTERN_SETTINGS.cash_account_id
+          );
+        }
+      }
       if (name === "bill.connect_with_id") {
         getMaterials(watch(name));
       }
@@ -138,19 +148,17 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
         setRefresh((p) => !p);
       }
 
-      if (
-        tab?.includes("bill_material_details")
-        // ||
-        // name?.indexOf("quantity") !== -1
-      ) {
+      if (tab?.includes("bill_material_details")) {
         calculateMaterialsTotal();
+        console.log("🚀 ~ subscription ~ name:", name);
+        if (name?.indexOf("material_id") !== -1) {
+          // set unit
+          getMaterialUnit(watch(name), name);
+        }
+        // if()
       }
 
-      if (
-        tab?.includes("bill_discounts_details")
-        // ||
-        // name?.indexOf("extras") !== -1
-      ) {
+      if (tab?.includes("bill_discounts_details")) {
         calculateVatAndDiscounts();
       }
       if (name === "bill.taxable") {
@@ -160,6 +168,18 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
     return () => subscription.unsubscribe();
   }, [watch, CACHE_LIST]);
 
+  const getMaterialUnit = async (materialId, name) => {
+    const response = await getOneBy("material", materialId, "id");
+    const material = response?.result?.at(0);
+    for (let index = 1; index < 4; index++) {
+      if (material?.[`defaults${index}`])
+        setValue(
+          name?.replace(/material_id/i, "unit"),
+          material?.[`unit${index}`]
+        );
+    }
+  };
+
   const calculateMaterialsTotal = () => {
     const bill_material_details = watch("bill_material_details");
     let taxable = 0;
@@ -167,9 +187,9 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
     let total = 0;
     let quantities = 0;
     for (let i = 0; i < bill_material_details?.length; i++) {
-      let quantity = bill_material_details?.[i].quantity;
+      let quantity = bill_material_details?.[i].quantity || 0;
       let percentage = bill_material_details?.[i].vat_percentage || 0;
-      let unit_price = bill_material_details?.[i].unit_price;
+      let unit_price = bill_material_details?.[i].unit_price || 0;
       let currentTotal = quantity * unit_price;
 
       taxable += +bill_material_details?.[i].vat_percentage;
@@ -234,6 +254,9 @@ const BillForm = ({ tableName, patternCode, popupView, oldValues }) => {
   const mergePatternWithBillData = async (pattern, watch, setValue) => {
     if (pattern?.payment_method) {
       setValue("bill.payment_method", pattern?.payment_method);
+    }
+    if (pattern?.payment_method) {
+      setValue("bill.taxable", pattern?.vat_percentage);
     }
     if (pattern?.cost_center_id) {
       setValue("bill.cost_center_id", pattern?.cost_center_id);

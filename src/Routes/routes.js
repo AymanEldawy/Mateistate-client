@@ -30,7 +30,11 @@ import Timing from "Pages/Timing/Timing";
 import Tools from "Pages/Tools/Tools";
 import ComplaintsReport from "Pages/Report/ComplaintsReport";
 import ProfitAndLossReport from "Pages/Report/Accounting/ProfitAndLossReport";
-import SalesReport from "Components/ReportsComponents/SalesReport";
+import SalesReport from "Pages/Report/Maintenances/SalesReport";
+import { createBrowserRouter } from "react-router-dom";
+import Account from "Pages/Tables/Account";
+import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import User from "Pages/Tables/User";
 
 const publicRoutes = [
   { path: "**", component: <NotFound /> },
@@ -38,9 +42,65 @@ const publicRoutes = [
   { path: "/signup", component: <Login /> },
 ];
 
+
+
 const authProtectedRoutes = [
   { path: "*", component: <NotFound /> },
   { path: "/", component: <Home /> },
+
+
+
+  // Forms
+ 
+  // Tables
+  { path: "/account", component: <Account /> },
+  { path: "/user", component: <User /> },
+  
+  { path: "/building", component: <Home /> },
+  { path: "/apartment", component: <Home /> },
+  { path: "/parking", component: <Home /> },
+  { path: "/parking", component: <Home /> },
+  { path: "/cost_center", component: <Home /> },
+  { path: "/owner", component: <Home /> },
+  { path: "/lessor", component: <Home /> },
+  { path: "/seller", component: <Home /> },
+  { path: "/reservation-property", component: <Home /> },
+  { path: "/bank", component: <Home /> },
+  { path: "/currency", component: <Home /> },
+  { path: "/shop", component: <Home /> },
+  { path: "/land", component: <Home /> },
+  { path: "/villa", component: <Home /> },
+  { path: "/owner_expenses_types", component: <Home /> },
+  { path: "/owner_expenses", component: <Home /> },
+  { path: "/watchman", component: <Home /> },
+  { path: "/lawsuit", component: <Home /> },
+  { path: "/store", component: <Home /> },
+  { path: "/material_group", component: <Home /> },
+  { path: "/material", component: <Home /> },
+  { path: "/service", component: <Home /> },
+  { path: "/category", component: <Home /> },
+  { path: "/category_problem", component: <Home /> },
+  { path: "/user_work_times", component: <Home /> },
+  { path: "/lack_reason", component: <Home /> },
+  { path: "/evacuation_request", component: <Home /> },
+  { path: "/contract_pattern", component: <Home /> },
+  { path: "/cheque_pattern", component: <Home /> },
+  { path: "/voucher_pattern", component: <Home /> },
+  { path: "/bill_pattern", component: <Home /> },
+  { path: "/voucher_main_data", component: <Home /> },
+  { path: "/bill", component: <Home /> },
+  { path: "/cheque", component: <Home /> },
+  { path: "/contract", component: <Home /> },
+  { path: "/entries/entry_main_data", component: <Home /> },
+
+
+  // Reports
+
+
+
+
+
+
   { path: "/timing", component: <Timing /> },
   // { path: "/buildings/:name/tools/:Guid", component: <Tools /> },
   { path: "/tools/:id", component: <Tools /> },
@@ -229,6 +289,8 @@ const authProtectedRoutes = [
   { path: "/cheques/:code/:name/:id", component: <ChequeForm /> },
   { path: "/cheques/:code/:name/", component: <ChequeForm /> },
   { path: "/list/:name/", component: <List /> },
+  { path: "/account", component: <Account /> },
+  // { path: "/list/:name/", component: <LayoutWrapper /> },
   {
     path: "/patterns/list/:name",
     component: <List urlToAdd={(name) => `/patterns/${name}`} />,
@@ -259,8 +321,8 @@ const authProtectedRoutes = [
     path: "/reservation_property/:id",
     component: <ReservationPropertyForm />,
   },
-  { path: "/account/:id", component: <AccountForm /> },
-  { path: "/account/", component: <AccountForm /> },
+  { path: "/account/update/:id", component: <AccountForm /> },
+  { path: "/account/add/", component: <AccountForm /> },
   { path: "/user/:id", component: <UserForm /> },
   { path: "/user/", component: <UserForm /> },
   {
@@ -304,8 +366,12 @@ const authProtectedRoutes = [
     path: "/reports/bill-profit-report",
     component: <BillProfitReport />,
   },
+  //
+
 
 ];
 
+const router = createBrowserRouter([...publicRoutes, authProtectedRoutes])
 export { authProtectedRoutes, publicRoutes };
+export default router
 

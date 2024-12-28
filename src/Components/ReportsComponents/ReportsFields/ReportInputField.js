@@ -85,7 +85,6 @@ const ReportInputField = ({
             );
           }
         }}
-        rules={{ required: field?.required }}
       />
     </div>
   );

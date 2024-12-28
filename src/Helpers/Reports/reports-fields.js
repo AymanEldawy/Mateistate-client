@@ -45,7 +45,6 @@ const contract_payments_report = [
     intValue: true,
     selectFirstAsDefault: true,
     list: [{ id: 0, name: "All" }, ...SELECT_LISTS("termination_date")],
-    required: false,
   },
 
   {
@@ -55,7 +54,6 @@ const contract_payments_report = [
     intValue: true,
     selectFirstAsDefault: true,
     list: [{ id: 0, name: "All" }],
-    required: false,
   },
   FIELDS_STRUCTURE.client(),
   {
@@ -65,7 +63,6 @@ const contract_payments_report = [
     intValue: true,
     selectFirstAsDefault: true,
     list: [{ id: 0, name: "All" }],
-    required: false,
   },
   {
     label: "blocked_units",
@@ -74,7 +71,6 @@ const contract_payments_report = [
     intValue: true,
     selectFirstAsDefault: true,
     list: [{ id: 0, name: "All" }],
-    required: false,
   },
   {
     label: "lawsuit",
@@ -83,7 +79,6 @@ const contract_payments_report = [
     intValue: true,
     selectFirstAsDefault: true,
     list: [{ id: 0, name: "All" }],
-    required: false,
   },
   FIELDS_STRUCTURE.selectField({
     label: "installments",
@@ -97,7 +92,6 @@ const contract_payments_report = [
     intValue: true,
     selectFirstAsDefault: true,
     list: [{ id: 0, name: "All" }],
-    required: false,
   },
 ];
 
@@ -125,7 +119,6 @@ const returned_cheque_report = [
     label: "reason",
     name: "reason",
     key: "select",
-    required: true,
     list: SELECT_LISTS("chq_return_reasons"),
   },
   FIELDS_STRUCTURE.textField({
@@ -628,7 +621,6 @@ const contract_expired_reports = [
     label: "apartment_id",
     name: "apartment_id",
     type: "uuid",
-    required: true,
     is_ref: true,
     ref_table: "apartment",
     ref_name: "apartment_no",
@@ -637,7 +629,6 @@ const contract_expired_reports = [
     label: "shop_id",
     name: "shop_id",
     type: "uuid",
-    required: true,
     is_ref: true,
     ref_table: "shop",
     ref_name: "shop_no",
@@ -646,7 +637,6 @@ const contract_expired_reports = [
     label: "parking_id",
     name: "parking_id",
     type: "uuid",
-    required: true,
     is_ref: true,
     ref_table: "parking",
     ref_name: "parking_no",
@@ -679,7 +669,6 @@ const earning_rental_income_earned_report = [
     label: "round_to",
     name: "round_to",
     key: "select",
-    required: false,
     intValue: true,
     list: SELECT_LISTS("contract_round_to"),
   },
@@ -1461,7 +1450,12 @@ const item_activity_report = [
   }),
   FIELDS_STRUCTURE.cost_center(),
   FIELDS_STRUCTURE.currency(),
-  FIELDS_STRUCTURE.number({
+  // FIELDS_STRUCTURE.number({
+  //   name: "code",
+  //   label: "code",
+  // }),
+  FIELDS_STRUCTURE.uniqueField({
+    ref_table: "material",
     name: "code",
     label: "code",
   }),
@@ -1488,7 +1482,8 @@ const inventory_report = [
   }),
   FIELDS_STRUCTURE.cost_center(),
   FIELDS_STRUCTURE.currency(),
-  FIELDS_STRUCTURE.number({
+  FIELDS_STRUCTURE.uniqueField({
+    ref_table: "material",
     name: "code",
     label: "code",
   }),
@@ -1515,10 +1510,12 @@ const ending_inventory_report = [
   }),
   FIELDS_STRUCTURE.cost_center(),
   FIELDS_STRUCTURE.currency(),
-  FIELDS_STRUCTURE.number({
-    label: "code",
+  FIELDS_STRUCTURE.uniqueField({
+    ref_table: "material",
     name: "code",
+    label: "code",
   }),
+
   FIELDS_STRUCTURE.selectField({
     label: "unit",
     name: "unit",
@@ -1564,9 +1561,10 @@ const sales_report = [
   }),
   FIELDS_STRUCTURE.cost_center(),
   FIELDS_STRUCTURE.currency(),
-  FIELDS_STRUCTURE.number({
-    label: "code",
+  FIELDS_STRUCTURE.uniqueField({
+    ref_table: "material",
     name: "code",
+    label: "code",
   }),
   FIELDS_STRUCTURE.number({
     label: "classes_level",

@@ -14,6 +14,7 @@ import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportF
 import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
 import { ReportStatementField } from "Components/ReportsComponents/ReportsFields/ReportStatementField";
 import { ReportBetweenDateField } from "Components/ReportsComponents/ReportsFields/ReportDateField";
+import { ReportFilterBillPattern } from "Components/ReportsComponents/TypesFilter/ReportFilterBillPattern";
 
 const REPORT_OPTIONS = [
   "Show_merged_shops_and_flats",
@@ -34,17 +35,23 @@ const VATBillsReport = () => {
   const [openReportResults, setOpenReportResults] = useState(false);
   const [buildingsIds, setBuildingsIds] = useState({});
   const [contractIds, setContractIds] = useState({});
+  const [billIds, setBillIds] = useState({});
   const [data, setData] = useState([]);
 
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
-    await REPORTS.nearToExpireContract();
+    let fn = REPORTS?.[name];
+    const res = await fn({
+      filters: watch(),
+      columns: Object.keys(selectedColumns),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
-
 
   return (
     <>
@@ -77,12 +84,10 @@ const VATBillsReport = () => {
                   setBuildingsIds={setBuildingsIds}
                   bodyClassName="h-[150px]"
                 />
-                <ReportFilterColumns
-                  title="Bill types"
-                  searchKey="accessorKey"
-                  columns={[]}
-                  selectedColumns={{}}
-                  setSelectedColumns={() => {}}
+
+                <ReportFilterBillPattern
+                  billIds={billIds}
+                  setBillIds={setBillIds}
                   bodyClassName="max-h-[80px]"
                 />
                 <ReportFilterColumns

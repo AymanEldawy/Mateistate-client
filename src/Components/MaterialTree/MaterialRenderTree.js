@@ -1,6 +1,4 @@
-import { useCallback } from "react";
-import { useState } from "react";
-
+import { useCallback, useState } from "react";
 import {
   FolderEmptyIcon,
   FolderMinusIcon,
@@ -8,19 +6,21 @@ import {
 } from "Components/Icons";
 
 import Modal from "Components/Global/Modal/Modal";
-import TreeViewItem from "./TreeViewItem";
 import { DynamicForm } from "Components/StructurePage/Forms/CustomForm/DynamicForm";
 import { ApiActions } from "Helpers/Lib/api";
+import MaterialTreeViewItem from "./MaterialTreeViewItem";
+import useContextMenu from "Hooks/useContextMenu";
 
 const MaterialRenderTree = ({
   chartTree,
   name,
-  deleteItem,
   onSubmit,
   refetchData,
   showStatus,
   onClickItem,
+  refetch,
 }) => {
+  const { handleContextMenu, activeItemId, contextMenuPosition } = useContextMenu();
   const [selectedItem, setSelectedItem] = useState(null);
   const [open, setOpen] = useState({});
 
@@ -48,6 +48,7 @@ const MaterialRenderTree = ({
   };
 
   const toggleOpen = (itemId, level) => {
+
     if (open[level] === itemId) {
       setOpen((prev) => {
         return {
@@ -65,21 +66,24 @@ const MaterialRenderTree = ({
   };
 
   const displayTree = useCallback(
-    (tree, level = 1) => {
+    (tree, level = 1, isMaterial) => {
       return tree?.map((item) => {
         return (
           <li className="space-x-3 w-fit mt-2 mb-2 last:mb-0" key={item?.id}>
-            <TreeViewItem
+            <MaterialTreeViewItem
+              isMaterial={isMaterial}
               onClickItem={() => onClickItem(item?.id)}
-              showStatus={showStatus}
-              deleteItem={deleteItem}
-              table={name}
               row={item}
               toggleOpen={() => {
-                if (item?.children?.length) toggleOpen(item?.id, level);
+                if (item?.children?.length || item?.materials?.length)
+                  toggleOpen(item?.id, level);
               }}
               onSelectedItem={() => onSelectItemHandler(item)}
               open={open}
+              refetch={refetch}
+              handleContextMenu={handleContextMenu}
+              activeItemId={activeItemId}
+              contextMenuPosition={contextMenuPosition}
               icon={
                 !item?.children?.length ? (
                   <span className="text-gray-400 dark:text-gray-700">
@@ -102,7 +106,25 @@ const MaterialRenderTree = ({
                   <ul
                     className={`relative bg-[#9991] dark:bg-[#1111] pr-4 !ml-4 rounded-md dark:before:border-dark-border before:border-l-2 before:absolute before:left-0 before:-z-1 before:h-full color-level-${level} after:opacity-20 after:w-4 after:h-full after:absolute after:top-0`}
                   >
-                    {displayTree(item?.children, level + 1)}
+                    {displayTree(
+                      item?.children?.sort((a, b) => a?.code - b?.code),
+                      level + 1
+                    )}
+                  </ul>
+                ) : null}
+              </>
+            ) : null}
+            {item?.materials?.length ? (
+              <>
+                {open[level] === item?.id ? (
+                  <ul
+                    className={`relative bg-[#9991] dark:bg-[#1111] pr-4 !ml-4 rounded-md dark:before:border-dark-border before:border-l-2 before:absolute before:left-0 before:-z-1 before:h-full color-level-${level} after:opacity-20 after:w-4 after:h-full after:absolute after:top-0`}
+                  >
+                    {displayTree(
+                      item?.materials?.sort((a, b) => a?.code - b?.code),
+                      level + 1,
+                      true
+                    )}
                   </ul>
                 ) : null}
               </>
@@ -143,7 +165,7 @@ const MaterialRenderTree = ({
       <ul
         className={`relative pr-4 ltr:!ml-4 rtl:!mr-4 rounded-md dark:before:border-dark-border ltr:before:border-l-2 rtl:before:border-r-2  before:absolute ltr:before:left-0 rtl:before:right-0 before:-z-1 before:h-full color-level-0 after:opacity-50 after:w-4 after:h-full after:absolute after:top-0`}
       >
-        {displayTree(chartTree)}
+        {displayTree(chartTree?.sort((a, b) => a?.code - b?.code))}
       </ul>
     </>
   );

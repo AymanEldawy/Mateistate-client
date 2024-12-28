@@ -14,6 +14,8 @@ import { ReportFilterColumns } from "Components/ReportsComponents/ReportFilterCo
 import { ReportFilterVoucherPattern } from "Components/ReportsComponents/ReportFilterVoucherPattern";
 import { ReportFilterChequePattern } from "Components/ReportsComponents/ReportFilterChequePattern";
 import { ReportStatementField } from "Components/ReportsComponents/ReportsFields/ReportStatementField";
+import REPORTS from "Helpers/Lib/global-reports";
+import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
 
 const CustomersAccountStatementReport = () => {
   const name = "customer_account_statement_report";
@@ -23,56 +25,83 @@ const CustomersAccountStatementReport = () => {
   const [selectedColumns, setSelectedColumns] = useState({});
   const [chqIds, setChqIds] = useState({});
   const [voucherIds, setVoucherIds] = useState({});
+  const [data, setData] = useState([]);
+  const [openReportResults, setOpenReportResults] = useState(false);
 
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
-  const onSubmit = (value) => {};
+  const onSubmit = async (value) => {
+    let fn = REPORTS?.[name];
+    const res = await fn({
+      filters: watch(),
+      columns: Object.keys(selectedColumns),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
+  };
 
   return (
-    <BlockPaper title={"Customer Account Statement Report"}>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8 items-start">
-            <ReportFilterFields>
-              <ReportFields CACHE_LIST={CACHE_LIST} fields={fields}
-              
-              sharedLabelClassName="w-[200px]"
-              />
-              <ReportBetweenDateField
-                customTitle={<CheckboxField name="allow_date" label="date" />}
-                date1Field={{ name: "start_date" }}
-                date2Field={{ name: "end_date" }}
-                sharedProps={{
-                  readOnly: !watch("allow_date"),
-                }}
-              />
+    <>
+      <BlockPaper title={"Customer Account Statement Report"}>
+        <FormProvider {...methods}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="relative"
+          >
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8 items-start">
+              <ReportFilterFields>
+                <ReportFields
+                  CACHE_LIST={CACHE_LIST}
+                  fields={fields}
+                  sharedLabelClassName="w-[200px]"
+                />
+                <ReportBetweenDateField
+                  customTitle={<CheckboxField name="allow_date" label="date" />}
+                  date1Field={{ name: "start_date" }}
+                  date2Field={{ name: "end_date" }}
+                  sharedProps={{
+                    readOnly: !watch("allow_date"),
+                  }}
+                />
 
-              <ReportPostedField />
-            </ReportFilterFields>
-            <div className="grid gap-4">
-              <ReportFilterChequePattern
-                chqIds={chqIds}
-                setChqIds={setChqIds}
+                <ReportPostedField />
+              </ReportFilterFields>
+              <div className="grid gap-4">
+                <ReportFilterChequePattern
+                  chqIds={chqIds}
+                  setChqIds={setChqIds}
+                />
+                <ReportFilterVoucherPattern
+                  voucherIds={voucherIds}
+                  setVoucherIds={setVoucherIds}
+                />
+                <ReportStatementField name="note" containerClassName="!m-0" />
+              </div>
+              <ReportFilterColumns
+                searchKey="accessorKey"
+                columns={columns}
+                selectedColumns={selectedColumns}
+                setSelectedColumns={setSelectedColumns}
+                bodyClassName="h-[380px]"
               />
-              <ReportFilterVoucherPattern
-                voucherIds={voucherIds}
-                setVoucherIds={setVoucherIds}
-              />
-              <ReportStatementField name="note" containerClassName="!m-0" />
             </div>
-            <ReportFilterColumns
-              searchKey="accessorKey"
-              columns={columns}
-              selectedColumns={selectedColumns}
-              setSelectedColumns={setSelectedColumns}
-              bodyClassName="h-[380px]"
+            <Button
+              onClick={() => setOpenReportResults(true)}
+              title="Show"
+              classes="my-4 flex ltr:ml-auto rtl:mr-auto"
             />
-          </div>
-          <Button title="Show" classes="my-4 flex ltr:ml-auto rtl:mr-auto" />
-        </form>
-      </FormProvider>
-    </BlockPaper>
+          </form>
+        </FormProvider>
+      </BlockPaper>
+      <ReportResultsWrapper
+        data={data}
+        columns={columns?.filter((c) => selectedColumns?.[c?.accessorKey])}
+        open={openReportResults}
+        onClose={() => setOpenReportResults(false)}
+      />
+    </>
   );
 };
 

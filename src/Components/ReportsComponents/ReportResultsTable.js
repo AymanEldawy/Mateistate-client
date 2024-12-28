@@ -9,7 +9,7 @@ import { useRef, useState } from "react";
 import { SortIcon } from "Components/Icons";
 import { useTranslation } from "react-i18next";
 import { TableSkeleton } from "../StructurePage/CustomTable/TableSkeleton";
-import { ResizeBar } from "Components/DynamicTable/TableResizeBar";
+import { ResizeBar } from "Components/TableComponents/TableResizeBar";
 let columnBeingDragged;
 
 export const ReportResultsTable = ({ data, columns, loading }) => {
@@ -69,7 +69,6 @@ export const ReportResultsTable = ({ data, columns, loading }) => {
     });
   }
 
-  // Print Function
   const handlePrint = () => {
     const printContents = tableRef.current.innerHTML;
     const originalContents = document.body.innerHTML;
@@ -79,20 +78,33 @@ export const ReportResultsTable = ({ data, columns, loading }) => {
     document.body.innerHTML = originalContents;
   };
 
-  // Save Excel File
   const handleSave = () => {
+
+    if (!data && data?.length === 0) {
+      console.error("Invalid data provided.");
+      return;
+    }
+
     const csvContent = `data:text/csv;charset=utf-8,${[
-      ["ID", "Name", "Age", "Job"],
-      ...users.map((user) => [user.id, user.name, user.age, user.job]),
+      columns.map((col) => col.header).join(","),
+
+      ...data.map((item) =>
+        columns
+          .map((col) => {
+            return item[col.accessorKey];
+          })
+          .join(",")
+      ),
     ]
-      .map((e) => e.join(","))
+      .map((e) => e)
       .join("\n")}`;
 
     const link = document.createElement("a");
     link.href = encodeURI(csvContent);
-    link.download = "users_data.csv";
+    link.download = `file.csv`;
     link.click();
   };
+
   return (
     <>
       <div className={`relative overflow-x-auto w-full text-sm`} ref={tableRef}>
@@ -117,7 +129,6 @@ export const ReportResultsTable = ({ data, columns, loading }) => {
                         e.preventDefault();
                       }}
                       onDrop={onDrop}
-                      // style={{ width: header.getSize() }}
                       className={` text-gray-700 whitespace-nowrap dark:text-gray-300 font-medium capitalize relative  group border-b border-gray-200 dark:border-dark-border px-4 py-2 cursor-move
                       ${
                         header.column.getIsSorted()
@@ -202,16 +213,16 @@ export const ReportResultsTable = ({ data, columns, loading }) => {
       <div className="mt-4">
         <button
           onClick={handleSave}
-          className="bg-blue-500 text-white px-4 py-2 mr-2"
+          className="bg-blue-500 rounded-lg text-white px-4 py-2 mr-2"
         >
           Save
         </button>
-        {/* <button
+        <button
           onClick={handlePrint}
-          className="bg-green-500 text-white px-4 py-2"
+          className="bg-green-500 rounded-lg text-white px-4 py-2"
         >
           Print
-        </button> */}
+        </button>
       </div>
     </>
   );

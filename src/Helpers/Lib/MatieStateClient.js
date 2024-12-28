@@ -104,29 +104,6 @@ class MatieStateClient {
     /** @private @type {string} */
   }
 
-  async getReport(reportName, data) {
-    try {
-      const response = await fetch(`${this.m_baseURL}/report/${reportName}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw await response.json();
-      }
-
-      return response.json();
-    } catch (error) {
-      throw {
-        success: false,
-        message: "Error Failed to retrieve report",
-        error,
-      };
-    }
-  }
 
   /**
    * Creates a record in the specified table.

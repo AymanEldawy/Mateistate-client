@@ -20,6 +20,7 @@ export const menuData = [
     icon: <UserIcon />,
     classes: "grid grid-cols-3 min-w-[650px] items gap-1",
     children: [
+
       {
         key: "accounts",
         name: "Accounts",

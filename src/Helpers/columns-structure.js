@@ -5,9 +5,10 @@ import {
   getUnitType,
 } from "./functions";
 import { BanknoteIcon, UserIcon } from "Components/Icons";
-import IndeterminateCheckbox from "Components/DynamicTable/IndeterminateCheckbox";
+import IndeterminateCheckbox from "Components/TableComponents/IndeterminateCheckbox";
 import { SELECT_LISTS } from "./constants";
 import { ApiActions } from "./Lib/api";
+import { DefaultColumnFilter } from "Components/TableComponents/ColumnFilter";
 
 const cheque_pattern = [
   {
@@ -892,23 +893,26 @@ const account = [
     id: "select",
     size: 40,
     isResizingColumn: false,
-    header: ({ table }) => (
+    header: ({ table }) => {
+      console.log("🚀 ~ table:", table)
+      return (
       <IndeterminateCheckbox
         {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
+          checked: table?.getIsAllRowsSelected(),
+          indeterminate: table?.getIsSomeRowsSelected(),
+          onChange: table?.getToggleAllRowsSelectedHandler(),
         }}
       />
-    ),
+    )},
     cell: ({ row }) => (
       <IndeterminateCheckbox
         {...{
-          checked: row.getIsSelected(),
-          disabled: !row.getCanSelect(),
-          indeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
+          checked: row?.getIsSelected(),
+          disabled: !row?.getCanSelect(),
+          indeterminate: row?.getIsSomeSelected(),
+          onChange: row?.getToggleSelectedHandler(),
         }}
+        style={{ px: "15px" }}
       />
     ),
   },
@@ -916,6 +920,15 @@ const account = [
     header: "number",
     accessorKey: "number",
     sortingFn: "myCustomSortingFn", // use custom global sorting function
+    Filter: DefaultColumnFilter,
+    enableColumnFilter: true,
+    accessorFn: (c) => {
+      // console.log(c,'---s');
+    },
+    filter:'includesStringSensitive',
+    filterFn: (c) => {
+      // console.log(c,'---s');
+    },
   },
 
   {
@@ -1629,6 +1642,7 @@ const accounting_voucher_grid_data = [
   { header: "voucher_main_data_id", accessorKey: "voucher_main_data_id" },
   { header: "note", accessorKey: "note" },
 ];
+
 
 const accounting_voucher_main_data = [
   {

@@ -12,6 +12,7 @@ import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportF
 import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
 import { ReportStatementField } from "Components/ReportsComponents/ReportsFields/ReportStatementField";
 import { CheckboxField } from "Components/StructurePage/CustomFields";
+import REPORTS from "Helpers/Lib/global-reports";
 
 const REPORT_OPTIONS = [
   "show_merged_shops_and_flats",
@@ -36,24 +37,14 @@ const LeasedUnitsReport = () => {
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
-  const onSubmit = async () => {
-    const res = await fetch(`http://localhost:4000/report/unit-leased-report`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsIn0.p5UuhOyn4nTAvmo8feVPpDuqm_pLTvIgD5XXH9JcMzM",
-        "ngrok-skip-browser-warning": "1",
-      },
-      body: JSON.stringify({
-        columns: Object.keys(selectedColumns),
-        filters: watch(),
-        buildings: Object.keys(buildingsIds),
-      }),
+  const onSubmit = async (value) => {
+    let fn = REPORTS?.[name];
+    const res = await fn({
+      filters: watch(),
+      columns: Object.keys(selectedColumns),
     });
-    const json = await res.json();
-
-    console.log("🚀 ~ onSubmit ~ res:", json);
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   return (

@@ -47,7 +47,6 @@ const FormWrapperLayout = ({
     formState: { isSubmitting, isDirty, errors },
     watch,
   } = methods;
-  console.log("🚀 ~ errors:", errors);
   const [openConfirmation, setOpenConfirmation] = useState(false);
 
   useEffect(() => {

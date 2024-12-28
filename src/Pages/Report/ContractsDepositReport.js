@@ -28,7 +28,12 @@ const ContractsDepositReport = () => {
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
-    await REPORTS.nearToExpireContract();
+    let fn = REPORTS?.[name];
+    const res = await fn({
+      filters: watch(),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   console.log({ filters: watch(), columns: Object.keys(selectedColumns) });

@@ -9,56 +9,77 @@ import { ReportFilterCard } from "Components/ReportsComponents/ReportFilterCard"
 import ReportInputField from "Components/ReportsComponents/ReportsFields/ReportInputField";
 import { ReportBetweenDateField } from "Components/ReportsComponents/ReportsFields/ReportDateField";
 import { getReportColumns } from "Helpers/Reports";
+import REPORTS from "Helpers/Lib/global-reports";
+import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
 
 const GeneralLedgerReport = () => {
   const name = "general_ledger_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
   const [selectedColumns, setSelectedColumns] = useState({});
+  const [data, setData] = useState([]);
+  const [openReportResults, setOpenReportResults] = useState(false);
 
   const columns = useMemo(() => getReportColumns(name), []);
-  const onSubmit = (value) => {};
+
+  const onSubmit = async (value) => {
+    let fn = REPORTS?.[name];
+    const res = await fn({
+      filters: watch(),
+      columns: Object.keys(selectedColumns),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
+  };
 
   return (
-    <BlockPaper title={"Ledger Report"}>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative">
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8 items-start">
-            <div className="grid gap-4">
-              <LedgerFilters />
-              <ReportFilterCard title="Accounts">
-                <CheckboxField
-                  {...{
-                    label: "show_sub_account",
-                    name: "show_sub_account",
-                  }}
-                />
-                <ReportInputField
-                  {...{
-                    label: "level",
-                    name: "level",
-                    type: "number",
-                  }}
-                  readOnly={!watch("show_sub_account")}
-                />
-              </ReportFilterCard>
-              <ReportFilterCard title="Show moving" containerClassName="!mt-0">
-                <CheckboxField
-                  {...{
-                    label: "show_debit",
-                    name: "show_debit",
-                  }}
-                />
-                <CheckboxField
-                  {...{
-                    label: "show_credit",
-                    name: "show_credit",
-                  }}
-                />
-              </ReportFilterCard>
-            </div>
-            <div>
-              {/* <ReportFilterCard title="Previous Years">
+    <>
+      <BlockPaper title={"Ledger Report"}>
+        <FormProvider {...methods}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="relative"
+          >
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8 items-start">
+              <div className="grid gap-4">
+                <LedgerFilters />
+                <ReportFilterCard title="Accounts">
+                  <CheckboxField
+                    {...{
+                      label: "show_sub_account",
+                      name: "show_sub_account",
+                    }}
+                  />
+                  <ReportInputField
+                    {...{
+                      label: "level",
+                      name: "level",
+                      type: "number",
+                    }}
+                    readOnly={!watch("show_sub_account")}
+                  />
+                </ReportFilterCard>
+                <ReportFilterCard
+                  title="Show moving"
+                  containerClassName="!mt-0"
+                >
+                  <CheckboxField
+                    {...{
+                      label: "show_debit",
+                      name: "show_debit",
+                    }}
+                  />
+                  <CheckboxField
+                    {...{
+                      label: "show_credit",
+                      name: "show_credit",
+                    }}
+                  />
+                </ReportFilterCard>
+              </div>
+              <div>
+                {/* <ReportFilterCard title="Previous Years">
                 <CheckboxField
                   {...{
                     label: "include_previous_years",
@@ -75,66 +96,77 @@ const GeneralLedgerReport = () => {
                   readOnly={!watch("prev_year")}
                 />
               </ReportFilterCard> */}
-              <div className="grid gap-4">
-                <ReportBetweenDateField
-                  date1Field={{ name: "start_date" }}
-                  date2Field={{ name: "end_date" }}
-                />
-                <ReportFilterCard title="Statement">
-                  <ReportInputField
-                    {...{
-                      label: "include_words",
-                      name: "include_words",
-                      type: "text",
-                    }}
+                <div className="grid gap-4">
+                  <ReportBetweenDateField
+                    date1Field={{ name: "start_date" }}
+                    date2Field={{ name: "end_date" }}
                   />
-                  <ReportInputField
-                    {...{
-                      label: "exception_words",
-                      name: "exception_words",
-                      type: "text",
-                    }}
-                  />
-                </ReportFilterCard>
-                <ReportFilterCard title="Migration">
-                  <CheckboxField
-                    {...{
-                      label: "displaying_transferred_constraints",
-                      name: "transferred",
-                    }}
-                  />
-                  <CheckboxField
-                    {...{
-                      label: "displaying_untransferred_constraints",
-                      name: "Untransferred",
-                    }}
-                  />
-                </ReportFilterCard>
+                  <ReportFilterCard title="Statement">
+                    <ReportInputField
+                      {...{
+                        label: "include_words",
+                        name: "include_words",
+                        type: "text",
+                      }}
+                    />
+                    <ReportInputField
+                      {...{
+                        label: "exception_words",
+                        name: "exception_words",
+                        type: "text",
+                      }}
+                    />
+                  </ReportFilterCard>
+                  <ReportFilterCard title="Migration">
+                    <CheckboxField
+                      {...{
+                        label: "displaying_transferred_constraints",
+                        name: "transferred",
+                      }}
+                    />
+                    <CheckboxField
+                      {...{
+                        label: "displaying_untransferred_constraints",
+                        name: "Untransferred",
+                      }}
+                    />
+                  </ReportFilterCard>
+                </div>
               </div>
+              <ReportFilterColumns
+                searchKey="accessorKey"
+                columns={columns}
+                selectedColumns={selectedColumns}
+                setSelectedColumns={setSelectedColumns}
+              />
             </div>
-            <ReportFilterColumns
-              searchKey="accessorKey"
-              columns={columns}
-              selectedColumns={selectedColumns}
-              setSelectedColumns={setSelectedColumns}
+            <Button
+              onClick={() => setOpenReportResults(true)}
+              title="Show"
+              classes="my-4 flex ltr:ml-auto rtl:mr-auto"
             />
-          </div>
-          <Button title="Show" classes="my-4 flex ltr:ml-auto rtl:mr-auto" />
-        </form>
-      </FormProvider>
-      {/* Filters */}
-      {/* Results */}
-      {/* info  */}
-      {/* account currency date - end date */}
-      {/* info  */}
-      {/* First table */}
-      {/* columns */}
-      {/* First table */}
-      {/* Second table */}
-      {/* labels debit credit total  */}
-      {/* Second table */}
-      {/* Actions */}
-    </BlockPaper>
+          </form>
+        </FormProvider>
+        {/* Filters */}
+        {/* Results */}
+        {/* info  */}
+        {/* account currency date - end date */}
+        {/* info  */}
+        {/* First table */}
+        {/* columns */}
+        {/* First table */}
+        {/* Second table */}
+        {/* labels debit credit total  */}
+        {/* Second table */}
+        {/* Actions */}
+      </BlockPaper>
+      <ReportResultsWrapper
+        data={data}
+        columns={columns?.filter((c) => selectedColumns?.[c?.accessorKey])}
+        open={openReportResults}
+        onClose={() => setOpenReportResults(false)}
+      />
+    </>
   );
 };
 

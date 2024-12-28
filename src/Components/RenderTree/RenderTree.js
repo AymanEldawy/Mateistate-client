@@ -25,7 +25,6 @@ const RenderTree = ({
   const [open, setOpen] = useState({});
 
   const onSelectItemHandler = async (item) => {
-    console.log("🚀 ~ onSelectItemHandler ~ item:", item)
     const response = await ApiActions.read(name, {
       conditions: [{ type: "and", conditions: [["parent_id", "=", item?.id]] }],
       limit: 1,

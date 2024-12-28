@@ -1,6 +1,6 @@
 import React from "react";
 
-const ContentBar = ({ title, description, children }) => {
+export const ToolsContentBar = ({ title, description, children }) => {
   return (
     <div className="flex justify-between items-center border-b mb-4 pb-2 dark:border-[#333]">
       <div className="">
@@ -15,5 +15,3 @@ const ContentBar = ({ title, description, children }) => {
     </div>
   );
 };
-
-export default ContentBar;

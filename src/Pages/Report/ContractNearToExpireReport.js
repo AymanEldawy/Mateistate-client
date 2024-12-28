@@ -12,6 +12,7 @@ import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFie
 import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
 import useRefTable from "Hooks/useRefTables";
 import { getReportColumns, getReportFields } from "Helpers/Reports";
+import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
 
 const ContractNearToExpireReport = () => {
   const name = "contract_near_to_expire_report";
@@ -21,83 +22,106 @@ const ContractNearToExpireReport = () => {
   const [selectedColumns, setSelectedColumns] = useState({});
   const [buildingsIds, setBuildingsIds] = useState({});
   const [contractIds, setContractIds] = useState({});
+  const [data, setData] = useState([]);
+  const [openReportResults, setOpenReportResults] = useState(false);
 
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
-    await REPORTS.nearToExpireContract();
+    let fn = REPORTS?.[name];
+    const res = await fn({
+      filters: watch(),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   console.log({ filters: watch(), columns: Object.keys(selectedColumns) });
 
   return (
-    <BlockPaper title={"contract near to expired report"}>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative">
-          <div className="grid md:grid sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8 items-start">
-            <ReportFilterFields title="Fields">
-              <ReportFields
-                CACHE_LIST={CACHE_LIST}
-                sharedLabelClassName="w-[200px]"
-                fields={[
-                  ...fields,
+    <>
+      <BlockPaper title={"contract near to expired report"}>
+        <FormProvider {...methods}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="relative"
+          >
+            <div className="grid md:grid sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8 items-start">
+              <ReportFilterFields title="Fields">
+                <ReportFields
+                  CACHE_LIST={CACHE_LIST}
+                  sharedLabelClassName="w-[200px]"
+                  fields={[
+                    ...fields,
 
-                  {
-                    label: "Days number",
-                    name: "days_number",
-                    type: "number",
-                  },
-                ]}
-              />
-              <div className="grid grid-cols-1 gap-4">
-                <ReportBetweenDateField
-                  date1Field={{
-                    name: "start_date",
-                  }}
-                  date2Field={{
-                    name: "end_date",
-                  }}
-                  containerClassName="!m-0"
+                    {
+                      label: "Days number",
+                      name: "days_number",
+                      type: "number",
+                    },
+                  ]}
                 />
-                <ReportStatementField
-                  containerClassName="!m-0"
-                  name="contract"
-                  title={"Contract Statement"}
+                <div className="grid grid-cols-1 gap-4">
+                  <ReportBetweenDateField
+                    date1Field={{
+                      name: "start_date",
+                    }}
+                    date2Field={{
+                      name: "end_date",
+                    }}
+                    containerClassName="!m-0"
+                  />
+                  <ReportStatementField
+                    containerClassName="!m-0"
+                    name="contract"
+                    title={"Contract Statement"}
+                  />
+                  <ReportStatementField
+                    containerClassName="!m-0"
+                    name="unit"
+                    title={"Contract Statement"}
+                  />
+                </div>
+              </ReportFilterFields>{" "}
+              <div className="grid gap-4 order-3 md:order-2 max-[768px]:col-span-full max-[768px]:grid-cols-2 w-full">
+                <ReportFilterContractPatterns
+                  contractIds={contractIds}
+                  setContractIds={setContractIds}
+                  bodyClassName="h-[250px]"
                 />
-                <ReportStatementField
-                  containerClassName="!m-0"
-                  name="unit"
-                  title={"Contract Statement"}
+                <ReportFilterBuildings
+                  buildingsIds={buildingsIds}
+                  setBuildingsIds={setBuildingsIds}
+                  bodyClassName="h-[260px]"
                 />
               </div>
-            </ReportFilterFields>{" "}
-            <div className="grid gap-4 order-3 md:order-2 max-[768px]:col-span-full max-[768px]:grid-cols-2 w-full">
-              <ReportFilterContractPatterns
-                contractIds={contractIds}
-                setContractIds={setContractIds}
-                bodyClassName="h-[250px]"
-              />
-              <ReportFilterBuildings
-                buildingsIds={buildingsIds}
-                setBuildingsIds={setBuildingsIds}
-                bodyClassName="h-[260px]"
+              <ReportFilterColumns
+                searchKey="accessorKey"
+                columns={columns}
+                selectedColumns={selectedColumns}
+                setSelectedColumns={setSelectedColumns}
+                bodyClassName="h-[600px] max-[768px]:w-[768px]"
+                containerClassName="order-2"
               />
             </div>
-            <ReportFilterColumns
-              searchKey="accessorKey"
-              columns={columns}
-              selectedColumns={selectedColumns}
-              setSelectedColumns={setSelectedColumns}
-              bodyClassName="h-[600px] max-[768px]:w-[768px]"
-              containerClassName="order-2"
+            <Button
+              onClick={() => setOpenReportResults(true)}
+              title="Show"
+              classes="my-4 flex ltr:ml-auto rtl:mr-auto"
             />
-          </div>
-          <Button title="Show" classes="my-4 flex ltr:ml-auto rtl:mr-auto" />
-          <div className="my-8 flex justify-end"></div>
-        </form>
-      </FormProvider>
-    </BlockPaper>
+            <div className="my-8 flex justify-end"></div>
+          </form>
+        </FormProvider>
+      </BlockPaper>
+      <ReportResultsWrapper
+        data={data}
+        columns={columns?.filter((c) => selectedColumns?.[c?.accessorKey])}
+        open={openReportResults}
+        onClose={() => setOpenReportResults(false)}
+      />
+    </>
   );
 };
 

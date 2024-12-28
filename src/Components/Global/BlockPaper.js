@@ -19,7 +19,7 @@ const BlockPaper = ({
   const navigate = useNavigate();
 
   return (
-    <Layout bodyClassName={layoutBodyClassName}>
+    <div className={`main-content my-8 flex-1 ${layoutBodyClassName}`}>
       {popupView ? null : (
         <div className="!mb-2 container ">
           <button
@@ -53,7 +53,7 @@ const BlockPaper = ({
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

@@ -20,7 +20,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 const queryClient = new QueryClient();
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ThemeProvider>
@@ -46,5 +46,5 @@ root.render(
         </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

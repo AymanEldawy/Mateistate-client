@@ -849,17 +849,18 @@ const leased_property_activity_report = [
 
 const journal_ledger_report = [
   { accessorKey: "created_at", header: "date" },
-  { accessorKey: "account_id", header: "account" },
-  { accessorKey: "cost_center", header: "cost_center" },
-  { accessorKey: "difference", header: "differences" },
+  { accessorKey: "number", header: "number" },
+  { accessorKey: "account_name", header: "account" },
+  { accessorKey: "cost_center_name", header: "cost_center" },
+  // { accessorKey: "difference", header: "differences" },
   { accessorKey: "note", header: "notes" },
   { accessorKey: "debit", header: "debit" },
   { accessorKey: "credit", header: "credit" },
+  { accessorKey: "balance", header: "balance" },
   { accessorKey: "created_from", header: "created_from" },
   { accessorKey: "created_from_id", header: "created_from_no" },
-  { accessorKey: "currency_id", header: "currency" },
-  { accessorKey: "number", header: "number" },
-  { accessorKey: "observe_account_id", header: "observe account name" },
+  { accessorKey: "currency_code", header: "currency" },
+  { accessorKey: "observe_account_name", header: "observe account name" },
   { accessorKey: "processing", header: "processing" },
 ];
 
@@ -1323,10 +1324,10 @@ const owner_expenses_report = [
 ];
 
 const item_activity_report = [
-  { header: "bill_no", accessorKey: "bill_no" },
-  { header: "bill_type", accessorKey: "bill_type" },
   { header: "bill_date", accessorKey: "bill_date" },
-  { header: "material", accessorKey: "material" },
+  { header: "material", accessorKey: "material_name" },
+  { header: "bill_no", accessorKey: "bill_number" },
+  { header: "bill_kind", accessorKey: "bill_kind" },
   { header: "quantity", accessorKey: "quantity" },
   { header: "input quantity", accessorKey: "input_quantity" },
   { header: "output quantity", accessorKey: "output_quantity" },
@@ -1336,36 +1337,37 @@ const item_activity_report = [
   { header: "price", accessorKey: "price" },
   { header: "value", accessorKey: "value" },
   { header: "code", accessorKey: "code" },
-  { header: "barcode", accessorKey: "barcode" },
-  { header: "class", accessorKey: "class" },
-];
-const inventory_report = [
-  { header: "code", accessorKey: "code" },
-  { header: "barcode", accessorKey: "barcode" },
-  { header: "class", accessorKey: "class" },
-  { header: "unit", accessorKey: "unit" },
-  { header: "vender", accessorKey: "vender" },
-  { header: "store", accessorKey: "store" },
-  { header: "previous balance", accessorKey: "previous_balance" },
-  { header: "current balance", accessorKey: "current_balance" },
-  { header: "total", accessorKey: "total" },
+  { header: "barcode", accessorKey: "barcode1" },
+  { header: "class", accessorKey: "class_name" },
 ];
 
+const inventory_report = [
+  { header: "code", accessorKey: "code" },
+  { header: "barcode", accessorKey: "barcode1" },
+  { header: "class", accessorKey: "class_name" },
+  { header: "unit", accessorKey: "unit" },
+  { header: "vender", accessorKey: "vender" },
+  { header: "store", accessorKey: "store_name" },
+  { header: "previous balance", accessorKey: "previous_balance" },
+  { header: "current balance", accessorKey: "current_balance" },
+  { header: "total", accessorKey: "total_balance" },
+];
 const ending_inventory_report = [
   { header: "code", accessorKey: "code" },
   { header: "item", accessorKey: "item" },
-  { header: "class", accessorKey: "class" },
-  { header: "store", accessorKey: "store" },
+  { header: "class", accessorKey: "class_name" },
+  { header: "store", accessorKey: "store_name" },
   { header: "quantity", accessorKey: "quantity" },
-  { header: "price", accessorKey: "price" },
+  { header: "price", accessorKey: "unit_price" },
   { header: "value", accessorKey: "value" },
 ];
+
 
 const sales_report = [
   { header: "unit", accessorKey: "unit" },
   { header: "class", accessorKey: "class" },
   { header: "vendor", accessorKey: "vendor" },
-  { header: "bill_type", accessorKey: "bill_type" },
+  { header: "bill_kind", accessorKey: "bill_kind" },
   { header: "clients", accessorKey: "clients" },
   { header: "item", accessorKey: "item" },
   { header: "store", accessorKey: "store" },
@@ -1379,26 +1381,28 @@ const sales_report = [
 
 const bill_details_report = [
   { header: "type", accessorKey: "type" },
-  { header: "receipt no", accessorKey: "number" },
+  { header: "receipt no", accessorKey: "receipt_number" },
   { header: "date", accessorKey: "date" },
-  { header: "client", accessorKey: "client" },
-  { header: "payment type", accessorKey: "payment_type" },
-  { header: "class", accessorKey: "class" },
-  { header: "item", accessorKey: "item" },
+  { header: "client", accessorKey: "client_name" },
+  { header: "payment type", accessorKey: "payment_method" },
+  { header: "class", accessorKey: "class_name" },
+  { header: "item", accessorKey: "item_name" },
   { header: "quantity", accessorKey: "quantity" },
 ];
 
 const bill_profit_report = [
   { header: "bill no", accessorKey: "bill_no" },
+  { header: "bill_note", accessorKey: "bill_note" },
   { header: "type", accessorKey: "type" },
+  { header: "unit1", accessorKey: "unit1" },
   { header: "date", accessorKey: "date" },
-  { header: "client", accessorKey: "client" },
-  { header: "class ", accessorKey: "class" },
-  { header: "item", accessorKey: "item" },
+  { header: "client", accessorKey: "client_name" },
+  { header: "class ", accessorKey: "class_name" },
+  { header: "item", accessorKey: "item_name" },
   { header: "quantity", accessorKey: "quantity" },
   { header: "unit", accessorKey: "unit" },
   { header: "sale price", accessorKey: "sale_price" },
-  { header: "cost", accessorKey: "cost" },
+  { header: "cost", accessorKey: "cost_center_name" },
   { header: "extra/discount", accessorKey: "extra_discount" },
   { header: "Profit", accessorKey: "profit" },
 ];

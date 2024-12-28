@@ -10,8 +10,9 @@ import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFie
 import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
 import { ReportFilterBillPattern } from "Components/ReportsComponents/TypesFilter/ReportFilterBillPattern";
 import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
+import REPORTS from "Helpers/Lib/global-reports";
 
-// ## Metadata 
+// ## Metadata
 // - input
 // - output
 // - balance
@@ -33,13 +34,15 @@ const ItemActivityReport = () => {
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
-  const onSubmit = (value) => {};
-
-  console.log({
-    filters: watch(),
-    columns: Object.keys(selectedColumns),
-    bills: Object.keys(billIds),
-  });
+  const onSubmit = async (value) => {
+    console.log("🚀 ~ onSubmit ~ fn: called")
+    let fn = REPORTS?.[name];
+    const res = await fn({
+      filters: watch(),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
+  };
 
   return (
     <>
@@ -47,7 +50,7 @@ const ItemActivityReport = () => {
         <FormProvider {...methods}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            noValidate
+            // noValidate
             className="relative"
           >
             <div className="grid md:grid sm:grid-cols-2 md:grid-cols-3 gap-4 items-start">
@@ -80,8 +83,11 @@ const ItemActivityReport = () => {
                 />
               </div>
             </div>
-            <div></div>
-            <Button title="Show" classes="my-4 flex ltr:ml-auto rtl:mr-auto" />
+            <Button
+              onClick={() => setOpenReportResults(true)}
+              title="Show"
+              classes="my-4 flex ltr:ml-auto rtl:mr-auto"
+            />
           </form>
         </FormProvider>
       </BlockPaper>

@@ -45,10 +45,8 @@ const CurrencyFieldGroup = ({
           DEFAULT_CURRENCY_CODE,
           "code"
         );
-        console.log("🚀 ~ fetchDefaultOption ~ response:", response);
         setDefaultOption(response?.result?.at(0));
       } catch (error) {
-        console.error("Failed to fetch default option:", error);
       }
     };
 
@@ -64,7 +62,6 @@ const CurrencyFieldGroup = ({
           return response?.result;
         },
       });
-      console.log(res, "called");
 
       callback(res || []);
       return res;
@@ -73,7 +70,6 @@ const CurrencyFieldGroup = ({
     }
   };
 
-  console.log(defaultOption, "defaultOption");
 
   return (
     <>

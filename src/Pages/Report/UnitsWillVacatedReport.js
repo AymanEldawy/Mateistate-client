@@ -35,12 +35,17 @@ const UnitsWillVacatedReport = () => {
   const [buildingsIds, setBuildingsIds] = useState({});
   const [contractIds, setContractIds] = useState({});
   const [data, setData] = useState([]);
-
+  
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
-    await REPORTS.nearToExpireContract();
+    const res = await REPORTS.units_that_will_be_vacated({
+      filters: watch(),
+      columns: Object.keys(selectedColumns),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   console.log({

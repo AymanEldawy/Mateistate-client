@@ -47,7 +47,6 @@ const NewUniqueField = ({
   const queryClient = new QueryClient();
 
   const loadOptions = async (value, callback) => {
-    console.log("🚀 ~ loadOptions ~ value:", value)
     try {
       const res = await queryClient.fetchQuery({
         queryKey: ["list", field?.ref_table],
@@ -60,7 +59,6 @@ const NewUniqueField = ({
           return response?.result;
         },
       });
-      console.log(res, "called");
 
       callback(res || []);
       return res;
@@ -154,7 +152,6 @@ const NewUniqueField = ({
                   isOptionSelected={isOptionSelected}
                   // defaultOptions
                   getOptionLabel={(option) => {
-                    console.log("🚀 ~ option:", option);
                     return option?.[field?.ref_name || "name"];
                   }}
                   getOptionValue={(option) => option?.[field?.ref_col || "id"]}

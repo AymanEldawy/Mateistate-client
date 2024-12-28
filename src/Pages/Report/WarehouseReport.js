@@ -28,7 +28,8 @@ const WarehouseReport = () => {
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
-    const res = await REPORTS[name]({
+    let fn = REPORTS?.[name];
+    const res = await fn({
       filters: watch(),
       columns: Object.keys(selectedColumns),
     });

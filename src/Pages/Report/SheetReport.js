@@ -30,7 +30,13 @@ const SheetReport = ({ name }) => {
   const fields = useMemo(() => getReportFields(name), []);
 
   const onSubmit = async (value) => {
-    await REPORTS.nearToExpireContract();
+    let fn = REPORTS?.[name];
+    const res = await fn({
+      filters: watch(),
+      // columns: Object.keys(selectedColumns),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   console.log({ filters: watch() });

@@ -17,37 +17,12 @@ export const SHOULD_DELETE_ENTRY = {
   contract_termination: true,
 };
 
-// export const baseURL = "http://66.29.143.191/";
 export const baseURL = "http://66.29.143.191/";
-// export const baseURL = "http://cratic-home.com:5000/";
 // export const baseURL = "http://localhost:5000";
 
 export function CURD() {
   const matieStateClient = new MatieStateClient(baseURL);
 
-  // Example Usage of getReport method
-  const report = async (reportName, params) => {
-    try {
-      const tenant_id = Cookies.get("tenant_id");
-      if (tenant_id) {
-        params = {
-          ...params,
-          conditions: [
-            ...params?.conditions,
-            { type: "and", conditions: [["tenant_id", "=", tenant_id]] },
-          ],
-        };
-      }
-      const getReportResponse = await matieStateClient.getReport(
-        reportName,
-        params
-      );
-      return getReportResponse;
-    } catch (error) {
-      console.error("Error Getting report:", error);
-      return error;
-    }
-  };
   // Example Usage of createRecord method
   const insert = async (tableName, params) => {
     try {
@@ -172,7 +147,6 @@ export function CURD() {
     read,
     update,
     remove,
-    report,
   };
 }
 

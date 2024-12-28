@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import getTableData from "Helpers/Lib/global-read";
@@ -13,38 +13,14 @@ import {
 } from "Components/Icons";
 import { useTranslation } from "react-i18next";
 import { DebouncedInput } from "Components/StructurePage/CustomFields";
-import { TableInfo } from "Components/DynamicTable/TableInfo";
-import DynamicTable from "Components/DynamicTable/DynamicTable";
+import { TableInfo } from "Components/TableComponents/TableInfo";
 import { PopupLinks } from "Components/Global/Modal/PopupLinks";
 import { POPUP_LINKS_NAME } from "Helpers/constants";
 import useCurd from "Hooks/useCurd";
+import getTableColumns from "Helpers/columns-structure";
+import CustomTable from "Components/TableComponents/CustomTable";
 
 let columnBeingDragged;
-
-const ContextMenuComponent = ({ items, x, y }) => (
-  <ul
-    style={{
-      position: "absolute",
-      top: y,
-      left: x,
-      backgroundColor: "white",
-      border: "1px solid #ccc",
-      listStyle: "none",
-      padding: "10px",
-      zIndex: 1000,
-    }}
-  >
-    {items.map((item, index) => (
-      <li
-        key={index}
-        style={{ padding: "5px 10px", cursor: "pointer" }}
-        onClick={item.onClick}
-      >
-        {item.label}
-      </li>
-    ))}
-  </ul>
-);
 
 const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
   const { t } = useTranslation();
@@ -60,6 +36,7 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [filters, setFilters] = useState({});
   const [contextMenu, setContextMenu] = useState(null);
+  const [pagination, setPagination] = useState({});
 
   const handleContextMenu = (event) => {
     event.preventDefault();
@@ -78,6 +55,8 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
       ],
     });
   };
+
+  const columns = useMemo(() => getTableColumns(name), [name]);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [name, "table"],
@@ -117,12 +96,9 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
         contentBar={
           <div
             className="flex gap-4 items-center justify-between mb-4"
-            onContextMenu={handleContextMenu}
-            onClick={closeContextMenu}
+
             // style={{ height: "100vh" }}
           >
-            {contextMenu && <ContextMenuComponent {...contextMenu} />}
-
             <div className="flex gap-2 items-center">
               <div className="relative">
                 <div className="relative md:block ">
@@ -194,14 +170,17 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
         }
       >
         <TableInfo />
-        <DynamicTable
+        
+        <CustomTable
           name={name}
-          data={data || []}
-          isLoading={isLoading}
-          openColumnsSetting={openColumnsSetting}
-          setOpenColumnsSetting={setOpenColumnsSetting}
-          setRowSelection={setRowSelection}
+          data={!isLoading && data?.length ? data : []}
+          columns={columns}
+          setColumnFilters={setColumnFilters}
+          columnFilters={columnFilters}
+          pagination={pagination}
+          setPagination={setPagination}
           rowSelection={rowSelection}
+          setRowSelection={setRowSelection}
         />
       </BlockPaper>
     </>

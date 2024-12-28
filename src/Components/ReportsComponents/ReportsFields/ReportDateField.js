@@ -26,7 +26,7 @@ export const ReportBetweenDateField = ({
           label: "start_date",
           name: "from",
           ...date1Field,
-          type: "date",
+          type: "datetime-local",
         }}
         {...sharedProps}
         {...date1Props}
@@ -37,7 +37,7 @@ export const ReportBetweenDateField = ({
           label: "end_date",
           name: "to",
           ...date2Field,
-          type: "date",
+          type: "datetime-local",
         }}
         {...sharedProps}
         {...date2Props}

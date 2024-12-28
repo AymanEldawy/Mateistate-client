@@ -27,11 +27,12 @@ const WorkerReport = () => {
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
-    const res = await REPORTS.worker_report({
+    let fn = REPORTS?.[name];
+    const res = await fn({
       filters: watch(),
       columns: Object.keys(selectedColumns),
     });
-    setData(res?.data)
+    setData(res?.data);
     console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
@@ -67,11 +68,11 @@ const WorkerReport = () => {
               </div>
             </div>
             <div className="my-8 flex justify-end"></div>
-          <Button
-            onClick={() => setOpenReportResults(true)}
-            title="Show"
-            classes="my-4 flex ltr:ml-auto rtl:mr-auto"
-          />
+            <Button
+              onClick={() => setOpenReportResults(true)}
+              title="Show"
+              classes="my-4 flex ltr:ml-auto rtl:mr-auto"
+            />
           </form>
         </FormProvider>
       </BlockPaper>

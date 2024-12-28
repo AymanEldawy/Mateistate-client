@@ -358,14 +358,16 @@ export async function uploadAttachment({
   file,
 }) {
   return await axios.post(
-    `${baseURL}/uploadAttachment/${entity_type}/${id}/:${attachment_type}`,
+    `${baseURL}uploadAttachment/${entity_type}/${id}/:${attachment_type}`,
     { file }
   );
 }
 
 export function getUniqueFieldLabel(item, table, refName, locale) {
-  if (locale === "en" && table === 'material') {
-    return item?.ltnName ? `${item?.code}-${item?.ltnName}` : `${item?.code}-${item?.name}`;
+  if (locale === "en" && table === "material") {
+    return item?.ltnName
+      ? `${item?.code}-${item?.ltnName}`
+      : `${item?.code}-${item?.name}`;
   }
   // if (locale === "en" && item?.ltnName) {
   //   return item?.ltnName;
@@ -560,7 +562,6 @@ export function getOne(name, value, column = "id") {
   });
 }
 
-
 export function toTree(data, pid = null) {
   return data?.reduce((r, e) => {
     if (e.parent_id == pid) {
@@ -571,4 +572,20 @@ export function toTree(data, pid = null) {
     }
     return r;
   }, []);
+}
+
+export function buildUrlWithFilters(url, filters) {
+  const queryParams = Object.entries(filters)
+    .filter(([key, value]) => key && value)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+    )
+    .join("&");
+
+  if (url.includes("?")) {
+    return `${url}&${queryParams}`;
+  } else {
+    return `${url}?${queryParams}`;
+  }
 }

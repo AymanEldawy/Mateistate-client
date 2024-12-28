@@ -10,6 +10,7 @@ import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFie
 import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
 import { ReportFilterBillPattern } from "Components/ReportsComponents/TypesFilter/ReportFilterBillPattern";
 import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
+import REPORTS from "Helpers/Lib/global-reports";
 
 // ## Metadata
 // - total bill (total materials output)
@@ -36,13 +37,14 @@ const BillProfitReport = () => {
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
-  const onSubmit = (value) => {};
-
-  console.log({
-    filters: watch(),
-    columns: Object.keys(selectedColumns),
-    bills: Object.keys(billIds),
-  });
+  const onSubmit = async (value) => {
+    let fn = REPORTS?.[name];
+    const res = await fn({
+      filters: watch(),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
+  };
 
   return (
     <>
@@ -84,7 +86,11 @@ const BillProfitReport = () => {
               </div>
             </div>
             <div></div>
-            <Button title="Show" classes="my-4 flex ltr:ml-auto rtl:mr-auto" />
+              <Button
+     onClick={() => setOpenReportResults(true)}
+     title="Show"
+     classes="my-4 flex ltr:ml-auto rtl:mr-auto"
+ />
           </form>
         </FormProvider>
       </BlockPaper>

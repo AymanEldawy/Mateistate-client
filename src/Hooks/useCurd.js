@@ -37,11 +37,6 @@ const useCurd = () => {
     return curd.insert(name, data);
   };
 
-  // getReport
-  const getReport = async () => {
-    return curd.report();
-  };
-
   // getOneBy
   const getOneBy = async (name, value, column = "id") => {
     console.log(name, value, column);

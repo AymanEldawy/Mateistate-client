@@ -41,8 +41,6 @@ const FormSingular = ({ name, onClose, popupView, oldValues}) => {
     enabled: !!id,
   });
 
-  console.log(watch(), "ssds", CACHE_LIST);
-
   useEffect(() => {
     if(!id && oldValues) {
       reset(oldValues)

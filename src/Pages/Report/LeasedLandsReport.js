@@ -10,6 +10,7 @@ import { ReportFilterFields } from "Components/ReportsComponents/ReportFilterFie
 import { ReportFields } from "Components/ReportsComponents/ReportsFields/ReportFields";
 import { ReportResultsWrapper } from "Components/ReportsComponents/ReportResultsWrapper";
 import { ReportStatementField } from "Components/ReportsComponents/ReportsFields/ReportStatementField";
+import REPORTS from "Helpers/Lib/global-reports";
 
 const LeasedLandsReport = () => {
   const name = "leased_lands_report";
@@ -19,14 +20,19 @@ const LeasedLandsReport = () => {
   const [selectedColumns, setSelectedColumns] = useState({});
   const [openReportResults, setOpenReportResults] = useState(false);
   const [data, setData] = useState([]);
-
+  
   const fields = useMemo(() => getReportFields(name), []);
   const columns = useMemo(() => getReportColumns(name), []);
 
 
-  const onSubmit = async () => {
-  
-
+  const onSubmit = async (value) => {
+    let fn = REPORTS?.[name];
+    const res = await fn({
+      filters: watch(),
+      columns: Object.keys(selectedColumns),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   return (

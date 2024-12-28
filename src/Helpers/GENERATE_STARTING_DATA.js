@@ -1,8 +1,6 @@
 import axios from "axios";
-import { UNIQUE_REF_TABLES } from "./constants";
-import INSERT_FUNCTION from "./Lib/global-insert";
 
-const { ApiActions, baseURL } = require("./Lib/api");
+const { ApiActions } = require("./Lib/api");
 
 // Account & Users Codes
 export const TENANT_ID = "051d7650-694b-423c-85d1-3871ce861830";

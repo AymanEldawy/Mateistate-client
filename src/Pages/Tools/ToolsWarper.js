@@ -1,7 +1,6 @@
 import {
   FLATS,
-  FLAT_PROPERTY_TABS,
-  FLAT_PROPERTY_TYPES,
+  FLAT_PROPERTY_TABS
 } from "Helpers/constants";
 import { useEffect, useState } from "react";
 import { ToolsTabsTableForm } from "Pages/Tools/ToolsTabsTableForm";
@@ -12,7 +11,7 @@ import { ToolsTabsTable } from "./ToolsTabsTable";
 import { generateApartments } from "Helpers/Lib/global-insert";
 import Loading from "Components/Global/Loading";
 import { Link } from "react-router-dom";
-import ContentBar from "Components/Global/ContentBar/ContentBar";
+import { ToolsContentBar } from "Pages/Tools/ToolsContentBar";
 import BlockPaper from "Components/Global/BlockPaper";
 import { ToolsColorsBar } from "./ToolsColorsBar";
 import { refetchBuildingAssets } from "Helpers/functions";
@@ -94,11 +93,11 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
       {isLoading ? <Loading withBackdrop /> : null}
       <BlockPaper
         contentBar={
-          <ContentBar
+          <ToolsContentBar
             title="Flat Building Details"
             description={
               <Link
-                to={`/buildings/${row?.number}`}
+                to={`/buildings/${row?.id}`}
                 state={{ row, table: "building" }}
                 className="text-blue-500 dark:text-white hover:underline text-sm"
               >
@@ -107,7 +106,7 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
             }
           >
             <ToolsColorsBar />
-          </ContentBar>
+          </ToolsContentBar>
         }
       >
         <div className="flex flex-wrap gap-2 items-center pb-2 border-b dark:border-dark-border">

@@ -28,10 +28,9 @@ const ComplaintsReport = () => {
   const columns = useMemo(() => getReportColumns(name), []);
 
   const onSubmit = async (value) => {
-    const res = await REPORTS.complaints_report({
-      // buildings: Object.keys(buildingsIds),
+    let fn = REPORTS?.[name];
+    const res = await fn({
       filters: watch(),
-      columns: Object.keys(selectedColumns),
     });
     setData(res?.data);
     console.log("🚀 ~ onSubmit ~ res:", res);

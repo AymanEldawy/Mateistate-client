@@ -30,14 +30,19 @@ const ProfitAndLossReport = ({ name }) => {
   const fields = useMemo(() => getReportFields(name), []);
 
   const onSubmit = async (value) => {
-    await REPORTS.nearToExpireContract();
+    let fn = REPORTS?.[name];
+    const res = await fn({
+      filters: watch(),
+    });
+    setData(res?.data);
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   console.log({ filters: watch() });
 
   return (
     <>
-      <BlockPaper title={name?.replace(/_/ig, ' ')}>
+      <BlockPaper title={name?.replace(/_/gi, " ")}>
         <FormProvider {...methods}>
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -64,12 +69,12 @@ const ProfitAndLossReport = ({ name }) => {
               </div>
             </div>
             <div className="my-8 flex justify-end"></div>
+            <Button
+              onClick={() => setOpenReportResults(true)}
+              title="Show"
+              classes="my-4 flex ltr:ml-auto rtl:mr-auto"
+            />
           </form>
-          <Button
-            onClick={() => setOpenReportResults(true)}
-            title="Show"
-            classes="my-4 flex ltr:ml-auto rtl:mr-auto"
-          />
         </FormProvider>
       </BlockPaper>
       <ReportResultsWrapper

@@ -11,7 +11,6 @@ import { PlusIcon } from "Components/Icons";
 import { DEFAULT_BILL_MENU, SERVICE_MENU } from "Helpers/constants";
 
 export const PopupLinks = ({ onClose, name }) => {
-  console.log("🚀 ~ PopupLinks ~ name:", name);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [links, setLinks] = useState([]);
