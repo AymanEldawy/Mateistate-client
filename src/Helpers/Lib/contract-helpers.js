@@ -136,14 +136,7 @@ export function onWatchChangesInTab1(name, setValue, watch, SHOULD_UPDATES) {
 
       return;
     }
-    case "current_securing_percentage": {
-      let price = watch(`contract.contract_value`);
-      let rate = watch(`contract.current_securing_percentage`);
-      let finalPrice = price - (rate / 100) * price;
-      setValue(`contract.current_securing_value`, price - finalPrice);
-      return;
-    }
-
+    
     case "start_duration_date":
     case "contract_duration":
       calculateContractDuration(watch, setValue, SHOULD_UPDATES);

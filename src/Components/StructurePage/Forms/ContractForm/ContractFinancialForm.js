@@ -211,7 +211,6 @@ export const ContractFinancialForm = ({
 
         {[
           "previous_securing",
-          "current_securing_percentage",
           "current_securing_value",
         ]?.map((field, i) => (
           <Input

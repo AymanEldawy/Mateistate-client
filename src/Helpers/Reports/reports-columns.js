@@ -738,10 +738,6 @@ const contract_payments_report = [
     header: "previous_securing",
     accessorKey: "previous_securing",
   },
-  // {
-  //   header: "current_securing_percentage",
-  //   accessorKey: "current_securing_percentage",
-  // },
   {
     header: "current_securing_value",
     accessorKey: "current_securing_value",

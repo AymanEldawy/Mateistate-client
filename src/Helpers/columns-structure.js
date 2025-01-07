@@ -1916,10 +1916,6 @@ const contract_financial = [
   { header: "final_price", accessorKey: "final_price" },
   { header: "discount_account_id", accessorKey: "discount_account_id" },
   { header: "previous_securing", accessorKey: "previous_securing" },
-  {
-    header: "current_securing_percentage",
-    accessorKey: "current_securing_percentage",
-  },
   { header: "current_securing_value", accessorKey: "current_securing_value" },
   { header: "contract_price", accessorKey: "contract_price" },
   { header: "contract_validate", accessorKey: "contract_validate" },

@@ -171,7 +171,6 @@
   "final_price": "final_price",
   "discount_account_id": "discount_account_id",
   "previous_securing": "previous_securing",
-  "current_securing_percentage": "current_securing_percentage",
   "current_securing_value": "current_securing_value",
   "contract_price": "contract_price",
   "contract_registration_price": "contract_registration_price",

@@ -8,7 +8,6 @@ export const contract = {
   client_id: null,
   contract_duration: null,
   contract_value: null,
-  current_securing_percentage: null,
   current_securing_value: null,
   description: null,
   discount_account_id: null,

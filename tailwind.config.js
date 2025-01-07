@@ -16,6 +16,8 @@ module.exports = {
       "light-border": "",
       "light-color": "",
       "light-primary": "",
+      "light-green": "#008776",
+      "dark-green": "#005c50",
     }),
   },
   variants: {

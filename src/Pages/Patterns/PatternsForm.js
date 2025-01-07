@@ -1,4 +1,4 @@
-import Spinner from "Components/Spinner";
+import Loading from "Components/Global/Loading";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
 import FormLayout from "Components/StructurePage/Forms/FormWrapperLayout/FormLayout";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
@@ -82,7 +82,7 @@ const PatternsForm = ({ layout, name, onClose }) => {
       isLoading={isLoading}
 
     >
-      {isLoading && <Spinner />} {/* Add Spinner component */}
+      {isLoading && <Loading withBackdrop /> } {/* Add Spinner component */}
       <div key={name}>
 
         <Fields

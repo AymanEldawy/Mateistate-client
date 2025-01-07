@@ -189,12 +189,6 @@ const ContractForm = ({ number, onClose }) => {
         field.required = true;
       }
       if (
-        field?.name === "current_securing_percentage" &&
-        PATTERN_SETTINGS?.insurance_required
-      ) {
-        field.required = true;
-      }
-      if (
         field?.name === "insurance_account_id" &&
         PATTERN_SETTINGS?.insurance_required
       ) {
@@ -325,7 +319,6 @@ const ContractForm = ({ number, onClose }) => {
     contract.status = CONTRACT_STATUS.RENEWdD;
 
     contract.previous_securing = contract?.current_securing_value;
-    contract.current_securing_percentage = 0;
     contract.current_securing_value = 0;
 
     contract.end_duration_date = end_duration_date;
