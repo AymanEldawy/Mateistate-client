@@ -1,5 +1,5 @@
 import UserForm from "Components/StructurePage/Forms/UserForm/UserForm";
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
@@ -13,7 +13,7 @@ const User = () => {
         FormRender={(props) => {
           console.log(props,'props');
           
-          return <UserForm />
+          return <UserForm {...props}  />
         }}
         // onClickDelete={}
         // onClickAdd={}

@@ -1,13 +1,16 @@
 import { EyeIcon } from "Components/Icons";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import React from "react";
+import Btn from "./Btn";
 
 export const ViewEntry = ({ id }) => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   return (
-    <button
+    <Btn
       type="button"
-      className="bg-blue-500 mt-4 text-white px-2 py-1 rounded-md flex items-center gap-2"
+      kind="primary"
+      containerClassName="!w-fit !gap-2 !px-2 whitespace-nowrap"
+      // className="bg-blue-500 text-xs whitespace-nowrap text-white px-2 py-1 rounded-md flex items-center gap-2"
       onClick={() =>
         dispatchVoucherEntries({
           table: "entry_main_data",
@@ -18,7 +21,7 @@ export const ViewEntry = ({ id }) => {
       }
     >
       View Entry
-      <EyeIcon />
-    </button>
+      <EyeIcon className="h-5 w-5" />
+    </Btn>
   );
 };

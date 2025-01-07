@@ -4,7 +4,7 @@ import { VoucherFooter } from "./VoucherFooter";
 import getFormByTableName from "Helpers/Forms/forms";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import { toast } from "react-toastify";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
 import { METHODS } from "Helpers/constants";
@@ -18,6 +18,8 @@ import useRefTable from "Hooks/useRefTables";
 import { useQuery } from "@tanstack/react-query";
 import FormWrapperLayout from "../../FormWrapperLayout/FormWrapperLayout";
 import useCurd from "Hooks/useCurd";
+import FormLayout from "../../FormWrapperLayout/FormLayout";
+import useFormPagination from "Hooks/useFormPagination";
 
 let CACHE_ROW_VALUE = {};
 
@@ -28,16 +30,22 @@ const VoucherForm = ({
   setRecordResponse,
   oldValues = null,
   outerClose,
+  number,
+  onClose,
+  code,
 }) => {
-  const params = useParams();
-  const id = params?.id;
-  const name = params?.name || voucherName;
-  const type = params?.type || voucherType;
+  const name = "voucher_main_data";
+  const type = code;
   const methods = useForm();
   const { set, insert, getOneBy } = useCurd();
   const { CACHE_LIST } = useRefTable("voucher_grid_data");
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const [gridFields, setGridFields] = useState([]);
+  const formPagination = useFormPagination({
+    name,
+    number,
+  });
+  const id = formPagination?.currentId;
 
   const {
     watch,
@@ -54,6 +62,7 @@ const VoucherForm = ({
       });
       reset(res);
     },
+    enabled: !!id
   });
 
   const fields = useMemo(() => {
@@ -106,7 +115,7 @@ const VoucherForm = ({
   }, [PATTERN_SETTINGS, type]);
 
   useEffect(() => {
-    if (oldValues) {
+    if (oldValues && !oldValues?.number) {
       reset(oldValues);
     }
   }, [oldValues?.number]);
@@ -155,7 +164,7 @@ const VoucherForm = ({
 
   const onSubmit = async () => {
     if (!isDirty) return;
-    
+
     setValue("voucher_pattern_id", PATTERN_SETTINGS?.id);
 
     let value = watch();
@@ -222,15 +231,16 @@ const VoucherForm = ({
   };
 
   return (
-    <FormWrapperLayout
-      popupView={popupView}
-      name={name}
+    <FormLayout
+      name={PATTERN_SETTINGS?.name}
       onSubmit={onSubmit}
       methods={methods}
-      itemId={watch("id")}
-      itemNumber={watch("number")}
       isLoading={queryClientNewVoucher?.isLoading}
-      onClose={outerClose}
+      onClose={() => {
+        if (!!outerClose) outerClose();
+        onClose();
+      }}
+      formPagination={formPagination}
     >
       <VoucherHead
         fields={fields}
@@ -262,7 +272,8 @@ const VoucherForm = ({
         isNewOne={!id}
         PATTERN_SETTINGS={PATTERN_SETTINGS}
       />
-    </FormWrapperLayout>
+      <div className="mb-5" />
+    </FormLayout>
   );
 };
 

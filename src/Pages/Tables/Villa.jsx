@@ -1,9 +1,10 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import FormSteps from "Components/StructurePage/Forms/CustomForm/FormSteps";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const villa = () => {
+const Villa = () => {
   const name = "villa";
   const navigate = useNavigate();
   return (
@@ -13,7 +14,7 @@ const villa = () => {
         FormRender={(props) => {
           console.log(props,'props');
           
-          return <p>testing ho</p>
+          return <FormSteps name={name} {...props} />;
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +26,4 @@ const villa = () => {
   );
 };
 
-export default villa;
+export default Villa;

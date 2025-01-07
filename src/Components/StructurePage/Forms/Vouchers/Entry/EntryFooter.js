@@ -7,11 +7,7 @@ import { Link } from "react-router-dom";
 import { getCreatedFromUrl } from "Helpers/functions";
 import { useFormContext } from "react-hook-form";
 
-export const EntryFooter = ({
-  fields,
-  errors,
-  values,
-}) => {
+export const EntryFooter = ({ fields, errors, values }) => {
   const { t } = useTranslation();
   const { watch } = useFormContext();
 
@@ -23,18 +19,21 @@ export const EntryFooter = ({
           {...fields["debit"]}
           value={values?.["debit"] || ""}
           className="border-0 !rounded-none !h-full"
+          containerClassName="!flex-col !gap-1"
         />
         <Input
           readOnly
           {...fields["credit"]}
           value={values?.["credit"] || ""}
           className="border-0 !rounded-none !h-full"
+          containerClassName="!flex-col !gap-1"
         />
         <Input
           readOnly
           {...fields["difference"]}
           value={values?.["debit"] || ""}
           className="border-0 !rounded-none !h-full"
+          containerClassName="!flex-col !gap-1"
         />
         {values?.created_from_id ? (
           <Link

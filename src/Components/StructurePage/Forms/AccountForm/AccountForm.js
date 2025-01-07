@@ -21,6 +21,9 @@ import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import useCurd from "Hooks/useCurd";
 import { UniqueField } from "Components/StructurePage/CustomFields";
 import NewUniqueField from "Components/StructurePage/CustomFields/NewUniqueField";
+import useFormPagination from "Hooks/useFormPagination";
+import { FormStepPagination } from "Components/Global/FormStepPagination";
+import FormLayout from "../FormWrapperLayout/FormLayout";
 
 const automaticChangesOnAccount = async (name, watch, setValue) => {
   if (name === "parent_id") {
@@ -38,9 +41,7 @@ const automaticChangesOnAccount = async (name, watch, setValue) => {
       );
 
       let record = response?.result?.at(0);
-      const accountNumber = number
-        ? +number + 1
-        : record?.code + "1";
+      const accountNumber = number ? +number + 1 : record?.code + "1";
 
       setValue("final_id", record?.final_id || record?.parent_id);
       setValue("code", accountNumber);
@@ -79,12 +80,12 @@ const calculatePercentage = (watch, setTotalPercentage) => {
   );
 };
 
-const AccountForm = ({ onClose, popupView }) => {
+const AccountForm = ({ onClose, popupView, number }) => {
   const name = "account";
   const params = useParams();
   const { set, insert, getOneBy } = useCurd();
   const { setRecordResponse, appendNewRecord } = usePopupForm();
-  const methods = useForm();
+  const methods = useForm({ shouldUnregister: true });
 
   const {
     reset,
@@ -97,11 +98,13 @@ const AccountForm = ({ onClose, popupView }) => {
   const { CACHE_LIST, fields } = useRefTable(name);
   const [isLoading, setIsLoading] = useState(false);
   const [totalPercentage, setTotalPercentage] = useState(1);
+  const formPagination = useFormPagination({ name, number: number });
+  const id = formPagination?.currentId;
 
   const accountQueryClient = useQuery({
-    queryKey: [name, params?.id],
+    queryKey: [name, id],
     queryFn: async () => {
-      const res = await getOneBy("account", params?.id);
+      const res = await getOneBy("account", id);
       let account = res?.result?.at(0);
 
       if (account?.id) {
@@ -124,7 +127,15 @@ const AccountForm = ({ onClose, popupView }) => {
         return account;
       }
     },
+    enabled: !!id,
   });
+
+  useEffect(() => {
+    if (formPagination?.currentNumber > formPagination?.lastNumber) {
+      reset({});
+      console.log("reset form");
+    }
+  }, [formPagination?.currentNumber]);
 
   useEffect(() => {
     let isAccount = name === "account";
@@ -255,35 +266,30 @@ const AccountForm = ({ onClose, popupView }) => {
     }
     setIsLoading(false);
   };
+
   const changeValue = () => {
-    setValue("account_id", "7c566459-8455-4b01-bb44-22298606273f");
+    setValue("parent_id", "7c566459-8455-4b01-bb44-22298606273f");
   };
 
-  console.log(watch());
-  
   return (
-    <FormWrapperLayout
+    <FormLayout
+      key={formPagination?.currentNumber}
       name={name}
       isLoading={isLoading}
       onClose={onClose}
       onSubmit={onSubmit}
-      popupView={popupView}
       methods={methods}
-      itemId={watch("id")}
-      itemNumber={watch("number")}
       disabledSubmit={
         watch("type") === 4 &&
         (+totalPercentage !== 100 ||
           watch(ACCOUNT_DISTRIBUTIVE_TYPE_NAME)?.length < 2)
       }
+      formPagination={formPagination}
     >
-      {/* <button type="button" onClick={changeValue}>test</button>
-      <NewUniqueField
-        updatedName="account_id"
-        table="account"
-        ref_table="account"
-        ref_name="name"
-      /> */}
+      <button type="button" onClick={changeValue}>
+        cclcd
+      </button>
+  
       <AccountFormFields
         CACHE_LIST={CACHE_LIST}
         fields={fields}
@@ -291,7 +297,7 @@ const AccountForm = ({ onClose, popupView }) => {
         watch={watch}
         totalPercentage={totalPercentage}
       />
-    </FormWrapperLayout>
+    </FormLayout>
   );
 };
 

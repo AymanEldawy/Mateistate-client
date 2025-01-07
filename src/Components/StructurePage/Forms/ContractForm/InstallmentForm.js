@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import getFormByTableName from "Helpers/Forms/forms";
 import { Fields } from "../CustomForm/Fields";
-import TableFields from "../../CustomTable/TableFields";
+import TableFields from "../../../TableComponents/TableFields";
 import { Button } from "Components/Global/Button";
 import Modal from "Components/Global/Modal/Modal";
 import FormHeadingTitle from "Components/Global/FormHeadingTitle";

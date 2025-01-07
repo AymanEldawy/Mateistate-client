@@ -34,8 +34,8 @@ export const Fields = ({
       className={`grid ${
         customGrid
           ? customGrid
-          : "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-      } gap-4 mb-8 w-full ${containerClassName}`}
+          : "grid-cols-1 md:grid-cols-2"
+      } gap-[10px] gap-x-8 mb-8 w-full ${containerClassName}`}
     >
       {fields?.map((field, i) => {
         if (

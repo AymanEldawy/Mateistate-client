@@ -1,19 +1,20 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import OwnerExpensesForm from "Components/StructurePage/Forms/OwnerExpensesForm/OwnerExpensesForm";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const reservation = () => {
-  const name = "reservation";
+const OwnerExpenses = () => {
+  const name = "owner_expenses";
   const navigate = useNavigate();
   return (
     <>
       <LayoutWrapper
         name={name}
         FormRender={(props) => {
-          console.log(props,'props');
-          
-          return <p>testing ho</p>
+          console.log(props, "props");
+
+          return <OwnerExpensesForm {...props} />;
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +26,4 @@ const reservation = () => {
   );
 };
 
-export default reservation;
+export default OwnerExpenses;

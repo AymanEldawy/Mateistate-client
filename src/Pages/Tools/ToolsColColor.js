@@ -3,7 +3,6 @@ import { useEffect } from "react";
 
 import { generateFlatHashName, getValueOfInputColor } from "Helpers/functions";
 import { CloseIcon, EditIcon } from "Components/Icons";
-import TableCol from "Components/StructurePage/CustomTable/TableCol";
 import useFlatColoring from "Hooks/useFlatColoring";
 import { FLAT_PROPERTY_TABS } from "Helpers/constants";
 import { useFormContext } from "react-hook-form";
@@ -45,7 +44,7 @@ const ToolsColColor = ({
   const itemColor = watch("grid")?.[itemData?.row_index]?.hex || itemData?.hex;
 
   return (
-    <TableCol classes="!p-0  border border-gray-400">
+    <td classes="px-4 py-2 dark:border-dark-border !p-0 border border-gray-400">
       {isUpdatable === itemHash ? (
         <div className="px-1">
           <input
@@ -118,7 +117,7 @@ const ToolsColColor = ({
           </div>
         </div>
       )}
-    </TableCol>
+    </td>
   );
 };
 

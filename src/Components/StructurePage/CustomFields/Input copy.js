@@ -5,20 +5,24 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useTranslation } from "react-i18next";
 import { CalenderIcon } from "Components/Icons";
 import { ErrorText } from "Components/Global/ErrorText";
+import OldCalenderIcon from "Components/Icons/OldCalenderIcon";
 
 const Input = ({
   labelClassName,
+  label,
   containerClassName,
   inputClassName,
-  updatedName,
-  tab,
+  readOnly,
   index,
+  updatedName,
+  hideLabel,
+  tab,
+  onBlur,
   withPortal,
+  old,
   ...field
 }) => {
   const { t } = useTranslation();
-  const { label, name, readOnly } = field || {};
-  console.log("🚀 ~ readOnly:", readOnly)
   const {
     register,
     watch,
@@ -30,6 +34,22 @@ const Input = ({
   const watchField = field?.watch;
   const watchFieldName = tab ? `${tab}.${watchField}` : watchField;
   const watchFieldCondition = field?.condition;
+
+  useEffect(() => {
+    if (!field?.name) return;
+
+    if (field?.defaultValue) {
+      setValue(updatedName || field?.name, field?.defaultValue);
+    }
+
+    if (field?.name === "currency_val") {
+      setValue(updatedName || field?.name, 1);
+    }
+
+    // if(field?.type === 'date' && !value) {
+
+    // }
+  }, [field?.defaultValue]);
 
   return (
     <Controller
@@ -45,15 +65,18 @@ const Input = ({
         return (
           <div className="flex flex-col gap-2">
             <div
-              className={`flex flex-row gap-2 ` + containerClassName}
-              key={name}
+              className={
+                `${old ? "flex-row" : "flex-col"} flex ` + containerClassName
+              }
+              key={field?.name}
             >
-              {label && (
+              {label && !hideLabel ? (
                 <label
                   title={label}
-                  htmlFor={updatedName || name}
+                  htmlFor={updatedName || field?.name}
                   className={
-                    "w-[100px] lg:w-[120px] shrink-0 font-medium text-gray-600 overflow-hidden text-ellipsis text-xs whitespace max-h-[32px] mb-1 capitalize flex items-center gap-2 " +
+                    "overflow-hidden text-ellipsis min-w-fit text-sm font-normal whitespace-nowrap mb-1 capitalize flex items-center gap-2 " +
+                    (old && " w-[190px] !whitespace-normal ") +
                     labelClassName
                   }
                 >
@@ -62,21 +85,27 @@ const Input = ({
                     <span className="text-red-500 mx-1">*</span>
                   ) : null}
                 </label>
-              )}
+              ) : null}
               {field?.type === "date" ? (
                 <DatePicker
                   {...field}
                   ref={ref}
                   wrapperClassName="w-full"
-                  className={`border h-[30px] w-full cursor-pointer read-only:bg-[#006d5f1f] flex items-center gap-2 dark:read-only:bg-[#444] rounded ltr:!pl-7 rtl:!pr-7 p-1 ${inputClassName} ${
+                  className={`border h-[39px] w-full cursor-pointer read-only:bg-[#006d5f1f] flex items-center gap-2 dark:read-only:bg-[#444] rounded ltr:!pl-7 rtl:!pr-7 p-1 ${inputClassName} ${
                     error ? "border-red-200 text-red-500" : ""
                   }`}
-                  calendarIconClassname={`-ml-1 pointer-events-none !cursor-pointer`}
+                  calendarIconClassname={`${
+                    old ? "!pt-1" : "!pt-[10px]"
+                  } -ml-1 pointer-events-none !cursor-pointer`}
                   showIcon
                   selected={value ? new Date(value) : ""}
                   icon={
                     <span>
-                      <CalenderIcon className="h-4 w-4" />
+                      {old ? (
+                        <OldCalenderIcon className="h-5 w-5" />
+                      ) : (
+                        <CalenderIcon className="h-5 w-5" />
+                      )}
                     </span>
                   }
                   defaultValue={new Date()}
@@ -92,20 +121,21 @@ const Input = ({
                       watch(field?.disabledCondition))
                   }
                   // placeholderText="Select date... YYYY/MM/DD"
-                  placeholderText="Select date..."
+                  placeholderText={`${
+                    old ? " Select date..." : "Select date..."
+                  }`}
                   onChange={(date) => {
                     onChange(date);
                   }}
                   required={field?.required}
                   // dateFormat="dd-mm-yyyy"
-                  dateFormat="dd/MM/yyyy"
-                  //  "MMMM d, yyyy"
+                  dateFormat={`${old ? " dd/MM/yyyy" : "MMMM d, yyyy"}`}
                 />
               ) : (
                 <input
                   ref={ref}
                   name={updatedName || field?.name}
-                  className={`border h-[30px] read-only:bg-[#006d5f1f] w-full dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${
+                  className={`border h-[39px] read-only:bg-[#006d5f1f] w-full dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${
                     error ? "border-red-200 text-red-500" : ""
                   } 
               `}

@@ -12,9 +12,9 @@ import { METHODS, resetChequeFields } from "Helpers/constants";
 import { ChequeStatus } from "./ChequeStatus";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import {
+  CheckboxField,
   CurrencyFieldGroup,
   Input,
-  Switch,
   Textarea,
   UniqueField,
 } from "Components/StructurePage/CustomFields";
@@ -30,6 +30,8 @@ import { removeNullValues } from "Helpers/functions";
 import { useQuery } from "@tanstack/react-query";
 import { ViewEntry } from "Components/Global/ViewEntry";
 import useCurd from "Hooks/useCurd";
+import FormLayout from "../FormWrapperLayout/FormLayout";
+import useFormPagination from "Hooks/useFormPagination";
 
 const CACHE_CHEQUE_DATA = {};
 
@@ -54,12 +56,16 @@ const ChequeForm = ({
   setRecordResponse,
   oldValues,
   action,
+  number,
+  onClose,
 }) => {
+  const name = "cheque";
   const params = useParams();
   const chqId = params?.id;
   const { set, insert, getOneBy } = useCurd();
   const { dispatchVoucherEntries } = useVoucherEntriesView();
-  const { CACHE_LIST, setCACHE_LIST } = useRefTable("cheque");
+  const { CACHE_LIST, setCACHE_LIST } = useRefTable(name);
+  const formPagination = useFormPagination({ name, number });
   const methods = useForm();
   let {
     watch,
@@ -68,7 +74,6 @@ const ChequeForm = ({
     formState: { errors, isDirty, dirtyFields, isSubmitting },
     handleSubmit,
   } = methods;
-  const name = params?.name || tableName;
   const code = params?.code || patternCode;
   const [selectedFormOperation, setSelectedFormOperation] = useState({});
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
@@ -84,11 +89,12 @@ const ChequeForm = ({
   });
 
   const { isLoading, refetch } = useQuery({
-    queryKey: ["cheque", name, code],
+    queryKey: ["cheque", name, code, formPagination?.currentId],
     queryFn: async () => {
-      const response = await getOneBy("cheque", chqId);
+      const response = await getOneBy("cheque", formPagination?.currentId);
       reset(response?.result?.at(0));
     },
+    enabled: !!formPagination?.currentId,
   });
 
   let fields = useMemo(() => {
@@ -110,7 +116,7 @@ const ChequeForm = ({
   }, [watch]);
 
   useEffect(() => {
-    if (oldValues && PATTERN_SETTINGS) {
+    if (oldValues && PATTERN_SETTINGS && !oldValues?.number) {
       reset({
         ...mergePatternWithChequeData(PATTERN_SETTINGS, watch, setValue),
         ...oldValues,
@@ -191,6 +197,7 @@ const ChequeForm = ({
       toast.error(res?.error?.detail);
     }
   };
+
   return (
     <>
       {isLoading || isSubmitting ? <Loading withBackdrop /> : null}
@@ -212,132 +219,123 @@ const ChequeForm = ({
           refetch={refetch}
         />
       </Modal>
-      <BlockPaper
-        layoutBodyClassName={popupView ? "!m-0 !p-0" : ""}
-        containerClassName={popupView ? "!m-0 !p-0" : ""}
-        bodyClassName={popupView ? "!m-0 !p-0" : ""}
-        boxClassName={popupView ? "!m-0 !p-0 !shadow-none" : ""}
+      <FormLayout
+        name={PATTERN_SETTINGS?.name}
+        onClose={() => {
+          console.log(outerClose, "outerClose");
+
+          onClose();
+          if (outerClose) outerClose();
+        }}
+        formPagination={formPagination}
+        methods={methods}
       >
-        <div key={name} className="relative">
-          <FormProvider {...methods}>
-            <FormHeadingTitle title={name} onClose={outerClose} />
-            <div className="h-5" />
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
-              {/* Fields */}
-              <div className="flex justify-between items-center flex-wrap gap-4">
-                <div className="flex items-end gap-6">
-                  <Switch {...fields?.feedback} values={watch()} />
-                  <Switch {...fields?.gen_entries} values={watch()} />
-                  {watch("id") && PATTERN_SETTINGS?.auto_gen_entries ? (
-                    <ViewEntry id={watch("id")} />
-                  ) : null}
-                </div>
-                <div className="flex gap-2">
-                  <UniqueFieldGroup values={watch()} />
-                </div>
-              </div>
-              <div className="my-4 grid gap-6 grid-cols-2 lg:grid-cols-4">
-                <Input
-                  {...fields?.number}
-                  // inputClassName="bg-gray-100"
-                />
-                <Input
-                  {...fields?.amount}
-                  // inputClassName="bg-gray-100"
-                  values={watch()}
-                />
-                <CurrencyFieldGroup
-                  CACHE_LIST={CACHE_LIST}
-                  list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
-                  values={watch()}
-                />
-                <Input
-                  {...fields?.beneficiary_name}
-                  // inputClassName="bg-gray-100"
-                  values={watch()}
-                />
-                {["parking_id", "shop_id", "apartment_id"]?.map((field) => {
-                  let name = field?.replace(/_id/g, "");
-                  if (watch(field)) {
-                    return (
-                      <UniqueField
-                        key={field}
-                        {...fields?.[field]}
-                        table={field?.replace("_id", "")}
-                        CACHE_LIST={CACHE_LIST}
-                        list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
-                        values={watch()}
-                      />
-                    );
-                  }
-                })}
+        <div key={name} className="relative px-4">
+          <div className="flex items-center justify-between mb-4">
+            <Input {...fields?.number} labelClassName="!w-[60px]" />
+            <div className="flex items-center gap-4 ">
+              <CheckboxField {...fields?.feedback} values={watch()} />
+              <CheckboxField {...fields?.gen_entries} values={watch()} />
+              {watch("id") && PATTERN_SETTINGS?.auto_gen_entries ? (
+                <ViewEntry id={watch("id")} />
+              ) : null}
+            </div>
+          </div>
+          <div className="grid gap-y-3 gap-x-8 grid-cols-2">
+            <Input {...fields?.amount} values={watch()} />
+            <div className="flex gap-2 items-center">
+              <UniqueFieldGroup values={watch()} />
+            </div>
+            <CurrencyFieldGroup
+              CACHE_LIST={CACHE_LIST}
+              list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
+              values={watch()}
+            />
+            <Input
+              {...fields?.beneficiary_name}
+              // inputClassName="bg-gray-100"
+              values={watch()}
+            />
+            {["parking_id", "shop_id", "apartment_id"]?.map((field) => {
+              let name = field?.replace(/_id/g, "");
+              if (watch(field)) {
+                return (
+                  <UniqueField
+                    key={field}
+                    {...fields?.[field]}
+                    table={field?.replace("_id", "")}
+                    CACHE_LIST={CACHE_LIST}
+                    list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
+                    values={watch()}
+                  />
+                );
+              }
+            })}
 
-                {[
-                  "account_id",
-                  "cost_center_id",
-                  "observe_account_id",
-                  "observe_cost_center_id",
-                ]?.map((field) => {
-                  let name = field?.replace(/observe_|_id/g, "");
-                  return (
-                    <UniqueField
-                      key={field}
-                      {...fields?.[field]}
-                      table={field?.replace("_id", "")}
-                      CACHE_LIST={CACHE_LIST}
-                      list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
-                      values={watch()}
-                    />
-                  );
-                })}
-
-                <div className="flex items-center justify-between">
-                  <Switch {...fields?.deposit_status} values={watch()} />
-                  <Switch {...fields?.without_due_date} values={watch()} />
-                </div>
-                <Input
-                  {...fields?.due_date}
-                  updatedName={`.due_date`}
-                  values={watch()}
-                />
-                <Input
-                  {...fields?.end_due_date}
-                  updatedName={`.end_due_date`}
-                  values={watch()}
-                />
+            {[
+              "account_id",
+              "cost_center_id",
+              "observe_account_id",
+              "observe_cost_center_id",
+            ]?.map((field) => {
+              let name = field?.replace(/observe_|_id/g, "");
+              return (
                 <UniqueField
-                  {...fields?.bank_id}
+                  key={field}
+                  {...fields?.[field]}
+                  table={field?.replace("_id", "")}
                   CACHE_LIST={CACHE_LIST}
-                  list={!!CACHE_LIST ? CACHE_LIST?.bank : []}
+                  list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
                   values={watch()}
                 />
-              </div>
-              <div className="my-4 grid gap-6 grid-cols-2">
-                <Textarea
-                  {...fields?.note1}
-                  updatedName={`.note1`}
-                  values={watch()}
-                />
-                <Textarea
-                  {...fields?.note2}
-                  updatedName={`.note2`}
-                  values={watch()}
-                />
-              </div>
+              );
+            })}
 
-              <ChequeStatus
-                pattern={PATTERN_SETTINGS}
-                onOpenFormOperation={onOpenFormOperation}
-                chqValues={watch()}
-              />
+            <Input
+              {...fields?.due_date}
+              updatedName={`.due_date`}
+              values={watch()}
+            />
+            <Input
+              {...fields?.end_due_date}
+              updatedName={`.end_due_date`}
+              values={watch()}
+            />
+            <UniqueField
+              {...fields?.bank_id}
+              CACHE_LIST={CACHE_LIST}
+              list={!!CACHE_LIST ? CACHE_LIST?.bank : []}
+              values={watch()}
+            />
+            <div className="flex items-center justify-between">
+              <CheckboxField {...fields?.deposit_status} values={watch()} />
+              <CheckboxField {...fields?.without_due_date} values={watch()} />
+            </div>
+          </div>
+          <div className=" grid gap-y-3 gap-x-8 grid-cols-2 mt-4">
+            <Textarea
+              {...fields?.note1}
+              updatedName={`.note1`}
+              values={watch()}
+            />
+            <Textarea
+              {...fields?.note2}
+              updatedName={`.note2`}
+              values={watch()}
+            />
+          </div>
 
-              <div className="flex justify-between gap-6 items-center mt-4 border-t pt-4">
-                <Button title={"Save"} />
-              </div>
-            </form>
-          </FormProvider>
+          <ChequeStatus
+            pattern={PATTERN_SETTINGS}
+            onOpenFormOperation={onOpenFormOperation}
+            chqValues={watch()}
+          />
+
+          <div className="flex justify-between gap-6 items-center mt-4 border-t pt-4">
+            <Button title={"Save"} />
+          </div>
         </div>
-      </BlockPaper>
+      </FormLayout>
     </>
   );
 };

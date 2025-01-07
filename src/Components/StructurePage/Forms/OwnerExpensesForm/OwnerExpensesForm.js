@@ -5,7 +5,7 @@ import { usePopupForm } from "Hooks/usePopupForm";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import getFormByTableName from "Helpers/Forms/forms";
 import { Fields } from "../CustomForm/Fields";
 import { insertIntoGrid } from "Helpers/Lib/vouchers-insert";

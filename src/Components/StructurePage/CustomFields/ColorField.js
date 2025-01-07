@@ -46,13 +46,13 @@ const ColorField = ({
 
   return (
     <div className="relative">
-      <div className={"flex flex-col " + containerClassName} key={field?.name}>
+      <div className={"flex flex-row " + containerClassName} key={field?.name}>
         {label && !hideLabel ? (
           <label
             title={label}
             htmlFor={updatedName || field?.name}
             className={
-              "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize flex items-center gap-2" +
+              "w-[100px] lg:w-[130px] shrink-0 font-medium text-gray-600 overflow-hidden text-ellipsis text-xs whitespace max-h-[32px] mb-1 capitalize flex items-center gap-2 " +
               labelClassName
             }
           >
@@ -65,9 +65,8 @@ const ColorField = ({
         <button
           type="button"
           // className="relative border-2 border-gray-100 w-10 h-10 rounded-full overflow-hidden"
-          className={`border read-only:bg-blue-100 w-full h-8 dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${
-            error ? "border-red-200 text-red-600" : ""
-          } 
+          className={`border read-only:bg-[#006d5f1f] w-full h-8 dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${error ? "border-red-200 text-red-600" : ""
+            } 
          `}
           style={{ backgroundColor: watch(updatedName || field?.name) }}
           onClick={() => setOpenColorList(true)}
@@ -86,9 +85,8 @@ const ColorField = ({
             />
             <div className="absolute z-20 min-w-[200px] p-4 top-0 ltr:left-full rtl:right-full bg-white shadow-md rounded-md">
               <div
-                className={`relative h-6 mb-4 w-6 rounded-full border flex items-center justify-center text-white text-lg overflow-hidden ${
-                  color === inputRef?.current?.value ? "shadow-md" : ""
-                }`}
+                className={`relative h-6 mb-4 w-6 rounded-full border flex items-center justify-center text-white text-lg overflow-hidden ${color === inputRef?.current?.value ? "shadow-md" : ""
+                  }`}
                 style={{ backgroundColor: inputRef?.current?.value }}
               >
                 <input
@@ -110,9 +108,8 @@ const ColorField = ({
                   <button
                     key={currentColor}
                     type="button"
-                    className={`h-6 w-6 rounded-full border relative flex items-center justify-center ${
-                      color === currentColor ? "shadow-md" : ""
-                    }`}
+                    className={`h-6 w-6 rounded-full border relative flex items-center justify-center ${color === currentColor ? "shadow-md" : ""
+                      }`}
                     style={{ backgroundColor: currentColor }}
                     onClick={() => setColor(currentColor)}
                   >

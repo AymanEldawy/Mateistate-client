@@ -1,4 +1,4 @@
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
 import InstallmentForm from "./InstallmentForm";
 import INSERT_FUNCTION, {
@@ -41,11 +41,12 @@ import {
   deleteEntry,
   generateEntryFromContract,
 } from "Helpers/Lib/vouchers-insert";
-import { Locked } from "Components/Global/Locked";
 import ContractTerminationForm from "./ContractTerminationForm";
 import { useQuery } from "@tanstack/react-query";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import useCurd from "Hooks/useCurd";
+import FormLayout from "../FormWrapperLayout/FormLayout";
+import useFormPagination from "Hooks/useFormPagination";
 
 const SHOULD_UPDATES = {};
 const CACHE_BUILDING_ASSETS = {};
@@ -81,14 +82,13 @@ export async function filterAssetsByBuilding(
   }));
 }
 
-const ContractForm = () => {
+const ContractForm = ({ number, onClose }) => {
   const params = useParams();
   const [searchQuery] = useSearchParams();
   const type = params?.type;
   const code = searchQuery.get("code");
   const assetType = searchQuery.get("flat_type")?.toLowerCase();
   const contractName = `${assetType}_${type}_contract`;
-  const contractId = params?.id;
   const [isLoading, setIsLoading] = useState(false);
   const [shouldRefresh, setShouldRefresh] = useState(false);
   const [openInstallmentForm, setOpenInstallmentForm] = useState(false);
@@ -97,6 +97,8 @@ const ContractForm = () => {
   const [oldContracts, setOldContracts] = useState([]);
   const methods = useForm();
   const { getOneBy } = useCurd();
+  const formPagination = useFormPagination({ name: "contract", number, code });
+  const contractId = formPagination?.currentId;
 
   const {
     handleSubmit,
@@ -140,7 +142,7 @@ const ContractForm = () => {
 
   // Fetch Last contract number
   useQuery({
-    queryKey: [],
+    queryKey: ["contract", code],
     queryFn: async () => {
       const lastNumber = await getLastNumberByColumn("contract", "code", +code);
 
@@ -416,15 +418,19 @@ const ContractForm = () => {
   };
 
   return (
-    <FormWrapperLayout
+    <FormLayout
       tableName="contract"
       name={contractName}
       isLoading={isLoading || contractQueryClient?.isLoading}
       onSubmit={onSubmit}
       methods={methods}
       steps={steps}
-      goToStep={goTo}
-      currentIndex={currentIndex}
+      goTo={goTo}
+      activeStage={currentIndex}
+      onClose={onClose}
+      formPagination={formPagination}
+      formClassName="w-full xl:min-w-[900px] 2xl:min-w-[1200px]"
+      
       outerDelete={() =>
         onChangeContractStatus(
           CONSTANT_COLUMNS_NAME.is_deleted,
@@ -432,7 +438,6 @@ const ContractForm = () => {
           setValue
         )
       }
-      setCurrentIndex={setCurrentIndex}
     >
       {openInstallmentForm && watch(`contract.contract_value`) ? (
         <InstallmentForm
@@ -453,12 +458,6 @@ const ContractForm = () => {
               : ""
           }`}
         >
-          {watch("contract.is_archived") || watch("contract.is_deleted") ? (
-            <Locked
-              isArchived={watch("contract.is_archived")}
-              isDeleted={watch("contract.is_deleted")}
-            />
-          ) : null}
           {formSettings?.formType === "grid" ? (
             <div>
               <TableFields
@@ -527,7 +526,7 @@ const ContractForm = () => {
           )}
         </div>
       </form>
-    </FormWrapperLayout>
+    </FormLayout>
   );
 };
 

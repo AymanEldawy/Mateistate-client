@@ -65,7 +65,7 @@ const Switch = ({
                 <input
                   readOnly
                   value={watch(field?.readOnlyValue)}
-                  className={`border h-[39px] read-only:bg-blue-100 w-full dark:read-only:bg-[#444] rounded p-1  `}
+                  className={`border h-[39px] read-only:bg-[#006d5f1f] w-full dark:read-only:bg-[#444] rounded p-1  `}
                 />
               ) : null}
             </div>

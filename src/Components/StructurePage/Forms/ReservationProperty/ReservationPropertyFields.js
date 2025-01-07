@@ -1,4 +1,5 @@
 import {
+  CheckboxField,
   CurrencyFieldGroup,
   Input,
   Select,
@@ -11,10 +12,10 @@ import { useFormContext } from "react-hook-form";
 import { ViewEntry } from "Components/Global/ViewEntry";
 
 export const ReservationPropertyFields = ({
-  fields,
-  CACHE_LIST,
   errors,
   selectedProperty,
+  CACHE_LIST = {},
+  fields = [],
 }) => {
   const { watch } = useFormContext();
 
@@ -26,9 +27,10 @@ export const ReservationPropertyFields = ({
     return hash;
   }, []);
 
+  
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">
+      <div className="grid grid-cols-2 items-center gap-4">
         {/* {["account_id", "building_id"]?.map((field) => {
           let name = field?.replace(/_id/, "");
           return (
@@ -43,7 +45,7 @@ export const ReservationPropertyFields = ({
           {...{
             ...fieldsHash?.account_id,
           }}
-          CACHE_LIST={CACHE_LIST}
+          CACHE_LIST={CACHE_LIST?.account}
           list={CACHE_LIST?.account}
         />
         <UniqueField
@@ -72,14 +74,14 @@ export const ReservationPropertyFields = ({
         ))}
 
         <div className="flex gap-2 items-end">
-          <Switch
+          <CheckboxField
             {...fieldsHash?.has_payment}
           />
           {watch("id") && watch("has_payment") ? (
             <ViewEntry id={watch("id")} />
           ) : null}
         </div>
-        <Switch
+        <CheckboxField
           {...fieldsHash?.reservation_expired}
         />
       </div>

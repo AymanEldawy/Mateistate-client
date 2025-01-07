@@ -7,7 +7,7 @@ import { dynamicInsertIntoMultiStepsTable } from "Helpers/Lib/global-insert";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import {
   SERVICE_CUSTOMER_CODE,
   SERVICE_PROPERTY_PREPARING_CODE,
@@ -38,12 +38,13 @@ const ServiceForm = ({ popupView }) => {
     onDeleteItem,
     setCACHE_LIST,
   } = useFormSteps({
-    name:
-      code === 1
-        ? "service_customer"
-        : code === 2
-        ? "service"
-        : "default_service",
+    // name:
+    //   code === 1
+    //     ? "service_customer"
+    //     : code === 2
+    //     ? "service"
+    //     : "default_service",
+    name: "service",
   });
   const { reset, watch, setValue } = methods;
   const { isLoading } = useQuery({

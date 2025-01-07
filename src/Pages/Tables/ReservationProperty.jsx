@@ -1,20 +1,20 @@
 
-import FormSingular from "Components/StructurePage/Forms/CustomForm/FormSingular";
+import ReservationPropertyForm from "Components/StructurePage/Forms/ReservationProperty/ReservationPropertyForm";
 import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const Currency = () => {
-  const name = "currency";
+const ReservationProperty = () => {
+  const name = "reservation_property";
   const navigate = useNavigate();
   return (
     <>
       <LayoutWrapper
         name={name}
         FormRender={(props) => {
-          console.log(props,'props');
-          
-          return <FormSingular name={name}  {...props} />
+          console.log(props, "props");
+
+          return <ReservationPropertyForm {...props} />;
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -26,4 +26,4 @@ const Currency = () => {
   );
 };
 
-export default Currency;
+export default ReservationProperty;

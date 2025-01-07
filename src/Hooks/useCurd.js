@@ -38,12 +38,50 @@ const useCurd = () => {
   };
 
   // getOneBy
-  const getOneBy = async (name, value, column = "id") => {
+  const getOneBy = async (name, value, column = "id", columns = ["*"]) => {
     console.log(name, value, column);
 
     return curd.read(name, {
       conditions: [{ type: "and", conditions: [[column, "=", value]] }],
+      columns,
     });
+  };
+
+  const getNextOne = async (name, value, columns = ["*"]) => {
+    const response = await curd.read(name, {
+      conditions: [{ type: "and", conditions: [["number", ">", value]] }],
+      limit: 1,
+      columns,
+    });
+    return response;
+  };
+
+  const getPreviousOne = async (name, value, columns = ["*"]) => {
+    const response = await curd.read(name, {
+      conditions: [{ type: "and", conditions: [["number", "<", value]] }],
+      sorts: [{ column: "number", order: "DESC", nulls: "last" }],
+      limit: 1,
+      columns,
+    });
+    return response;
+  };
+
+  const getFirstOne = async (name, columns = ["*"]) => {
+    const response = await curd.read(name, {
+      limit: 1,
+      sorts: [{ column: "number", order: "ASC", nulls: "last" }],
+      columns,
+    });
+    return response;
+  };
+
+  const getLastOne = async (name, columns = ["*"]) => {
+    const response = await curd.read(name, {
+      limit: 1,
+      sorts: [{ column: "number", order: "DESC", nulls: "last" }],
+      columns,
+    });
+    return response;
   };
 
   const getSearch = async (name, value, column = "name") => {
@@ -63,6 +101,10 @@ const useCurd = () => {
     insert,
     getOneBy,
     getSearch,
+    getNextOne,
+    getPreviousOne,
+    getFirstOne,
+    getLastOne,
   };
 };
 

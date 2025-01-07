@@ -1,13 +1,7 @@
 import { Checkbox } from "Components/StructurePage/CustomFields";
-import TableBody from "Components/StructurePage/CustomTable/TableBody";
-import TableCol from "Components/StructurePage/CustomTable/TableCol";
-import TableHead from "Components/StructurePage/CustomTable/TableHead";
-import TableHeadCol from "Components/StructurePage/CustomTable/TableHeadCol";
-import TableRow from "Components/StructurePage/CustomTable/TableRow";
 import useFlatColoring from "Hooks/useFlatColoring";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import ToolsColColor from "./ToolsColColor";
-import Table from "Components/StructurePage/CustomTable/Table";
 import {
   generateFlatHashName,
   getAlphabetSortingView,
@@ -76,101 +70,112 @@ export const ToolsTabsTable = ({
 
   return (
     <div key={selectedTab}>
-      <Table className="max-w-fit">
-        <TableHead classes="!bg-[#0099a5] text-white">
-          {canInsertColor ? (
-            <TableHeadCol classes="border border-gray-400 min-w-[20px]"></TableHeadCol>
-          ) : null}
-          {Array(selectedTab?.y ? yCount : xCount)
-            .fill(0)
-            .map((row, indexY) => (
-              <TableHeadCol
-                key={`${row}-${indexY}`}
-                classes="border border-gray-400 min-w-[90px] !py-2 text-sm !px-2"
-              >
-                <div className="flex gap-1 justify-between items-center">
-                  {canInsertColor && selectedTab?.y !== "" ? (
-                    <Checkbox
-                      name={tabName}
-                      inputClassName="mr-2 !ml-0 bg-gray-500 w-9"
-                      onChange={(e) => {
-                        onSelectAllVertical(e, indexY, xCount);
-                        // onSelectAllVertical(e, indexY, yCount, tabName);
-                        // onSelectAllVertical(e, xCount, yCount, tabName);
-                      }}
-                    />
-                  ) : null}
-                  {getAlphabetSortingView(indexY + 1)}
-                </div>
-              </TableHeadCol>
-            ))}
-        </TableHead>
-        <TableBody>
-          {selectedTab?.y !== "" ? (
-            Array(xCount)
-              .fill(0)
-              .map((r, indexX) => (
-                <TableRow key={`${r}-${indexX}`}>
-                  {canInsertColor ? (
-                    <TableCol classes="!p-0 !px-2  border border-gray-400 darkL">
-                      <Checkbox
-                        name={tabName}
-                        onChange={
-                          (e) => onSelectAllHorizontal(e, indexX, yCount, true)
-                          // onSelectAllHorizontal(e, indexX, selectedTab?.y ? yCount : xCount, tabName)
-                        }
-                      />
-                    </TableCol>
-                  ) : null}
-                  {Array(yCount)
-                    .fill(0)
-                    .map((r, indexY) => (
-                      <ToolsColColor
-                        key={`${indexY}-${row}`}
-                        xIndex={indexX}
-                        yIndex={indexY}
-                        prefix={prefix}
-                        tabName={tabName}
-                        isUpdatable={isUpdatable}
-                        setFlatsDetails={setFlatsDetails}
-                        selectedTab={selectedTab}
-                        setIsUpdatable={setIsUpdatable}
-                        flatsDetails={flatsDetails}
-                        isMatrix
-                      />
-                    ))}
-                </TableRow>
-              ))
-          ) : (
-            <TableRow>
+      <div className="max-w-fit">
+        <table>
+          <thead
+            className={`text-xs text-gray-700 uppercase dark:border-dark-border dark:bg-dark-border dark:text-gray-300 bg-gray-200 !bg-[#0099a5] text-white`}
+          >
+            <tr>
               {canInsertColor ? (
-                <TableCol classes="!p-0 !px-2  border border-gray-400 darkL">
-                  <Checkbox
-                    name={tabName}
-                    onChange={(e) => onSelectAllHorizontal(e, 0, xCount)}
-                  />
-                </TableCol>
+                <th classes="px-4 py-2 border border-gray-400 min-w-[20px]"></th>
               ) : null}
-              {Array(xCount)
+              {Array(selectedTab?.y ? yCount : xCount)
+                .fill(0)
+                .map((row, indexY) => (
+                  <th
+                    key={`${row}-${indexY}`}
+                    classes="border px-4 py-2 border-gray-400 min-w-[90px] !py-2 text-sm !px-2"
+                  >
+                    <div className="flex gap-1 justify-between items-center">
+                      {canInsertColor && selectedTab?.y !== "" ? (
+                        <Checkbox
+                          name={tabName}
+                          inputClassName="mr-2 !ml-0 bg-gray-500 w-9"
+                          onChange={(e) => {
+                            onSelectAllVertical(e, indexY, xCount);
+                            // onSelectAllVertical(e, indexY, yCount, tabName);
+                            // onSelectAllVertical(e, xCount, yCount, tabName);
+                          }}
+                        />
+                      ) : null}
+                      {getAlphabetSortingView(indexY + 1)}
+                    </div>
+                  </th>
+                ))}
+            </tr>
+          </thead>
+          <tbody>
+            {selectedTab?.y !== "" ? (
+              Array(xCount)
                 .fill(0)
                 .map((r, indexX) => (
-                  <ToolsColColor
-                    key={`${0}-${row}`}
-                    yIndex={0}
-                    xIndex={indexX}
-                    prefix={prefix}
-                    tabName={tabName}
-                    isUpdatable={isUpdatable}
-                    setFlatsDetails={setFlatsDetails}
-                    selectedTab={selectedTab}
-                    setIsUpdatable={setIsUpdatable}
-                    flatsDetails={flatsDetails}
-                  />
-                ))}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+                  <tr key={`${r}-${indexX}`}>
+                    {canInsertColor ? (
+                      <td
+                        className={`px-4 py-2 dark:border-dark-border !p-0 !px-2  border border-gray-400 darkL`}
+                      >
+                        <Checkbox
+                          name={tabName}
+                          onChange={
+                            (e) =>
+                              onSelectAllHorizontal(e, indexX, yCount, true)
+                            // onSelectAllHorizontal(e, indexX, selectedTab?.y ? yCount : xCount, tabName)
+                          }
+                        />
+                      </td>
+                    ) : null}
+                    {Array(yCount)
+                      .fill(0)
+                      .map((r, indexY) => (
+                        <ToolsColColor
+                          key={`${indexY}-${row}`}
+                          xIndex={indexX}
+                          yIndex={indexY}
+                          prefix={prefix}
+                          tabName={tabName}
+                          isUpdatable={isUpdatable}
+                          setFlatsDetails={setFlatsDetails}
+                          selectedTab={selectedTab}
+                          setIsUpdatable={setIsUpdatable}
+                          flatsDetails={flatsDetails}
+                          isMatrix
+                        />
+                      ))}
+                  </tr>
+                ))
+            ) : (
+              <tr>
+                {canInsertColor ? (
+                  <td
+                    className={`px-4 py-2 dark:border-dark-border !p-0 !px-2  border border-gray-400 darkL`}
+                  >
+                    <Checkbox
+                      name={tabName}
+                      onChange={(e) => onSelectAllHorizontal(e, 0, xCount)}
+                    />
+                  </td>
+                ) : null}
+                {Array(xCount)
+                  .fill(0)
+                  .map((r, indexX) => (
+                    <ToolsColColor
+                      key={`${0}-${row}`}
+                      yIndex={0}
+                      xIndex={indexX}
+                      prefix={prefix}
+                      tabName={tabName}
+                      isUpdatable={isUpdatable}
+                      setFlatsDetails={setFlatsDetails}
+                      selectedTab={selectedTab}
+                      setIsUpdatable={setIsUpdatable}
+                      flatsDetails={flatsDetails}
+                    />
+                  ))}
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

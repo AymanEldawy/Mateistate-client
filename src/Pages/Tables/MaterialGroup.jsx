@@ -1,10 +1,11 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import FormSingular from "Components/StructurePage/Forms/CustomForm/FormSingular";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const cheque_pattern = () => {
-  const name = "cheque_pattern";
+const MaterialGroup = () => {
+  const name = "material_group";
   const navigate = useNavigate();
   return (
     <>
@@ -13,7 +14,7 @@ const cheque_pattern = () => {
         FormRender={(props) => {
           console.log(props,'props');
           
-          return <p>testing ho</p>
+          return <FormSingular name={name}  {...props} />
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +26,4 @@ const cheque_pattern = () => {
   );
 };
 
-export default cheque_pattern;
+export default MaterialGroup;

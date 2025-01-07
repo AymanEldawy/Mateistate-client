@@ -36,7 +36,6 @@ const CustomTable = ({
   setColumnFilters,
   columnFilters,
 }) => {
-  console.log("🚀 ~ data:", data)
   const { t } = useTranslation();
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnOrder, setColumnOrder] = useState([]);
@@ -126,12 +125,8 @@ const CustomTable = ({
                         }}
                         onDrop={onDrop}
                         style={{ width: header.getSize() }}
-                        className={` text-gray-700 whitespace-nowrap px-2 border-2 font-medium capitalize relative  group border-b border-gray-200 p-1 cursor-move ${thClassName}
-                      ${
-                        header.column.getIsSorted()
-                          ? "sorting-hover [&_span]:visible bg-gray-300 "
-                          : ""
-                      }
+                        className={` text-gray-700 whitespace-nowrap px-2 py-1 border-2 font-medium capitalize relative  group border-b border-gray-200 p-1 cursor-move ${thClassName}
+                      
                       `}
                         onClick={() => {
                           if (header.column.getCanSort())
@@ -162,8 +157,8 @@ const CustomTable = ({
                           )}
                         </div>
                         {header.column.getCanSort() && (
-                          <span className="text-xs absolute top-2 inline-block invisible group-hover:visible cursor-pointer">
-                            <SortIcon />
+                          <span className="text-xs absolute ltr:right-2 top-1 inline-block invisible group-hover:visible cursor-pointer">
+                            <SortIcon className="w-4 h-4"  />
                           </span>
                         )}
                         <ResizeBar header={header} />
@@ -184,13 +179,13 @@ const CustomTable = ({
                     return (
                       <tr
                         key={row.id}
-                        className={`border-b last:border-none border-2 even:bg-gray-100 border-gray-100 `}
+                        className={`border-b last:border-none border-2 even:bg-gray-100 border-gray-100 text-sm`}
                       >
                         {row.getVisibleCells().map((cell) => {
                           return (
                             <td
                               key={cell?.id}
-                              className={`w-[${cell.column.getSize()}] px-2 ${tdClassName}`}
+                              className={`w-[${cell.column.getSize()}] py-1 whitespace-nowrap border px-3 ${tdClassName}`}
                               style={{ width: cell.column.getSize() }}
                             >
                               {flexRender(
@@ -207,7 +202,7 @@ const CustomTable = ({
                   <tr className="text-red-500 h-28 bg-[#f1f1f1e8] p-1 rounded-sm mt-2">
                     <td
                       colSpan={columns?.length || 5}
-                      className="ltr:text-left rtl:text-right relative"
+                      className="ltr:text-left rtl:text-right relative py-1"
                     >
                       <span className="sticky left-1/2 -translate-x-1/2">
                         {t("empty_result")}

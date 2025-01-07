@@ -16,36 +16,48 @@ const CheckboxField = ({
 }) => {
   const { watch } = useFormContext();
   const { t } = useTranslation();
-  const { name } = field;
+  const { name, required } = field;
 
   return (
     <Controller
       name={updatedName || field.name}
-      render={({ field: { onChange, onBlur, ref, value } ,fieldState: { error }}) => {
+      render={({
+        field: { onChange, onBlur, ref, value },
+        fieldState: { error },
+      }) => {
         return (
-          <div className={`w-full flex flex-col gap-2 ${containerClassName}`}>
-            <label
-              title={label}
-              className={`relative flex w-full gap-2 items-center cursor-pointer ${labelClassName}`}
+          <div className="flex flex-col gap-2">
+            <div
+              className={
+                `flex flex-row items-center gap-2 ` + containerClassName
+              }
+              key={name}
             >
               <input
                 ref={ref}
                 id={name}
-                type="checkbox"
-                className="h-4 w-4"
+                className="h-5 w-5"
                 disabled={!watch(field?.disabledCondition) || readOnly}
                 onChange={(e) => onChange(e.target.checked)}
                 checked={watch(updatedName || field?.name)}
                 readOnly={readOnly}
+                {...field}
                 {...checkboxProps}
+                type="checkbox"
               />
-              <p className="flex-1 capitalize">
+              <label
+                title={label}
+                className={
+                  "overflow-hidden text-ellipsis text-sm font-normal whitespace max-h-[32px] mb-1 capitalize flex items-center gap-2 " +
+                  labelClassName
+                }
+              >
                 {t(label)?.replace(/_/g, " ")}
-                {field?.required ? (
+                {required ? (
                   <span className="text-red-500  mx-1">*</span>
                 ) : null}
-              </p>
-            </label>
+              </label>
+            </div>
             {error ? (
               <ErrorText containerClassName="py-1">{error?.message}</ErrorText>
             ) : null}

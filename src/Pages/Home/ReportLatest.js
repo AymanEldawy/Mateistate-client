@@ -1,8 +1,8 @@
 import { NotAllowIcon } from "Components/Icons";
 import { ReportLatestCard } from "./ReportLatestCard";
-import { LoadingCircle } from "Components/Global/LoadingCircle";
 import { useQuery } from "@tanstack/react-query";
 import { ApiActions } from "Helpers/Lib/api";
+import Loading from "Components/Global/Loading";
 
 export const ReportLatest = ({
   title,
@@ -45,7 +45,7 @@ export const ReportLatest = ({
       </div>
       <div className={`${bodyClassName} flex-1 flex flex-col`}>
         {isLoading ? (
-          <LoadingCircle />
+          <Loading withBackdrop />
         ) : (
           <>
             {data?.result?.length ? (

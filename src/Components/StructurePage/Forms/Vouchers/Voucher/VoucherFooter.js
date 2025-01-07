@@ -23,10 +23,9 @@ export const VoucherFooter = ({
             <Input
               readOnly
               {...fields?.debit_amount}
-              hideLabel
+              labelClassName="hidden"
               type="number"
               value={values?.debit_amount || ""}
-              className="border-0 !rounded-none !h-full"
               name="debit_amount"
             />
           </div>
@@ -34,10 +33,9 @@ export const VoucherFooter = ({
             <Input
               readOnly
               {...fields?.credit_amount}
-              hideLabel
+              labelClassName="hidden"
               type="number"
               value={values?.credit_amount || ""}
-              className="border-0 !rounded-none !h-full"
               name="credit_amount"
             />
           </div>
@@ -48,10 +46,9 @@ export const VoucherFooter = ({
             <Input
               readOnly
               {...fields?.debit_total}
-              hideLabel
+              labelClassName="hidden"
               type="number"
               value={values?.debit_total || ""}
-              className="border-0 !rounded-none !h-full"
               name="debit_total"
             />
           </div>
@@ -59,10 +56,9 @@ export const VoucherFooter = ({
             <Input
               readOnly
               {...fields?.credit_total}
-              hideLabel
+              labelClassName="hidden"
               type="number"
               value={values?.credit_total || ""}
-              className="border-0 !rounded-none !h-full"
               name="credit_total"
             />
           </div>

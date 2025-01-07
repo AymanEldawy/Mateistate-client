@@ -5,7 +5,7 @@ import useFormSteps from "Hooks/useFormSteps";
 import { Fields } from "./Fields";
 import INSERT_FUNCTION from "Helpers/Lib/global-insert";
 import { useForm } from "react-hook-form";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePopupForm } from "Hooks/usePopupForm";
@@ -13,6 +13,8 @@ import { SHOULD_DELETE_COST_CENTER } from "Helpers/constants";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import useCurd from "Hooks/useCurd";
+import FormLayout from "../FormWrapperLayout/FormLayout";
+import useFormPagination from "Hooks/useFormPagination";
 
 const FormSteps = ({
   name,
@@ -21,15 +23,17 @@ const FormSteps = ({
   setRecordResponse,
   popupView,
   oldValues = null,
+  number
 }) => {
   const params = useParams();
   const navigate = useNavigate();
   const id = params?.id;
-  const { remove} = useCurd();
+  const { remove } = useCurd();
   const { appendNewRecord } = usePopupForm();
   const methods = useForm({
     defaultValues: {},
   });
+  const formPagination = useFormPagination({ name, number: number || 1 });
 
   const {
     goTo,
@@ -74,9 +78,8 @@ const FormSteps = ({
       if (SHOULD_DELETE_COST_CENTER?.[tabNames[0]]) {
         await remove("cost_center", data?.cost_center_id);
       }
-      navigate(-1)
+      navigate(-1);
     }
-
   };
 
   // Handel Submit
@@ -105,19 +108,18 @@ const FormSteps = ({
   };
 
   return (
-    <FormWrapperLayout
+    <FormLayout
       name={name}
-      popupView={popupView}
       isLoading={isLoading}
       onSubmit={onSubmit}
       methods={methods}
-      itemId={watch("building.id")}
-      itemNumber={watch("building.number")}
+      onClose={onClose}
       steps={steps}
-      goToStep={goTo}
-      currentIndex={currentIndex}
-      outerDelete={onDelete}
-      setCurrentIndex={setCurrentIndex}
+      goTo={goTo}
+      activeStage={currentIndex}
+      formPagination={formPagination}
+      formClassName="w-full xl:w-[900px] 2xl:w-[1200px]"
+    
     >
       {fields?.length ? (
         <>
@@ -141,7 +143,7 @@ const FormSteps = ({
           )}
         </>
       ) : null}
-    </FormWrapperLayout>
+    </FormLayout>
   );
 };
 

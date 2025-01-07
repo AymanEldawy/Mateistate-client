@@ -28,7 +28,7 @@ export const menuData = [
           {
             key: "account-card",
             name: "account card",
-            link: "/list/account",
+            link: "/account",
           },
 
           {
@@ -45,7 +45,7 @@ export const menuData = [
           {
             key: "cost-center-card",
             name: "cost center card",
-            link: "/list/cost_center",
+            link: "/cost_center",
           },
           {
             key: "Chart of cost center",
@@ -57,13 +57,13 @@ export const menuData = [
       {
         key: "Customer",
         name: "Customer/Supplier Card",
-        link: "/list/user",
+        link: "/user",
       },
-      { key: "owner-card", name: "owner card", link: "/list/owner" },
-      { key: "seller-card", name: "seller card", link: "/list/seller" },
-      { key: "lessor-card", name: "lessor card", link: "/list/lessor" },
-      { key: "bank-card", name: "bank card", link: "/list/bank" },
-      { key: "Currency card", name: "Currency card", link: "/list/currency" },
+      { key: "owner-card", name: "owner card", link: "/owner" },
+      { key: "seller-card", name: "seller card", link: "/seller" },
+      { key: "lessor-card", name: "lessor card", link: "/lessor" },
+      { key: "bank-card", name: "bank card", link: "/bank" },
+      { key: "Currency card", name: "Currency card", link: "/currency" },
     ],
   },
   {
@@ -76,37 +76,37 @@ export const menuData = [
       {
         key: "reservation_property",
         name: "reservation property Card",
-        link: "/list/reservation_property",
+        link: "/reservation_property",
       },
       {
         key: "Building",
         name: "Building Card",
-        link: "list/buildings/building",
+        link: "building",
       },
       {
         key: "Flat",
         name: "Flat Card",
-        link: "/list/apartment",
+        link: "/apartment",
       },
       {
         key: "Shop",
         name: "Shop Card",
-        link: "/list/shop",
+        link: "/shop",
       },
       {
         key: "Parking",
         name: "Parking Card",
-        link: "/list/parking",
+        link: "/parking",
       },
       {
         key: "Land",
         name: "Land Card",
-        link: "/list/land",
+        link: "/land",
       },
       {
         key: "Villa",
         name: "Villa Card",
-        link: "/list/villa",
+        link: "/villa",
       },
       {
         key: "owner expenses",
@@ -115,12 +115,12 @@ export const menuData = [
           {
             key: "owner expenses types",
             name: "owner expenses types",
-            link: "/list/owner_expenses_types",
+            link: "/owner_expenses_types",
           },
           {
             key: "owner expenses card",
             name: "owner expenses card",
-            link: "/list/owner_expenses",
+            link: "/owner_expenses",
           },
           {
             key: "owner expenses report",
@@ -129,16 +129,7 @@ export const menuData = [
           },
         ],
       },
-      // {
-      //   key: "Watchman",
-      //   name: "Watchman Card",
-      //   link: "/list/watchman",
-      // },
-      // {
-      //   key: "Quotation Card",
-      //   name: "Quotation Card",
-      //   link: "/list/OfferPrice",
-      // },
+      
     ],
   },
 
@@ -157,28 +148,28 @@ export const menuData = [
       {
         key: "services",
         name: "Services contracts",
-        link: "/list/",
+        link: "/service",
       },
 
       {
         key: "lawsuit",
         name: "Lawsuit",
-        link: "/list/lawsuit",
+        link: "/lawsuit",
       },
       {
         key: "Owners Associations Fees",
         name: "Owners Associations Fees",
-        link: "/list/",
+        link: "/",
       },
       {
         key: "Contract cycle",
         name: "Contract cycle",
-        link: "/list/",
+        link: "/",
       },
       {
         key: "Building electricity meter reading",
         name: "Building electricity meter reading",
-        link: "/list/",
+        link: "/",
       },
     ],
   },
@@ -452,7 +443,7 @@ export const menuData = [
       {
         key: "store",
         name: "stores",
-        link: "/list/store",
+        link: "/store",
       },
       {
         key: "store chart",
@@ -466,12 +457,12 @@ export const menuData = [
           {
             key: "Group",
             name: "materials Group Card",
-            link: "/list/material_group",
+            link: "/material_group",
           },
           {
             key: "Material",
             name: "Material Card",
-            link: "/list/material",
+            link: "/material",
           },
           {
             key: "Material",
@@ -529,12 +520,12 @@ export const menuData = [
   //     {
   //       key: "Asset Category",
   //       name: "Asset Category",
-  //       link: "/list/assets_group",
+  //       link: "/assets_group",
   //     },
   //     {
   //       key: "Asset Card",
   //       name: "Asset Card",
-  //       link: "/list/assets",
+  //       link: "/assets",
   //     },
 
   //     {
@@ -557,7 +548,7 @@ export const menuData = [
           {
             key: 1,
             name: "Maintenances",
-            link: "/list/service",
+            link: "/service",
           },
           {
             key: 2,
@@ -572,7 +563,7 @@ export const menuData = [
           {
             key: 3,
             name: "Default services order",
-            link: "/list/default_service",
+            link: "/default_service",
           },
           {
             key: "Maintenance orders report",
@@ -593,12 +584,12 @@ export const menuData = [
           {
             key: "Category",
             name: "Category Card",
-            link: "/list/category",
+            link: "/category",
           },
           {
             key: "Category problem",
             name: "Category problem Card",
-            link: "/list/category_problem",
+            link: "/category_problem",
           },
         ],
       },
@@ -610,17 +601,17 @@ export const menuData = [
       {
         key: "user_work_times",
         name: "user work times",
-        link: "/list/user_work_times",
+        link: "/user_work_times",
       },
       {
         key: "lack_reason",
         name: "lack reasons",
-        link: "/list/lack_reason",
+        link: "/lack_reason",
       },
       {
         key: 6,
         name: "evacuation request",
-        link: "/list/evacuation_request",
+        link: "/evacuation_request",
       },
     ],
   },
@@ -712,22 +703,22 @@ export const menuData = [
       {
         key: "contract patterns",
         name: "Contract patterns",
-        link: "/patterns/list/contract_pattern",
+        link: "/patterns/contract_pattern",
       },
       {
         key: "cheques patterns",
         name: "cheque patterns",
-        link: "/patterns/list/cheque_pattern",
+        link: "/patterns/cheque_pattern",
       },
       {
         key: "voucher patterns",
         name: "Voucher patterns",
-        link: "/patterns/list/voucher_pattern",
+        link: "/patterns/voucher_pattern",
       },
       {
         key: "bill patterns",
         name: "bill patterns",
-        link: "/patterns/list/bill_pattern",
+        link: "/patterns/bill_pattern",
       },
       {
         key: "accounting voucher patterns",
@@ -852,7 +843,7 @@ export async function getVouchersMenus() {
         isForm: true,
         key: theItem.name,
         name,
-        link: `/vouchers/${theItem.code}/${name}`,
+        link: `/vouchers/${theItem.code}`,
       });
     } else {
       let subMenu = [];
@@ -861,7 +852,7 @@ export async function getVouchersMenus() {
           isForm: true,
           key: subItem.name,
           name: subItem.name,
-          link: `/vouchers/${subItem.code}/${subItem.name}`,
+          link: `/vouchers/${subItem.code}`,
         });
       }
       menus.push({
@@ -869,9 +860,9 @@ export async function getVouchersMenus() {
         name: menu,
         subChild: [
           {
-            key: "voucher_main_data",
+            key: "vouchers",
             name: "vouchers",
-            link: "/list/voucher_main_data",
+            link: "/vouchers",
           },
           ...subMenu,
         ],
@@ -941,7 +932,7 @@ export async function getBillsMenus() {
         {
           key: "bills",
           name: "bills",
-          link: "/list/bill",
+          link: "/bill",
         },
         ...menus,
       ],
@@ -977,7 +968,7 @@ export async function getChequesMenus() {
         isForm: true,
         key: theItem.name,
         name,
-        link: `/cheques/${theItem?.code}/${name}`,
+        link: `/cheques/${theItem?.code}`,
       });
     } else {
       let subMenu = [];
@@ -986,7 +977,7 @@ export async function getChequesMenus() {
           isForm: true,
           key: subItem.name,
           name: subItem.name,
-          link: `/cheques/${subItem?.code}/${subItem?.name}`,
+          link: `/cheques/${subItem?.code}`,
         });
       }
       menus.push({
@@ -1006,7 +997,7 @@ export async function getChequesMenus() {
         {
           key: "cheques",
           name: "cheques",
-          link: "/list/cheque",
+          link: "/cheque",
         },
         ...menus,
       ],
@@ -1024,7 +1015,7 @@ const getMenu = async () => {
         {
           key: "contract",
           name: "contracts",
-          link: "/list/contract",
+          link: "/contracts",
         },
         ...contractMenu,
       ],
@@ -1044,12 +1035,12 @@ const getMenu = async () => {
           {
             key: "Entries",
             name: "Entries",
-            link: "/list/entries/entry_main_data",
+            link: "/entries",
           },
           {
             key: "Journal Entry",
             name: "Journal Entry",
-            link: "/vouchers/entries/entry_main_data",
+            link: "/entries/entry",
           },
         ],
       },

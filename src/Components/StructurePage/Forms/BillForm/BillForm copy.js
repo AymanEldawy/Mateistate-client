@@ -32,15 +32,8 @@ import FormLayout from "../FormWrapperLayout/FormLayout";
 import useFormPagination from "Hooks/useFormPagination";
 // import { numberToText } from "Helpers/functions";
 
-const BillForm = ({
-  tableName,
-  patternCode,
-  popupView,
-  oldValues,
-  number,
-  onClose,
-}) => {
-  console.log("🚀 ~ BillForm ~ onClose:", onClose);
+const BillForm = ({ tableName, patternCode, popupView, oldValues, number, onClose }) => {
+  console.log("🚀 ~ BillForm ~ onClose:", onClose)
   const params = useParams();
   const name = "bill";
   const { t } = useTranslation();
@@ -141,15 +134,7 @@ const BillForm = ({
             "bill.customer_account_id",
             PATTERN_SETTINGS.cash_account_id
           );
-          
-        } else {
-          setValue(
-            "bill.customer_account_id",
-            null
-          );
-
         }
-
       }
       if (name === "bill.connect_with_id") {
         getMaterials(watch(name));
@@ -368,164 +353,209 @@ const BillForm = ({
       key={code}
       formPagination={formPagination}
       onClose={onClose}
-      formClassName="w-full xl:w-[900px] 2xl:w-[1200px]"
 
       // disabledSubmit={isDirty||+watch("bill.total") <= 0 || !watch("bill_material_details")?.length}
     >
-      <div className="grid grid-cols-2 xl:grid-cols-3 gap-x-6 items-start justify-between gap-y-3">
-        <Input
-          {...fields?.number}
-          updatedName="bill.number"
-          key={code}
-          tab="bill"
-          error={errors?.bill?.number?.message}
-          readOnly
-        />
-        <Input
-          {...fields?.issue_date}
-          updatedName="bill.issue_date"
-          key={code}
-          tab="bill"
-          error={errors?.bill?.issue_date?.message}
-        />
-        <Input
-          {...fields?.bill_date}
-          updatedName="bill.bill_date"
-          key={code}
-          tab="bill"
-          values={watch()}
-          error={errors?.bill?.bill_date?.message}
-        />
+      <div className=" bg-[#EFF6FF] dark:bg-[#303030] p-4">
+        <div className="grid grid-cols-3 items-start justify-between gap-4">
+          <div className="flex flex-col gap-2" key={code}>
+            {" "}
+            <Input
+              {...fields?.number}
+              updatedName="bill.number"
+              key={code}
+              tab="bill"
+              error={errors?.bill?.number?.message}
+              old={true}
+              readOnly
+            />
+            <Input
+              {...fields?.issue_date}
+              updatedName="bill.issue_date"
+              key={code}
+              tab="bill"
+              error={errors?.bill?.issue_date?.message}
+              old={true}
+            />
+            <Input
+              {...fields?.bill_date}
+              updatedName="bill.bill_date"
+              key={code}
+              tab="bill"
+              values={watch()}
+              error={errors?.bill?.bill_date?.message}
+              old={true}
+              labelClassName="!w-[190px] !whitespace-normal"
+            />
+            {/* <Input
+              {...fields?.kind}
+              updatedName="bill.kind"
+              key={code}
+              tab="bill"
+              values={watch()}
+              error={errors?.bill?.kind?.message}
+              old={true}
+              labelClassName="!w-[190px] !whitespace-normal"
+            /> */}
+            <UniqueField
+              {...fields?.customer_id}
+              updatedName="bill.customer_id"
+              key={code}
+              tab="bill"
+              CACHE_LIST={CACHE_LIST}
+              list={
+                !!CACHE_LIST
+                  ? PATTERN_SETTINGS?.bill_type === 2
+                    ? CACHE_LIST?.user_customer
+                    : CACHE_LIST?.user_supplier
+                  : []
+              }
+              values={watch()}
+              label={
+                +PATTERN_SETTINGS?.bill_type === 2
+                  ? "Customer Name"
+                  : "Supplier name"
+              }
+              // ref_table={
+              //   +PATTERN_SETTINGS?.bill_type === 2
+              //     ? UNIQUE_REF_TABLES.user_customer
+              //     : UNIQUE_REF_TABLES.user_supplier
+              // }
+              error={errors?.bill?.customer_id?.message}
+              old={true}
+              containerClassName="flex !items-center"
+              labelClassName="!w-[190px] !whitespace-normal"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <UniqueField
+              {...fields?.cost_center_id}
+              updatedName="bill.cost_center_id"
+              key={code}
+              tab="bill"
+              CACHE_LIST={CACHE_LIST}
+              list={!!CACHE_LIST ? CACHE_LIST?.cost_center : []}
+              values={watch()}
+              error={errors?.bill?.cost_center_id?.message}
+              old={true}
+              containerClassName="flex !items-center"
+              labelClassName="!w-[190px] !whitespace-normal"
+            />
+            <CurrencyFieldGroup
+              tab="bill"
+              CACHE_LIST={CACHE_LIST}
+              list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
+              values={watch()}
+              error={errors?.bill?.currency_id?.message}
+              old={true}
+              containerClassName="flex !items-center"
+            />
+            <Select
+              {...fields?.payment_method}
+              updatedName="bill.payment_method"
+              key={code}
+              tab="bill"
+              values={watch()}
+              error={errors?.bill?.payment_method?.message}
+              old={true}
+              containerClassName={"!flex-row !items-center"}
+              labelClassName="!w-[190px] !whitespace-normal"
+            />
+            <Input
+              {...fields?.receipt_number}
+              updatedName="bill.receipt_number"
+              key={code}
+              tab="bill"
+              error={errors?.bill?.receipt_number?.message}
+              old={true}
+              // inputClassName="w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <UniqueField
+              {...fields?.store_id}
+              updatedName="bill.store_id"
+              key={code}
+              tab="bill"
+              CACHE_LIST={CACHE_LIST}
+              list={!!CACHE_LIST ? CACHE_LIST?.store : []}
+              values={watch()}
+              error={errors?.bill?.store_id?.message}
+              old={true}
+              containerClassName="flex !items-center"
+              labelClassName="!w-[190px] !whitespace-normal"
+            />
+            <UniqueField
+              {...fields?.customer_account_id}
+              updatedName="bill.customer_account_id"
+              key={code}
+              tab="bill"
+              CACHE_LIST={CACHE_LIST}
+              list={!!CACHE_LIST ? CACHE_LIST?.account : []}
+              values={watch()}
+              error={
+                errors?.bill?.customer_account_id?.message ||
+                "Field is required"
+              }
+              old={true}
+              containerClassName="flex !items-center"
+              labelClassName="!w-[190px] !whitespace-normal"
+            />
 
-        <Input
-          {...fields?.receipt_number}
-          updatedName="bill.receipt_number"
+            <UniqueField
+              {...fields?.material_account_id}
+              updatedName="bill.material_account_id"
+              key={code}
+              tab="bill"
+              CACHE_LIST={CACHE_LIST}
+              list={!!CACHE_LIST ? CACHE_LIST?.account : []}
+              values={watch()}
+              error={
+                errors?.bill?.material_account_id?.message ||
+                "Field is required"
+              }
+              old={true}
+              containerClassName="flex !items-center"
+              labelClassName="!w-[190px] !whitespace-normal"
+            />
+            {/* <UniqueField
+              {...fields?.vat_account_id}
+              updatedName="bill.vat_account_id"
+              key={code}
+              tab="bill"
+              CACHE_LIST={CACHE_LIST}
+              list={!!CACHE_LIST ? CACHE_LIST?.account : []}
+              values={watch()}
+              error={errors?.bill?.vat_account_id?.message}
+              old={true}
+              containerClassName="flex !items-center"
+              labelClassName="!w-[190px] !whitespace-normal"
+            /> */}
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-4 mt-2">
+          {+PATTERN_SETTINGS?.bill_type === 2 ? (
+            <BillConnectWithField tab={"bill"} old={true} />
+          ) : null}
+        </div>
+        <Textarea
+          {...fields?.note}
+          updatedName="bill.note"
           key={code}
           tab="bill"
-          error={errors?.bill?.receipt_number?.message}
-        />
-        <CurrencyFieldGroup
-          tab="bill"
-          CACHE_LIST={CACHE_LIST}
-          list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
-          values={watch()}
-          error={errors?.bill?.currency_id?.message}
-        />
-        <Select
-          {...fields?.payment_method}
-          updatedName="bill.payment_method"
-          key={code}
-          tab="bill"
-          values={watch()}
-          error={errors?.bill?.payment_method?.message}
-        />
-
-        <UniqueField
-          {...fields?.cost_center_id}
-          updatedName="bill.cost_center_id"
-          key={code}
-          tab="bill"
-          CACHE_LIST={CACHE_LIST}
-          list={!!CACHE_LIST ? CACHE_LIST?.cost_center : []}
-          values={watch()}
-          error={errors?.bill?.cost_center_id?.message}
-        />
-
-        <UniqueField
-          {...fields?.store_id}
-          updatedName="bill.store_id"
-          key={code}
-          tab="bill"
-          CACHE_LIST={CACHE_LIST}
-          list={!!CACHE_LIST ? CACHE_LIST?.store : []}
-          values={watch()}
-          error={errors?.bill?.store_id?.message}
-        />
-        <UniqueField
-          {...fields?.customer_id}
-          updatedName="bill.customer_id"
-          key={code}
-          tab="bill"
-          CACHE_LIST={CACHE_LIST}
-          required={
-            +watch('bill.payment_method') === 1 
-          }
-          list={
-            !!CACHE_LIST
-              ? PATTERN_SETTINGS?.bill_type === 2
-                ? CACHE_LIST?.user_customer
-                : CACHE_LIST?.user_supplier
-              : []
-          }
-          values={watch()}
-          label={
-            +PATTERN_SETTINGS?.bill_type === 2
-              ? "Customer Name"
-              : "Supplier name"
-          }
-          // ref_table={
-          //   +PATTERN_SETTINGS?.bill_type === 2
-          //     ? UNIQUE_REF_TABLES.user_customer
-          //     : UNIQUE_REF_TABLES.user_supplier
-          // }
-          error={errors?.bill?.customer_id?.message}
-        />
-        <UniqueField
-          {...fields?.customer_account_id}
-          updatedName="bill.customer_account_id"
-          key={code}
-          tab="bill"
-          CACHE_LIST={CACHE_LIST}
-          list={!!CACHE_LIST ? CACHE_LIST?.account : []}
-          values={watch()}
-          error={
-            errors?.bill?.customer_account_id?.message || "Field is required"
-          }
-        />
-        <UniqueField
-          {...fields?.material_account_id}
-          updatedName="bill.material_account_id"
-          key={code}
-          tab="bill"
-          CACHE_LIST={CACHE_LIST}
-          list={!!CACHE_LIST ? CACHE_LIST?.account : []}
-          values={watch()}
-          error={
-            errors?.bill?.material_account_id?.message || "Field is required"
-          }
-        />
-        <UniqueField
-          {...fields?.vat_account_id}
-          updatedName="bill.vat_account_id"
-          key={code}
-          tab="bill"
-          CACHE_LIST={CACHE_LIST}
-          list={!!CACHE_LIST ? CACHE_LIST?.account : []}
-          values={watch()}
-          error={errors?.bill?.vat_account_id?.message}
+          containerClassName="col-span-full mt-2"
+          textareaClassName="h-[60px]"
+          error={errors?.bill?.note?.message}
         />
       </div>
-      <div className="grid grid-cols-3 gap-4 mt-2">
-        {+PATTERN_SETTINGS?.bill_type === 2 ? (
-          <BillConnectWithField tab={"bill"} />
-        ) : null}
-      </div>
-      <Textarea
-        {...fields?.note}
-        updatedName="bill.note"
-        key={code}
-        tab="bill"
-        textareaClassName="h-[60px]"
-        error={errors?.bill?.note?.message}
-      />
-
-      <div className="bg-gray-200 dark:bg-[#303030] p-4 my-4 border-b-black">
+      <div className="bg-[#EFF6FF] dark:bg-[#303030] p-4 my-4 border-b-black">
         <h3 className="text-black text-lg font-medium capitalize">
           {t("materials")}
         </h3>
         <TableFields
           key={code}
-          // theadClassName="!bg-transparent"
+          containerClassName="bg-white dark:bg-dark-bg max-h-[240px]"
+          theadClassName="!bg-transparent"
           CACHE_LIST={CACHE_LIST}
           errors={errors}
           rowsCount={watch("bill_material_details")?.length}
@@ -539,26 +569,27 @@ const BillForm = ({
                 : PATTERN_SETTINGS?.table_color2,
           })}
           // tableClassName="!border-collapse !border !border-gray-300"
-          // thClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center dark:bg-black dark:text-white"
-          // numberClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center text-black dark:bg-black dark:text-white"
+          thClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center dark:bg-black dark:text-white"
+          numberClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center text-black dark:bg-black dark:text-white"
           // increaseContainerClassNamed="border border-2 !border-black"
         />
       </div>
-      <div className="bg-gray-200 dark:bg-[#303030] p-4 my-4 border-b-black">
+      <div className="bg-[#EFF6FF] dark:bg-[#303030] p-4 my-4 border-b-black">
         <h3 className="text-black text-lg font-medium capitalize">
           {t("Accounts")}
         </h3>
         <TableFields
           key={code}
-          // theadClassName="!bg-transparent"
+          containerClassName="bg-white dark:bg-dark-bg max-h-[240px]"
+          theadClassName="!bg-transparent"
           CACHE_LIST={CACHE_LIST}
           errors={errors}
           rowsCount={watch("bill_discounts_details")?.length}
           fields={getFormByTableName("bill_discounts_details")}
           tab={"bill_discounts_details"}
           tableError={errors?.bill?.["bill_discounts_details"]}
-          // thClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center dark:bg-black dark:text-white"
-          // numberClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center text-black dark:bg-black dark:text-white"
+          thClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center dark:bg-black dark:text-white"
+          numberClassName="border border-2 border-r-black border-b-black dark:border-b-gray-200 dark:border-r-gray-200 p-2 bg-gray-200 text-center text-black dark:bg-black dark:text-white"
           rowStyles={(index) => ({
             background:
               index % 2
@@ -567,7 +598,7 @@ const BillForm = ({
           })}
         />
       </div>
-      <div className="my-4 bg-gray-200 dark:bg-[#303030] p-2">
+      <div className="my-4 bg-[#EFF6FF] dark:bg-[#303030] p-2">
         <div className=" flex gap-12 items-center justify-between px-8">
           <div className="flex flex-col gap-2 max-w-sm">
             <Input
@@ -575,7 +606,9 @@ const BillForm = ({
               updatedName="bill.total_quantities"
               key={code}
               tab="bill"
+              // inputClassName="max-w-[80px]"
               error={errors?.bill?.total_quantities?.message}
+              old={true}
             />
             <Input
               {...fields?.discounts}
@@ -583,6 +616,7 @@ const BillForm = ({
               key={code}
               tab="bill"
               error={errors?.bill?.discounts?.message}
+              old={true}
             />
             <Input
               {...fields?.extras}
@@ -590,6 +624,7 @@ const BillForm = ({
               key={code}
               tab="bill"
               error={errors?.bill?.extras?.message}
+              old={true}
             />
             <Input
               {...fields?.taxable}
@@ -597,6 +632,7 @@ const BillForm = ({
               key={code}
               tab="bill"
               error={errors?.bill?.taxable?.message}
+              old={true}
             />
             <Input
               {...fields?.vat_amount}
@@ -604,6 +640,7 @@ const BillForm = ({
               key={code}
               tab="bill"
               error={errors?.bill?.vat_amount?.message}
+              old={true}
             />
           </div>
           <div className="flex flex-col gap-2 max-w-sm md:min-w-[400px]">
@@ -611,23 +648,28 @@ const BillForm = ({
               {...fields?.subtotal}
               updatedName="bill.subtotal"
               key={code}
+              labelClassName="max-w-[80px]"
               tab="bill"
               error={errors?.bill?.subtotal?.message}
+              old={true}
             />
             {/* <Input
               {...fields?.net}
               updatedName="bill.net"
               key={code}
+              labelClassName="max-w-[80px]"
               tab="bill"
               error={errors?.bill?.net?.message}
-              
+              old={true}
             /> */}
             <Input
               {...fields?.total}
               updatedName="bill.total"
               key={code}
+              labelClassName="max-w-[80px]"
               tab="bill"
               error={errors?.bill?.total?.message}
+              old={true}
             />
             <Textarea
               {...fields?.bill_total_text}

@@ -7,7 +7,7 @@ import {
 import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import getFormByTableName from "Helpers/Forms/forms";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import { ErrorText } from "Components/Global/ErrorText";
 import {
   ACCOUNT_ASSEMBLY_TYPE_NAME,
@@ -32,10 +32,11 @@ export const AccountFormFields = ({
   }, []);
 
   console.log(watch());
-  
+
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">
+        {/* <NewUniqueField {...fieldsHash?.parent_id} /> */}
         <Input
           {...fieldsHash?.code}
           error={errors?.code ? "Field is required" : ""}

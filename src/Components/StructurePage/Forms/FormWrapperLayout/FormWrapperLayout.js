@@ -53,24 +53,13 @@ const FormWrapperLayout = ({
     reset(getResetFields(tableName || name));
   }, [location?.pathname]);
 
-  const onDelete = async () => {
-    if (outerDelete) return outerDelete();
-    let res = await remove(tableName || name, itemId);
-    if (res?.success) {
-      navigate("-1");
-    }
-    setOpenConfirmation(false);
-  };
+
 
   return (
     <>
       {/* {isLoading || isSubmitting || loadingRefTableData ? <Loading withBackdrop /> : null} */}
       {isLoading || isSubmitting ? <Loading withBackdrop /> : null}
-      <ConfirmModal
-        onConfirm={onDelete}
-        open={openConfirmation}
-        setOpen={setOpenConfirmation}
-      />
+     
       <BlockPaper
         containerClassName={popupView ? "z-[102] p-0" : null}
         bodyClassName={popupView ? "!p-0" : null}
@@ -102,30 +91,7 @@ const FormWrapperLayout = ({
               {children}
             </div>
 
-            {hidePaginationBar ? null : (
-              <div
-                className={`flex justify-end gap-4 items-center mt-4 border-t pt-4`}
-              >
-                {additionalButtons ? additionalButtons : null}
-                <div className="flex gap-4 items-center ltr:ml-auto rtl:mr-auto">
-                  {onSubmit ? (
-                    <Button
-                      title={"Save"}
-                      classes=""
-                      disabled={!isDirty || disabledSubmit}
-                    />
-                  ) : null}
-                  {!!onDelete && params?.id ? (
-                    <Button
-                      title={"Delete"}
-                      type="button"
-                      classes="bg-red-500 hover:bg-red-700"
-                      onClick={() => setOpenConfirmation(true)}
-                    />
-                  ) : null}
-                </div>
-              </div>
-            )}
+           
           </form>
         </FormProvider>
       </BlockPaper>

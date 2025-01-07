@@ -1,19 +1,20 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
+import PatternsForm from "Pages/Patterns/PatternsForm";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const owner_expenses_types = () => {
-  const name = "owner_expenses_types";
+const ContractPattern = () => {
+  const name = "contract_pattern";
   const navigate = useNavigate();
   return (
     <>
       <LayoutWrapper
         name={name}
         FormRender={(props) => {
-          console.log(props,'props');
-          
-          return <p>testing ho</p>
+          console.log(props, "props");
+
+          return <PatternsForm name={name} {...props} />;
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +26,4 @@ const owner_expenses_types = () => {
   );
 };
 
-export default owner_expenses_types;
+export default ContractPattern;

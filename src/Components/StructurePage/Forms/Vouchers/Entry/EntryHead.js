@@ -25,6 +25,7 @@ export const EntryHead = ({
           readOnly={!isNewOne}
           {...fields["number"]}
           className="border-0 !rounded-none !h-full"
+          containerClassName="!flex-col !gap-1"
         />
         {/* <div className="flex gap-2">
           <p
@@ -37,6 +38,7 @@ export const EntryHead = ({
           {...fields["created_at"]}
           value={values?.created_at || ""}
           className="border-0 !rounded-none !h-full"
+          containerClassName="!flex-col !gap-1"
         />
         <CurrencyFieldGroup
           {...fields["currency_id"]}
@@ -46,6 +48,7 @@ export const EntryHead = ({
           CACHE_LIST={CACHE_LIST}
           list={CACHE_LIST?.currency}
           value={values?.currency_id || ""}
+          containerClassName="!flex-col !gap-1"
         />
       </div>
       <Textarea

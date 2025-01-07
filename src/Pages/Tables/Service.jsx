@@ -1,9 +1,10 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import ServiceForm from "Components/StructurePage/Forms/ServiceForm/ServiceForm";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const service = () => {
+const Service = () => {
   const name = "service";
   const navigate = useNavigate();
   return (
@@ -11,9 +12,9 @@ const service = () => {
       <LayoutWrapper
         name={name}
         FormRender={(props) => {
-          console.log(props,'props');
-          
-          return <p>testing ho</p>
+          console.log(props, "props");
+
+          return <ServiceForm {...props} />;
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +26,4 @@ const service = () => {
   );
 };
 
-export default service;
+export default Service;

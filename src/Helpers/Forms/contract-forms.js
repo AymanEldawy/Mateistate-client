@@ -91,11 +91,6 @@ const contract = [
     type: "number",
   },
   {
-    label: "current_securing_percentage",
-    name: "current_securing_percentage",
-    type: "number",
-  },
-  {
     label: "current_securing_value",
     name: "current_securing_value",
     type: "number",

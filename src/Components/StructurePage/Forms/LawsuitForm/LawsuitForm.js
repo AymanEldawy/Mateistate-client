@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
 import { SubStepsList } from "../CustomForm/SubStepsList";
 import { UploadFile } from "Components/StructurePage/CustomFields";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import useCurd from "Hooks/useCurd";
 
 const SUB_STEPS = ["lawsuit_expenses", "lawsuit_expenses_pictures"];

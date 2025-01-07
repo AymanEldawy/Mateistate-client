@@ -1,5 +1,5 @@
 import useFormSteps from "Hooks/useFormSteps";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
 import { Fields } from "../CustomForm/Fields";
@@ -8,12 +8,13 @@ import INSERT_FUNCTION from "Helpers/Lib/global-insert";
 import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { getResetFields } from "Helpers/Lib/global-reset";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import { MaterialFormStepOne } from "./MaterialFormStepOne";
 import { GET_UPDATE_DATE_BY_NUMBER } from "Helpers/Lib/global-read-update";
 import useCurd from "Hooks/useCurd";
+import FormLayout from "../FormWrapperLayout/FormLayout";
 
-const MaterialForm = ({ popupView }) => {
+const MaterialForm = ({ popupView, onClose }) => {
   const name = "material";
   const params = useParams();
   const navigate = useNavigate();
@@ -33,12 +34,15 @@ const MaterialForm = ({ popupView }) => {
     setCurrentIndex,
     formSettings,
   } = useFormSteps({ name });
+  console.log(steps, "steps");
+
   const {
     reset,
     watch,
     formState: { isDirty, errors },
     setValue,
   } = methods;
+  console.log(tab, "-dasdfdf");
 
   const { isLoading } = useQuery({
     queryKey: [name, materialId],
@@ -47,6 +51,21 @@ const MaterialForm = ({ popupView }) => {
       reset(data);
     },
   });
+
+  useEffect(() => {
+    if(!materialId) {
+      setValue('material.defaults1', true)
+    }
+  }, [materialId])
+
+
+  
+    useEffect(() => {
+      const subscription = watch((value, { name, type }) => {
+
+      });
+      return () => subscription.unsubscribe();
+    }, [watch]);
 
   const onDelete = async () => {
     let data = watch(name);
@@ -71,20 +90,18 @@ const MaterialForm = ({ popupView }) => {
     }
   };
 
+  console.log(watch());
+  
   return (
-    <FormWrapperLayout
+    <FormLayout
       name={name}
       isLoading={isLoading}
       onSubmit={onSubmit}
-      popupView={popupView}
+      onClose={onClose}
       methods={methods}
-      itemId={watch("id")}
-      itemNumber={watch("number")}
       steps={steps}
-      goToStep={goTo}
-      currentIndex={currentIndex}
-      outerDelete={onDelete}
-      setCurrentIndex={setCurrentIndex}
+      goTo={goTo}
+      activeStage={currentIndex}
     >
       {formSettings?.formType === "grid" ? (
         <TableFields
@@ -113,16 +130,11 @@ const MaterialForm = ({ popupView }) => {
               values={watch()?.[tab]}
               errors={errors}
               CACHE_LIST={CACHE_LIST}
-              customGrid={
-                currentIndex === 3
-                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
-                  : ""
-              }
             />
           )}
         </>
       )}
-    </FormWrapperLayout>
+    </FormLayout>
   );
 };
 

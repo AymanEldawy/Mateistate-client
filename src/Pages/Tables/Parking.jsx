@@ -1,19 +1,20 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import FormSteps from "Components/StructurePage/Forms/CustomForm/FormSteps";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const parking = () => {
+const Parking = () => {
   const name = "parking";
   const navigate = useNavigate();
   return (
     <>
-      <LayoutWrapper
+     <LayoutWrapper
         name={name}
         FormRender={(props) => {
-          console.log(props,'props');
-          
-          return <p>testing ho</p>
+          console.log(props, "props");
+
+          return <FormSteps name={name} {...props} />;
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +26,4 @@ const parking = () => {
   );
 };
 
-export default parking;
+export default Parking;

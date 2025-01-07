@@ -1,19 +1,20 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import FormSingular from "Components/StructurePage/Forms/CustomForm/FormSingular";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const contract_pattern = () => {
-  const name = "contract_pattern";
+const EvacuationRequest = () => {
+  const name = "evacuation_request";
   const navigate = useNavigate();
   return (
     <>
       <LayoutWrapper
         name={name}
         FormRender={(props) => {
-          console.log(props,'props');
-          
-          return <p>testing ho</p>
+          console.log(props, "props");
+
+          return <FormSingular name={name} {...props} />;
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +26,4 @@ const contract_pattern = () => {
   );
 };
 
-export default contract_pattern;
+export default EvacuationRequest;

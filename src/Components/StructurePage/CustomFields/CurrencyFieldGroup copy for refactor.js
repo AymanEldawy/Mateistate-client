@@ -138,7 +138,7 @@ const CurrencyFieldGroup = ({
                 defaultValue={1}
                 // className="right-2 w-[20px] rtl:left-2 rtl:right-auto mx-2 rounded-full disabled:hover:bg-transparent disabled:text-gray-500 text-blue-500 hover:text-white hover:bg-blue-400"
 
-                className={`border h-[39px] absolute ltr:right-0 font-medium bg-gray-100 max-w-[50px] w-full read-only:bg-blue-100 flex items-center gap-2 dark:read-only:bg-[#444] rounded-sm px-4`}
+                className={`border h-[39px] absolute ltr:right-0 font-medium bg-gray-100 max-w-[50px] w-full read-only:bg-[#006d5f1f] flex items-center gap-2 dark:read-only:bg-[#444] rounded-sm px-4`}
                 type="number"
                 {...register(currency_val, {
                   valueAsNumber: true,
@@ -163,7 +163,7 @@ const CurrencyFieldGroup = ({
               // name={currency_val}
               // value={watch(currency_val)}
               defaultValue={1}
-              className={`border h-[39px] font-medium bg-gray-100 max-w-[50px] w-full read-only:bg-blue-100 flex items-center gap-2 dark:read-only:bg-[#444] rounded-sm px-4`}
+              className={`border h-[39px] font-medium bg-gray-100 max-w-[50px] w-full read-only:bg-[#006d5f1f] flex items-center gap-2 dark:read-only:bg-[#444] rounded-sm px-4`}
               type="number"
               {...register(currency_val, {
                 valueAsNumber: true,

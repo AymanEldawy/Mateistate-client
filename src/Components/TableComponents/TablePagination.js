@@ -3,8 +3,6 @@ import { useTranslation } from "react-i18next";
 
 export const TablePagination = ({ table }) => {
   const { t } = useTranslation();
-  if(!table) return
-  return
 
   return (
     <div className="flex items-center gap-2 border-t pt-2 dark:border-dark-border">

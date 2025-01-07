@@ -8,8 +8,8 @@ import {
 import { useRef, useState } from "react";
 import { SortIcon } from "Components/Icons";
 import { useTranslation } from "react-i18next";
-import { TableSkeleton } from "../StructurePage/CustomTable/TableSkeleton";
 import { ResizeBar } from "Components/TableComponents/TableResizeBar";
+import { TableSkeleton } from "Components/TableComponents/TableSkeleton";
 let columnBeingDragged;
 
 export const ReportResultsTable = ({ data, columns, loading }) => {

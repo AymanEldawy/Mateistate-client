@@ -46,7 +46,7 @@ const Textarea = ({
               <textarea
                 readOnly={field?.readOnly}
                 // {...field}
-                className={`border bg-gray-50 read-only:bg-blue-100 dark:read-only:bg-[#444] rounded p-1 ${
+                className={`border bg-gray-50 read-only:bg-[#006d5f1f] dark:read-only:bg-[#444] rounded p-1 ${
                   error ? "border-red-200 text-red-500" : ""
                 } ${textareaClassName}`}
                 type={field?.type}

@@ -24,7 +24,7 @@ const REF_TABLES = {
   [CONNECT_WITH_BILL_CODE]: CONNECT_WITH_BILL_NAME,
 };
 
-const UniqueFieldGroup = ({ tab }) => {
+const UniqueFieldGroup = ({ tab, containerClassName }) => {
   const { t } = useTranslation();
   const { control, watch, setValue } = useFormContext();
   const [list, setList] = useState([]);
@@ -78,63 +78,18 @@ const UniqueFieldGroup = ({ tab }) => {
 
   return (
     <>
-      <div className={"flex flex-col min-w-[200px]"}>
+      <div className={`flex flex-row gap-2 items-center ${containerClassName}`}>
         <label
           title="connect with"
-          className="overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize "
+          className="w-[100px] lg:w-[120px] shrink-0 overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize "
         >
           connect with
         </label>
-        <Controller
-          name={selectName}
-          control={control}
-          render={({
-            field: { onChange, onBlur, ref, value },
-            fieldState: { error },
-          }) => {
-            return (
-              <Select
-                ref={ref}
-                menuPortalTarget={document?.body}
-                styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-                className={`border rounded-md bg-none bg-transparent`}
-                classNames={{
-                  control: (state) => "bg-transparent !border-none",
-                  container: (state) =>
-                    "!bg-none !bg-transparent dark:!border-dark-border",
-                  singleValue: () => "dark:text-gray-200 unique-valid",
-                  menuList: () => "dark:bg-dark-bg",
-                }}
-                options={chooseList}
-                value={chooseList?.find((c) => c?.value === +watch(selectName))}
-                onChange={(option) => {
-                  onChange(option?.value);
-                }}
-              />
-            );
-          }}
-        />
-
-        {selectNameError ? (
-          <ErrorText containerClassName="py-1">{selectNameError}</ErrorText>
-        ) : null}
-      </div>
-      {selectedItemNumber > CONNECT_WITH_NOTHING_CODE ? (
-        <div className=" min-w-[200px] w-full">
-          <label
-            title="connect with id"
-            className="overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize"
-          >
-            connect with id
-          </label>
-          <div
-            className={`relative flex items-center border dark:border-dark-border rounded w-full`}
-          >
+        <div className="flex gap-2 items-center">
+          <div className="flex flex-col gap-1">
             <Controller
-              name={selectNameId}
+              name={selectName}
               control={control}
-              defaultValue={null}
-              className="w-full"
               render={({
                 field: { onChange, onBlur, ref, value },
                 fieldState: { error },
@@ -142,46 +97,88 @@ const UniqueFieldGroup = ({ tab }) => {
                 return (
                   <Select
                     ref={ref}
-                    isClearable={true}
-                    menuPlacement="auto"
                     menuPortalTarget={document?.body}
                     styles={{
                       menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                     }}
-                    options={list}
-                    name={selectNameId}
-                    className="w-full border-none"
+                    className={`border min-w-[130px] rounded-md bg-none bg-transparent`}
                     classNames={{
-                      indicatorsContainer: () => "!hidden bg-black w-full",
                       control: (state) => "bg-transparent !border-none",
                       container: (state) =>
-                        "!bg-none !bg-transparent !border-none w-full",
+                        "!bg-none !bg-transparent dark:!border-dark-border",
                       singleValue: () => "dark:text-gray-200 unique-valid",
                       menuList: () => "dark:bg-dark-bg",
                     }}
-                    value={list?.find((c) => c?.value === watch(selectNameId))}
-                    onChange={(option) => onChange(option?.value)}
+                    options={chooseList}
+                    value={chooseList?.find(
+                      (c) => c?.value === +watch(selectName)
+                    )}
+                    onChange={(option) => {
+                      onChange(option?.value);
+                    }}
                   />
                 );
               }}
             />
 
-            <button
-              type="button"
-              disabled={selectedItemNumber <= 0}
-              className="rtl:right-auto mx-1 rounded-md p-1 disabled:hover:bg-transparent disabled:text-gray-500 text-blue-500 hover:text-white hover:bg-blue-400"
-            >
-              <EyeIcon />
-            </button>
+            {selectNameError ? (
+              <ErrorText containerClassName="py-1">{selectNameError}</ErrorText>
+            ) : null}
           </div>
 
-          {selectNameIdError ? (
-            <ErrorText containerClassName="py-1">
-              {selectNameIdError?.message}
-            </ErrorText>
+          {selectedItemNumber > CONNECT_WITH_NOTHING_CODE ? (
+            <div
+              className={`relative flex items-center border dark:border-dark-border rounded w-full`}
+            >
+              <Controller
+                name={selectNameId}
+                control={control}
+                defaultValue={null}
+                className="w-full"
+                render={({
+                  field: { onChange, onBlur, ref, value },
+                  fieldState: { error },
+                }) => {
+                  return (
+                    <Select
+                      ref={ref}
+                      isClearable={true}
+                      menuPlacement="auto"
+                      menuPortalTarget={document?.body}
+                      styles={{
+                        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                      }}
+                      options={list}
+                      name={selectNameId}
+                      className="w-full min-w-[130px] border-none"
+                      classNames={{
+                        indicatorsContainer: () => "!hidden bg-black w-full",
+                        control: (state) => "bg-transparent !border-none",
+                        container: (state) =>
+                          "!bg-none !bg-transparent !border-none w-full",
+                        singleValue: () => "dark:text-gray-200 unique-valid",
+                        menuList: () => "dark:bg-dark-bg",
+                      }}
+                      value={list?.find(
+                        (c) => c?.value === watch(selectNameId)
+                      )}
+                      onChange={(option) => onChange(option?.value)}
+                    />
+                  );
+                }}
+              />
+
+              <button
+                type="button"
+                disabled={selectedItemNumber <= 0}
+                className="rtl:right-auto mx-1 rounded-md p-1 disabled:hover:bg-transparent disabled:text-gray-500 text-blue-500 hover:text-white hover:bg-blue-400"
+              >
+                <EyeIcon />
+              </button>
+            </div>
           ) : null}
         </div>
-      ) : null}
+      </div>
     </>
   );
 };

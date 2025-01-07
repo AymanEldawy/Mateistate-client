@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import getFormByTableName from "Helpers/Forms/forms";
 import useFlatColoring from "Hooks/useFlatColoring";
 import { useFormContext } from "react-hook-form";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import { SELECT_LISTS } from "Helpers/constants";
 import useCurd from "Hooks/useCurd";
 

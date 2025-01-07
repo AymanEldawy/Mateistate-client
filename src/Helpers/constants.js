@@ -859,7 +859,7 @@ export const BILL_STEPS = {
 };
 
 export const MATERIAL_STEPS = {
-  material: "material",
+  material: "general",
   material_balance: "material_balance",
   material_minimum: "material_minimum",
   material_prices: "material_prices",

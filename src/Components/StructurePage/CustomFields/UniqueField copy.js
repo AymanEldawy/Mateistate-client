@@ -1,12 +1,13 @@
-import AsyncSelect from "react-select/async";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { PlusIcon, SearchIcon } from "Components/Icons";
 import { useState } from "react";
+import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
 import {
+  DEFAULT_CURRENCY_CODE,
   USER_CUSTOMER_CODE,
   USER_SUPERVISOR_CODE,
   USER_SUPPLIER_CODE,
@@ -14,15 +15,8 @@ import {
 } from "Helpers/GENERATE_STARTING_DATA";
 import { ErrorText } from "Components/Global/ErrorText";
 import { getUniqueFieldLabel } from "Helpers/functions";
-import { ApiActions } from "Helpers/Lib/api";
-import { QueryClient } from "@tanstack/react-query";
-import { fetchSearch } from "Helpers/Lib/global-read";
-import useCurd from "Hooks/useCurd";
 
-const isOptionSelected = (option, values) => {
-  return values.some(({ value }) => option.value === value);
-};
-const NewUniqueField = ({
+const UniqueField = ({
   list: defaultList,
   onChange,
   label,
@@ -32,49 +26,43 @@ const NewUniqueField = ({
   updatedName,
   hideLabel,
   selectContainerClassName,
+  CACHE_LIST,
   inputClassName,
   selectClassName,
   labelClassName,
   old,
   ...field
 }) => {
-  const { getSearch, getOneBy } = useCurd();
   const { dispatchForm } = usePopupForm();
   const [list, setList] = useState([]);
   const { control, watch, setValue } = useFormContext();
   const { t, i18n } = useTranslation();
-  const refCont = useRef();
-  const queryClient = new QueryClient();
 
-  const loadOptions = async (value, callback, id) => {
-    try {
-      console.log(value, "-dsd");
+  useEffect(() => {
+    setList(
+      defaultList?.map((item) => {
+        return {
+          value: item?.[field?.ref_col || "id"],
+          label: getUniqueFieldLabel(
+            item,
+            field?.ref_table,
+            field?.ref_name,
+            i18n.language
+          ),
+        };
+      })
+    );
 
-      const res = await queryClient.fetchQuery({
-        queryKey: ["list", field?.ref_table],
-        queryFn: async () => {
-          let response = null;
-          if (id) {
-            response = await getOneBy(field?.ref_table, value, "id");
-          } else {
-            response = await getSearch(
-              field?.ref_table,
-              value,
-              field?.ref_name || "name"
-            );
-          }
-          return response?.result;
-        },
-      });
+    let isCurrency = field?.ref_table === "currency";
 
-      console.log(res,'-dsdsdsdsdd');
-      
-      callback(res || []);
-      return res;
-    } catch (error) {
-      return [];
+    if ((field?.defaultValue || isCurrency) && defaultList?.length) {
+      let searchKey = isCurrency ? "code" : field?.defaultValueSearchKey;
+      let searchVal = isCurrency ? DEFAULT_CURRENCY_CODE : field?.defaultValue;
+      let val = defaultList?.find((c) => c?.[searchKey] === searchVal)?.id;
+
+      setValue(updatedName || field?.name, val);
     }
-  };
+  }, [defaultList?.length]);
 
   return (
     <Controller
@@ -85,13 +73,6 @@ const NewUniqueField = ({
         field: { onChange, onBlur, ref, value },
         fieldState: { error },
       }) => {
-        console.log(refCont?.current, "---newdsdsd");
-        const val = refCont?.current?.getValue();
-        if (!val?.length && value) {
-          console.log(refCont?.current?.getValue(), "---new", field?.name);
-          loadOptions(value, () => {}, true);
-        }
-
         return (
           <div className="flex flex-col gap-2">
             <div className={containerClassName} key={field?.name}>
@@ -113,19 +94,15 @@ const NewUniqueField = ({
                     : ""
                 } ${selectContainerClassName}`}
               >
-                {/* <AsyncSelect
+                <Select
                   ref={ref}
                   isDisabled={field?.readOnly}
                   isClearable={true}
-                  options={loadOptions}
+                  options={list}
                   menuPortalTarget={document?.body}
                   styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
                   name={updatedName || field?.name}
                   menuPlacement="auto"
-                  getOptionLabel={(option) =>
-                    option?.[field?.ref_col || "name"]
-                  }
-                  getOptionValue={(option) => option?.[field?.ref_col || "id"]}
                   // required={field?.required}
                   // menuPlacement={
                   //   field?.menuPlacement ? field?.menuPlacement : "top"
@@ -158,25 +135,6 @@ const NewUniqueField = ({
                   )}
                   // onChange={onChange}
                   onChange={(option) => onChange(option?.value)}
-                /> */}
-
-                <AsyncSelect
-                  ref={refCont}
-                  placeholder={field?.name}
-                  required
-                  className="flex-1 min-w-[180px]"
-                  // cacheOptions
-                  isOptionSelected={isOptionSelected}
-                  // defaultOptions
-                  getOptionLabel={(option) => {
-                    return option?.[field?.ref_name || "name"];
-                  }}
-                  getOptionValue={(option) => option?.[field?.ref_col || "id"]}
-                  loadOptions={(inputValue, callback) => {
-                    console.log('mounted fsd');
-                    
-                    loadOptions(inputValue, callback);
-                  }}
                 />
 
                 {field?.hideAdd ? (
@@ -249,4 +207,4 @@ const NewUniqueField = ({
   );
 };
 
-export default NewUniqueField;
+export default UniqueField;

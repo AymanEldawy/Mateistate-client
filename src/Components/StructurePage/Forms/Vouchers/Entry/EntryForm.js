@@ -3,7 +3,7 @@ import { EntryHead } from "./EntryHead";
 import { EntryFooter } from "./EntryFooter";
 import getFormByTableName from "Helpers/Forms/forms";
 import { useForm } from "react-hook-form";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
 import { toast } from "react-toastify";
 import { ErrorText } from "Components/Global/ErrorText";
@@ -12,8 +12,10 @@ import FormWrapperLayout from "../../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import useCurd from "Hooks/useCurd";
+import FormLayout from "../../FormWrapperLayout/FormLayout";
+import useFormPagination from "Hooks/useFormPagination";
 
-const EntryForm = ({ oldValue, onlyView, outerClose }) => {
+const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
   // const [number, setNumber] = useState(0)
   const name = "entry_main_data";
   const params = useParams();
@@ -22,6 +24,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
   const { CACHE_LIST } = useRefTable("entry_grid_data");
   const methods = useForm();
   const [gridErrors, setGridErrors] = useState(null);
+  const formPagination = useFormPagination({name, number})
 
   const {
     handleSubmit,
@@ -32,9 +35,9 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
   } = methods;
 
   const queryClientEntry = useQuery({
-    queryKey: [name, id],
+    queryKey: [name, formPagination?.currentId],
     queryFn: async () => {
-      const res = await GET_UPDATE_DATE("entry", id);
+      const res = await GET_UPDATE_DATE("entry", formPagination?.currentId);
       if (res?.id) {
         reset(res);
       }
@@ -154,23 +157,25 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
   };
 
   return (
-    <FormWrapperLayout
+    <FormLayout
       popupView={onlyView}
       name="Entry"
       onSubmit={onSubmit}
       methods={methods}
-      itemId={watch("id")}
-      itemNumber={watch("number")}
       isLoading={queryClientEntry?.isLoading}
-      onClose={outerClose}
+      onClose={onClose}
       tableName={name}
+      formPagination={formPagination}
       // hidePaginationBar={true}
     >
       <div
         className={
-          watch("is_deleted")
+          `pb-10 ${
+
+            watch("is_deleted")
             ? "filter blur-sm grayscale pointer-events-none"
             : ""
+          }`
         }
       >
         <EntryHead
@@ -201,7 +206,8 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
             CACHE_LIST={CACHE_LIST}
             increasable={onlyView || watch("created_from") ? false : true}
             onlyView={onlyView || watch("created_from_id")}
-            rowsCount={!id && !onlyView ? 5 : watch("grid")?.length}
+            rowsCount={10}
+            // rowsCount={!id && !onlyView ? 5 : watch("grid")?.length}
           />
         </div>
 
@@ -217,7 +223,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose }) => {
           hideSubmit={watch("created_from_id")}
         />
       </div>
-    </FormWrapperLayout>
+    </FormLayout>
   );
 };
 

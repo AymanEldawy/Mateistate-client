@@ -1,10 +1,11 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
+import PatternsForm from "Pages/Patterns/PatternsForm";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const cost_center = () => {
-  const name = "cost_center";
+const ChequePattern = () => {
+  const name = "cheque_pattern";
   const navigate = useNavigate();
   return (
     <>
@@ -13,7 +14,7 @@ const cost_center = () => {
         FormRender={(props) => {
           console.log(props,'props');
           
-          return <p>testing ho</p>
+          return <PatternsForm name={name}  {...props} />
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +26,4 @@ const cost_center = () => {
   );
 };
 
-export default cost_center;
+export default ChequePattern;

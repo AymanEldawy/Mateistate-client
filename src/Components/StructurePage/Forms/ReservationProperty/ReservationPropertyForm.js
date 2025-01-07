@@ -15,6 +15,8 @@ import {
 } from "Helpers/Lib/vouchers-insert";
 import { SELECT_LISTS } from "Helpers/constants";
 import useCurd from "Hooks/useCurd";
+import FormLayout from "../FormWrapperLayout/FormLayout";
+import useFormPagination from "Hooks/useFormPagination";
 
 const CACHE_PROPERTY = {};
 
@@ -51,7 +53,7 @@ const getPropertyList = async (type, building_id, setList) => {
   }
 };
 
-const ReservationPropertyForm = ({ onClose, popupView }) => {
+const ReservationPropertyForm = ({ onClose, popupView, number }) => {
   const name = "reservation_property";
   const params = useParams();
   const id = params?.id;
@@ -70,6 +72,8 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState([]);
   const { set, insert, getOneBy } = useCurd();
+  const formPagination = useFormPagination({ name, number })
+
   const reservationQueryClient = useQuery({
     queryKey: [name, id],
     queryFn: async () => {
@@ -87,6 +91,7 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
         return reservationProperty;
       }
     },
+    enabled: !!id
   });
 
   useEffect(() => {
@@ -132,16 +137,16 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
   };
 
   return (
-    <FormWrapperLayout
+    <FormLayout
       name={name}
       isLoading={isLoading}
       onClose={onClose}
       onSubmit={onSubmit}
-      popupView={popupView}
       methods={methods}
-      itemId={watch("id")}
-      itemNumber={watch("number")}
-    >
+      formPagination={formPagination}
+      number={number}
+
+>
       <ReservationPropertyFields
         key={id}
         CACHE_LIST={CACHE_LIST}
@@ -150,7 +155,7 @@ const ReservationPropertyForm = ({ onClose, popupView }) => {
         watch={watch}
         selectedProperty={selectedProperty}
       />
-    </FormWrapperLayout>
+    </FormLayout>
   );
 };
 

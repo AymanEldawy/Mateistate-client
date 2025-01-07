@@ -311,11 +311,11 @@ const land_selling_price = [
 
 // ==== Start Cards
 const reservation_property = [
-  // FIELDS_STRUCTURE.dateField({
-  //   label: "created_at",
-  //   name: "created_at",
-  //   type: "date",
-  // }),
+  FIELDS_STRUCTURE.dateField({
+    label: "created_at",
+    name: "created_at",
+    type: "date",
+  }),
   FIELDS_STRUCTURE.account({
     required: true,
     ref_table: "account",
@@ -896,7 +896,6 @@ const building = [
     is_ref: true,
     ref_table: "owner",
   },
-  { label: "display", name: "display", type: "checkbox", key: "switch" },
   {
     label: "statement",
     name: "statement",
@@ -923,6 +922,8 @@ const building = [
     name: "building_currency_id",
     hideValue: false,
   }),
+  { label: "display", name: "display", type: "checkbox", key: "switch" },
+
 ];
 
 const building_units = [
@@ -2163,7 +2164,7 @@ const cheque = [
   FIELDS_STRUCTURE.cost_center({
     label: "observe_cost_center_id",
     name: "observe_cost_center_id",
-    required: true,
+    // required: true,
   }),
   // FIELDS_STRUCTURE.note({
   //   label: "observe_account_note",
@@ -4741,7 +4742,7 @@ const bill_pattern_accounts = [
     ref_table: "account",
     ref_col: "id",
   },
- 
+
   FIELDS_STRUCTURE.selectField({
     label: "payment_method",
     name: "payment_method",
@@ -4773,7 +4774,7 @@ const bill_pattern_accounts = [
     ref_table: "calculate_sale_cost_center",
     ref_col: "id",
   },
- 
+
   {
     label: "vat_account_id",
     name: "vat_account_id",

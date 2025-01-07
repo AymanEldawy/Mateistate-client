@@ -42,7 +42,7 @@ const cheque_pattern = [
     cell: ({ getValue, row }) => {
       return (
         <Link
-          to={`/patterns/cheque_pattern/${row?.original?.id}`}
+          to={`/patterns/cheque_pattern/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           # {getValue()}
@@ -58,7 +58,7 @@ const cheque_pattern = [
     cell: ({ getValue, row }) => {
       return (
         <Link
-          to={`/patterns/cheque_pattern/${row?.original?.id}`}
+          to={`/patterns/cheque_pattern/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -130,7 +130,7 @@ const cheque = [
       });
       return (
         <Link
-          to={`/cheques/${data?.code}/${data?.name}/${row?.original?.id}`}
+          to={`/cheques/${data?.code}/${data?.name}/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           # {getValue()}
@@ -220,7 +220,7 @@ const bill_pattern = [
     accessorKey: "number",
     cell: ({ getValue, row }) => (
       <Link
-        to={`/patterns/bill_pattern/${row?.original?.id}`}
+        to={`/patterns/bill_pattern/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         # {getValue()}
@@ -286,7 +286,7 @@ const bill = [
       );
       return (
         <Link
-          to={`/bill/${row?.original.bill_kind}/${row?.original?.id}`}
+          to={`/bill/${row?.original.bill_kind}/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           # {getValue()}
@@ -368,9 +368,9 @@ const contract = [
         <Link
           to={`/contracts/${type?.name?.toLowerCase()}/${unitType} ${
             type?.name
-          } Contract/${row?.original?.id}?flat_type=${unitType}&code=${
+          } Contract/${row?.original?.number}?flat_type=${unitType}&code=${
             row?.original?.code
-          }${row?.original?.id}`}
+          }`}
           className="text-blue-500 font-medium hover:underline"
         >
           # {getValue()}
@@ -441,7 +441,7 @@ const contract = [
     cell: ({ row, getValue }) => {
       let status = getContractStatus(getValue());
       return (
-        <span className={`px-4 py-1 rounded-md ${status?.classes}`}>
+        <span className={`px-4 text-xs w-fit block mx-auto rounded-md ${status?.classes}`}>
           {status?.value}
         </span>
       );
@@ -530,7 +530,7 @@ const category = [
     accessorKey: "number",
     cell: ({ getValue, row }) => (
       <Link
-        to={`/form/category/${row?.original?.id}`}
+        to={`/form/category/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         # {getValue()}
@@ -773,7 +773,7 @@ const material = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/material/${row?.original?.id}`}
+          to={`/material/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           # {getValue()}
@@ -876,7 +876,7 @@ const category_problem = [
       return (
         <Link
           className="text-blue-500 hover:underline"
-          to={`/category_problem/${row?.original?.id}`}
+          to={`/category_problem/${row?.original?.number}`}
         >
           {getValue()}
         </Link>
@@ -894,7 +894,6 @@ const account = [
     size: 40,
     isResizingColumn: false,
     header: ({ table }) => {
-      console.log("🚀 ~ table:", table)
       return (
       <IndeterminateCheckbox
         {...{
@@ -937,7 +936,7 @@ const account = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/account/${row?.original?.id}`}
+          to={`/account/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -999,7 +998,7 @@ const user = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/user/${row?.original?.id}`}
+          to={`/user/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           # {getValue()}
@@ -1013,7 +1012,7 @@ const user = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/user/${row?.original?.id}`}
+          to={`/user/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1119,7 +1118,7 @@ const lessor = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/lessor/${row?.original?.id}`}
+          to={`/form/lessor/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1180,7 +1179,7 @@ const owner = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/owner/${row?.original?.id}`}
+          to={`/form/owner/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1294,7 +1293,7 @@ const seller = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/seller/${row?.original?.id}`}
+          to={`/form/seller/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1355,7 +1354,7 @@ const bank = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/bank/${row?.original?.id}`}
+          to={`/form/bank/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1405,7 +1404,7 @@ const cost_center = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/cost_center/${row?.original?.id}`}
+          to={`/form/cost_center/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1483,7 +1482,7 @@ const currency = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/currency/${row?.original?.id}`}
+          to={`/form/currency/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1531,7 +1530,7 @@ const building = [
     accessorKey: "name",
     cell: ({ getValue, row }) => (
       <Link
-        to={`/buildings/${row?.original?.id}`}
+        to={`/buildings/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         # {getValue()}
@@ -1785,7 +1784,7 @@ const apartment = [
     accessorKey: "apartment_no",
     cell: ({ getValue, row }) => (
       <Link
-        to={`/form/apartment/${row?.original?.id}`}
+        to={`/form/apartment/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         {getValue()}
@@ -1802,7 +1801,7 @@ const apartment = [
       ).name;
       return (
         <span
-          to={`/form/apartment/${row?.original?.id}`}
+          to={`/form/apartment/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {kind}
@@ -2625,7 +2624,7 @@ const parking = [
     accessorKey: "parking_no",
     cell: ({ getValue, row }) => (
       <Link
-        to={`/parking/${row?.original?.id}`}
+        to={`/parking/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         {getValue()}
@@ -2641,7 +2640,7 @@ const parking = [
       ).name;
       return (
         <span
-          to={`/parking/${row?.original?.id}`}
+          to={`/parking/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {kind}
@@ -2710,7 +2709,7 @@ const shop = [
 
     cell: ({ getValue, row }) => (
       <Link
-        to={`/form/shop/${row?.original?.id}`}
+        to={`/form/shop/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         {getValue()}
@@ -2726,7 +2725,7 @@ const shop = [
       ).name;
       return (
         <span
-          to={`/form/shop/${row?.original?.id}`}
+          to={`/form/shop/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {kind}
@@ -2851,7 +2850,7 @@ const owner_expenses_types = [
     accessorKey: "name",
     cell: ({ getValue, row }) => (
       <Link
-        to={`/owner_expenses_types/${row?.original?.id}`}
+        to={`/owner_expenses_types/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         {getValue()}
@@ -2899,7 +2898,7 @@ const owner_expenses = [
     accessorKey: "number",
     cell: ({ getValue, row }) => (
       <Link
-        to={`/owner_expenses/${row?.original?.id}`}
+        to={`/owner_expenses/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         # {getValue()}
@@ -3011,7 +3010,7 @@ const store = [
     accessorKey: "number",
     cell: ({ getValue, row }) => (
       <Link
-        to={`/store/${row?.original?.id}`}
+        to={`/store/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         # {getValue()}

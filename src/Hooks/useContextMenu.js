@@ -20,7 +20,6 @@ const useContextMenu = () => {
 
   // Event handler for context menu trigger (right-click) on an item
   const handleContextMenu = (itemId, event) => {
-    console.log("🚀 ~ handleContextMenu ~ itemId:", event)
     event.preventDefault(); // Prevent default right-click behavior
     const clickX = event.clientX;
     const clickY = event.clientY;

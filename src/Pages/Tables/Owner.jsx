@@ -1,11 +1,13 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import FormSingular from "Components/StructurePage/Forms/CustomForm/FormSingular";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const owner = () => {
+const Owner = () => {
   const name = "owner";
   const navigate = useNavigate();
+
   return (
     <>
       <LayoutWrapper
@@ -13,7 +15,7 @@ const owner = () => {
         FormRender={(props) => {
           console.log(props,'props');
           
-          return <p>testing ho</p>
+          return <FormSingular name={name}  {...props} />
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +27,4 @@ const owner = () => {
   );
 };
 
-export default owner;
+export default Owner;

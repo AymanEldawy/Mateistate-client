@@ -1,10 +1,11 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import FormSingular from "Components/StructurePage/Forms/CustomForm/FormSingular";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const evacuation_request = () => {
-  const name = "evacuation_request";
+const OwnerExpensesEypes = () => {
+  const name = "owner_expenses_types";
   const navigate = useNavigate();
   return (
     <>
@@ -13,7 +14,7 @@ const evacuation_request = () => {
         FormRender={(props) => {
           console.log(props,'props');
           
-          return <p>testing ho</p>
+          return <FormSingular name={name}  {...props} />
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +26,4 @@ const evacuation_request = () => {
   );
 };
 
-export default evacuation_request;
+export default OwnerExpensesEypes;

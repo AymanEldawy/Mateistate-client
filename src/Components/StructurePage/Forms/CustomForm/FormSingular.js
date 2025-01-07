@@ -5,19 +5,21 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { removeNullValues } from "Helpers/functions";
-import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import getFormByTableName from "Helpers/Forms/forms";
 import useCurd from "Hooks/useCurd";
 import { useEffect } from "react";
+import FormLayout from "../FormWrapperLayout/FormLayout";
+import useFormPagination from "Hooks/useFormPagination";
 
-const FormSingular = ({ name, onClose, popupView, oldValues}) => {
+const FormSingular = ({ name, onClose, popupView, oldValues, number }) => {
   const params = useParams();
   const id = params?.id;
   const { set, insert, getOneBy } = useCurd();
   const { setRecordResponse, appendNewRecord } = usePopupForm();
+  const formPagination = useFormPagination({ name, number: number || 1 });
   const methods = useForm({
     defaultValues: {},
   });
@@ -31,21 +33,26 @@ const FormSingular = ({ name, onClose, popupView, oldValues}) => {
   } = methods;
 
   const { isLoading } = useQuery({
-    queryKey: [name, id],
+    queryKey: [name, formPagination?.currentId, formPagination?.currentNumber],
     queryFn: async () => {
-      const data = await getOneBy(name, id);
-      if (data?.success) {
-        reset(data?.result?.at(0));
+      // const data = await getOneBy(name, id);
+      const data = await getOneBy(name, formPagination?.currentId);
+
+      let result = data?.result?.at(0);
+      if (result?.id) {
+        reset(result);
+      } else {
+        reset({});
       }
     },
-    enabled: !!id,
+    enabled: !!formPagination?.currentId,
   });
 
   useEffect(() => {
-    if(!id && oldValues) {
-      reset(oldValues)
+    if (!id && oldValues) {
+      reset(oldValues);
     }
-  }, [oldValues])
+  }, [oldValues]);
 
   // Handel Submit
   const onSubmit = async (value) => {
@@ -87,15 +94,14 @@ const FormSingular = ({ name, onClose, popupView, oldValues}) => {
   };
 
   return (
-    <FormWrapperLayout
-      popupView={popupView}
+    <FormLayout
       name={name}
       onSubmit={onSubmit}
-      methods={methods}
-      itemId={watch("id")}
-      itemNumber={watch("number")}
-      isLoading={isLoading}
       onClose={onClose}
+      methods={methods}
+      isLoading={isLoading}
+      formPagination={formPagination}
+      key={formPagination?.currentNumber}
     >
       <Fields
         values={watch()}
@@ -115,7 +121,7 @@ const FormSingular = ({ name, onClose, popupView, oldValues}) => {
           fields={getFormByTableName("owner_expenses_details")}
         />
       ) : null}
-    </FormWrapperLayout>
+    </FormLayout>
   );
 };
 

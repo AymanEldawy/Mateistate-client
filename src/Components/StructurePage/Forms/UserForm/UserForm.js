@@ -19,6 +19,8 @@ import {
 } from "Helpers/GENERATE_STARTING_DATA";
 import { insertIntoUserConnect } from "Helpers/Lib/vouchers-insert";
 import useCurd from "Hooks/useCurd";
+import FormLayout from "../FormWrapperLayout/FormLayout";
+import useFormPagination from "Hooks/useFormPagination";
 
 async function getUserConnect(user_id, setIds, name, searchKey) {
   if (!user_id) return;
@@ -42,6 +44,7 @@ const UserForm = ({
   setRecordResponse,
   popupView,
   oldValues = null,
+  number
 }) => {
   const name = "user";
   const params = useParams();
@@ -49,6 +52,7 @@ const UserForm = ({
   const { getOneBy } = useCurd();
   const { goTo, currentIndex, steps, fields, CACHE_LIST, setCurrentIndex } =
     useFormSteps({ name });
+  const formPagination = useFormPagination({ name, number: number || 1 });
 
   const { appendNewRecord } = usePopupForm();
   const methods = useForm();
@@ -61,9 +65,9 @@ const UserForm = ({
   const [categoriesIds, setCategoriesIds] = useState({});
 
   const { isLoading } = useQuery({
-    queryKey: [name, id],
+    queryKey: [name, formPagination?.currentId],
     queryFn: async () => {
-      const res = await getOneBy(name, id);
+      const res = await getOneBy(name, formPagination?.currentId, 'number');
       let data = res?.result?.at(0);
       reset(data);
 
@@ -137,19 +141,18 @@ const UserForm = ({
   };
 
   return (
-    <FormWrapperLayout
+    <FormLayout
       name={"user"}
       steps={steps}
       isLoading={isLoading}
-      currentIndex={currentIndex}
+      activeStage={currentIndex}
       setCurrentIndex={setCurrentIndex}
-      goToStep={goTo}
+      goTo={goTo}
       onClose={onClose}
       onSubmit={onSubmit}
-      popupView={popupView}
       methods={methods}
-      itemId={watch("id")}
-      itemNumber={watch("number")}
+      formPagination={formPagination}
+      formClassName="w-full xl:w-[900px] 2xl:w-[1200px]"
     >
       <Fields
         fields={fields}
@@ -173,7 +176,7 @@ const UserForm = ({
           setCategoriesIds={setCategoriesIds}
         />
       ) : null}
-    </FormWrapperLayout>
+    </FormLayout>
   );
 };
 

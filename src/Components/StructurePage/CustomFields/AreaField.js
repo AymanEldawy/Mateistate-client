@@ -31,7 +31,7 @@ const AreaField = ({
     >
       <input
         id={updatedName || field?.name}
-        className={`border max-w-[60px] h-[39px] read-only:bg-blue-100 dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${
+        className={`border max-w-[60px] h-[39px] read-only:bg-[#006d5f1f] dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${
           error ? "border-red-200 text-red-500" : ""
         } 
          `}
@@ -47,7 +47,7 @@ const AreaField = ({
         {...register(area_unit, {
           validate: (value) => {},
         })}
-        className={`border h-[39px] read-only:bg-blue-100 dark:read-only:bg-[#444] rounded p-1 `}
+        className={`border h-[39px] read-only:bg-[#006d5f1f] dark:read-only:bg-[#444] rounded p-1 `}
         defaultValue={SELECT_LISTS("property_values_area")[0]}
       >
         {SELECT_LISTS("property_values_area")?.map((area) => (

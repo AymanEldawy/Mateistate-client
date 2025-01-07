@@ -1,5 +1,5 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 

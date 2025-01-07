@@ -1,10 +1,11 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import FormSingular from "Components/StructurePage/Forms/CustomForm/FormSingular";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const voucher_main_data = () => {
-  const name = "voucher_main_data";
+const LackReason = () => {
+  const name = "lack_reason";
   const navigate = useNavigate();
   return (
     <>
@@ -13,7 +14,7 @@ const voucher_main_data = () => {
         FormRender={(props) => {
           console.log(props,'props');
           
-          return <p>testing ho</p>
+          return <FormSingular name={name}  {...props} />
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +26,4 @@ const voucher_main_data = () => {
   );
 };
 
-export default voucher_main_data;
+export default LackReason;

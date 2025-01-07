@@ -14,6 +14,7 @@ import { getResetFields } from "Helpers/Lib/global-reset";
 import { PaletteIcon } from "Components/Icons";
 import { SubStepsList } from "./../CustomForm/SubStepsList";
 import useCurd from "Hooks/useCurd";
+import FormLayout from "../FormWrapperLayout/FormLayout";
 
 const SUB_STEPS = [
   "building_real_estate_management",
@@ -89,7 +90,7 @@ const reCalculateFlats = (watch) => {
   }
 };
 
-const BuildingForm = ({ popupView }) => {
+const BuildingForm = ({ onClose }) => {
   const name = "building";
   const params = useParams();
   const buildingId = params?.id;
@@ -152,7 +153,7 @@ const BuildingForm = ({ popupView }) => {
       await remove("cost_center", data?.main_cost_center_id);
       await remove("account", data?.building_account_id);
     }
-    navigate(-1)
+    navigate(-1);
   };
 
   const onSubmit = async (value) => {
@@ -182,23 +183,20 @@ const BuildingForm = ({ popupView }) => {
   };
 
   return (
-    <FormWrapperLayout
+    <FormLayout
       name={name}
       isLoading={isLoading}
       onSubmit={onSubmit}
-      popupView={popupView}
       methods={methods}
-      itemId={watch("id")}
-      itemNumber={watch("number")}
       steps={steps}
-      goToStep={goTo}
-      currentIndex={currentIndex}
-      outerDelete={onDelete}
-      setCurrentIndex={setCurrentIndex}
+      activeStage={currentIndex}
+      goTo={goTo}
+      onClose={onClose}
+      formClassName="w-full xl:w-[900px] 2xl:w-[1200px]"
       additionalButtons={
         <Link
           to={`/tools/${watch("id")}`}
-          className="bg-gray-200 dark:bg-dark-border dark:text-white rounded-md p-2 flex items-center gap-2 font-medium text-gray-700"
+          className="border capitalize border-light-green text-light-green dark:bg-dark-border dark:text-white rounded-md px-2 py-[2px] text-sm flex items-center gap-1 font-medium "
         >
           <PaletteIcon />
           Units description
@@ -220,7 +218,7 @@ const BuildingForm = ({ popupView }) => {
                 values={watch()}
                 errors={errors}
                 CACHE_LIST={CACHE_LIST}
-                customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                customGrid="grid grid-cols-1"
               />
             ) : null}
             {currentSubIndex === 1 ? (
@@ -230,7 +228,7 @@ const BuildingForm = ({ popupView }) => {
                 values={watch()}
                 errors={errors}
                 CACHE_LIST={CACHE_LIST}
-                customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                customGrid="grid grid-cols-1"
               />
             ) : null}
             {currentSubIndex === 2 ? (
@@ -250,7 +248,7 @@ const BuildingForm = ({ popupView }) => {
                 values={watch()}
                 errors={errors}
                 CACHE_LIST={CACHE_LIST}
-                customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                customGrid="grid grid-cols-1"
               />
             ) : null}
             {currentSubIndex === 4 ? (
@@ -260,7 +258,7 @@ const BuildingForm = ({ popupView }) => {
                 values={watch()}
                 errors={errors}
                 CACHE_LIST={CACHE_LIST}
-                customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                customGrid="grid grid-cols-1"
               />
             ) : null}
           </>
@@ -275,7 +273,7 @@ const BuildingForm = ({ popupView }) => {
             CACHE_LIST={CACHE_LIST}
             customGrid={
               currentIndex === 3
-                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+                ? "grid grid-cols-1 md:grid-cols-2"
                 : ""
             }
           />
@@ -283,7 +281,10 @@ const BuildingForm = ({ popupView }) => {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {Object.entries(FLATS)?.map(([key, val]) => {
                 return (
-                  <span key={key} className="bg-blue-50 rounded-md py-1 px-2 whitespace-nowrap text-blue-500 border text-center capitalize">
+                  <span
+                    key={key}
+                    className="bg-blue-50 rounded-md py-1 px-2 whitespace-nowrap text-blue-500 border text-center capitalize"
+                  >
                     {key?.replace("_", " ")} : {val}
                   </span>
                 );
@@ -292,7 +293,7 @@ const BuildingForm = ({ popupView }) => {
           ) : null}
         </>
       )}
-    </FormWrapperLayout>
+    </FormLayout>
   );
 };
 

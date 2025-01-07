@@ -1,17 +1,16 @@
 import BlockPaper from "Components/Global/BlockPaper";
 import { Button } from "Components/Global/Button";
-import { CloseIcon, TrashIcon } from "Components/Icons";
+import { TrashIcon } from "Components/Icons";
 import {
   Input,
   Select,
   UniqueField,
 } from "Components/StructurePage/CustomFields";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
 import { SELECT_LISTS } from "Helpers/constants";
 import { generateUserTiming } from "Helpers/functions";
 import useCurd from "Hooks/useCurd";
 import useRefTable from "Hooks/useRefTables";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 const Timing = () => {

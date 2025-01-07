@@ -1,4 +1,6 @@
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+
+import BuildingForm from "Components/StructurePage/Forms/BuildingForm/BuildingForm";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
@@ -12,7 +14,7 @@ const Building = () => {
         FormRender={(props) => {
           console.log(props,'props');
           
-          return <p>testing ho</p>
+          return <BuildingForm {...props} />
         }}
         // onClickDelete={}
         // onClickAdd={}

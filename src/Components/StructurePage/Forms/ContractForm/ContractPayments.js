@@ -1,10 +1,11 @@
 import { PlusIcon, PrintIcon } from "Components/Icons";
-import TableFields from "Components/StructurePage/CustomTable/TableFields";
+import TableFields from "Components/TableComponents/TableFields";
 import getFormByTableName from "Helpers/Forms/forms";
 import {
   CHQ_RECEIVED_CODE,
   CHQ_RECEIVED_NAME,
   CONNECT_WITH_CONTRACT_CODE,
+  DEFAULT_CHQ_INFO,
   VOUCHER_RECEIPTS_CODE,
   VOUCHER_RECEIPTS_NAME,
 } from "Helpers/GENERATE_STARTING_DATA";
@@ -20,6 +21,9 @@ import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import VoucherForm from "../Vouchers/Voucher/VoucherForm";
+import ChequeForm from "../ChequesForm/ChequeForm";
+import Modal from "Components/Global/Modal/Modal";
 
 const PaymentsGridButton = ({
   onClickAdd,
@@ -54,10 +58,11 @@ const PaymentsGridButton = ({
 export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const { watch, setValue } = useFormContext();
+  const [openForm, setOpenForm] = useState(null);
   const [selectedChqRows, setSelectedChqRows] = useState({});
   const [selectedVoucherRows, setSelectedVoucherRows] = useState({});
   const [refresh, setRefresh] = useState(false);
-  const { dispatchForm, recordResponse, setRecordResponse } = usePopupForm();
+  const [recordResponse, setRecordResponse] = useState([]);
   const { getOneBy } = useCurd();
   let cheque_grid = useMemo(() => getFormByTableName("cheque_grid"), []);
   let voucher_grid = useMemo(
@@ -127,8 +132,9 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
 
     let len = watch("installment_grid")?.length + 1;
 
-    dispatchForm({
+    setOpenForm({
       open: true,
+      type: "CHEQUE",
       table: DESPATCH_TABLES_NAME.CHEQUE,
       code: CHQ_RECEIVED_CODE,
       oldValues: {
@@ -162,8 +168,9 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
     )?.name;
     let note = `Received new cash payment from Mr. ${clientName} due date ${due_date} bank ${bankName}`;
 
-    dispatchForm({
+    setOpenForm({
       open: true,
+      type: "VOUCEHR",
       table: DESPATCH_TABLES_NAME.VOUCHER,
       voucherName: VOUCHER_RECEIPTS_NAME,
       voucherType: VOUCHER_RECEIPTS_CODE,
@@ -188,6 +195,40 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
 
   return (
     <>
+      <Modal open={openForm} bodyClassName="!p-0">
+        {openForm?.type === "CHEQUE" && (
+          <ChequeForm
+            number={openForm?.oldValues?.number}
+            onClose={() => setOpenForm(null)}
+            oldValues={openForm?.oldValues}
+            patternCode={+openForm?.code}
+            popupView
+            action={openForm?.action}
+            outerClose={() => setOpenForm(null)}
+            setRecordResponse={setRecordResponse}
+            tableName={
+              Object.values(DEFAULT_CHQ_INFO)?.find(
+                (c) => c.code === +openForm?.code
+              )?.name
+            }
+          />
+        )}
+        {openForm?.type === "VOUCHER" && (
+          <VoucherForm
+            number={openForm?.oldValues?.number}
+            onClose={() => setOpenForm(null)}
+            voucherName={openForm?.voucherName}
+            voucherType={
+              openForm?.oldValues?.voucher_type || openForm?.voucherType
+            }
+            oldValues={openForm?.oldValues}
+            setRecordResponse={setRecordResponse}
+            outerClose={() => setOpenForm(null)}
+            popupView
+          />
+        )}
+      </Modal>
+
       <div>
         <div className="flex justify-between items-center">
           <h2 className="text-xl text-blue-600 font-semibold">
@@ -215,8 +256,9 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
             withPortal
             onClickPrint={(data) => console.log(data, "----")}
             onClickOnNumber={(oldValues) => {
-              dispatchForm({
+              setOpenForm({
                 open: true,
+                type: "CHEQUE",
                 table: DESPATCH_TABLES_NAME.CHEQUE,
                 oldValues,
                 code: CHQ_RECEIVED_CODE,
@@ -274,8 +316,9 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
                 oldValues?.id,
                 "voucher_main_data_id"
               );
-              dispatchForm({
+              setOpenForm({
                 open: true,
+                type: "VOUCHER",
                 table: DESPATCH_TABLES_NAME.VOUCHER,
                 voucherName: VOUCHER_RECEIPTS_NAME,
                 voucherType: VOUCHER_RECEIPTS_CODE,

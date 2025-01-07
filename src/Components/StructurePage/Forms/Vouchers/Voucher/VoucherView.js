@@ -44,6 +44,7 @@ export const VoucherView = () => {
       open={true}
       onClose={() => setVoucherInfo({})}
       containerClassName="z-[102]"
+      bodyClassName="!p-0"
     >
       {isLoading ? (
         <Loading />
@@ -51,9 +52,10 @@ export const VoucherView = () => {
         <>
           {values?.number ? (
             <EntryForm
-              oldValue={values}
-              onlyView
-              outerClose={() => setVoucherInfo({})}
+              // oldValue={values}
+              // onlyView
+              onClose={() => setVoucherInfo({})}
+              number={values?.number}
             />
           ) : (
             <div className="flex flex-col text-xl text-red-500 h-full">

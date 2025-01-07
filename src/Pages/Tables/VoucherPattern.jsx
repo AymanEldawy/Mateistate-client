@@ -1,10 +1,11 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
+import PatternsForm from "Pages/Patterns/PatternsForm";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const owner_expenses = () => {
-  const name = "owner_expenses";
+const VoucherPattern = () => {
+  const name = "voucher_pattern";
   const navigate = useNavigate();
   return (
     <>
@@ -13,7 +14,7 @@ const owner_expenses = () => {
         FormRender={(props) => {
           console.log(props,'props');
           
-          return <p>testing ho</p>
+          return <PatternsForm name={name}  {...props} />
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +26,4 @@ const owner_expenses = () => {
   );
 };
 
-export default owner_expenses;
+export default VoucherPattern;

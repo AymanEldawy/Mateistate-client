@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { PlusIcon, SearchIcon } from "Components/Icons";
 import { useState } from "react";
@@ -19,24 +19,23 @@ import { getUniqueFieldLabel } from "Helpers/functions";
 const UniqueField = ({
   list: defaultList,
   onChange,
-  label,
   containerClassName,
   table,
   index,
   updatedName,
-  hideLabel,
   selectContainerClassName,
   CACHE_LIST,
   inputClassName,
   selectClassName,
   labelClassName,
-  old,
   ...field
 }) => {
+  const { label, name } = field || {};
   const { dispatchForm } = usePopupForm();
   const [list, setList] = useState([]);
   const { control, watch, setValue } = useFormContext();
   const { t, i18n } = useTranslation();
+  const refCont = useRef();
 
   useEffect(() => {
     setList(
@@ -73,29 +72,41 @@ const UniqueField = ({
         field: { onChange, onBlur, ref, value },
         fieldState: { error },
       }) => {
+          console.log(refCont?.current?.getValue(), "---dsdsd");
+          console.log(refCont?.current, "---dsdsd", name);
+
+
+
         return (
           <div className="flex flex-col gap-2">
-            <div className={containerClassName} key={field?.name}>
-              {label && !hideLabel ? (
+            <div
+              className={`flex flex-row gap-2 ` + containerClassName}
+              key={name}
+            >
+              {label && (
                 <label
                   title={label}
-                  className={`overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize ${labelClassName}`}
+                  htmlFor={updatedName || name}
+                  className={
+                    "w-[100px] lg:w-[120px] shrink-0 font-medium text-gray-600 text-ellipsis text-xs whitespace max-h-[32px] mb-1 capitalize flex items-center gap-2 " +
+                    labelClassName
+                  }
                 >
                   {t(label)?.replace(/_/g, " ")}
                   {field?.required ? (
                     <span className="text-red-500 mx-1">*</span>
                   ) : null}
                 </label>
-              ) : null}
+              )}
               <div
-                className={`relative flex items-center border dark:border-dark-border rounded-md w-full ${
+                className={`relative flex h-[30px] text-sm items-center border dark:border-dark-border rounded-md w-full ${
                   field?.disabledCondition && watch(field?.disabledCondition)
                     ? "pointer-events-none"
                     : ""
                 } ${selectContainerClassName}`}
               >
                 <Select
-                  ref={ref}
+                  ref={refCont}
                   isDisabled={field?.readOnly}
                   isClearable={true}
                   options={list}
@@ -103,10 +114,6 @@ const UniqueField = ({
                   styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
                   name={updatedName || field?.name}
                   menuPlacement="auto"
-                  // required={field?.required}
-                  // menuPlacement={
-                  //   field?.menuPlacement ? field?.menuPlacement : "top"
-                  // }
                   className={`w-full border-none ${selectClassName}`}
                   classNames={{
                     indicatorsContainer: () => "!hidden bg-black",
@@ -116,17 +123,10 @@ const UniqueField = ({
                         field?.disabledCondition &&
                         watch(field?.disabledCondition)
                           ? "bg-gray-300"
-                          : `${
-                              inputClassName
-                                ? inputClassName
-                                : `!bg-none ${
-                                    old
-                                      ? "!bg-white dark:!bg-[#2C2C2C] w-full"
-                                      : "!bg-transparent"
-                                  }`
-                            } `
+                          : ``
                       }  !border-none`,
                     singleValue: () => "dark:text-gray-200 unique-valid",
+                    multiValueLabel: () => "whitespace-nowrap",
                     menuList: () => "dark:bg-dark-bg",
                   }}
                   menuShouldScrollIntoView={true}

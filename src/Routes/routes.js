@@ -3,38 +3,95 @@ import BillProfitReport from "Pages/Report/Maintenances/BillProfitReport";
 import EndingInventoryReport from "Pages/Report/Maintenances/EndingInventoryReport";
 import InventoryReport from "Pages/Report/Maintenances/InventoryReport";
 import ItemActivityReport from "Pages/Report/Maintenances/ItemActivityReport";
-import AccountForm from "Components/StructurePage/Forms/AccountForm/AccountForm";
-import BillForm from "Components/StructurePage/Forms/BillForm/BillForm";
-import BuildingForm from "Components/StructurePage/Forms/BuildingForm/BuildingForm";
-import ChequeForm from "Components/StructurePage/Forms/ChequesForm/ChequeForm";
 import ContractForm from "Components/StructurePage/Forms/ContractForm/ContractForm";
-import { DynamicForm } from "Components/StructurePage/Forms/CustomForm/DynamicForm";
-import LawsuitForm from "Components/StructurePage/Forms/LawsuitForm/LawsuitForm";
-import MaterialForm from "Components/StructurePage/Forms/MaterialForm/MaterialForm";
-import UnregisterMaterials from "Components/StructurePage/Forms/MaterialForm/UnregisterMaterials";
-import OwnerExpensesForm from "Components/StructurePage/Forms/OwnerExpensesForm/OwnerExpensesForm";
-import ReservationPropertyForm from "Components/StructurePage/Forms/ReservationProperty/ReservationPropertyForm";
-import ServiceForm from "Components/StructurePage/Forms/ServiceForm/ServiceForm";
-import UserForm from "Components/StructurePage/Forms/UserForm/UserForm";
-import EntryForm from "Components/StructurePage/Forms/Vouchers/Entry/EntryForm";
-import VoucherForm from "Components/StructurePage/Forms/Vouchers/Voucher/VoucherForm";
-import List from "Components/Tables/List";
 import Login from "Pages/Auth/Login";
 import Chart from "Pages/Chart/Chart";
 import MaterialChart from "Pages/Chart/MaterialChart";
 import Home from "Pages/Home/Home";
 import NotFound from "Pages/NotFound/NotFound";
-import PatternsForm from "Pages/Patterns/PatternsForm";
-import { BuildingSchemaReport, ChangesFlatsRentPricingReport, ChangesFlatsSalePricingReport, ChequeReport, CollectionChqReport, ContractChequeReport, ContractCycleReport, ContractNearToExpireReport, ContractPaymentsReport, ContractsDepositReport, ContractsExpiredReport, ContractsReport, CostCenterGeneralLedgerReport, CostCenterTrialBalanceReport, CreditorsAgesReport, CustomersAccountStatementReport, DueNotePaperReport, EarningRentalIncomeEarnedReport, GeneralLedgerReport, JournalLedgerReport, LeasedLandsReport, LeasedParkingReport, LeasedPropertyActivityReport, LeasedUnitsReport, LeasedVillasReport, MangerChequeReport, OverduePaymentsReport, OwnerExpensesReport, ReservedUnitsReport, ReturnedChqReport, ServicesContractsReport, SoldLandsReport, SoldUnitsReport, SoldVillasReport, TrialBalanceReport, UnitConditionConstructionReport, UnitsWillVacatedReport, VATBillsReport, WarehouseReport, WorkerReport } from "Pages/Report";
-import Timing from "Pages/Timing/Timing";
+import {
+  BuildingSchemaReport,
+  ChangesFlatsRentPricingReport,
+  ChangesFlatsSalePricingReport,
+  ChequeReport,
+  CollectionChqReport,
+  ContractChequeReport,
+  ContractCycleReport,
+  ContractNearToExpireReport,
+  ContractPaymentsReport,
+  ContractsDepositReport,
+  ContractsExpiredReport,
+  ContractsReport,
+  CostCenterGeneralLedgerReport,
+  CostCenterTrialBalanceReport,
+  CreditorsAgesReport,
+  CustomersAccountStatementReport,
+  DueNotePaperReport,
+  EarningRentalIncomeEarnedReport,
+  GeneralLedgerReport,
+  JournalLedgerReport,
+  LeasedLandsReport,
+  LeasedParkingReport,
+  LeasedPropertyActivityReport,
+  LeasedUnitsReport,
+  LeasedVillasReport,
+  MangerChequeReport,
+  OverduePaymentsReport,
+  OwnerExpensesReport,
+  ReservedUnitsReport,
+  ReturnedChqReport,
+  ServicesContractsReport,
+  SoldLandsReport,
+  SoldUnitsReport,
+  SoldVillasReport,
+  TrialBalanceReport,
+  UnitConditionConstructionReport,
+  UnitsWillVacatedReport,
+  VATBillsReport,
+  WarehouseReport,
+  WorkerReport,
+} from "Pages/Report";
 import Tools from "Pages/Tools/Tools";
 import ComplaintsReport from "Pages/Report/ComplaintsReport";
 import ProfitAndLossReport from "Pages/Report/Accounting/ProfitAndLossReport";
 import SalesReport from "Pages/Report/Maintenances/SalesReport";
 import { createBrowserRouter } from "react-router-dom";
 import Account from "Pages/Tables/Account";
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
 import User from "Pages/Tables/User";
+import Building from "Pages/Tables/Building";
+import Apartment from "Pages/Tables/Apartment";
+import Parking from "Pages/Tables/Parking";
+import Bank from "Pages/Tables/Bank";
+import CostCenter from "Pages/Tables/CostCenter";
+import Bill from "Pages/Tables/Bill";
+import Owner from "Pages/Tables/Owner";
+import Seller from "Pages/Tables/Seller";
+import Currency from "Pages/Tables/Currency";
+import Shop from "Pages/Tables/Shop";
+import Land from "Pages/Tables/Land";
+import Villa from "Pages/Tables/Villa";
+import OwnerExpenses from "Pages/Tables/OwnerExpenses";
+import OwnerExpensesEypes from "Pages/Tables/OwnerExpensesEypes";
+import Lawsuit from "Pages/Tables/Lawsuit";
+import Store from "Pages/Tables/Store";
+import MaterialGroup from "Pages/Tables/MaterialGroup";
+import Material from "Pages/Tables/Material";
+import Service from "Pages/Tables/Service";
+import Category from "Pages/Tables/Category";
+import CategoryProblem from "Pages/Tables/CategoryProblem";
+import UserWorkTimes from "Pages/Tables/UserWorkTimes";
+import LackReason from "Pages/Tables/LackReason";
+import Contract from "Pages/Tables/Contract";
+import ChequePattern from "Pages/Tables/ChequePattern";
+import VoucherPattern from "Pages/Tables/VoucherPattern";
+import BillPattern from "Pages/Tables/Bill_pattern";
+import Vouchers from "Pages/Tables/Vouchers";
+import ContractPattern from "Pages/Tables/ContractPattern";
+import EvacuationRequest from "Pages/Tables/EvacuationRequest";
+import Cheque from "Pages/Tables/Cheque";
+import Entries from "Pages/Tables/Entries";
+import Lessor from "Pages/Tables/Lessor";
+import ReservationProperty from "Pages/Tables/ReservationProperty";
 
 const publicRoutes = [
   { path: "**", component: <NotFound /> },
@@ -42,66 +99,71 @@ const publicRoutes = [
   { path: "/signup", component: <Login /> },
 ];
 
-
-
 const authProtectedRoutes = [
   { path: "*", component: <NotFound /> },
   { path: "/", component: <Home /> },
 
-
-
   // Forms
- 
+
   // Tables
   { path: "/account", component: <Account /> },
   { path: "/user", component: <User /> },
-  
-  { path: "/building", component: <Home /> },
-  { path: "/apartment", component: <Home /> },
-  { path: "/parking", component: <Home /> },
-  { path: "/parking", component: <Home /> },
-  { path: "/cost_center", component: <Home /> },
-  { path: "/owner", component: <Home /> },
-  { path: "/lessor", component: <Home /> },
-  { path: "/seller", component: <Home /> },
-  { path: "/reservation-property", component: <Home /> },
-  { path: "/bank", component: <Home /> },
-  { path: "/currency", component: <Home /> },
-  { path: "/shop", component: <Home /> },
-  { path: "/land", component: <Home /> },
-  { path: "/villa", component: <Home /> },
-  { path: "/owner_expenses_types", component: <Home /> },
-  { path: "/owner_expenses", component: <Home /> },
-  { path: "/watchman", component: <Home /> },
-  { path: "/lawsuit", component: <Home /> },
-  { path: "/store", component: <Home /> },
-  { path: "/material_group", component: <Home /> },
-  { path: "/material", component: <Home /> },
-  { path: "/service", component: <Home /> },
-  { path: "/category", component: <Home /> },
-  { path: "/category_problem", component: <Home /> },
-  { path: "/user_work_times", component: <Home /> },
-  { path: "/lack_reason", component: <Home /> },
-  { path: "/evacuation_request", component: <Home /> },
-  { path: "/contract_pattern", component: <Home /> },
-  { path: "/cheque_pattern", component: <Home /> },
-  { path: "/voucher_pattern", component: <Home /> },
-  { path: "/bill_pattern", component: <Home /> },
-  { path: "/voucher_main_data", component: <Home /> },
-  { path: "/bill", component: <Home /> },
-  { path: "/cheque", component: <Home /> },
-  { path: "/contract", component: <Home /> },
-  { path: "/entries/entry_main_data", component: <Home /> },
 
+  { path: "/building", component: <Building /> },
+  { path: "/apartment", component: <Apartment /> },
+  { path: "/parking", component: <Parking /> },
+  { path: "/bank", component: <Bank /> },
+  { path: "/bill", component: <Bill /> },
+  { path: "/bill/:code", component: <Bill /> },
+  { path: "/cost_center", component: <CostCenter /> },
+  { path: "/owner", component: <Owner /> },
+  { path: "/lessor", component: <Lessor /> },
+  { path: "/seller", component: <Seller /> },
+  { path: "/reservation-property", component: <Home /> },
+  { path: "/currency", component: <Currency /> },
+  { path: "/shop", component: <Shop /> },
+  { path: "/land", component: <Land /> },
+  { path: "/villa", component: <Villa /> },
+  { path: "/owner_expenses_types", component: <OwnerExpensesEypes /> },
+  { path: "/owner_expenses", component: <OwnerExpenses /> },
+  { path: "/watchman", component: <Home /> },
+  { path: "/lawsuit", component: <Lawsuit /> },
+  { path: "/store", component: <Store /> },
+  { path: "/material_group/:number", component: <MaterialGroup /> },
+  { path: "/material/:number", component: <Material /> },
+  { path: "/material_group", component: <MaterialGroup /> },
+  { path: "/material", component: <Material /> },
+  { path: "/service", component: <Service /> },
+  { path: "/category", component: <Category /> },
+  { path: "/category_problem", component: <CategoryProblem /> },
+  { path: "/category/:number", component: <Category /> },
+  { path: "/category_problem/:number", component: <CategoryProblem /> },
+  { path: "/user_work_times", component: <UserWorkTimes /> },
+  { path: "/lack_reason", component: <LackReason /> },
+  { path: "/lack_reason/:number", component: <LackReason /> },
+  { path: "/evacuation_request", component: <EvacuationRequest /> },
+  { path: "/patterns/contract_pattern", component: <ContractPattern /> },
+  { path: "/patterns/cheque_pattern", component: <ChequePattern /> },
+  { path: "/patterns/voucher_pattern", component: <VoucherPattern /> },
+  { path: "/patterns/bill_pattern", component: <BillPattern /> },
+  { path: "/patterns/contract_pattern/:number", component: <ContractPattern /> },
+  { path: "/patterns/cheque_pattern/:number", component: <ChequePattern /> },
+  { path: "/patterns/voucher_pattern/:number", component: <VoucherPattern /> },
+  { path: "/patterns/bill_pattern/:number", component: <BillPattern /> },
+  { path: "/vouchers", component: <Vouchers /> },
+  { path: "/vouchers/:code", component: <Vouchers /> },
+  { path: "/vouchers/:code/:number", component: <Vouchers /> },
+  { path: "/cheques", component: <Cheque /> },
+  { path: "/cheques/:code", component: <Cheque /> },
+  { path: "/contracts", component: <Contract /> },
+  { path: "/contracts/:type/:name/:number", component: <Contract /> },
+  { path: "/contracts/:type/:name/", component: <Contract /> },
+  { path: "/entries", component: <Entries /> },
+  { path: "/entries/:name", component: <Entries /> },
+  { path: "/reservation_property/", component: <ReservationProperty /> },
 
   // Reports
 
-
-
-
-
-
-  { path: "/timing", component: <Timing /> },
   // { path: "/buildings/:name/tools/:Guid", component: <Tools /> },
   { path: "/tools/:id", component: <Tools /> },
 
@@ -274,57 +336,8 @@ const authProtectedRoutes = [
     component: <MangerChequeReport />,
   },
 
-  // Vouchers
-  { path: "/vouchers/:type/:name/:id", component: <VoucherForm /> },
-  { path: "/vouchers/entries/entry_main_data/:id", component: <EntryForm /> },
-  { path: "/vouchers/entries/entry_main_data", component: <EntryForm /> },
-
-  // Patterns
-  { path: "/patterns/:pattern", component: <PatternsForm /> },
-  { path: "/patterns/:pattern/:id", component: <PatternsForm /> },
-
   // Main forms
-  { path: "/bill/:code/:id", component: <BillForm /> },
-  { path: "/bill/:code", component: <BillForm /> },
-  { path: "/cheques/:code/:name/:id", component: <ChequeForm /> },
-  { path: "/cheques/:code/:name/", component: <ChequeForm /> },
-  { path: "/list/:name/", component: <List /> },
-  { path: "/account", component: <Account /> },
-  // { path: "/list/:name/", component: <LayoutWrapper /> },
-  {
-    path: "/patterns/list/:name",
-    component: <List urlToAdd={(name) => `/patterns/${name}`} />,
-  },
-  {
-    path: "/list/entries/:name",
-    component: <List urlToAdd={(name) => "/vouchers/entries"} />,
-  },
-  {
-    path: "/list/buildings/:name",
-    component: <List urlToAdd={(name) => "/buildings"} />,
-  },
-  { path: "/material/:id", component: <MaterialForm /> },
-  { path: "/material/", component: <MaterialForm /> },
-  { path: "/materials/unregister-material/", component: <UnregisterMaterials /> },
-  { path: "/buildings/:id", component: <BuildingForm /> },
-  { path: "/buildings/", component: <BuildingForm /> },
-  { path: "/maintenances/:code/:id", component: <ServiceForm /> },
-  { path: "/maintenances/:code", component: <ServiceForm /> },
-  { path: "/form/:name/:id", component: <DynamicForm /> },
-  { path: "/form/:name", component: <DynamicForm /> },
-  // { path: "/tools/:name/:id", component: <DynamicForm /> },
-  {
-    path: "/reservation_property/",
-    component: <ReservationPropertyForm />,
-  },
-  {
-    path: "/reservation_property/:id",
-    component: <ReservationPropertyForm />,
-  },
-  { path: "/account/update/:id", component: <AccountForm /> },
-  { path: "/account/add/", component: <AccountForm /> },
-  { path: "/user/:id", component: <UserForm /> },
-  { path: "/user/", component: <UserForm /> },
+
   {
     path: "/contracts/:type/:name/:id",
     component: <ContractForm layout="update" />,
@@ -333,14 +346,11 @@ const authProtectedRoutes = [
     path: "/contracts/:type/:name",
     component: <ContractForm layout="update" />,
   },
-  { path: "/owner_expenses", component: <OwnerExpensesForm /> },
-  { path: "/owner_expenses/:id", component: <OwnerExpensesForm /> },
-  { path: "/lawsuit/:id", component: <LawsuitForm /> },
   // Chart forms
   { path: "/chart/:name", component: <Chart /> },
   { path: "/chart/material", component: <MaterialChart /> },
-  
-  
+
+
   // New Report
   {
     path: "/reports/item-activity",
@@ -367,11 +377,8 @@ const authProtectedRoutes = [
     component: <BillProfitReport />,
   },
   //
-
-
 ];
 
-const router = createBrowserRouter([...publicRoutes, authProtectedRoutes])
+const router = createBrowserRouter([...publicRoutes, authProtectedRoutes]);
 export { authProtectedRoutes, publicRoutes };
-export default router
-
+export default router;

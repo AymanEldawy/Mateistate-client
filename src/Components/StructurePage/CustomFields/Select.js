@@ -48,83 +48,89 @@ const CustomSelect = ({
         return (
           <div className="flex flex-col gap-2">
             <div
-              className={`flex flex-col ${containerClassName} ${
-                old ? "!items-center" : ""
-              }`}
+              className={`flex flex-row gap-2 ` + containerClassName}
+              key={name}
             >
-              {label && !hideLabel ? (
+              {label && (
                 <label
                   title={label}
-                  htmlFor={name}
+                  htmlFor={updatedName || name}
                   className={
-                    "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize " +
+                    "w-[100px] lg:w-[120px] shrink-0 font-medium text-gray-600 overflow-hidden text-ellipsis text-xs whitespace max-h-[32px] mb-1 capitalize flex items-center gap-2 " +
                     labelClassName
                   }
                 >
-                  {t(label)?.replace(/_/g, " ")}
+                  {t(label)?.replace(/_/g, " ")}{" "}
                   {field?.required ? (
                     <span className="text-red-500 mx-1">*</span>
                   ) : null}
                 </label>
-              ) : null}
-
-              <Select
-                ref={ref}
-                id={updatedName || field?.name}
-                menuPlacement="auto"
-                menuPortalTarget={document?.body}
-                styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-                className={`border rounded-md bg-none bg-transparent field-select-container ${selectClassName}`}
-                classNamePrefix="field-select"
-                classNames={{
-                  control: (state) => "bg-transparent !border-none",
-                  container: (state) =>
-                    `!bg-none ${
-                      old
-                        ? "!bg-white dark:!bg-[#2C2C2C] w-full"
-                        : "!bg-transparent"
-                    } dark:!border-dark-border`,
-                  singleValue: () => "dark:text-gray-200 unique-valid",
-                  menuList: () => "dark:bg-dark-bg",
-                  ...selectClassNames,
-                }}
-                options={list}
-                // defaultValue={field?.selectFirstAsDefault && list?.at(0)?.value}
-                value={list?.find(
-                  (c) => c?.value === +watch(updatedName || field?.name)
-                )}
-                isDisabled={
-                  (field?.disabledWhenKeyValid &&
-                    watch(field?.disabledWhenKeyValid)) ||
-                  readOnly
-                }
-                noOptionsMessage={() =>
-                  field?.allowInsert ? (
-                    <span className="text-sm">
-                      <span className="text-red-400 font-medium">
-                        No options{" "}
-                      </span>{" "}
-                      (Add new one){" "}
-                    </span>
-                  ) : (
-                    "No options"
-                  )
-                }
-                onKeyDown={(e) => {
-                  if (!field?.allowInsert) return;
-
-                  let code = e.key;
-                  let value = e.target.value;
-
-                  if (code === "Enter") {
-                    setList((prev) => [...prev, { value, label: value }]);
-                    onChange(value);
+              )}
+              <div
+                className={`relative flex h-[30px] text-sm items-start  w-full ${
+                  field?.disabledCondition && watch(field?.disabledCondition)
+                    ? "pointer-events-none"
+                    : ""
+                }`}
+              >
+                <Select
+                  ref={ref}
+                  id={updatedName || field?.name}
+                  menuPlacement="auto"
+                  menuPortalTarget={document?.body}
+                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+                  className={`border rounded-md bg-none w-full bg-transparent field-select-container ${selectClassName}`}
+                  // classNamePrefix="field-select"
+                  // classNames={{
+                  //   control: (state) => "bg-transparent !border-none",
+                  //   container: (state) =>
+                  //     `!bg-none ${
+                  //       old
+                  //         ? "!bg-white dark:!bg-[#2C2C2C] w-full"
+                  //         : "!bg-transparent"
+                  //     } dark:!border-dark-border`,
+                  //   singleValue: () => "dark:text-gray-200 unique-valid",
+                  //   menuList: () => "dark:bg-dark-bg",
+                  //   ...selectClassNames,
+                  // }}
+                  options={list}
+                  // defaultValue={field?.selectFirstAsDefault && list?.at(0)?.value}
+                  value={list?.find(
+                    (c) => c?.value === +watch(updatedName || field?.name)
+                  )}
+                  isDisabled={
+                    (field?.disabledWhenKeyValid &&
+                      watch(field?.disabledWhenKeyValid)) ||
+                    readOnly
                   }
-                }}
-                onChange={(option) => {
-                  onChange(option?.value);
-                }}
-              />
+                  noOptionsMessage={() =>
+                    field?.allowInsert ? (
+                      <span className="text-sm">
+                        <span className="text-red-400 font-medium">
+                          No options{" "}
+                        </span>{" "}
+                        (Add new one){" "}
+                      </span>
+                    ) : (
+                      "No options"
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    if (!field?.allowInsert) return;
+
+                    let code = e.key;
+                    let value = e.target.value;
+
+                    if (code === "Enter") {
+                      setList((prev) => [...prev, { value, label: value }]);
+                      onChange(value);
+                    }
+                  }}
+                  onChange={(option) => {
+                    onChange(option?.value);
+                  }}
+                />
+              </div>
             </div>
             {error ? (
               <ErrorText containerClassName="py-1">{error?.message}</ErrorText>

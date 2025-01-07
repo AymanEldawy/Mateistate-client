@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import getFormByTableName from "Helpers/Forms/forms";
-import TableFields from "../../CustomTable/TableFields";
+import TableFields from "../../../TableComponents/TableFields";
 import Modal from "Components/Global/Modal/Modal";
 import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import { CloseIcon } from "Components/Icons";

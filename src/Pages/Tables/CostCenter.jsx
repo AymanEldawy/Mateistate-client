@@ -1,19 +1,19 @@
 
-import LayoutWrapper from "Components/Tables/LayoutWrapper";
+import FormSingular from "Components/StructurePage/Forms/CustomForm/FormSingular";
+import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const voucher_pattern = () => {
-  const name = "voucher_pattern";
+const CostCenter = () => {
+  const name = "cost_center";
   const navigate = useNavigate();
   return (
     <>
       <LayoutWrapper
         name={name}
         FormRender={(props) => {
-          console.log(props,'props');
           
-          return <p>testing ho</p>
+          return <FormSingular name={name}  {...props} column="code" />
         }}
         // onClickDelete={}
         // onClickAdd={}
@@ -25,4 +25,4 @@ const voucher_pattern = () => {
   );
 };
 
-export default voucher_pattern;
+export default CostCenter;

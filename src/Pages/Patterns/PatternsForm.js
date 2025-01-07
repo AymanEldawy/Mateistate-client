@@ -1,23 +1,22 @@
-import BlockPaper from "Components/Global/BlockPaper";
-import { Button } from "Components/Global/Button";
-import FormHeadingTitleSteps from "Components/Global/FormHeadingTitleSteps";
+import Spinner from "Components/Spinner";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
+import FormLayout from "Components/StructurePage/Forms/FormWrapperLayout/FormLayout";
 import GET_UPDATE_DATE from "Helpers/Lib/global-read-update";
 import useCurd from "Hooks/useCurd";
+import useFormPagination from "Hooks/useFormPagination";
 import useFormSteps from "Hooks/useFormSteps";
 import { useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const CACHE_DATA = {};
 
-const PatternsForm = ({ layout }) => {
+const PatternsForm = ({ layout, name, onClose }) => {
   const params = useParams();
   const id = params?.id;
-  let pattern = params?.pattern;
   const [isLoading, setIsLoading] = useState(false);
-  let name = pattern;
+  const formPagination = useFormPagination({ name });
   const { insert, set } = useCurd();
   const methods = useForm({
     defaultValues: params?.id
@@ -32,10 +31,10 @@ const PatternsForm = ({ layout }) => {
     reset,
   } = methods;
   const { currentIndex, goTo, steps, fields, CACHE_LIST } = useFormSteps({
-    name: pattern,
+    name,
   });
 
-  const onDelete = async () => {};
+  const onDelete = async () => { };
 
   const onSubmit = async (values) => {
     if (!isDirty) return;
@@ -44,63 +43,61 @@ const PatternsForm = ({ layout }) => {
 
     let res = null;
 
-    if (values?.id) {
-      res = await set(name, values, values?.id);
-    } else {
-      res = await insert(name, values);
-    }
+    try {
+      if (values?.id) {
+        res = await set(name, values, values?.id);
+      } else {
+        res = await insert(name, values);
+      }
 
-    if (res?.success) {
-      toast.success(
-        values?.id
-          ? `Successfully update row: ${values?.name} in ${pattern}`
-          : "Successfully added item in " + pattern
-      );
-    } else {
-      toast.error(res?.error?.detail);
+      if (res?.success) {
+        toast.success(
+          values?.id
+            ? `Successfully update row: ${values?.name} in ${name}`
+            : "Successfully added item in " + name
+        );
+      } else {
+        throw new Error(res?.error?.detail);
+      }
+    } catch (error) {
+      toast.error(error.message || "An error occurred");
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
-    <>
-      <div key={pattern}>
-        <FormProvider {...methods}>
-          <BlockPaper>
-            <FormHeadingTitleSteps
-              // name={pattern}
-              steps={steps}
-              goTo={goTo}
-              activeStage={currentIndex}
-              customName={
-                <span className="capitalize">
-                  {pattern?.replace(/_/g, " ")} ({watch('name')})
-                </span>
-              }
-            />
-            <div className="h-5" />
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
-              <Fields
-                values={watch()}
-                fields={fields}
-                // tab={tab}
-                // values={watch()}
-                errors={errors}
-                CACHE_LIST={CACHE_LIST}
-                customGrid="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-              />
-              <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
-                <Button
-                  title={"Save"}
-                  classes="ltr:ml-auto rtl:mr-auto"
-                  disabled={!isDirty}
-                />
-              </div>
-            </form>
-          </BlockPaper>
-        </FormProvider>
+
+    <FormLayout
+      steps={steps}
+      activeStage={currentIndex}
+      goTo={goTo}
+      formClassName="w-full xl:min-w-[900px] 2xl:min-w-[1200px]"
+
+      name={name}
+      onClose={onClose}
+      formPagination={formPagination}
+      methods={methods} onSubmit={onSubmit}
+      onDelete={onDelete}
+      isLoading={isLoading}
+
+    >
+      {isLoading && <Spinner />} {/* Add Spinner component */}
+      <div key={name}>
+
+        <Fields
+          values={watch()}
+          fields={fields}
+          // tab={tab}
+          // values={watch()}
+          errors={errors}
+          CACHE_LIST={CACHE_LIST}
+          customGrid="grid grid-cols-2 gap-4"
+        />
+
       </div>
-    </>
+    </FormLayout >
+
   );
 };
 

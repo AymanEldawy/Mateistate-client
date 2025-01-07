@@ -33,7 +33,7 @@ export const ReportFieldBetweenValues = ({
       ) : null}
       <div className={`flex gap-4 items-center ${bodyClassName}`}>
         <input
-          className={`border w-full h-[39px] read-only:bg-blue-100 dark:read-only:bg-[#444] rounded p-1 ${inputClassName}`}
+          className={`border w-full h-[39px] read-only:bg-[#006d5f1f] dark:read-only:bg-[#444] rounded p-1 ${inputClassName}`}
           readOnly={readOnly}
           {...field1Props}
           {...sharedProps}
@@ -42,7 +42,7 @@ export const ReportFieldBetweenValues = ({
         {hideText ? null : "To"}
         <input
           readOnly={readOnly}
-          className={`border w-full h-[39px] read-only:bg-blue-100 dark:read-only:bg-[#444] rounded p-1 ${inputClassName}`}
+          className={`border w-full h-[39px] read-only:bg-[#006d5f1f] dark:read-only:bg-[#444] rounded p-1 ${inputClassName}`}
           {...field2Props}
           {...sharedProps}
           {...register(field2Props?.name || "to")}

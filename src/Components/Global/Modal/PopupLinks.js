@@ -10,9 +10,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { PlusIcon } from "Components/Icons";
 import { DEFAULT_BILL_MENU, SERVICE_MENU } from "Helpers/constants";
 
-export const PopupLinks = ({ onClose, name }) => {
+export const PopupLinks = ({ onClose, name, open }) => {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const [links, setLinks] = useState([]);
 
   const getLinks = async () => {
@@ -73,9 +72,9 @@ export const PopupLinks = ({ onClose, name }) => {
   }, [name]);
 
   return (
-    <Modal open={true} onClose={onClose}>
+    <Modal open={open} onClose={onClose}>
       {links?.map((list) => (
-        <div>
+        <div className="mb-4">
           <h3>{list?.name}</h3>
           <div className="flex gap-4 items-center mt-2">
             {list?.subChild
@@ -84,7 +83,10 @@ export const PopupLinks = ({ onClose, name }) => {
                 <Link
                   key={item?.link + index}
                   to={item?.link}
-                  className="flex items-center gap-2 bg-gray-400 hover:bg-blue-500 text-sm text-white py-2 rounded px-2 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
+                  onClick={() => {
+                    if(!!onClose) onClose()
+                  }}
+                  className="flex items-center gap-2 bg-light-green hover:bg-dark-green text-sm text-white py-2 rounded px-2 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
                 >
                   <PlusIcon className="w-6 h-6" circle />
                   {item?.key}

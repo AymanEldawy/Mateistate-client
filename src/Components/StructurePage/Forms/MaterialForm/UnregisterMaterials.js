@@ -5,10 +5,13 @@ import React from "react";
 import { CompareMaterialCard } from "./CompareMaterialCard";
 import { ErrorText } from "Components/Global/ErrorText";
 import useCurd from "Hooks/useCurd";
+import FormLayout from "../FormWrapperLayout/FormLayout";
+import { useForm } from "react-hook-form";
 
-const UnregisterMaterials = () => {
+const UnregisterMaterials = ({ onClose }) => {
   const name = "material";
   const { getOneBy, get } = useCurd();
+  const methods = useForm()
   const { isLoading, data, refresh } = useQuery({
     queryKey: [name, "unregister"],
     queryFn: async () => {
@@ -26,7 +29,7 @@ const UnregisterMaterials = () => {
   });
 
   return (
-    <BlockPaper title={"Unregister Materials"}>
+    <FormLayout hidePaginationBar title={"Unregister Materials"} onClose={onClose} methods={methods} name={"unregister materials"} formClassName="min-w-[90%] min-h-[350px]">
       {isLoading ? (
         <Loading withBackdrop />
       ) : (
@@ -52,11 +55,11 @@ const UnregisterMaterials = () => {
               </div>
             </div>
           ) : (
-            <ErrorText>There are no materials needed to register</ErrorText>
+            <ErrorText containerClassName="text-center flex items-center justify-center">There are no materials needed to register</ErrorText>
           )}
         </>
       )}
-    </BlockPaper>
+    </FormLayout>
   );
 };
 

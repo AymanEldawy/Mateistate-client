@@ -7,11 +7,12 @@ import {
   UniqueField,
 } from "Components/StructurePage/CustomFields";
 import { IncreaseTableBar } from "./IncreaseTableBar";
-import AreaField from "../CustomFields/AreaField";
+import AreaField from "../StructurePage/CustomFields/AreaField";
 import { useTranslation } from "react-i18next";
 import { useFormContext } from "react-hook-form";
 import { EyeIcon, PrintIcon, SearchIcon } from "Components/Icons";
 import { usePopupForm } from "Hooks/usePopupForm";
+import Btn from "Components/Global/Btn";
 
 const TableFields = ({
   fields,
@@ -68,16 +69,16 @@ const TableFields = ({
     <>
       <div className={`relative mt-4 overflow-x-auto ${containerClassName}`}>
         <table
-          className={`border-collapse w-full text-sm text-left text-gray-500 dark:text-gray-400 border dark:border-dark-border rounded-md  ${tableClassName} ${
+          className={`border-collapse w-full text-xs text-left text-gray-500 dark:text-gray-400 border-[1px]  border-light-green rounded-md  ${tableClassName} ${
             tableError ? "!border-red-500" : ""
           }`}
         >
           <thead
-            className={`sticky top-0 z-20 text-xs text-gray-700 uppercase dark:bg-dark-border dark:text-gray-300 bg-gray-200 ${theadClassName}`}
+            className={`sticky top-0 z-20 text-xs uppercase bg-light-green text-white ${theadClassName}`}
           >
             <tr>
               <th
-                className={`${thClassName} border py-2 dark:border-dark-border`}
+                className={`${thClassName} border dark:border-dark-border whitespace-nowrap `}
               >
                 {" "}
                 <div className="text-center w-full block">#</div>
@@ -98,7 +99,7 @@ const TableFields = ({
                       return (
                         <th
                           key={col?.name}
-                          className={`px-4 py-2 border dark:border-dark-border ${thClassName}`}
+                          className={`px-2 py-2 border min-w-[120px] dark:border-dark-border whitespace-nowrap  ${thClassName}`}
                         >
                           <div className="flex gap-2 items-center justify-between">
                             {col?.label || col?.name}
@@ -109,14 +110,14 @@ const TableFields = ({
                   })}
                   {allowPrint ? (
                     <th
-                      className={`px-4 py-2 border dark:border-dark-border ${thClassName}`}
+                      className={`px-2 py-2 border whitespace-nowrap  dark:border-dark-border ${thClassName}`}
                     >
                       {t("print")}
                     </th>
                   ) : null}
                   {allowViewEntry ? (
                     <th
-                      className={`px-4 py-2 border dark:border-dark-border ${thClassName}`}
+                      className={`px-2 py-2 border whitespace-nowrap  dark:border-dark-border ${thClassName}`}
                     >
                       {t("view_entry")}
                     </th>
@@ -149,10 +150,9 @@ const TableFields = ({
                           ? rowStyles(index)
                           : rowStyles
                       }
-                      
                     >
                       <td
-                        className={`min-w-[40px] ${tdClassName} border dark:border-dark-border relative ${numberClassName}`}
+                        className={`min-w-[40px] whitespace-nowrap ${tdClassName} h-4 border dark:border-dark-border relative ${numberClassName}`}
                       >
                         {!!onRowClick ? (
                           <div className="flex items-center relative">
@@ -187,20 +187,16 @@ const TableFields = ({
                         else {
                           return (
                             <td
-                              className={`border dark:border-dark-border ${tdClassName} relative ${
-                                field?.type === "date" ? "min-w-[190px]" : ""
-                              }`}
+                              className={`border whitespace-nowrap  dark:border-dark-border relative ${tdClassName}`}
                               key={`${field?.name}-${index}`}
                             >
                               {field?.is_ref ? (
                                 <UniqueField
                                   {...field}
-                                  hideLabel
+                                  labelClassName="hidden"
                                   key={`${field?.name}-${index}`}
                                   updatedName={`${tab}.${index}.${field?.name}`}
                                   table={field.ref_table}
-                                  containerClassName="!min-w-[190px] border-0 !rounded-none !h-full"
-                                  className="!min-w-[190px] border-0 !rounded-none !h-full"
                                   selectContainerClassName="border-none"
                                   list={
                                     !!CACHE_LIST
@@ -223,7 +219,7 @@ const TableFields = ({
                                         }),
                                       }}
                                       updatedName={`${tab}.${index}.${field?.name}`}
-                                      hideLabel
+                                      labelClassName="hidden"
                                       selectClassName="!rounded-none !border-0 !border-transparent"
                                       selectClassNames={{
                                         control: (state) =>
@@ -239,7 +235,7 @@ const TableFields = ({
                                           availableColors={availableColors}
                                           key={`${field?.name}-${index}`}
                                           updatedName={`${tab}.${index}.${field?.name}`}
-                                          hideLabel
+                                          labelClassName="hidden"
                                           inputClassName={
                                             "border-0 !rounded-none"
                                           }
@@ -249,7 +245,7 @@ const TableFields = ({
                                           {...field}
                                           key={`${field?.name}-${index}`}
                                           updatedName={`${tab}.${index}.${field?.name}`}
-                                          hideLabel
+                                          labelClassName="hidden"
                                           containerClassName="h-10 !h-full min-w-[55px]"
                                           inputClassName={
                                             "border-0 !rounded-none"
@@ -259,11 +255,11 @@ const TableFields = ({
                                         <>
                                           {showNumberAsLink &&
                                           (field?.name === "number" ||
-                                            field?.name ===
-                                              "code") &&
+                                            field?.name === "code") &&
                                           watch(`${tab}.${index}.id`) ? (
                                             // <ViewRowFrom />
                                             <button
+                                              type="button"
                                               onClick={() => {
                                                 onClickOnNumber(
                                                   watch(`${tab}.${index}`)
@@ -278,7 +274,7 @@ const TableFields = ({
                                             {...field}
                                             key={`${field?.name}-${index}`}
                                             updatedName={`${tab}.${index}.${field?.name}`}
-                                            hideLabel
+                                            labelClassName="hidden"
                                             containerClassName="h-10 !h-full min-w-[55px]"
                                             inputClassName={`
                                               border-0 !rounded-none 
@@ -299,8 +295,11 @@ const TableFields = ({
                         }
                       })}
                       {allowPrint ? (
-                        <td className={`border ${tdClassName} relative `}>
+                        <td
+                          className={`border whitespace-nowrap  ${tdClassName} relative `}
+                        >
                           <button
+                            type="button"
                             className="flex justify-center items-center mx-auto hover:text-blue-500 hover:scale-110 duration-150"
                             onClick={() =>
                               onClickPrint(watch(`${tab}.${index}`))
@@ -311,16 +310,19 @@ const TableFields = ({
                         </td>
                       ) : null}
                       {allowViewEntry ? (
-                        <td className={`border ${tdClassName} relative `}>
-                          <button
+                        <td
+                          className={`border whitespace-nowrap  ${tdClassName} relative `}
+                        >
+                          <Btn
+                            kind="primary"
                             type="button"
-                            className="bg-blue-500 my-2 text-white mx-auto px-2 py-1 rounded-md flex items-center gap-2"
+                            containerClassName="!p-1 w-[50px] flex items-center justify-center m-[2px] mx-auto "
                             onClick={() =>
                               allowViewEntry(watch(`${tab}.${index}`))
                             }
                           >
-                            <EyeIcon className="h-5 w-5" />
-                          </button>
+                            <EyeIcon className="h-4 w-4" />
+                          </Btn>
                         </td>
                       ) : null}
                     </tr>

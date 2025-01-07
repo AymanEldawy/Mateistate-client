@@ -333,13 +333,13 @@ const getParkingSaleContract = async (id) => {
 };
 
 async function getVoucherData({
-  number,
+  id,
   tableName,
   tableGridName,
   tableGridNameId,
   voucherType,
 }) {
-  let conditions = [{ type: "and", conditions: [["number", "=", number]] }];
+  let conditions = [{ type: "and", conditions: [["id", "=", id]] }];
   if (voucherType) {
     conditions.push({
       type: "and",
@@ -390,23 +390,23 @@ export const GLOBAL_READ_GROUP_DATA = {
   shop_sale_contract: getShopSaleContract,
   parking_sale_contract: getParkingSaleContract,
   apartment_sale_contract: getApartmentSaleContract,
-  entry: async (number) =>
+  entry: async (id) =>
     await getVoucherData({
-      number,
+      id,
       tableName: "entry_main_data",
       tableGridName: "entry_grid_data",
       tableGridNameId: "entry_main_data_id",
     }),
-  accounting_voucher: async (number) =>
+  accounting_voucher: async (id) =>
     await getVoucherData({
-      number,
+      id,
       tableName: "accounting_voucher_main_data",
       tableGridName: "accounting_voucher_grid_data",
       tableGridNameId: "accounting_voucher_main_data_id",
     }),
-  voucher: async (number, params) =>
+  voucher: async (id, params) =>
     await getVoucherData({
-      number,
+      id,
       tableName: "voucher_main_data",
       tableGridName: "voucher_grid_data",
       tableGridNameId: "voucher_main_data_id",

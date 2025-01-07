@@ -1,15 +1,15 @@
 import BlockLayout from "Components/Global/BlockLayout";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ListHeader } from "./ListHeader";
 import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "Hooks/useLocalStorage";
-import CustomTable from "../TableComponents/CustomTable";
+import CustomTable from "./CustomTable";
 import useCurd from "Hooks/useCurd";
 import { useQuery } from "@tanstack/react-query";
-import { SERVICE } from "Helpers/Lib/service";
 import getTableColumns from "Helpers/columns-structure";
 import Modal from "Components/Global/Modal/Modal";
+import { ListHeader } from "./ListHeader";
+import { PopupLinks } from "Components/Global/Modal/PopupLinks";
 
 const LayoutWrapper = ({
   onClickDelete,
@@ -17,8 +17,9 @@ const LayoutWrapper = ({
   onClickPrint,
   FormRender,
   name: defaultName,
+  addtionalActions,
+  onClickAdd,
 }) => {
-  console.log("🚀 ~ onClickAdd:", defaultName);
   const params = useParams();
   const name = defaultName || params?.name;
   const { t } = useTranslation();
@@ -34,15 +35,20 @@ const LayoutWrapper = ({
   });
 
   const { isError, error, isLoading, isFetching, data } = useQuery({
-    queryKey: ["list", columnFilters, name],
+    queryKey: [
+      "list",
+      columnFilters,
+      name,
+      pagination?.pageIndex,
+      pagination?.pageSize,
+    ],
     queryFn: async () => {
-      let fn = SERVICE?.[name];
+      let fn = null;
       if (fn) {
         return await fn(columnFilters);
       }
       const response = await get(name);
       return await response?.result;
-      // console.log("🚀 ~ queryFn: ~ fn:", fn)
     },
   });
 
@@ -52,22 +58,36 @@ const LayoutWrapper = ({
     else return getTableColumns(name);
   }, [name]);
 
-  console.log("called here render parent", columnFilters);
   return (
     <>
-      <Modal open={openForm} onClose={() => setOpenForm(false)}>
-        <FormRender memo={"test"} />
+ 
+      <Modal open={openForm} bodyClassName="!p-0 !overflow-hidden">
+        <FormRender
+          onClose={() => setOpenForm(false)}
+          setOpenForm={setOpenForm}
+        />
       </Modal>
       <BlockLayout
         title={name}
         contentTopBar={
-          <ListHeader
-            onClickAdd={() => setOpenForm(true)}
-            // onSearch={onSearch}
-            onClickDelete={onClickDelete}
-            onClickView={onClickView}
-            onClickPrint={onClickPrint}
-          />
+          <>
+            <ListHeader
+              onClickAdd={() => {
+                if (!!onClickAdd) onClickAdd();
+                setOpenForm(true);
+              }}
+              // onSearch={onSearch}
+              onClickDelete={onClickDelete}
+              onClickView={onClickView}
+              onClickPrint={onClickPrint}
+              addtionalActions={addtionalActions}
+            />
+            {Object.keys(rowSelection)?.length ? (
+              <span className="text-light-green font-medium text-lg capitalize">
+                Selected: {Object.keys(rowSelection)?.length}
+              </span>
+            ) : null}
+          </>
         }
       >
         <CustomTable

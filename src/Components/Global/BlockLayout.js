@@ -18,8 +18,8 @@ const BlockLayout = ({
   const navigate = useNavigate();
 
   return (
-    <div className={"main-content m-4 flex-1 container-full"}>
-      <div className="flex items-center gap-4 mb-4 justify-between">
+    <div className={"main-content m-4 flex-1 container-full pb-20"}>
+      <div className="flex items-center gap-4 mb-4 justify-between bg-white shadow p-2 rounded-md">
         <div className="mr-auto gap-2 flex items-center">
           {hideBack ? null : (
             <button
