@@ -1,6 +1,7 @@
 import { Button } from "Components/Global/Button";
 import { ChevronIcon, EyeIcon, PlusIcon, TrashIcon } from "Components/Icons";
 import {
+  CheckboxField,
   CurrencyFieldGroup,
   Input,
   Switch,
@@ -14,9 +15,10 @@ import { useQuery } from "@tanstack/react-query";
 import { ViewEntry } from "Components/Global/ViewEntry";
 import { toast } from "react-toastify";
 import useCurd from "Hooks/useCurd";
+import Btn from "Components/Global/Btn";
+import { ErrorText } from "Components/Global/ErrorText";
 
 export const PartialCollectionFrom = ({
-  CACHE_LIST,
   chequeId,
   PATTERN_SETTINGS,
   dispatchVoucherEntries,
@@ -89,18 +91,18 @@ export const PartialCollectionFrom = ({
         let theTotalRest = total - prev - amount;
         let theTotalSum = prev + amount;
 
-        if (theTotalRest < 0) {
-          toast.error(
-            "Failed to enter value the rest can't be less than 0",
-            {
-              autoClose: false,
-            }
-          );
-          setError("rest", {
-            type: "manual",
-            message: "Failed to enter value the rest can't be less than 0",
-          });
-        }
+        // if (theTotalRest < 0) {
+        //   // toast.error(
+        //   //   "Failed to enter value the rest can't be less than 0",
+        //   //   {
+        //   //     autoClose: false,
+        //   //   }
+        //   // );
+        //   setError("rest", {
+        //     type: "manual",
+        //     message: "Failed to enter value the rest can't be less than 0",
+        //   });
+        // }
         setValue("rest", theTotalRest);
         setValue("total_sum", theTotalSum);
       }
@@ -125,23 +127,12 @@ export const PartialCollectionFrom = ({
   };
 
   return (
-    <div className="md:w-[550px] w-full">
-      <div className="grid grid-cols-2 gap-8 xl:gap-14 items-center">
-        <Input {...fields?.created_at} />
-        <div className="flex items-end justify-end gap-2">
-          <Switch {...fields?.feedback} />
-          <Switch {...fields?.gen_entries} />
-          {watch("id") && PATTERN_SETTINGS?.auto_gen_entries ? (
-            <ViewEntry id={watch("id")} />
-          ) : null}
-        </div>
-      </div>
+    <div className="max-w-3xl w-full">
       <div className="grid grid-cols-2 gap-8 xl:gap-14 my-4">
         <div className="flex flex-col gap-2 ">
+          <Input {...fields?.created_at} />
           <CurrencyFieldGroup
             {...fields?.currency_id}
-            CACHE_LIST={CACHE_LIST}
-            list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
           />
           <Input {...fields?.amount} />
           {["debit_account_id", "credit_account_id", "cost_center_id"]?.map(
@@ -156,8 +147,6 @@ export const PartialCollectionFrom = ({
                   key={field}
                   {...fields?.[field]}
                   table={field?.replace("_id", "")}
-                  CACHE_LIST={CACHE_LIST}
-                  list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
                   values={watch()}
                 />
               );
@@ -170,6 +159,7 @@ export const PartialCollectionFrom = ({
               <Input {...fields?.[field]} key={field} readOnly={true} />
             )
           )}
+          {watch('rest') < 0 && <ErrorText>Failed to enter value the rest can't be less than 0</ErrorText>}
         </div>
       </div>
       <Textarea {...fields?.note} readOnly={true} />
@@ -177,20 +167,14 @@ export const PartialCollectionFrom = ({
         <div className="flex flex-col gap-2 ">
           <UniqueField
             {...fields?.commission_debit_id}
-            CACHE_LIST={CACHE_LIST}
-            list={!!CACHE_LIST ? CACHE_LIST?.account : []}
             values={watch()}
           />
           <UniqueField
             {...fields?.commission_credit_id}
-            CACHE_LIST={CACHE_LIST}
-            list={!!CACHE_LIST ? CACHE_LIST?.account : []}
             values={watch()}
           />
           <UniqueField
             {...fields?.commission_cost_center_id}
-            CACHE_LIST={CACHE_LIST}
-            list={!!CACHE_LIST ? CACHE_LIST?.cost_center : []}
             values={watch()}
           />
         </div>
@@ -223,34 +207,39 @@ export const PartialCollectionFrom = ({
               <ChevronIcon className="rtl:rotate-90 ltr:-rotate-90 w-6 h-6 text-inherit" />
             </button>
           </div>
-          {number <= +maxLength && +watch("rest") > 0 ? (
+
             <button
               type="button"
               onClick={onClickAddNew}
               className="flex items-center gap-2 px-2 py-1 rounded-md bg-blue-500 text-white"
-            >
+              >
               <PlusIcon className="w-5 h-5" />
               Add new{" "}
             </button>
-          ) : null}
+
+          {/* ) : null}
+              {number <= +maxLength && +watch("rest") <= 0 ? ( */}
+
+          
         </div>
         <div className="flex items-center gap-4">
           {watch("id") ? (
-            <button
+            <Btn
+              kind="error"
               type="button"
               onClick={() => setOpenConfirmation(true)}
-              className={`flex items-center gap-2 px-2 py-1 rounded-md bg-red-500 text-white`}
             >
               <TrashIcon className="w-5 h-5" />
               Delete
-            </button>
+            </Btn>
           ) : null}
 
-          <Button
-            title="Submit"
+          <Btn
             loading={isLoading}
-            disabled={!isDirty || isLoading}
-          />
+            disabled={isLoading}
+          >
+            Save
+          </Btn>
         </div>
       </div>
     </div>

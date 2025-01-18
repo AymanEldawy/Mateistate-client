@@ -11,7 +11,7 @@ export const ListHeader = ({
   onClickView,
   onClickPrint,
   DeleteProps,
-  addtionalActions
+  additionalActions
 }) => {
   const { t } = useTranslation();
   return (
@@ -50,7 +50,7 @@ export const ListHeader = ({
             {t("print")}
           </Btn>
         ) : null}
-        {!!addtionalActions && addtionalActions}
+        {!!additionalActions && additionalActions}
       </div>
     </div>
   );

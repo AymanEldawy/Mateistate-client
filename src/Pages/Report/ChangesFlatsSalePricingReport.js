@@ -15,7 +15,6 @@ const ChangesFlatsSalePricingReport = () => {
   const name = "changes_flats_sale_pricing_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
-  const { CACHE_LIST } = useRefTable(name, "");
   const [selectedColumns, setSelectedColumns] = useState({});
   const [buildingsIds, setBuildingsIds] = useState({});
   const [openReportResults, setOpenReportResults] = useState(false);
@@ -46,7 +45,6 @@ const ChangesFlatsSalePricingReport = () => {
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8 items-start">
               <ReportFilterFields title="Fields">
                 <ReportFields
-                  CACHE_LIST={CACHE_LIST}
                   fields={fields}
                   sharedLabelClassName="w-[200px]"
                   // containerClassName="grid grid-cols-2 gap-4"

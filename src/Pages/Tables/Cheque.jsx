@@ -12,23 +12,23 @@ const Cheque = () => {
 
   return (
     <>
-      {openLinks && <PopupLinks name={name} onClose={() => setOpenLinks(false)} open={openLinks} />}
+      {openLinks && (
+        <PopupLinks
+          name={name}
+          onClose={() => setOpenLinks(false)}
+          open={openLinks}
+        />
+      )}
       <LayoutWrapper
         name={name}
         onClickAdd={() => setOpenLinks(true)}
+        code={params?.code}
         FormRender={(props) => {
-          if (params?.code) {
-            props.setOpenForm(true);
-          } else return;
-
           return (
             <ChequeForm
               patternCode={params?.code}
+              number={params?.number}
               {...props}
-              onClose={() => {
-                navigate("/cheques/");
-                props.onClose();
-              }}
             />
           );
         }}

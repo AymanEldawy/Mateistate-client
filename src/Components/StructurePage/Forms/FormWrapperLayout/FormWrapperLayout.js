@@ -34,10 +34,8 @@ const FormWrapperLayout = ({
   hidePaginationBar,
   additionalButtons,
 }) => {
-  // const history = useHistory();
   const params = useParams();
   const navigate = useNavigate();
-  const { loadingRefTableData } = useRefTable(name);
   const location = useLocation();
   const [refresh, setRefresh] = useState(false);
   const { remove } = useCurd();
@@ -57,8 +55,8 @@ const FormWrapperLayout = ({
 
   return (
     <>
-      {/* {isLoading || isSubmitting || loadingRefTableData ? <Loading withBackdrop /> : null} */}
-      {isLoading || isSubmitting ? <Loading withBackdrop /> : null}
+      {/* {isLoading || isSubmitting || loadingRefTableData ? <Loading /> : null} */}
+      {isLoading || isSubmitting ? <Loading /> : null}
      
       <BlockPaper
         containerClassName={popupView ? "z-[102] p-0" : null}

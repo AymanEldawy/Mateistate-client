@@ -133,7 +133,7 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
                 </button>
               ) : (
                 <Link
-                  to={urlToAdd ? urlToAdd(name) : `/form/${name}`}
+                  to={urlToAdd ? urlToAdd(name) : `/${name}`}
                   className="flex items-center gap-2 bg-blue-500 text-sm text-white py-2 rounded px-2 font-normal capitalize hover:shadow-md hover:rounded-lg duration-300"
                 >
                   <PlusIcon className="w-6 h-6" circle />

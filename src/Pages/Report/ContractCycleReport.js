@@ -19,7 +19,6 @@ const ContractCycleReport = () => {
   const name = "contract_cycle_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
-  const { CACHE_LIST } = useRefTable(name, "");
   const [selectedColumns, setSelectedColumns] = useState({});
   const [openReportResults, setOpenReportResults] = useState(false);
   const [contractIds, setContractIds] = useState({});
@@ -48,7 +47,6 @@ const ContractCycleReport = () => {
                 containerClassName=" !col-span-2"
               >
                 <ReportFields
-                  CACHE_LIST={CACHE_LIST}
                   fields={fields}
                   // sharedLabelClassName="w-[250px] !whitespace-normal"
                   sharedContainerClassName="!flex-wrap"

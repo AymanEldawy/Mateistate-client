@@ -21,7 +21,6 @@ const CustomersAccountStatementReport = () => {
   const name = "customer_account_statement_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
-  const { CACHE_LIST } = useRefTable();
   const [selectedColumns, setSelectedColumns] = useState({});
   const [chqIds, setChqIds] = useState({});
   const [voucherIds, setVoucherIds] = useState({});
@@ -53,7 +52,6 @@ const CustomersAccountStatementReport = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8 items-start">
               <ReportFilterFields>
                 <ReportFields
-                  CACHE_LIST={CACHE_LIST}
                   fields={fields}
                   sharedLabelClassName="w-[200px]"
                 />

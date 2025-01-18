@@ -22,6 +22,7 @@ const Bill = () => {
       <LayoutWrapper
         name={name}
         onClickAdd={() => setOpenLinks(true)}
+        code={params?.code}
         FormRender={(props) => {
           console.log(props, "props");
           console.log(props, "props");
@@ -37,6 +38,7 @@ const Bill = () => {
                 props?.onClose();
               }}
               patternCode={params?.code}
+              code={params?.code}
             />
           );
         }}

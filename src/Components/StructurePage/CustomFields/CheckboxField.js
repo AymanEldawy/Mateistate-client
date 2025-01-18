@@ -20,6 +20,7 @@ const CheckboxField = ({
 
   return (
     <Controller
+      key={updatedName || field.name}
       name={updatedName || field.name}
       render={({
         field: { onChange, onBlur, ref, value },
@@ -48,7 +49,7 @@ const CheckboxField = ({
               <label
                 title={label}
                 className={
-                  "overflow-hidden text-ellipsis text-sm font-normal whitespace max-h-[32px] mb-1 capitalize flex items-center gap-2 " +
+                  "overflow-hidden text-ellipsis text-xs font-normal whitespace max-h-[32px] capitalize flex items-center gap-2 " +
                   labelClassName
                 }
               >

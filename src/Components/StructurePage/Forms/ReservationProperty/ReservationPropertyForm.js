@@ -1,13 +1,10 @@
 import { ApiActions } from "Helpers/Lib/api";
-import { useEffect, useState } from "react";
-import useRefTable from "Hooks/useRefTables";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { removeNullValues } from "Helpers/functions";
-import { CREATED_FROM_CONTRACT_RESERVATION_CODE } from "Helpers/GENERATE_STARTING_DATA";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import { ReservationPropertyFields } from "./ReservationPropertyFields";
 import {
   deleteEntry,
@@ -17,6 +14,8 @@ import { SELECT_LISTS } from "Helpers/constants";
 import useCurd from "Hooks/useCurd";
 import FormLayout from "../FormWrapperLayout/FormLayout";
 import useFormPagination from "Hooks/useFormPagination";
+import getFormByTableName from 'Helpers/Forms/forms';
+import { CREATED_FROM_CONTRACT_RESERVATION } from './../../../../Helpers/GENERATE_STARTING_DATA';
 
 const CACHE_PROPERTY = {};
 
@@ -68,7 +67,6 @@ const ReservationPropertyForm = ({ onClose, popupView, number }) => {
     clearErrors,
   } = methods;
 
-  const { CACHE_LIST, fields } = useRefTable(name);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState([]);
   const { set, insert, getOneBy } = useCurd();
@@ -126,7 +124,7 @@ const ReservationPropertyForm = ({ onClose, popupView, number }) => {
       if (watch("has_payment")) {
         generateEntryFromReservation({
           created_from_id: watch("id") || res?.record?.id,
-          created_from: CREATED_FROM_CONTRACT_RESERVATION_CODE,
+          created_from: CREATED_FROM_CONTRACT_RESERVATION,
           values: watch(),
         });
       } else deleteEntry(watch("id") || res?.record?.id);
@@ -135,6 +133,11 @@ const ReservationPropertyForm = ({ onClose, popupView, number }) => {
     }
     setIsLoading(false);
   };
+
+  const fields = useMemo(
+    () => getFormByTableName(name),
+    [name]
+  );
 
   return (
     <FormLayout
@@ -149,7 +152,6 @@ const ReservationPropertyForm = ({ onClose, popupView, number }) => {
 >
       <ReservationPropertyFields
         key={id}
-        CACHE_LIST={CACHE_LIST}
         fields={fields}
         errors={errors}
         watch={watch}

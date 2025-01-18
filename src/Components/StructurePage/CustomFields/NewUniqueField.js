@@ -13,15 +13,9 @@ import {
   USER_WORKER_CODE,
 } from "Helpers/GENERATE_STARTING_DATA";
 import { ErrorText } from "Components/Global/ErrorText";
-import { getUniqueFieldLabel } from "Helpers/functions";
-import { ApiActions } from "Helpers/Lib/api";
 import { QueryClient } from "@tanstack/react-query";
-import { fetchSearch } from "Helpers/Lib/global-read";
 import useCurd from "Hooks/useCurd";
 
-const isOptionSelected = (option, values) => {
-  return values.some(({ value }) => option.value === value);
-};
 const NewUniqueField = ({
   list: defaultList,
   onChange,
@@ -40,15 +34,18 @@ const NewUniqueField = ({
 }) => {
   const { getSearch, getOneBy } = useCurd();
   const { dispatchForm } = usePopupForm();
-  const [list, setList] = useState([]);
   const { control, watch, setValue } = useFormContext();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const refCont = useRef();
+  const [defaultOption, setDefaultOption] = useState(null);
   const queryClient = new QueryClient();
+  const { ref_col, ref_name, name } = field
+
+
+
 
   const loadOptions = async (value, callback, id) => {
     try {
-      console.log(value, "-dsd");
 
       const res = await queryClient.fetchQuery({
         queryKey: ["list", field?.ref_table],
@@ -66,9 +63,11 @@ const NewUniqueField = ({
           return response?.result;
         },
       });
-
-      console.log(res,'-dsdsdsdsdd');
-      
+      if (id) {
+        setDefaultOption(res?.[0]);
+      } else {
+        setDefaultOption(null);
+      }
       callback(res || []);
       return res;
     } catch (error) {
@@ -76,8 +75,18 @@ const NewUniqueField = ({
     }
   };
 
+  useEffect(() => {
+    // console.log(defaultOption, watch(updatedName || name), 'test');
+    if (defaultOption && defaultOption?.[ref_col || 'id'] === watch(updatedName || name)) return;
+    console.log('refresh');
+
+    loadOptions(watch(updatedName || field?.name), '', true)
+
+  }, [defaultOption, watch(updatedName || field?.name)])
+
   return (
     <Controller
+      key={updatedName || field.name}
       name={updatedName || field.name}
       control={control}
       defaultValue={null}
@@ -85,20 +94,19 @@ const NewUniqueField = ({
         field: { onChange, onBlur, ref, value },
         fieldState: { error },
       }) => {
-        console.log(refCont?.current, "---newdsdsd");
-        const val = refCont?.current?.getValue();
-        if (!val?.length && value) {
-          console.log(refCont?.current?.getValue(), "---new", field?.name);
-          loadOptions(value, () => {}, true);
-        }
-
+        console.log("🚀 ~ value:", value, field?.name)
+        // const val = refCont?.current?.getValue();
+        // let optionValue = val?.at(0)?.[field?.ref_col || "id"];
+        // if ((!val?.length && value) || (value && value !== optionValue)) {
+        //   loadOptions(value, '', true);
+        // }
         return (
           <div className="flex flex-col gap-2">
             <div className={containerClassName} key={field?.name}>
               {label && !hideLabel ? (
                 <label
                   title={label}
-                  className={`overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize ${labelClassName}`}
+                  className={`overflow-hidden whitespace-nowrap text-ellipsis block text-sm font-normal capitalize ${labelClassName}`}
                 >
                   {t(label)?.replace(/_/g, " ")}
                   {field?.required ? (
@@ -107,11 +115,10 @@ const NewUniqueField = ({
                 </label>
               ) : null}
               <div
-                className={`relative flex items-center border dark:border-dark-border rounded-md w-full ${
-                  field?.disabledCondition && watch(field?.disabledCondition)
-                    ? "pointer-events-none"
-                    : ""
-                } ${selectContainerClassName}`}
+                className={`relative flex items-center border dark:border-dark-border rounded-md w-full ${field?.disabledCondition && watch(field?.disabledCondition)
+                  ? "pointer-events-none"
+                  : ""
+                  } ${selectContainerClassName}`}
               >
                 {/* <AsyncSelect
                   ref={ref}
@@ -165,18 +172,23 @@ const NewUniqueField = ({
                   placeholder={field?.name}
                   required
                   className="flex-1 min-w-[180px]"
-                  // cacheOptions
-                  isOptionSelected={isOptionSelected}
-                  // defaultOptions
+                  // isOptionSelected={isOptionSelected}
                   getOptionLabel={(option) => {
                     return option?.[field?.ref_name || "name"];
                   }}
+                  // defaultOptions
+                  // cacheOptions
+                  // defaultInputValue={value}
+                  value={defaultOption}
+                  defaultValue={defaultOption}
                   getOptionValue={(option) => option?.[field?.ref_col || "id"]}
                   loadOptions={(inputValue, callback) => {
-                    console.log('mounted fsd');
-                    
                     loadOptions(inputValue, callback);
                   }}
+                  onChange={(option) => {
+                    setDefaultOption(option);
+                  }}
+
                 />
 
                 {field?.hideAdd ? (
@@ -225,7 +237,7 @@ const NewUniqueField = ({
                         additional: {
                           setValue,
                           name: updatedName || field?.name,
-                          setList,
+                          // setList,
                           refTableName: refTable,
                         },
                       });

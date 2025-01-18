@@ -1,13 +1,12 @@
+import AsyncSelect from "react-select/async";
 import { useEffect, useRef } from "react";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { PlusIcon, SearchIcon } from "Components/Icons";
 import { useState } from "react";
-import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
 import {
-  DEFAULT_CURRENCY_CODE,
   USER_CUSTOMER_CODE,
   USER_SUPERVISOR_CODE,
   USER_SUPPLIER_CODE,
@@ -15,72 +14,119 @@ import {
 } from "Helpers/GENERATE_STARTING_DATA";
 import { ErrorText } from "Components/Global/ErrorText";
 import { getUniqueFieldLabel } from "Helpers/functions";
+import { ApiActions } from "Helpers/Lib/api";
+import { QueryClient } from "@tanstack/react-query";
+import { fetchSearch } from "Helpers/Lib/global-read";
+import useCurd from "Hooks/useCurd";
 
 const UniqueField = ({
   list: defaultList,
   onChange,
+  label,
   containerClassName,
   table,
   index,
   updatedName,
+  hideLabel,
   selectContainerClassName,
-  CACHE_LIST,
   inputClassName,
   selectClassName,
   labelClassName,
+  old,
   ...field
 }) => {
-  const { label, name } = field || {};
+  const { getDynamicSearch, getOneBy } = useCurd();
   const { dispatchForm } = usePopupForm();
-  const [list, setList] = useState([]);
   const { control, watch, setValue } = useFormContext();
   const { t, i18n } = useTranslation();
   const refCont = useRef();
+  const [tableName, setTableName] = useState()
+  const [defaultOption, setDefaultOption] = useState(null);
+  const queryClient = new QueryClient();
+  const { ref_col, ref_name, name } = field
+  const ref_table = field?.ref_table?.indexOf('user_') !== -1 ? 'user' : field?.ref_table
 
   useEffect(() => {
-    setList(
-      defaultList?.map((item) => {
-        return {
-          value: item?.[field?.ref_col || "id"],
-          label: getUniqueFieldLabel(
-            item,
-            field?.ref_table,
-            field?.ref_name,
-            i18n.language
-          ),
-        };
-      })
-    );
-
-    let isCurrency = field?.ref_table === "currency";
-
-    if ((field?.defaultValue || isCurrency) && defaultList?.length) {
-      let searchKey = isCurrency ? "code" : field?.defaultValueSearchKey;
-      let searchVal = isCurrency ? DEFAULT_CURRENCY_CODE : field?.defaultValue;
-      let val = defaultList?.find((c) => c?.[searchKey] === searchVal)?.id;
-
-      setValue(updatedName || field?.name, val);
+    switch (ref_table) {
+      case UNIQUE_REF_TABLES.employee:
+      case UNIQUE_REF_TABLES.suppliers:
+      case UNIQUE_REF_TABLES.user_customer:
+      case UNIQUE_REF_TABLES.user_supplier:
+        setTableName('user')
+        break;
+      case UNIQUE_REF_TABLES.clients:
+      case UNIQUE_REF_TABLES.supervisor:
+        setTableName('account')
+        break;
+      default:
+        setTableName(ref_table)
+        break;
     }
-  }, [defaultList?.length]);
+  }, [ref_table])
+
+
+  const loadOptions = async (value, callback, id) => {
+    try {
+      const res = await queryClient.fetchQuery({
+        queryKey: ["list", tableName, 'search', id, value],
+        queryFn: async () => {
+          if (!value && !id) return;
+
+          console.log('called', id, value);
+          let response = null;
+          if (id) {
+            response = await getOneBy(tableName, value, "id");
+          } else {
+            response = await getDynamicSearch(
+              tableName,
+              value,
+              field?.ref_name || "name"
+            );
+          }
+          return response?.result;
+        },
+        enable: !!value || !!id
+      });
+      if (id) {
+        setDefaultOption(res?.[0]);
+      } else {
+        setDefaultOption(null);
+      }
+      callback(res || []);
+      return res;
+    } catch (error) {
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    // console.log(name, watch('account_id'), defaultOption?.id);
+    // console.log(name, watch('customer_id'), defaultOption?.id);
+    if (!watch(updatedName || name)) return;
+    if (defaultOption && defaultOption?.[ref_col || 'id'] === watch(updatedName || name)) return;
+
+    console.log('ch', defaultOption, defaultOption?.[ref_col || 'id'], watch(updatedName || name));
+    console.log('refresh', name, updatedName, watch(updatedName || name));
+
+    loadOptions(watch(updatedName || field?.name), '', true)
+
+
+  }, [watch(updatedName || name), defaultOption])
 
   return (
     <Controller
-      name={updatedName || field.name}
+      key={updatedName || name}
+      name={updatedName || name}
       control={control}
       defaultValue={null}
       render={({
         field: { onChange, onBlur, ref, value },
         fieldState: { error },
       }) => {
-          console.log(refCont?.current?.getValue(), "---dsdsd");
-          console.log(refCont?.current, "---dsdsd", name);
-
-
-
         return (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             <div
-              className={`flex flex-row gap-2 ` + containerClassName}
+              className={`flex flex-row gap-1 ` + containerClassName}
               key={name}
             >
               {label && (
@@ -88,7 +134,7 @@ const UniqueField = ({
                   title={label}
                   htmlFor={updatedName || name}
                   className={
-                    "w-[100px] lg:w-[120px] shrink-0 font-medium text-gray-600 text-ellipsis text-xs whitespace max-h-[32px] mb-1 capitalize flex items-center gap-2 " +
+                    "w-[100px] lg:w-[120px] shrink-0 font-medium text-gray-600 text-ellipsis text-xs whitespace max-h-[32px] capitalize flex items-center gap-2 " +
                     labelClassName
                   }
                 >
@@ -99,42 +145,54 @@ const UniqueField = ({
                 </label>
               )}
               <div
-                className={`relative flex h-[30px] text-sm items-center border dark:border-dark-border rounded-md w-full ${
-                  field?.disabledCondition && watch(field?.disabledCondition)
-                    ? "pointer-events-none"
-                    : ""
-                } ${selectContainerClassName}`}
+                className={`relative flex h-[30px] text-sm items-center border dark:border-dark-border rounded-md w-full ${field?.disabledCondition && watch(field?.disabledCondition)
+                  ? "pointer-events-none"
+                  : ""
+                  } ${selectContainerClassName}`}
               >
-                <Select
+                <AsyncSelect
                   ref={refCont}
-                  isDisabled={field?.readOnly}
-                  isClearable={true}
-                  options={list}
-                  menuPortalTarget={document?.body}
-                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-                  name={updatedName || field?.name}
-                  menuPlacement="auto"
-                  className={`w-full border-none ${selectClassName}`}
+                  // placeholder={field?.name}
+                  required
+                  className={`w-full min-h-[30px] h-[30px] border-none ${selectClassName}`}
                   classNames={{
                     indicatorsContainer: () => "!hidden bg-black",
-                    control: (state) => `bg-transparent !border-none`,
+                    control: (state) => `bg-transparent !border-none   !min-h-[30px] !h-[30px]`,
                     container: (state) =>
-                      `${
-                        field?.disabledCondition &&
+                      `${field?.disabledCondition &&
                         watch(field?.disabledCondition)
-                          ? "bg-gray-300"
-                          : ``
+                        ? "bg-gray-300"
+                        : ``
                       }  !border-none`,
-                    singleValue: () => "dark:text-gray-200 unique-valid",
-                    multiValueLabel: () => "whitespace-nowrap",
-                    menuList: () => "dark:bg-dark-bg",
+                    singleValue: () => "dark:text-gray-200 unique-valid !-mt-[5px]",
+                    multiValueLabel: () => "whitespace-nowrap ",
+                    menuList: () => "dark:bg-dark-bg ",
+                    menu: () => "min-w-[190px]",
+                    input: () => "!h-[30px] !py-0 !-mt-[2px]",
                   }}
-                  menuShouldScrollIntoView={true}
-                  value={list?.find(
-                    (c) => c?.value == watch(updatedName || field?.name)
-                  )}
-                  // onChange={onChange}
-                  onChange={(option) => onChange(option?.value)}
+                  // isOptionSelected={isOptionSelected}
+                  getOptionLabel={(option) => {
+                    return getUniqueFieldLabel(
+                      option,
+                      tableName,
+                      field?.ref_name,
+                      i18n.language
+                    );
+                  }}
+                  // defaultOptions
+                  // cacheOptions
+                  // defaultInputValue={value}
+                  value={defaultOption}
+                  // defaultValue={defaultOption}
+                  getOptionValue={(option) => option?.[field?.ref_col || "id"]}
+                  loadOptions={(inputValue, callback) => {
+                    loadOptions(inputValue, callback);
+                  }}
+                  onChange={(option) => {
+                    setDefaultOption(option);
+                    setValue(updatedName || name, option[ref_col || 'id'])
+                  }}
+
                 />
 
                 {field?.hideAdd ? (
@@ -149,42 +207,38 @@ const UniqueField = ({
                     type="button"
                     className="right-2 rtl:left-2 rtl:right-auto mx-2 rounded-full text-blue-500 hover:text-white hover:bg-blue-400"
                     onClick={() => {
-                      let refTable = field?.ref_table;
+                      let refTable = ref_table;
                       let oldValues = null;
 
                       if (
-                        field?.ref_table === UNIQUE_REF_TABLES.clients ||
-                        field?.ref_table === UNIQUE_REF_TABLES.user_customer
+                        ref_table === UNIQUE_REF_TABLES.clients ||
+                        ref_table === UNIQUE_REF_TABLES.user_customer
                       ) {
-                        refTable = "user";
                         oldValues = { card_type: USER_CUSTOMER_CODE };
                       } else if (
-                        field?.ref_table === UNIQUE_REF_TABLES.suppliers ||
-                        field?.ref_table === UNIQUE_REF_TABLES.user_supplier
+                        ref_table === UNIQUE_REF_TABLES.suppliers ||
+                        ref_table === UNIQUE_REF_TABLES.user_supplier
                       ) {
-                        refTable = "user";
                         oldValues = { card_type: USER_SUPPLIER_CODE };
                       } else if (
-                        field?.ref_table === UNIQUE_REF_TABLES.supervisor
+                        ref_table === UNIQUE_REF_TABLES.supervisor
                       ) {
-                        refTable = "user";
                         oldValues = { card_type: USER_SUPERVISOR_CODE };
                       } else if (
-                        field?.ref_table === UNIQUE_REF_TABLES.employee
+                        ref_table === UNIQUE_REF_TABLES.employee
                       ) {
-                        refTable = "user";
                         oldValues = { card_type: USER_WORKER_CODE };
                       }
 
                       dispatchForm({
                         open: true,
-                        table: refTable,
+                        table: tableName,
                         oldValues,
                         additional: {
                           setValue,
                           name: updatedName || field?.name,
-                          setList,
-                          refTableName: refTable,
+                          // setList,
+                          refTableName: tableName,
                         },
                       });
                     }}

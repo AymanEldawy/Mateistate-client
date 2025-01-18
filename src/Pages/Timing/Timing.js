@@ -62,8 +62,6 @@ const Timing = () => {
             table={"account"}
             label="user"
             name="setting.account_id"
-            CACHE_LIST={CACHE_LIST}
-            list={CACHE_LIST?.user}
             value={values?.user_id || ""}
           />
           <Select

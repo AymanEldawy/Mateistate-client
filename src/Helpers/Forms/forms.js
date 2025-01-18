@@ -312,7 +312,7 @@ const land_selling_price = [
 // ==== Start Cards
 const reservation_property = [
   FIELDS_STRUCTURE.dateField({
-    label: "created_at",
+    label: "date",
     name: "created_at",
     type: "date",
   }),
@@ -1643,8 +1643,8 @@ const apartment_pictures = [
     name: "apartment_id",
     is_ref: true,
     ref_table: "apartment",
-
     hide_in_form: true,
+    hideAdd: true,
   },
   {
     label: "picture",
@@ -1796,6 +1796,14 @@ const contract_pattern_general = [
     type: "text",
   },
   {
+    label: "record_date_created",
+    name: "record_date_created",
+    key: "select",
+    required: true,
+    intValue: true,
+    list: SELECT_LISTS("contact_pattern_record_created_date"),
+  },
+  {
     label: "gen_entries",
     name: "gen_entries",
     type: "checkbox",
@@ -1817,14 +1825,7 @@ const contract_pattern_general = [
 
     disabledCondition: "gen_entries",
   },
-  {
-    label: "record_date_created",
-    name: "record_date_created",
-    key: "select",
-    required: true,
-    intValue: true,
-    list: SELECT_LISTS("contact_pattern_record_created_date"),
-  },
+
   {
     label: "new_contract_without_terminating",
     name: "new_contract_without_terminating",
@@ -1880,6 +1881,12 @@ const contract_pattern_default_accounts = [
   {
     label: "default_fee_revenue_account_id",
     name: "default_fee_revenue_account_id",
+    is_ref: true,
+    ref_table: "account",
+  },
+  {
+    label: "default_vat_account_id",
+    name: "default_vat_account_id",
     is_ref: true,
     ref_table: "account",
   },
@@ -2095,12 +2102,16 @@ const contract_pattern_group = {
 // ==== Start Cheques
 const cheque = [
   FIELDS_STRUCTURE.id(),
-  FIELDS_STRUCTURE.created_at(),
-  {
-    label: "number",
-    name: "number",
-    type: "number",
-  },
+  FIELDS_STRUCTURE.created_at({
+    label: 'date'
+  }),
+  FIELDS_STRUCTURE.number({
+    hide_in_form: true
+  }),
+  FIELDS_STRUCTURE.number({
+    label: 'number',
+    name: 'internal_number'
+  }),
   {
     label: "feedback",
     name: "feedback",
@@ -2115,8 +2126,8 @@ const cheque = [
     list: SELECT_LISTS("cheque_connect_with"),
   },
   {
-    label: "type",
-    name: "type",
+    label: "code",
+    name: "code",
     type: "number",
     required: true,
     hide_in_form: true,
@@ -2153,8 +2164,13 @@ const cheque = [
   //
   //
   // },
+  FIELDS_STRUCTURE.uniqueField({
+    name: 'customer_id',
+    label: 'customer_id',
+    ref_table: UNIQUE_REF_TABLES.user_customer,
+  }),
   FIELDS_STRUCTURE.account({ required: true }),
-  FIELDS_STRUCTURE.cost_center({ required: true }),
+  FIELDS_STRUCTURE.cost_center({ required: false }),
   FIELDS_STRUCTURE.note(),
   FIELDS_STRUCTURE.account({
     label: "observe_account_id",
@@ -2164,7 +2180,7 @@ const cheque = [
   FIELDS_STRUCTURE.cost_center({
     label: "observe_cost_center_id",
     name: "observe_cost_center_id",
-    // required: true,
+    required: false,
   }),
   // FIELDS_STRUCTURE.note({
   //   label: "observe_account_note",
@@ -2270,7 +2286,7 @@ const cheque = [
 const cheque_grid = [
   {
     label: "chq_number",
-    name: "number",
+    name: "internal_number",
     type: "text",
   },
   {
@@ -2787,16 +2803,6 @@ const cheque_default_statement = [
     type: "text",
   },
   {
-    label: "statement_leaving",
-    name: "statement_leaving",
-    type: "text",
-  },
-  {
-    label: "statement_endorsement",
-    name: "statement_endorsement",
-    type: "text",
-  },
-  {
     label: "statement_collection",
     name: "statement_collection",
     type: "text",
@@ -2821,10 +2827,10 @@ const cheque_group = {
       fields: cheque_general,
       tab_name: "cheque_pattern",
     },
-    [CHEQUE_PATTERN_STEPS.cheque_pattern_deportable]: {
-      fields: cheque_deportable,
-      tab_name: "cheque_deportable",
-    },
+    // [CHEQUE_PATTERN_STEPS.cheque_pattern_deportable]: {
+    //   fields: cheque_deportable,
+    //   tab_name: "cheque_deportable",
+    // },
     [CHEQUE_PATTERN_STEPS.cheque_pattern_collection]: {
       fields: cheque_collection,
       tab_name: "cheque_collection",
@@ -2875,35 +2881,27 @@ const installment = [
     name: "total_amount",
     type: "number",
   },
-  {
-    label: "gen_entries_type",
-    name: "gen_entries_type",
-    key: "select",
-    list: SELECT_LISTS("installment_voucher_type"),
 
-    // defaultValue: 1,
-    selectFirstAsDefault: true,
-  },
   {
-    label: "first_batch",
+    label: "has_first_cash",
+    name: "has_first_batch",
+    type: "checkbox",
+    key: "switch",
+  },
+
+  {
+    label: "first_cash",
     name: "first_batch",
     type: "number",
-
-    watch: "gen_entries_type",
-    condition: 3,
   },
   {
-    label: "payment_date",
+    label: "cash_payment_date",
     name: "payment_date",
     type: "date",
-
-    watch: "gen_entries_type",
-    condition: 3,
   },
 
   FIELDS_STRUCTURE.currency({
     disabledCondition: "installment.currency_id",
-    // hide_in_form: true,
   }),
   // {
   //   label: "currency_val",
@@ -2921,7 +2919,7 @@ const installment = [
     readOnly: false,
   },
   {
-    label: "installments_numbers",
+    label: "cheques_count",
     name: "installments_numbers",
     type: "number",
   },
@@ -2976,19 +2974,6 @@ const installment = [
 // ==== Start Operations
 const op_collection = [
   FIELDS_STRUCTURE.id(),
-  {
-    label: "feedback",
-    name: "feedback",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "gen_entries",
-    name: "gen_entries",
-    type: "checkbox",
-    key: "switch",
-    required: true,
-  },
   FIELDS_STRUCTURE.created_at({ hide_in_form_add: false }),
   {
     label: "amount",
@@ -3015,14 +3000,15 @@ const op_collection = [
   },
   FIELDS_STRUCTURE.cost_center({ required: true }),
   FIELDS_STRUCTURE.note(),
-  {
-    label: "commission_value",
-    name: "commission_value",
-    type: "number",
-  },
+
   {
     label: "commission_percentage",
     name: "commission_percentage",
+    type: "number",
+  },
+  {
+    label: "commission_value",
+    name: "commission_value",
     type: "number",
   },
   {
@@ -3060,19 +3046,6 @@ const op_collection = [
 
 const op_partial_collection = [
   FIELDS_STRUCTURE.id(),
-  {
-    label: "feedback",
-    name: "feedback",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "gen_entries",
-    name: "gen_entries",
-    type: "checkbox",
-    key: "switch",
-    required: true,
-  },
   FIELDS_STRUCTURE.created_at({ hide_in_form_add: false }),
   {
     label: "amount",
@@ -3125,13 +3098,13 @@ const op_partial_collection = [
 
   FIELDS_STRUCTURE.note(),
   {
-    label: "commission_value",
-    name: "commission_value",
+    label: "commission_percentage",
+    name: "commission_percentage",
     type: "number",
   },
   {
-    label: "commission_percentage",
-    name: "commission_percentage",
+    label: "commission_value",
+    name: "commission_value",
     type: "number",
   },
   {
@@ -3169,19 +3142,6 @@ const op_partial_collection = [
 
 const op_deportation = [
   FIELDS_STRUCTURE.id(),
-  {
-    label: "feedback",
-    name: "feedback",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "gen_entries",
-    name: "gen_entries",
-    type: "checkbox",
-    key: "switch",
-    required: true,
-  },
   FIELDS_STRUCTURE.created_at({ hide_in_form_add: false }),
   {
     label: "amount",
@@ -3220,19 +3180,6 @@ const op_deportation = [
 
 const op_return = [
   FIELDS_STRUCTURE.id(),
-  {
-    label: "feedback",
-    name: "feedback",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "gen_entries",
-    name: "gen_entries",
-    type: "checkbox",
-    key: "switch",
-    required: true,
-  },
   FIELDS_STRUCTURE.created_at({ hide_in_form_add: false }),
   {
     label: "amount",
@@ -3268,12 +3215,6 @@ const op_return = [
     allowInsert: true,
   },
   {
-    label: "feedback",
-    name: "feedback",
-    type: "boolean",
-    key: "switch",
-  },
-  {
     label: "connect_with_chq_id",
     name: "connect_with_chq_id",
     is_ref: true,
@@ -3293,11 +3234,19 @@ const op_return = [
 // ==== Start Voucher
 const voucher_main_data = [
   FIELDS_STRUCTURE.id(),
-  FIELDS_STRUCTURE.number(),
+  FIELDS_STRUCTURE.number({
+    hide_in_form: true
+  }),
+  FIELDS_STRUCTURE.number({
+    label: 'number',
+    name: 'internal_number',
+    required: false,
+  }),
   {
-    label: "created_at",
+    label: "date",
     name: "created_at",
     type: "date",
+    required: true,
   },
   {
     label: "currency_id",
@@ -3356,12 +3305,15 @@ const voucher_main_data = [
     name: "credit_amount",
     type: "number",
   },
-  FIELDS_STRUCTURE.account(),
+  FIELDS_STRUCTURE.account({
+    required: true,
+  }),
   {
     label: "gen_entries",
     name: "gen_entries",
     type: "checkbox",
     key: "switch",
+    required: true,
   },
 ];
 const voucher_main_data_short = [
@@ -4445,7 +4397,7 @@ const bill = [
     required: true,
     defaultValue: new Date(),
   },
-  { label: "bill_kind", name: "bill_kind", type: "number", required: true },
+  { label: "code", name: "code", type: "number", required: true },
   {
     label: "customer_id",
     name: "customer_id",
@@ -5996,16 +5948,16 @@ export const store = [
 // ==== End entry
 const entry_main_data = [
   FIELDS_STRUCTURE.id(),
+  FIELDS_STRUCTURE.number({
+    hide_in_form: true
+  }),
+  FIELDS_STRUCTURE.number({
+    label: 'number',
+    name: 'internal_number',
+    required: false,
+  }),
   {
-    label: "number",
-    name: "number",
-    type: "number",
-    required: true,
-    hide_in_form: true,
-    defaultValue: 1,
-  },
-  {
-    label: "created_at",
+    label: "date",
     name: "created_at",
     type: "date",
     required: true,
@@ -6063,7 +6015,7 @@ const entry_main_data = [
 const entry_grid_data = [
   FIELDS_STRUCTURE.id(),
   {
-    label: "created_at",
+    label: "date",
     name: "created_at",
     type: "date",
 
@@ -6205,7 +6157,7 @@ const tenants = [
 
 // Lawsuit start
 const lawsuit = [
-  { label: "created_at", name: "created_at", type: "date", hide_in_form: true },
+  { label: "date", name: "created_at", type: "date", hide_in_form: true },
   { label: "number", name: "number", type: "number", hide_in_form: true },
   {
     label: "contract_id",
@@ -6750,7 +6702,7 @@ const service_lack_reason = [
 ];
 
 const service_material = [
-  { label: "created_at", name: "created_at", type: "date", required: false },
+  { label: "date", name: "created_at", type: "date", required: false },
   {
     label: "material_id",
     name: "material_id",

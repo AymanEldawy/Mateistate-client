@@ -3,7 +3,6 @@ import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import { useEffect, useState } from "react";
 import EntryForm from "../Entry/EntryForm";
 import { CloseIcon, NotAllowIcon } from "Components/Icons";
-import Loading from "Components/Global/Loading";
 import useCurd from "Hooks/useCurd";
 
 export const VoucherView = () => {
@@ -47,7 +46,7 @@ export const VoucherView = () => {
       bodyClassName="!p-0"
     >
       {isLoading ? (
-        <Loading />
+        <p>Loading ....</p>
       ) : (
         <>
           {values?.number ? (

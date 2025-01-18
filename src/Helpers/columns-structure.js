@@ -7,7 +7,6 @@ import {
 import { BanknoteIcon, UserIcon } from "Components/Icons";
 import IndeterminateCheckbox from "Components/TableComponents/IndeterminateCheckbox";
 import { SELECT_LISTS } from "./constants";
-import { ApiActions } from "./Lib/api";
 import { DefaultColumnFilter } from "Components/TableComponents/ColumnFilter";
 
 const cheque_pattern = [
@@ -120,17 +119,9 @@ const cheque = [
     header: "no",
     accessorKey: "number",
     cell: ({ getValue, row }) => {
-      let data = null;
-      ApiActions.read("cheque_pattern", {
-        conditions: [
-          { type: "and", conditions: [["code", "=", row?.original?.type]] },
-        ],
-      }).then((res) => {
-        data = res?.data?.at(0);
-      });
       return (
         <Link
-          to={`/cheques/${data?.code}/${data?.name}/${row?.original?.number}`}
+          to={`/cheque/${row?.original?.code}/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           # {getValue()}
@@ -282,11 +273,11 @@ const bill = [
     accessorKey: "number",
     cell: ({ getValue, row }) => {
       let type = SELECT_LISTS("bill_pattern_bill_type")?.find(
-        (c) => c?.id === row?.original.bill_kind
+        (c) => c?.id === row?.original.code
       );
       return (
         <Link
-          to={`/bill/${row?.original.bill_kind}/${row?.original?.number}`}
+          to={`/bill/${row?.original.code}/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           # {getValue()}
@@ -296,8 +287,8 @@ const bill = [
   },
   { header: "bill_date", accessorKey: "bill_date" },
   {
-    header: "bill_kind",
-    accessorKey: "bill_kind",
+    header: "code",
+    accessorKey: "code",
     cell: ({ getValue }) => {
       let type = SELECT_LISTS("bill_pattern_bill_type")?.find(
         (c) => c?.id === getValue()
@@ -366,11 +357,9 @@ const contract = [
 
       return (
         <Link
-          to={`/contracts/${type?.name?.toLowerCase()}/${unitType} ${
-            type?.name
-          } Contract/${row?.original?.number}?flat_type=${unitType}&code=${
-            row?.original?.code
-          }`}
+          to={`/contract/${type?.name?.toLowerCase()}/${unitType} ${type?.name
+            } Contract/${row?.original?.number}?flat_type=${unitType}&code=${row?.original?.code
+            }`}
           className="text-blue-500 font-medium hover:underline"
         >
           # {getValue()}
@@ -478,6 +467,24 @@ const contract = [
     ),
   },
   {
+    header: "price_before_vat",
+    accessorKey: "price_before_vat",
+    cell: ({ getValue }) => (
+      <span className="flex gap-1 font-medium text-green-600">
+        <BanknoteIcon className="h-5 w-5 text-green-500" /> {getValue()}
+      </span>
+    ),
+  },
+  {
+    header: "final_price",
+    accessorKey: "final_price",
+    cell: ({ getValue }) => (
+      <span className="flex gap-1 font-medium text-green-600">
+        <BanknoteIcon className="h-5 w-5 text-green-500" /> {getValue()}
+      </span>
+    ),
+  },
+  {
     header: "client",
     accessorKey: "client_name",
     cell: ({ row, getValue }) => (
@@ -530,7 +537,7 @@ const category = [
     accessorKey: "number",
     cell: ({ getValue, row }) => (
       <Link
-        to={`/form/category/${row?.original?.number}`}
+        to={`/category/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         # {getValue()}
@@ -895,14 +902,15 @@ const account = [
     isResizingColumn: false,
     header: ({ table }) => {
       return (
-      <IndeterminateCheckbox
-        {...{
-          checked: table?.getIsAllRowsSelected(),
-          indeterminate: table?.getIsSomeRowsSelected(),
-          onChange: table?.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    )},
+        <IndeterminateCheckbox
+          {...{
+            checked: table?.getIsAllRowsSelected(),
+            indeterminate: table?.getIsSomeRowsSelected(),
+            onChange: table?.getToggleAllRowsSelectedHandler(),
+          }}
+        />
+      )
+    },
     cell: ({ row }) => (
       <IndeterminateCheckbox
         {...{
@@ -919,15 +927,12 @@ const account = [
     header: "number",
     accessorKey: "number",
     sortingFn: "myCustomSortingFn", // use custom global sorting function
-    Filter: DefaultColumnFilter,
+    Filter: DefaultColumnFilter({ placeholder: "Search number" }),
     enableColumnFilter: true,
-    accessorFn: (c) => {
-      // console.log(c,'---s');
-    },
-    filter:'includesStringSensitive',
-    filterFn: (c) => {
-      // console.log(c,'---s');
-    },
+    filter: 'includesStringSensitive',
+    filterFn: 'inNumberRange',
+    addMeta :() => 'range',
+    columnFiltersMeta: 'rangewithout',
   },
 
   {
@@ -1118,7 +1123,7 @@ const lessor = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/lessor/${row?.original?.number}`}
+          to={`/lessor/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1179,7 +1184,7 @@ const owner = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/owner/${row?.original?.number}`}
+          to={`/owner/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1293,7 +1298,7 @@ const seller = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/seller/${row?.original?.number}`}
+          to={`/seller/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1354,7 +1359,7 @@ const bank = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/bank/${row?.original?.number}`}
+          to={`/bank/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1404,7 +1409,7 @@ const cost_center = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/cost_center/${row?.original?.number}`}
+          to={`/cost_center/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1482,7 +1487,7 @@ const currency = [
     cell: ({ row, getValue }) => {
       return (
         <Link
-          to={`/form/currency/${row?.original?.number}`}
+          to={`/currency/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {getValue()}
@@ -1530,7 +1535,7 @@ const building = [
     accessorKey: "name",
     cell: ({ getValue, row }) => (
       <Link
-        to={`/buildings/${row?.original?.number}`}
+        to={`/building/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         # {getValue()}
@@ -1784,7 +1789,7 @@ const apartment = [
     accessorKey: "apartment_no",
     cell: ({ getValue, row }) => (
       <Link
-        to={`/form/apartment/${row?.original?.number}`}
+        to={`/apartment/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         {getValue()}
@@ -1801,7 +1806,7 @@ const apartment = [
       ).name;
       return (
         <span
-          to={`/form/apartment/${row?.original?.number}`}
+          to={`/apartment/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {kind}
@@ -1994,8 +1999,8 @@ const contract_pattern = [
   { header: "name", accessorKey: "name" },
   { header: "list_name", accessorKey: "list_name" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
-  { header: "gen_enteries", accessorKey: "gen_enteries" },
-  { header: "auto_gen_enteries", accessorKey: "auto_gen_enteries" },
+  { header: "gen_entries", accessorKey: "gen_entries" },
+  { header: "auto_gen_entries", accessorKey: "auto_gen_entries" },
   { header: "auto_transfer_entry", accessorKey: "auto_transfer_entry" },
   { header: "record_date_created", accessorKey: "record_date_created" },
   {
@@ -2075,7 +2080,6 @@ const contract_pattern = [
     header: "move_cost_center_with_commission_owner",
     accessorKey: "move_cost_center_with_commission_owner",
   },
-  ,
   {
     header: "move_cost_center_with_contract_fines_terminating",
     accessorKey: "move_cost_center_with_contract_fines_terminating",
@@ -2164,7 +2168,7 @@ const installment = [
   },
   { header: "installment_statement", accessorKey: "installment_statement" },
   { header: "beneficiary_name", accessorKey: "beneficiary_name" },
-  { header: "gen_entries_type", accessorKey: "gen_entries_type" },
+  { header: "has_first_batch", accessorKey: "has_first_batch" },
   { header: "bank_id", accessorKey: "bank_id" },
 ];
 
@@ -2705,7 +2709,7 @@ const shop = [
 
     cell: ({ getValue, row }) => (
       <Link
-        to={`/form/shop/${row?.original?.number}`}
+        to={`/shop/${row?.original?.number}`}
         className="text-blue-500 font-medium hover:underline"
       >
         {getValue()}
@@ -2721,7 +2725,7 @@ const shop = [
       ).name;
       return (
         <span
-          to={`/form/shop/${row?.original?.number}`}
+          to={`/shop/${row?.original?.number}`}
           className="text-blue-500 font-medium hover:underline"
         >
           {kind}

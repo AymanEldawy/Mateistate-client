@@ -1,4 +1,10 @@
 export const DefaultColumnFilter = ({ column }) => {
+  if(!column) return null
+  const { filterVariant } = column?.columnDef.meta ?? {}
+  console.log("🚀 ~ DefaultColumnFilter ~ filterVariant:", filterVariant)
+  const columnFilterValue = column?.getFilterValue()
+  if(column?.columnDef?.header === 'number')
+    console.log("🚀 ~ DefaultColumnFilter ~ filterVariant:", column.get)
   const { getFilterValue, setFilterValue } = column;
   return (
     <input

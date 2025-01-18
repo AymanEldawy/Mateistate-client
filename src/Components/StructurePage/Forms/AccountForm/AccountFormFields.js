@@ -17,7 +17,6 @@ import NewUniqueField from "Components/StructurePage/CustomFields/NewUniqueField
 
 export const AccountFormFields = ({
   fields,
-  CACHE_LIST,
   errors,
   totalPercentage,
 }) => {
@@ -36,7 +35,6 @@ export const AccountFormFields = ({
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">
-        {/* <NewUniqueField {...fieldsHash?.parent_id} /> */}
         <Input
           {...fieldsHash?.code}
           error={errors?.code ? "Field is required" : ""}
@@ -57,19 +55,13 @@ export const AccountFormFields = ({
               error={
                 errors?.currency ? "Field is required" : ""
               }
-              CACHE_LIST={CACHE_LIST}
-              list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
             />{" "} */}
           <UniqueField
             {...{ ...fieldsHash?.parent_id, required: watch("type") === 1 }}
-            CACHE_LIST={CACHE_LIST}
-            list={!!CACHE_LIST ? CACHE_LIST?.account : []}
             error={errors?.parent_id ? "Field is required" : ""}
           />
           <UniqueField
             {...fieldsHash?.final_id}
-            CACHE_LIST={CACHE_LIST}
-            list={!!CACHE_LIST ? CACHE_LIST?.account : []}
             // values={values}
             error={errors?.final_id ? "Field is required" : ""}
           />
@@ -92,7 +84,6 @@ export const AccountFormFields = ({
           ) : null}
           <TableFields
             rowsCount={watch(ACCOUNT_ASSEMBLY_TYPE_NAME)?.length}
-            CACHE_LIST={CACHE_LIST}
             errors={errors}
             fields={getFormByTableName(ACCOUNT_ASSEMBLY_TYPE_NAME)}
             tab={ACCOUNT_ASSEMBLY_TYPE_NAME}
@@ -130,7 +121,6 @@ export const AccountFormFields = ({
               watch(ACCOUNT_DISTRIBUTIVE_TYPE_NAME)?.length,
               2
             )}
-            CACHE_LIST={CACHE_LIST}
             errors={errors}
             fields={getFormByTableName(ACCOUNT_DISTRIBUTIVE_TYPE_NAME)}
             tab={ACCOUNT_DISTRIBUTIVE_TYPE_NAME}

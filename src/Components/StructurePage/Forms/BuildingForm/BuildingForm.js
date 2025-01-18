@@ -15,6 +15,7 @@ import { PaletteIcon } from "Components/Icons";
 import { SubStepsList } from "./../CustomForm/SubStepsList";
 import useCurd from "Hooks/useCurd";
 import FormLayout from "../FormWrapperLayout/FormLayout";
+import useFormPagination from "Hooks/useFormPagination";
 
 const SUB_STEPS = [
   "building_real_estate_management",
@@ -93,12 +94,14 @@ const reCalculateFlats = (watch) => {
 const BuildingForm = ({ onClose }) => {
   const name = "building";
   const params = useParams();
-  const buildingId = params?.id;
+  const number = params?.number;
   const { remove, getOneBy } = useCurd();
   const navigate = useNavigate();
+  const formPagination = useFormPagination({ name, number });
   const methods = useForm({
     defaultValues: getResetFields(name),
   });
+  const buildingId = formPagination?.currentId;
   const [currentSubIndex, setCurrentSubIndex] = useState(0);
 
   const {
@@ -107,11 +110,11 @@ const BuildingForm = ({ onClose }) => {
     tab,
     steps,
     fields,
-    CACHE_LIST,
     setCurrentIndex,
     formSettings,
     onDeleteItem,
   } = useFormSteps({ name: "building_group_short" });
+
   const {
     reset,
     watch,
@@ -120,7 +123,7 @@ const BuildingForm = ({ onClose }) => {
   } = methods;
 
   const { isLoading } = useQuery({
-    queryKey: [name],
+    queryKey: [name, buildingId],
     queryFn: async () => {
       const res = await getOneBy("building", buildingId);
       if (res?.success) {
@@ -128,6 +131,7 @@ const BuildingForm = ({ onClose }) => {
         reCalculateFlats(watch);
       }
     },
+    enabled: !!buildingId
   });
 
   useEffect(() => {
@@ -136,6 +140,12 @@ const BuildingForm = ({ onClose }) => {
     });
     return () => subscription.unsubscribe();
   }, [watch]);
+
+  useEffect(() => {
+    if(formPagination?.currentNumber > formPagination?.lastNumber) {
+      reCalculateFlats(watch)
+    }
+  }, [formPagination?.currentNumber])
 
   const buildingFormValid = useCallback(() => {
     let valid = false;
@@ -193,6 +203,7 @@ const BuildingForm = ({ onClose }) => {
       goTo={goTo}
       onClose={onClose}
       formClassName="w-full xl:w-[900px] 2xl:w-[1200px]"
+      formPagination={formPagination}
       additionalButtons={
         <Link
           to={`/tools/${watch("id")}`}
@@ -217,7 +228,6 @@ const BuildingForm = ({ onClose }) => {
                 fields={getFormByTableName("building_real_estate_management")}
                 values={watch()}
                 errors={errors}
-                CACHE_LIST={CACHE_LIST}
                 customGrid="grid grid-cols-1"
               />
             ) : null}
@@ -227,7 +237,6 @@ const BuildingForm = ({ onClose }) => {
                 fields={getFormByTableName("building_buying")}
                 values={watch()}
                 errors={errors}
-                CACHE_LIST={CACHE_LIST}
                 customGrid="grid grid-cols-1"
               />
             ) : null}
@@ -247,7 +256,6 @@ const BuildingForm = ({ onClose }) => {
                 fields={getFormByTableName("building_investment")}
                 values={watch()}
                 errors={errors}
-                CACHE_LIST={CACHE_LIST}
                 customGrid="grid grid-cols-1"
               />
             ) : null}
@@ -257,7 +265,6 @@ const BuildingForm = ({ onClose }) => {
                 fields={getFormByTableName("building_real_estate_development")}
                 values={watch()}
                 errors={errors}
-                CACHE_LIST={CACHE_LIST}
                 customGrid="grid grid-cols-1"
               />
             ) : null}
@@ -270,7 +277,6 @@ const BuildingForm = ({ onClose }) => {
             fields={fields}
             values={watch()?.[tab]}
             errors={errors}
-            CACHE_LIST={CACHE_LIST}
             customGrid={
               currentIndex === 3
                 ? "grid grid-cols-1 md:grid-cols-2"

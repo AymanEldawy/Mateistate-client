@@ -1,3 +1,4 @@
+
 import { ErrorText } from "Components/Global/ErrorText";
 import { useEffect, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
@@ -46,9 +47,9 @@ const CustomSelect = ({
         fieldState: { error },
       }) => {
         return (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             <div
-              className={`flex flex-row gap-2 ` + containerClassName}
+              className={`flex flex-row gap-1 ` + containerClassName}
               key={name}
             >
               {label && (
@@ -56,7 +57,7 @@ const CustomSelect = ({
                   title={label}
                   htmlFor={updatedName || name}
                   className={
-                    "w-[100px] lg:w-[120px] shrink-0 font-medium text-gray-600 overflow-hidden text-ellipsis text-xs whitespace max-h-[32px] mb-1 capitalize flex items-center gap-2 " +
+                    "w-[100px] lg:w-[120px] shrink-0 font-medium text-gray-600 overflow-hidden text-ellipsis text-[11px] whitespace capitalize flex items-center gap-1 " +
                     labelClassName
                   }
                 >
@@ -67,31 +68,49 @@ const CustomSelect = ({
                 </label>
               )}
               <div
-                className={`relative flex h-[30px] text-sm items-start  w-full ${
-                  field?.disabledCondition && watch(field?.disabledCondition)
-                    ? "pointer-events-none"
-                    : ""
-                }`}
+                className={`relative flex text-xs font-medium items-start  w-full ${field?.disabledCondition && watch(field?.disabledCondition)
+                  ? "pointer-events-none"
+                  : ""
+                  }`}
               >
                 <Select
                   ref={ref}
                   id={updatedName || field?.name}
+                  isClearable
                   menuPlacement="auto"
                   menuPortalTarget={document?.body}
                   styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-                  className={`border rounded-md bg-none w-full bg-transparent field-select-container ${selectClassName}`}
+                  className={`min-h-[30px] h-[30px] border rounded-md bg-none w-full bg-transparent field-select-container ${selectClassName}`}
                   // classNamePrefix="field-select"
+                  classNames={{
+                    control: (state) => "bg-transparent !border-none !min-h-[30px] !h-[30px]",
+                    container: (state) =>
+                      `!bg-none ${
+                        old
+                          ? "!bg-white dark:!bg-[#2C2C2C] w-full"
+                          : "!bg-transparent"
+                      } dark:!border-dark-border`,
+                    singleValue: () => "dark:text-gray-200 unique-valid !-mt-[5px]",
+                    menuList: () => "dark:bg-dark-bg",
+                    indicatorsContainer: () => "h-[30px]",
+                    input: () => "dark:text-gray-200 !h-[30px] !py-0 !-mt-[2px]",
+                    // valueContainer: () => "-mt-1",
+                    ...selectClassNames,
+                  }}
                   // classNames={{
-                  //   control: (state) => "bg-transparent !border-none",
+                  //   control: (state) => `bg-transparent !border-none min-h-[30px] h-[30px]`,
                   //   container: (state) =>
-                  //     `!bg-none ${
-                  //       old
-                  //         ? "!bg-white dark:!bg-[#2C2C2C] w-full"
-                  //         : "!bg-transparent"
-                  //     } dark:!border-dark-border`,
+                  //     `${field?.disabledCondition &&
+                  //       watch(field?.disabledCondition)
+                  //       ? "bg-gray-300"
+                  //       : ``
+                  //     } h-[20px]`,
                   //   singleValue: () => "dark:text-gray-200 unique-valid",
-                  //   menuList: () => "dark:bg-dark-bg",
-                  //   ...selectClassNames,
+                  //   multiValueLabel: () => "whitespace-nowrap",
+                  //   menuList: () => "dark:bg-dark-bg ",
+                  //   menu: () => "min-w-[190px]",
+                  //   valueContainer: () => "h-[30px]",
+                  //   indicatorsContainer: () => "h-[30px]",
                   // }}
                   options={list}
                   // defaultValue={field?.selectFirstAsDefault && list?.at(0)?.value}
@@ -103,18 +122,18 @@ const CustomSelect = ({
                       watch(field?.disabledWhenKeyValid)) ||
                     readOnly
                   }
-                  noOptionsMessage={() =>
-                    field?.allowInsert ? (
-                      <span className="text-sm">
-                        <span className="text-red-400 font-medium">
-                          No options{" "}
-                        </span>{" "}
-                        (Add new one){" "}
-                      </span>
-                    ) : (
-                      "No options"
-                    )
-                  }
+                  // noOptionsMessage={() =>
+                  //   field?.allowInsert ? (
+                  //     <span className="text-sm">
+                  //       <span className="text-red-400 font-medium">
+                  //         No options{" "}
+                  //       </span>{" "}
+                  //       (Add new one){" "}
+                  //     </span>
+                  //   ) : (
+                  //     "No options"
+                  //   )
+                  // }
                   onKeyDown={(e) => {
                     if (!field?.allowInsert) return;
 

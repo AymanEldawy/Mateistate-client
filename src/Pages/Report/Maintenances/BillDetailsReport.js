@@ -24,7 +24,6 @@ const BillDetailsReport = () => {
   const name = "bill_details_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
-  const { CACHE_LIST } = useRefTable(name, "report");
   const [selectedColumns, setSelectedColumns] = useState({});
   const [billIds, setBillIds] = useState({});
   const [openReportResults, setOpenReportResults] = useState(false);
@@ -62,7 +61,6 @@ const BillDetailsReport = () => {
                 <ReportFields
                   containerClassName="gap-3"
                   fields={fields}
-                  CACHE_LIST={CACHE_LIST}
                   sharedLabelClassName="w-[200px]"
                 />
               </ReportFilterFields>

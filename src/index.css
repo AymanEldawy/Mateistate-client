@@ -99,12 +99,12 @@ body.dark .bg_dark {
   background-color: #313030;
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0; 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
 }
 
 a {
@@ -276,12 +276,12 @@ input[type="color"] {
   background: transparent !important;
 }
 
-div:has(> div > .unique-valid:not(:empty))  {
-  @apply bg-blue-100
+div:has(> div > .unique-valid:not(:empty)) {
+  @apply bg-blue-100;
 }
 
 input[type="date"]:valid {
-  @apply bg-teal-200
+  @apply bg-teal-200;
 }
 
 .css-13cymwt-control,
@@ -320,4 +320,12 @@ body table tbody td input:not(:read-only) {
   .field-select-container .field-select__single-value {
     @apply text-neutral-600 dark:text-neutral-200;
   }
+}
+
+.react-datepicker__close-icon::after {
+  background: #f005;
+  display: flex;  
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
 }

@@ -35,7 +35,6 @@ const LawsuitForm = ({ popupView }) => {
     tab,
     steps,
     fields,
-    CACHE_LIST,
     setCurrentIndex,
     formSettings,
     onDeleteItem,
@@ -123,7 +122,6 @@ const LawsuitForm = ({ popupView }) => {
                 fields={getFormByTableName("lawsuit_expenses")}
                 values={watch("lawsuit_expenses")}
                 errors={errors}
-                CACHE_LIST={CACHE_LIST}
                 customGrid="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               />
             ) : null}
@@ -145,7 +143,6 @@ const LawsuitForm = ({ popupView }) => {
               tab={tab}
               errors={errors}
               formSettings={formSettings}
-              CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
               fields={fields}
               values={watch()?.[tab]}
             />
@@ -155,7 +152,6 @@ const LawsuitForm = ({ popupView }) => {
               fields={fields}
               values={watch()?.[tab]}
               errors={errors}
-              CACHE_LIST={CACHE_LIST}
               customGrid={"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4"}
             />
           )}

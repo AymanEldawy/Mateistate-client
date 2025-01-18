@@ -6,6 +6,7 @@ import {
   insertIntoEntry,
   insertIntoGrid,
   deleteEntry,
+  generateEntryFromTerminationFines,
 } from "./vouchers-insert";
 import {
   FLATS_TABLE_NAME,
@@ -16,12 +17,8 @@ import {
 import { toast } from "react-toastify";
 import { getInsertAccountTrigger, removeNullValues } from "Helpers/functions";
 import {
-  CONNECT_WITH_CONTRACT_CODE,
-  CREATED_FROM_CONTRACT_CODE,
-  CREATED_FROM_CONTRACT_TERMINATION_CODE,
-  CREATED_FROM_VOUCHER_CODE,
-  MAIN_USERS_CODE,
-  VOUCHER_RECEIPTS_CODE,
+  CONNECT_WITH_CONTRACT_CODE, CREATED_FROM_CONTRACT_FINES, CREATED_FROM_CONTRACT_TERMINATION, CREATED_FROM_VOUCHER, MAIN_USERS_CODE,
+  VOUCHER_RECEIPTS_CODE
 } from "Helpers/GENERATE_STARTING_DATA";
 import { getAccountCash } from "./global-read";
 import { CONTRACT_STATUS } from "./contract-helpers";
@@ -80,18 +77,6 @@ const CONTRACT_GRID_FORMS_NAMES = {
     conditions: ["account_id", "fee_amount"],
   },
 };
-
-// Dynamic insert into many steps table and other relation tables
-/**
- *
- * @param  @tableName the table name for general table
- * @param  @tableNameId the key of table_id that refer to the general table
- * @param  @data
- * @param  @steps the dynamic steps for which mean the other tables name
- * @param  @stepGeneralName the unique name for general data or general key in the object that has the table main data
- * @param  @additionalParams
- * @returns
- */
 
 export const dynamicInsertIntoMultiStepsTable = async ({
   tableName,
@@ -164,48 +149,6 @@ export const dynamicInsertIntoMultiStepsTable = async ({
             });
             subItemId = subResponse?.record?.id;
           }
-
-          // switch (name) {
-          //   case "building": {
-          //     if (list?.building && list?.building?.gen_entries) {
-          //       generateEntryFromBuilding({
-          //         values: list?.building,
-          //         created_from: "building",
-          //         created_from_id: tableId,
-          //         should_update: SHOULD_UPDATES?.building,
-          //       });
-          //     }
-          //     break;
-          //   }
-          //   case "building_buying": {
-          //     if (list?.building_buying && list?.building_buying?.gen_entries) {
-          //       generateEntryFromBuildingBuying({
-          //         values: list?.building,
-          //         created_from: "building_buying",
-          //         created_from_id: subItemId,
-          //         should_update: SHOULD_UPDATES?.building_buying,
-          //       });
-          //     }
-          //     break;
-          //   }
-          //   case "building_investment": {
-          //     if (
-          //       list?.building_investment &&
-          //       list?.building_investment?.gen_entries
-          //     ) {
-          //       generateEntryFromBuildingInvestment({
-          //         values: list?.building_investment,
-          //         created_from: "building_investment",
-          //         created_from_id: subItemId,
-          //         should_update: SHOULD_UPDATES?.building_investment,
-          //       });
-          //     }
-          //     break;
-          //   }
-          //   default:
-          //     break;
-          // }
-          // response
         }
       }
     }
@@ -215,7 +158,7 @@ export const dynamicInsertIntoMultiStepsTable = async ({
 };
 
 // Insert to Building and other relation tables
-const insetIntoLawsuit = async (data) => {};
+const insetIntoLawsuit = async (data) => { };
 // Insert to Building and other relation tables
 const insertToBuilding = async (data) => {
   let buildingId = null;
@@ -413,25 +356,40 @@ const dynamicInsertIntoContract = async ({
             }
           }
           if (name === "contract_termination" && values.gen_entries) {
-            generateEntryFromTermination({
-              created_from: CREATED_FROM_CONTRACT_TERMINATION_CODE,
-              // created_from_code:
+            let terminationId = subItemId || values?.id || data?.contract_termination?.id
+            await generateEntryFromTermination({
+              created_from: CREATED_FROM_CONTRACT_TERMINATION,
+              // created_from_code: CREATED_FROM_CONTRACT_TERMINATION_CODE,
               values,
-              created_from_id: subItemId,
-              contractFirstTabData: data?.contract,
+              created_from_id: terminationId,
+              contractFirstTabData: data?.contract || list?.contract,
             });
+            const grid = data?.termination_fines_grid || list?.termination_fines_grid
+            if (grid?.length) {
+              await insertIntoGridTabs({
+                grid: grid,
+                tab: CONTRACT_GRID_FORMS_NAMES?.termination_fines_grid,
+                item_id: terminationId,
+                itemNameId: "contract_termination_fines_id",
+              });
+
+              // Generate Entry from Termination Grid 
+              await generateEntryFromTerminationFines({
+                created_from: CREATED_FROM_CONTRACT_FINES,
+                // created_from_code: CREATED_FROM_CONTRACT_TERMINATION_FINES_CODE,
+                values: grid,
+                created_from_id: terminationId,
+                contractFirstTabData: data?.contract || list?.contract,
+              });
+            }
+
           } else deleteEntry(subItemId);
 
           if (
             name === "contract_termination" &&
             SHOULD_UPDATES?.termination_fines_grid
           ) {
-            insertIntoGridTabs({
-              grid: data?.termination_fines_grid,
-              tab: CONTRACT_GRID_FORMS_NAMES?.termination_fines_grid,
-              item_id: subItemId,
-              itemNameId: "contract_termination_fines_id",
-            });
+
           }
         }
       }
@@ -451,204 +409,182 @@ export const insertIntoContractInstallment = async ({
   let installment_id = installment?.id;
   let success = false;
 
-  if (installment?.id) {
-    await ApiActions.update("installment", {
-      conditions: [{ type: "and", conditions: [["id", "=", installment?.id]] }],
-      updates: installment,
-    });
-  } else {
-    const response = await ApiActions.insert("installment", {
-      ...installment,
-      contract_id,
-    });
+  try {
 
-    installment_id = response?.record?.id;
-  }
+    if (installment?.id) {
+      await ApiActions.update("installment", {
+        conditions: [{ type: "and", conditions: [["id", "=", installment?.id]] }],
+        updates: installment,
+      });
+    } else {
+      const response = await ApiActions.insert("installment", {
+        ...installment,
+        contract_id,
+      });
 
-  const cost_center_id = firstTabData?.cost_center_id;
+      installment_id = response?.record?.id;
+    }
 
-  if (installment_id) {
-    await generateChequesFromInstallment({
-      installment,
-      installment_grid,
-      installment_id,
-      contract_id,
-      cost_center_id,
-    });
-  }
+    const cost_center_id = firstTabData?.cost_center_id;
 
-  if (installment?.gen_entries_type === 3) {
-    return true;
-  }
+    if (installment_id) {
+      await generateChequesFromInstallment({
+        installment,
+        installment_grid,
+        installment_id,
+        contract_id,
+        cost_center_id,
+      });
+    }
 
-  const account_id = firstTabData?.client_id;
+    const account_id = firstTabData?.client_id;
 
-  let currency_id = installment?.currency_id;
-  let currency_val = installment?.currency_val;
-  let first_batch = installment?.first_batch;
+    let currency_id = installment?.currency_id;
+    let currency_val = installment?.currency_val;
+    let first_batch = installment?.first_batch;
 
-  let entryMainData = {
-    currency_id,
-    currency_val,
-    note,
-    debit: first_batch,
-    credit: first_batch,
-    difference: 0,
-  };
-
-  // get CASH
-  const observe_account_id = await getAccountCash(firstTabData?.building_id);
-
-  if (!observe_account_id) {
-    toast.error(
-      "Failed to generate First payment because Cash Account is not found"
-    );
-    return;
-  }
-  const gridEntry = [];
-
-  gridEntry.push({
-    account_id: observe_account_id,
-    debit: first_batch,
-    observe_account_id: account_id,
-    credit: 0,
-    // currency_id,
-    cost_center_id,
-    note,
-  });
-
-  gridEntry.push({
-    account_id: account_id,
-    debit: 0,
-    observe_account_id: observe_account_id,
-    credit: first_batch,
-    // currency_id,
-    cost_center_id,
-    note,
-  });
-
-  if (+installment?.gen_entries_type === 1 && first_batch) {
-    // insert into vouchers
-    let voucherMainData = {
+    let entryMainData = {
       currency_id,
       currency_val,
-      connect_with: CONNECT_WITH_CONTRACT_CODE,
-      account_id: observe_account_id,
-      debit_amount: 0,
-      credit_amount: first_batch,
-      credit_total: 0,
-      debit_total: first_batch,
       note,
-      connect_with_id: contract_id,
-      is_first_batch: true,
+      debit: first_batch,
+      credit: first_batch,
+      difference: 0,
     };
 
-    const prevVoucherResponse = await ApiActions.read("voucher_main_data", {
-      conditions: [
-        { type: "and", conditions: [["connect_with_id", "=", contract_id]] },
-        { type: "and", conditions: [["is_first_batch", "=", true]] },
-      ],
+    // get CASH
+    const observe_account_id = await getAccountCash(firstTabData?.building_id);
+
+    if (!observe_account_id) {
+      toast.error(
+        "Failed to generate First payment because Cash Account is not found"
+      );
+      return;
+    }
+    const gridEntry = [];
+
+    gridEntry.push({
+      account_id: observe_account_id,
+      debit: first_batch,
+      observe_account_id: account_id,
+      credit: 0,
+      // currency_id,
+      cost_center_id,
+      note,
     });
 
-    let prevVoucher = prevVoucherResponse?.result?.at(0);
-    let voucher_main_data_id = prevVoucher?.id;
+    gridEntry.push({
+      account_id: account_id,
+      debit: 0,
+      observe_account_id: observe_account_id,
+      credit: first_batch,
+      // currency_id,
+      cost_center_id,
+      note,
+    });
 
-    if (prevVoucher?.id) {
-      const res = await ApiActions.update("voucher_main_data", {
-        conditions: [
-          { type: "and", conditions: [["id", "=", voucher_main_data_id]] },
-        ],
-        updates: voucherMainData,
-      });
-
-      if (res?.success) {
-        success = true;
-        toast.success("Successfully Update First Payment Cash");
-      } else {
-        toast.error("Failed to Update First Payment Cash");
-      }
-    } else {
-      let response = await ApiActions.insert("voucher_main_data", {
-        ...voucherMainData,
-        voucher_type: VOUCHER_RECEIPTS_CODE,
-      });
-
-      if (response?.success) {
-        success = true;
-        voucher_main_data_id = response?.record?.id;
-        toast.success("Successfully Insert First Payment Cash");
-      } else {
-        toast.error("Failed to Insert First Payment Cash");
-      }
-    }
-
-    const grid = [
-      {
-        account_id,
-        debit: 0,
-        credit: first_batch,
-        // currency_id,
-        cost_center_id,
-        voucher_main_data_id,
+    if (installment?.has_first_batch && first_batch) {
+      let voucherMainData = {
+        currency_id,
+        currency_val,
+        connect_with: CONNECT_WITH_CONTRACT_CODE,
+        account_id: observe_account_id,
+        debit_amount: 0,
+        credit_amount: first_batch,
+        credit_total: 0,
+        debit_total: first_batch,
         note,
-      },
-    ];
+        connect_with_id: contract_id,
+        is_first_batch: true,
+      };
 
-    insertIntoGrid({
-      grid,
-      itemId: voucher_main_data_id,
-      tableName: "voucher_main_data",
-      gridTableName: "voucher_grid_data",
-      itemSearchName: "voucher_main_data_id",
-    });
+      const prevVoucherResponse = await ApiActions.read("voucher_main_data", {
+        conditions: [
+          { type: "and", conditions: [["connect_with_id", "=", contract_id]] },
+          { type: "and", conditions: [["is_first_batch", "=", true]] },
+        ],
+      });
 
-    entryMainData.created_from = CREATED_FROM_VOUCHER_CODE;
-    entryMainData.created_from_code = VOUCHER_RECEIPTS_CODE;
-    entryMainData.created_from_id = voucher_main_data_id;
+      let prevVoucher = prevVoucherResponse?.result?.at(0);
+      let voucher_main_data_id = prevVoucher?.id;
 
-    const entry = await insertIntoEntry(entryMainData);
-    if (entry?.id) {
-      success = true;
+      if (prevVoucher?.id) {
+        const res = await ApiActions.update("voucher_main_data", {
+          conditions: [
+            { type: "and", conditions: [["id", "=", voucher_main_data_id]] },
+          ],
+          updates: voucherMainData,
+        });
+
+        if (res?.success) {
+          success = true;
+          toast.success("Successfully Update First Payment Cash");
+        } else {
+          toast.error("Failed to Update First Payment Cash");
+        }
+      } else {
+        let response = await ApiActions.insert("voucher_main_data", {
+          ...voucherMainData,
+          voucher_type: VOUCHER_RECEIPTS_CODE,
+        });
+
+        if (response?.success) {
+          success = true;
+          voucher_main_data_id = response?.record?.id;
+          toast.success("Successfully Insert First Payment Cash");
+        } else {
+          toast.error("Failed to Insert First Payment Cash");
+        }
+      }
+
+      const grid = [
+        {
+          account_id,
+          debit: 0,
+          credit: first_batch,
+          // currency_id,
+          cost_center_id,
+          voucher_main_data_id,
+          note,
+        },
+      ];
+
       insertIntoGrid({
-        grid: gridEntry,
-        itemId: entry?.id,
-        tableName: "entry_main_data",
-        gridTableName: "entry_grid_data",
-        itemSearchName: "entry_main_data_id",
+        grid,
+        itemId: voucher_main_data_id,
+        tableName: "voucher_main_data",
+        gridTableName: "voucher_grid_data",
+        itemSearchName: "voucher_main_data_id",
       });
-      // toast.success("Successfully Generate Entry from First Payment Cash");
-    } else {
-      toast.error("Failed to Generate Entry from First Payment Cash", {
-        autoClose: false,
-      });
+
+      entryMainData.created_from = CREATED_FROM_VOUCHER;
+      entryMainData.created_from_code = VOUCHER_RECEIPTS_CODE;
+      entryMainData.created_from_id = voucher_main_data_id;
+
+      const entry = await insertIntoEntry(entryMainData);
+      if (entry?.id) {
+        success = true;
+        await insertIntoGrid({
+          grid: gridEntry,
+          itemId: entry?.id,
+          tableName: "entry_main_data",
+          gridTableName: "entry_grid_data",
+          itemSearchName: "entry_main_data_id",
+        });
+        // toast.success("Successfully Generate Entry from First Payment Cash");
+      } else {
+        toast.error("Failed to Generate Entry from First Payment Cash", {
+          autoClose: false,
+        });
+      }
+
     }
-
-    // gen entry from voucher
+    return success;
+  } catch (error) {
+    return error
   }
-  // else if (installment?.gen_entries_type === 2) {
-  // entryMainData.is_first_batch = true;
-  // entryMainData.created_from = CREATED_FROM_CONTRACT_CODE;
-  // entryMainData.created_from_id = contract_id;
 
-  // const entry = await insertIntoEntry(entryMainData);
-  // if (entry?.id) {
-  //   success = true;
-  //   insertIntoGrid({
-  //     grid: gridEntry,
-  //     itemId: entry?.id,
-  //     tableName: "entry_main_data",
-  //     gridTableName: "entry_grid_data",
-  //     itemSearchName: "entry_main_data_id",
-  //   });
-  //   // toast.success("Successfully Insert Entry as First Payment Cash");
-  // } else {
-  //   toast.error("Failed to Insert Entry from as First Payment Cash", {
-  //     autoClose: false,
-  //   });
-  // }
-  // }
 
-  return success;
 };
 
 const insertIntoContractPictures = async ({
@@ -910,10 +846,10 @@ export const generateApartments = async (
         flatTableName === "apartment"
           ? `${flatTableName}_${data?.apartment_kind}`
           : flatTableName === "parking"
-          ? `${flatTableName}_${data?.parking_kind}`
-          : flatTableName === "shop"
-          ? `${flatTableName}_${data?.shop_kind}`
-          : "";
+            ? `${flatTableName}_${data?.parking_kind}`
+            : flatTableName === "shop"
+              ? `${flatTableName}_${data?.shop_kind}`
+              : "";
 
       let flatType = FLAT_PROPERTY_TYPES[flatNameType];
       let typeSettings = FLAT_PROPERTY_TABS[flatType];

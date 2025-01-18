@@ -25,7 +25,6 @@ const JournalLedgerReport = () => {
   const name = "journal_ledger_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
-  const { CACHE_LIST } = useRefTable(name);
   const [selectedColumns, setSelectedColumns] = useState({});
   const [voucherIds, setVoucherIds] = useState({});
   const [operationIds, setOperationIds] = useState({});
@@ -59,8 +58,6 @@ const JournalLedgerReport = () => {
             <div className="grid md:grid sm:grid-cols-2 md:grid-cols-3 gap-4 items-start">
               <ReportFilterFields title="fields">
                 <ReportFields
-                  CACHE_LIST={CACHE_LIST}
-                  list={!!CACHE_LIST ? CACHE_LIST?.account : []}
                   fields={fields}
                   containerClassName="!mb-0 gap-3"
                   sharedLabelClassName="w-[200px]"

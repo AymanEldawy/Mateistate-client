@@ -30,7 +30,6 @@ const CreditorsAgesReport = () => {
   const name = "creditors_ages_report";
   const methods = useForm();
   const { handleSubmit, watch, register, setValue } = methods;
-  const { CACHE_LIST } = useRefTable(name, "");
   const [selectedColumns, setSelectedColumns] = useState({});
   const [voucherIds, setVoucherIds] = useState({});
   const [invoiceIds, setInvoiceIds] = useState({});
@@ -66,7 +65,6 @@ const CreditorsAgesReport = () => {
                 <ReportFields
                   containerClassName="!gap-2"
                   fields={fields}
-                  CACHE_LIST={CACHE_LIST}
                   sharedLabelClassName="w-[260px]"
                 />
                 {REPORT_OPTIONS?.map((option) => (

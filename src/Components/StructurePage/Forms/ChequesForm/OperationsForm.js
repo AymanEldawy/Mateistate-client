@@ -1,27 +1,28 @@
-import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import { FormProvider, useForm } from "react-hook-form";
 import { Fields } from "../CustomForm/Fields";
 import { Button } from "Components/Global/Button";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PartialCollectionFrom } from "./PartialCollectionFrom";
-import useRefTable from "Hooks/useRefTables";
 import { ApiActions } from "Helpers/Lib/api";
 import { toast } from "react-toastify";
 import Loading from "Components/Global/Loading";
 import {
   CHQ_RECEIVED_CODE,
-  CREATED_FROM_CHQ_OPERATION_CODE,
+  CREATED_FROM_CHQ_OPERATION,
 } from "Helpers/GENERATE_STARTING_DATA";
 import {
   deleteEntry,
   generateEntryFromChqOperation,
 } from "Helpers/Lib/vouchers-insert";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
-import { EyeIcon, TrashIcon } from "Components/Icons";
+import { TrashIcon } from "Components/Icons";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import { updateChqStatus } from "Helpers/Lib/cheque-helpers";
 import { ViewEntry } from "Components/Global/ViewEntry";
 import useCurd from "Hooks/useCurd";
+import FormTitle from "Components/Global/FormTitle";
+import { CheckboxField } from "Components/StructurePage/CustomFields";
+import getFormByTableName from 'Helpers/Forms/forms';
 
 const getBuildingBank = async (values) => {
   let unit = "";
@@ -72,6 +73,35 @@ const mergePatternWithData = async (
 ) => {
   setValue("amount", chqValues?.amount);
   setValue("cheque_id", chqValues?.id);
+  setValue("commission_cost_center_id", chqValues?.cost_center_id);
+  console.log(pattern, 'patter');
+
+  // 
+  // commission_percentage
+  // commission_value
+
+  if (pattern?.commission_credit_account_id) {
+    setValue('commission_credit_id', pattern?.commission_credit_account_id)
+  }
+
+  if (pattern?.commission_debit_account_id) {
+    setValue('commission_debit_id', pattern?.commission_debit_account_id)
+  }
+  // if (
+  //   pattern?.collection_move_cost_center_credit ||
+  //   pattern?.collection_move_cost_center_debit
+  // ) {
+  // }
+
+
+  // commission_amount_from_building
+  // commission_default_account_is_building_owner
+  // commission_default_observe_is_revenue_account
+  // commission_move_cost_center_credit
+  // commission_move_cost_center_debit
+  // commission_type
+
+
 
   switch (name?.toLowerCase()) {
     case "op_collection":
@@ -122,6 +152,7 @@ const mergePatternWithData = async (
         setValue("cost_center_id", chqValues?.cost_center_id);
       }
 
+
       const buildingAccounts = await getBuildingBank(chqValues);
       setValue("debit_account_id", buildingAccounts?.bank_id);
       setValue("credit_account_id", buildingAccounts?.cheque_id);
@@ -158,41 +189,7 @@ const mergePatternWithData = async (
       }
 
       return;
-    case "op_deportation":
-      if (pattern?.deportable_gen_entries) setValue("gen_entries", true);
 
-      setValue("credit_account_id", pattern?.deportable_credit_account_id);
-      setValue("debit_account_id", pattern?.deportable_debit_account_id);
-
-      if (pattern?.collection_default_observe_account_is_client) {
-        setValue("credit_account_id", chqValues?.account_id);
-      }
-
-      if (pattern?.deportable_default_observe_account_is_client) {
-        setValue(
-          "credit_account_id",
-          pattern?.deportable_default_observe_account_is_client
-        );
-      }
-
-      if (pattern?.deportable_default_account_is_owner) {
-        setValue("credit_account_id", chqValues?.account_id);
-      }
-
-      if (pattern?.deportable_default_date === 2) {
-        setValue("created_at", chqValues?.due_date);
-      } else {
-        setValue("created_at", new Date());
-      }
-
-      if (
-        pattern?.deportable_move_cost_center_credit ||
-        pattern?.deportable_move_cost_center_debit
-      ) {
-        setValue("cost_center_id", chqValues?.cost_center_id);
-      }
-
-      return;
     case "op_return":
       if (pattern?.returnable_gen_entries) setValue("gen_entries", true);
       if (pattern?.returnable_credit_account_id) {
@@ -242,11 +239,9 @@ export const OperationsForm = ({
   onClose,
   chqValues,
   selectedFormOperation,
-  CACHE_LIST,
   refetch,
 }) => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
-  const { fields } = useRefTable(name);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDeletedSuccess, setIsDeletedSuccess] = useState(false);
@@ -263,6 +258,11 @@ export const OperationsForm = ({
     setValue,
     reset,
   } = methods;
+
+  const fields = useMemo(
+    () => getFormByTableName(name),
+    [name]
+  );
 
   useEffect(() => {
     if (
@@ -316,6 +316,8 @@ export const OperationsForm = ({
     refetch();
   };
 
+  console.log(watch(), 'd-fd op');
+
   // Handle submit
   const onSubmit = async (value) => {
     if (!isDirty) return;
@@ -357,8 +359,8 @@ export const OperationsForm = ({
         if (id) {
           await generateEntryFromChqOperation({
             created_from_id: id,
-            created_from: CREATED_FROM_CHQ_OPERATION_CODE,
-            created_from_code: name,
+            created_from: CREATED_FROM_CHQ_OPERATION?.[name],
+            // created_from_code: CREATED_FROM_CHQ_OPERATION?.[name],
             values: watch(),
           });
         }
@@ -371,23 +373,31 @@ export const OperationsForm = ({
 
   return (
     <>
-      {isLoading ? <Loading withBackdrop /> : null}
+      {isLoading ? <Loading /> : null}
       <ConfirmModal
         onConfirm={onDelete}
         open={openConfirmation}
         setOpen={setOpenConfirmation}
       />
       <FormProvider {...methods}>
-        <FormHeadingTitle
-          title={name?.replace(/op_|_/g, " ")}
+        <FormTitle
+          name={name}
           onClose={onClose}
+          extraContentBar={
+            <>
+              <CheckboxField {...{ name: 'feedback', label: 'feedback' }} values={watch()} />
+              <CheckboxField {...{ name: 'gen_entries', label: 'gen_entries' }} values={watch()} />
+              {watch("id") ? (
+                <ViewEntry id={watch("id")} />
+              ) : null}
+            </>
+          }
         />
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="p-4">
           {name === "op_partial_collection" ? (
             <PartialCollectionFrom
               errors={errors}
               fields={fields}
-              CACHE_LIST={CACHE_LIST}
               chequeId={chqValues?.id}
               PATTERN_SETTINGS={PATTERN_SETTINGS}
               dispatchVoucherEntries={dispatchVoucherEntries}
@@ -406,12 +416,9 @@ export const OperationsForm = ({
                 values={getValues()}
                 errors={errors}
                 fields={fields}
-                CACHE_LIST={CACHE_LIST}
               />
               <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
-                {watch("id") && PATTERN_SETTINGS?.auto_gen_entries ? (
-                  <ViewEntry id={watch("id")} />
-                ) : null}
+
                 <div className="flex items-center gap-4">
                   {watch("id") ? (
                     <button
@@ -426,7 +433,7 @@ export const OperationsForm = ({
                   <Button
                     title="Save"
                     loading={loading}
-                    disabled={!isDirty || isSubmitting || loading}
+                    disabled={isSubmitting || loading}
                   />
                 </div>
               </div>

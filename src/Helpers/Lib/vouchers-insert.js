@@ -3,9 +3,7 @@ import { toast } from "react-toastify";
 import {
   CHQ_RECEIVED_CODE,
   CONNECT_WITH_CONTRACT_CODE,
-  CREATED_FROM_CHQ_CODE,
-  CREATED_FROM_CONTRACT_CODE,
-  DEFAULT_CURRENCY_CODE,
+  CREATED_FROM_CHQ, CREATED_FROM_CONTRACT, DEFAULT_CURRENCY_CODE
 } from "Helpers/GENERATE_STARTING_DATA";
 import { getAccountReceivable } from "./global-read";
 
@@ -32,7 +30,7 @@ export const insertIntoEntry = async ({
   should_update,
   is_first_batch,
   created_from_code,
-}) => {
+}, additionalCondition = {}) => {
   const number = (await getVoucherNumber("entry_main_data")) || 1;
 
   let data = {
@@ -54,21 +52,22 @@ export const insertIntoEntry = async ({
   let entry = await ApiActions.read("entry_main_data", {
     conditions: is_first_batch
       ? [
-          {
-            type: "and",
-            conditions: [["created_from_id", "=", created_from_id]],
-          },
-          {
-            type: "and",
-            conditions: [["is_first_batch", "=", true]],
-          },
-        ]
+        {
+          type: "and",
+          conditions: [["created_from_id", "=", created_from_id]],
+        },
+        {
+          type: "and",
+          conditions: [["is_first_batch", "=", true]],
+        },
+      ]
       : [
-          {
-            type: "and",
-            conditions: [["created_from_id", "=", created_from_id]],
-          },
-        ],
+        {
+          type: "and",
+          conditions: [["created_from_id", "=", created_from_id]],
+        },
+        additionalCondition
+      ],
   });
 
   if (entry?.result?.length) {
@@ -253,6 +252,11 @@ export const generateEntryFromContract = async ({
     discount_account_id,
     created_at,
     discount_value,
+    vat_value,
+    vat_account_id,
+    final_price,
+    price_before_vat,
+    code
   } = values;
 
   let currency_id = defaultCurrency;
@@ -267,15 +271,18 @@ export const generateEntryFromContract = async ({
   }
 
   let note = `Contract rent number ${contractNumber} ${assetsType} name ${assetsTypeNumber} building name ${buildingNumber}`;
-  let debit = +contract_value;
+  let debit = +final_price;
 
   if (current_securing_value) {
     debit += +current_securing_value;
   }
-
-  if (discount_value) {
-    debit += +discount_value;
+  if (vat_value) {
+    debit += +vat_value;
   }
+
+  // if (discount_value) {
+  //   debit += +discount_value;
+  // }
 
   let credit = debit;
 
@@ -291,14 +298,14 @@ export const generateEntryFromContract = async ({
     commission?.commission_account_id
   ) {
     let ownerTotal =
-      contract_value -
-      ((commission?.commission_percentage / 100) * contract_value).toFixed(2);
-    let revenueTotal = (contract_value - ownerTotal).toFixed(2);
+      final_price -
+      ((commission?.commission_percentage / 100) * final_price).toFixed(2);
+    let revenueTotal = (final_price - ownerTotal).toFixed(2);
 
     gridRows.push({
       created_at,
       account_id: client_id,
-      debit: contract_value,
+      debit: final_price,
       observe_account_id: revenue_account_id,
       credit: 0,
       currency_id,
@@ -333,7 +340,7 @@ export const generateEntryFromContract = async ({
     gridRows.push({
       created_at,
       account_id: client_id,
-      debit: contract_value,
+      debit: final_price,
       observe_account_id: revenue_account_id,
       credit: 0,
       currency_id,
@@ -346,7 +353,7 @@ export const generateEntryFromContract = async ({
       account_id: revenue_account_id,
       debit: 0,
       observe_account_id: client_id,
-      credit: contract_value,
+      credit: final_price,
       currency_id,
       cost_center_id,
       note,
@@ -371,6 +378,29 @@ export const generateEntryFromContract = async ({
       debit: 0,
       observe_account_id: client_id,
       credit: current_securing_value,
+      currency_id,
+      cost_center_id,
+      note,
+    });
+  }
+  if (vat_value && vat_account_id) {
+    gridRows.push({
+      created_at,
+      account_id: client_id,
+      debit: vat_value,
+      observe_account_id: vat_account_id,
+      credit: 0,
+      currency_id,
+      cost_center_id,
+      note,
+    });
+
+    gridRows.push({
+      created_at,
+      account_id: vat_account_id,
+      debit: 0,
+      observe_account_id: client_id,
+      credit: vat_value,
       currency_id,
       cost_center_id,
       note,
@@ -407,7 +437,8 @@ export const generateEntryFromContract = async ({
     debit,
     credit,
     difference,
-    created_from: CREATED_FROM_CONTRACT_CODE,
+    created_from: CREATED_FROM_CONTRACT,
+    created_from_code: code,
     created_from_id: contractId,
   });
 
@@ -444,6 +475,12 @@ export const generateEntryFromVoucher = async ({
     account_id,
     cost_center_id,
   } = values;
+
+  console.log({
+    values,
+    grid
+  });
+
 
   const response = await insertIntoEntry({
     currency_id,
@@ -535,12 +572,13 @@ export const generateChequesFromInstallment = async ({
       number,
       installment_id,
       currency_id,
-      type: CHQ_RECEIVED_CODE,
+      code: CHQ_RECEIVED_CODE,
       connect_with: CONNECT_WITH_CONTRACT_CODE,
       connect_with_id: contract_id,
       cost_center_id,
       observe_account_id,
       gen_entries: true,
+      cheque_pattern_id: pattern?.id,
     });
   }
 
@@ -554,7 +592,7 @@ export const generateChequesFromInstallment = async ({
       },
       {
         type: "and",
-        conditions: [["type", "=", +pattern?.code]],
+        conditions: [["code", "=", +pattern?.code]],
       },
     ],
     sorts: [{ column: "due_date", order: "ASC", nulls: "last" }],
@@ -627,7 +665,7 @@ export const generateChequesFromInstallment = async ({
 
       await generateEntryFromCheque({
         created_from_id: chq_id,
-        created_from: CREATED_FROM_CHQ_CODE,
+        created_from: CREATED_FROM_CHQ,
         created_from_code: +pattern?.code,
         values: item,
       });
@@ -665,16 +703,17 @@ export const generateEntryFromCheque = async ({
     currency_id,
     currency_val,
     cost_center_id,
-    due_date,
+    date,
     note: note1,
     observe_account_id,
     number,
+    internal_number
   } = values;
 
-  let note = `Generated Entry From chq number ${number} amount ${amount}`;
+  let note = `Generated Entry From cheque number ${number} amount ${amount}`;
 
   let entry = {
-    created_at: due_date,
+    created_at: date,
     currency_id: currency_id,
     currency_val: currency_val || 1,
     note,
@@ -684,6 +723,7 @@ export const generateEntryFromCheque = async ({
     created_from,
     created_from_id,
     created_from_code,
+    internal_number
   };
 
   // insert into Entry
@@ -730,19 +770,21 @@ export const generateEntryFromTermination = async ({
   created_from_id,
   created_from_code,
   contractFirstTabData,
+  contract
 }) => {
+  console.log('called generateEntryFromTermination', contract);
+
   let {
     gen_entries,
     owner_rest_amount,
     owner_total_amount,
-    revenue_account_id,
     revenue_note,
     termination_date,
   } = values;
 
   if (!gen_entries) return;
 
-  let { client_id, number, end_duration_date } = contractFirstTabData;
+  let { client_id, number, end_duration_date, revenue_account_id } = contractFirstTabData;
 
   const currencyResponse = await ApiActions.read("currency", {
     conditions: [
@@ -785,6 +827,106 @@ export const generateEntryFromTermination = async ({
 
   // insert into Entry
   const response = await insertIntoEntry(entry);
+
+  if (response?.id) {
+    const grid = [
+      {
+        account_id,
+        observe_account_id,
+        currency_id,
+        // cost_center_id,
+        debit: amount,
+        credit: 0,
+        note,
+      },
+
+      {
+        account_id: observe_account_id,
+        observe_account_id: account_id,
+        currency_id,
+        // cost_center_id,
+        debit: 0,
+        credit: amount,
+        note,
+      },
+    ];
+
+    await insertIntoGrid({
+      grid,
+      itemId: response?.id,
+      tableName: "entry_main_data",
+      gridTableName: "entry_grid_data",
+      itemSearchName: "entry_main_data_id",
+    });
+
+    return;
+  }
+};
+
+export const generateEntryFromTerminationFines = async ({
+  values,
+  created_from,
+  created_from_id,
+  created_from_code,
+  contractFirstTabData,
+  contract
+}) => {
+
+  let { client_id: account_id, number } = contractFirstTabData;
+
+  const currencyResponse = await ApiActions.read("currency", {
+    conditions: [
+      { type: "and", conditions: [["code", "=", DEFAULT_CURRENCY_CODE]] },
+    ],
+  });
+
+  let currency_id = currencyResponse?.result?.at(0)?.id;
+
+  let note = `Generated Entry From Contract number ${number} Termination Fines`;
+  let amount = 0
+  const grid = []
+  for (const value of values) {
+    amount += value?.fee_amount;
+    grid.push({
+      account_id,
+      observe_account_id: value?.account_id,
+      currency_id,
+      cost_center_id: contractFirstTabData?.cost_center_id,
+      debit: value?.fee_amount,
+      credit: 0,
+      note: value?.notes,
+    });
+
+    grid.push({
+      account_id: value?.account_id,
+      observe_account_id: account_id,
+      currency_id,
+      cost_center_id: contractFirstTabData?.cost_center_id,
+      debit: 0,
+      credit: value?.fee_amount,
+      note: value?.notes,
+    },)
+  }
+
+
+  let entry = {
+    created_at: new Date(),
+    currency_id: currency_id,
+    currency_val: 1,
+    note,
+    debit: amount,
+    credit: amount,
+    difference: 0,
+    created_from,
+    created_from_id,
+    created_from_code,
+  };
+
+  let observe_account_id = null;
+  if (!account_id) return;
+
+  // insert into Entry
+  const response = await insertIntoEntry(entry, { type: 'and', conditions: [['created_from_code', '=', created_from_code]] });
 
   if (response?.id) {
     const grid = [

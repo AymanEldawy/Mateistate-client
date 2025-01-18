@@ -33,7 +33,7 @@ const Textarea = ({
                 <label
                   title={label}
                   className={
-                    "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize " +
+                    "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap capitalize " +
                     labelClassName
                   }
                 >
@@ -46,7 +46,7 @@ const Textarea = ({
               <textarea
                 readOnly={field?.readOnly}
                 // {...field}
-                className={`border bg-gray-50 read-only:bg-[#006d5f1f] dark:read-only:bg-[#444] rounded p-1 ${
+                className={`border bg-gray-50 read-only:bg-[#2289fb1c] dark:read-only:bg-[#444] rounded p-1 ${
                   error ? "border-red-200 text-red-500" : ""
                 } ${textareaClassName}`}
                 type={field?.type}

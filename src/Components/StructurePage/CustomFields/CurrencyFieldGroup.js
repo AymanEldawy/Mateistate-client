@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { usePopupForm } from "Hooks/usePopupForm";
 import { PlusIcon } from "Components/Icons";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { DEFAULT_CURRENCY_CODE } from "Helpers/GENERATE_STARTING_DATA";
 import { ErrorText } from "Components/Global/ErrorText";
+import useGlobalOptions from "Hooks/useGlobalOptions";
 
 const CurrencyFieldGroup = ({
   tab,
@@ -15,6 +16,7 @@ const CurrencyFieldGroup = ({
   labelClassName,
   selectClassName,
   old,
+  readOnly,
   ...field
 }) => {
   const { t } = useTranslation();
@@ -26,36 +28,32 @@ const CurrencyFieldGroup = ({
     register,
     formState: { errors },
   } = useFormContext();
-  const [list, setList] = useState([]);
   const error = tab ? errors?.[tab]?.[field?.name] : errors?.[field?.name];
-
+  const { currencies } = useGlobalOptions();
+  const [currency, setCurrency] = useState(null);
+  console.log("🚀 ~ currencies:", currencies)
   const currency_id = tab ? `${tab}.currency_id` : "currency_id";
   const currency_val = tab ? `${tab}.currency_val` : "currency_val";
 
   useEffect(() => {
-    setList(
-      defaultList?.map((item) => ({
-        value: item?.id,
-        label: item?.code,
-      }))
-    );
-
-    if (defaultList?.length && !watch(currency_id)) {
-      let val = defaultList?.find((c) => c?.code === DEFAULT_CURRENCY_CODE)?.id;
-      setValue(currency_id, val);
-      if (!field?.hideValue) {
-        setValue(currency_val, 1);
-      }
+    if (!watch(currency_id)) {
+      setCurrency(currencies?.find(c => c?.code === DEFAULT_CURRENCY_CODE))
     }
-  }, [defaultList?.length, watch(currency_id)]);
+  }, [currencies])
+
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <>
-      <div className={`flex-row flex rounded-md ${containerClassName}`}>
+      <div className={`flex-row flex rounded-md text-sm ${containerClassName}`}>
         <label
           title="connect with id"
           className={
-            "w-[100px] lg:w-[128px] shrink-0 font-medium text-gray-600 overflow-hidden text-ellipsis text-xs whitespace max-h-[32px] mb-1 capitalize flex items-center gap-2 " +
+            "w-[100px] lg:w-[125px] shrink-0 font-medium text-gray-600 overflow-hidden text-ellipsis text-xs whitespace max-h-[32px] capitalize flex items-center gap-2 " +
             labelClassName
           }
         >
@@ -79,25 +77,29 @@ const CurrencyFieldGroup = ({
                   styles={{
                     menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                   }}
-                  options={list}
+                  options={currencies}
+                  readOnly={readOnly}
                   name={currency_id}
-                  className={`border rounded-md w-full bg-none bg-transparent field-select-container ${selectClassName}`}
+                  className={`border min-h-[30px] read-only:bg-[#2289fb1c] dark:read-only:bg-[#444] h-[30px] rounded-md w-full bg-none bg-transparent field-select-container ${selectClassName}`}
                   classNames={{
                     indicatorsContainer: () => "!hidden bg-black",
-                    control: (state) => "bg-transparent !border-none",
+                    control: (state) => "bg-transparent !border-none !min-h-[30px] !h-[30px]",
                     container: (state) =>
-                      `!bg-none ${
-                        old ? "bg-white dark:bg-[#2C2C2C]" : "!bg-transparent"
-                      } !border-none`,
+                      `!bg-none  !bg-transparent !border-none`,
                     singleValue: () => "dark:text-gray-200 unique-valid",
                     menuList: () => "dark:bg-dark-bg",
+                    input: () => "dark:text-gray-200 !h-[30px] !py-0 !-mt-[2px]",
                   }}
-                  value={list?.find((c) => c?.value === watch(currency_id))}
-                  defaultValue={list?.find(
-                    (c) => c?.value === watch(currency_id)
-                  )}
+
+                  getOptionLabel={(option) => option?.code}
+                  getOptionValue={(option) => option?.id}
+                  value={currency}
+                  defaultValue={currency}
                   // onChange={onChange}
-                  onChange={(option) => onChange(option?.value)}
+                  onChange={(option) => {
+                    onChange(option?.value)
+                    setCurrency(option)
+                  }}
                 />
               );
             }}
@@ -105,30 +107,15 @@ const CurrencyFieldGroup = ({
 
           {field?.hideValue ? null : (
             <input
-              // name={currency_val}
-              // value={watch(currency_val)}
-              defaultValue={1}
-              // className="right-2 w-[20px] rtl:left-2 rtl:right-auto mx-2 rounded-full disabled:hover:bg-transparent disabled:text-gray-500 text-blue-500 hover:text-white hover:bg-blue-400"
 
-              className={`border h-[39px] absolute ltr:right-0 font-medium bg-gray-100 max-w-[50px] w-full read-only:bg-[#006d5f1f] flex items-center gap-2 dark:read-only:bg-[#444] rounded-sm px-4`}
+              value={currency?.rate}
+              className={`border min-h-[30px] h-[30px] absolute ltr:right-0 font-medium bg-gray-100 max-w-[50px] w-full read-only:bg-[#2289fb1c] flex items-center gap-2 dark:read-only:bg-[#444] rounded-sm px-4`}
               type="number"
               {...register(currency_val, {
                 valueAsNumber: true,
               })}
             />
           )}
-          {/* <button
-              type="button"
-              className="right-2 rtl:left-2 rtl:right-auto mx-2 rounded-full disabled:hover:bg-transparent disabled:text-gray-500 text-blue-500 hover:text-white hover:bg-blue-400"
-              onClick={() => {
-                dispatchForm({
-                  open: true,
-                  table: "currency",
-                });
-              }}
-            >
-              <PlusIcon circle />
-            </button> */}
         </div>
         {error ? (
           <ErrorText containerClassName="py-1">{error?.message}</ErrorText>

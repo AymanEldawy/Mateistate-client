@@ -25,7 +25,7 @@ const Radio = ({
         <p
           title={label}
           className={
-            "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize " +
+            "overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap capitalize " +
             labelClassName
           }
         >

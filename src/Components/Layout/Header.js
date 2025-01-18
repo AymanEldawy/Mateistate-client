@@ -8,7 +8,7 @@ function Header({ setOpen, mode, setMode }) {
   
   return (
     // <div className="bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 ">
-    <header className="bg-dark-green text-white py-2">
+    <header className="bg-primary text-white py-2">
       <div className="container  flex py-2">
         <div className="flex items-center gap-4">
           <Link className="" to="/">

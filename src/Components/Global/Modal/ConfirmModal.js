@@ -22,7 +22,7 @@ const ConfirmModal = ({ open, setOpen, outerClose, onConfirm, type, msg }) => {
 
   return (
     <>
-      {isLoading ? <Loading /> : null}
+      {isLoading ? <p>Loading...</p> : null}
       <Modal open={open} onClose={onClose} containerClassName="z-[103]">
         <h3 className="text-red-500 text-lg mb-2 font-semibold">
           {type ? type : t("warning")}

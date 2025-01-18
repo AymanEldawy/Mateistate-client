@@ -10,6 +10,8 @@ import { DynamicForm } from "Components/StructurePage/Forms/CustomForm/DynamicFo
 import { ApiActions } from "Helpers/Lib/api";
 import MaterialTreeViewItem from "./MaterialTreeViewItem";
 import useContextMenu from "Hooks/useContextMenu";
+import FormSingular from "Components/StructurePage/Forms/CustomForm/FormSingular";
+import MaterialForm from "Components/StructurePage/Forms/MaterialForm/MaterialForm";
 
 const MaterialRenderTree = ({
   chartTree,
@@ -22,9 +24,11 @@ const MaterialRenderTree = ({
 }) => {
   const { handleContextMenu, activeItemId, contextMenuPosition } = useContextMenu();
   const [selectedItem, setSelectedItem] = useState(null);
+  const [stage, setStage] = useState('STORE');
   const [open, setOpen] = useState({});
 
-  const onSelectItemHandler = async (item) => {
+  const onSelectItemHandler = async (item, stage) => {
+    setStage(stage);
     const response = await ApiActions.read(name, {
       conditions: [{ type: "and", conditions: [["parent_id", "=", item?.id]] }],
       limit: 1,
@@ -68,6 +72,7 @@ const MaterialRenderTree = ({
   const displayTree = useCallback(
     (tree, level = 1, isMaterial) => {
       return tree?.map((item) => {
+
         return (
           <li className="space-x-3 w-fit mt-2 mb-2 last:mb-0" key={item?.id}>
             <MaterialTreeViewItem
@@ -78,7 +83,7 @@ const MaterialRenderTree = ({
                 if (item?.children?.length || item?.materials?.length)
                   toggleOpen(item?.id, level);
               }}
-              onSelectedItem={() => onSelectItemHandler(item)}
+              onSelectedItem={onSelectItemHandler}
               open={open}
               refetch={refetch}
               handleContextMenu={handleContextMenu}
@@ -143,6 +148,7 @@ const MaterialRenderTree = ({
 
   return (
     <>
+
       <Modal
         outerClose
         open={!!selectedItem}
@@ -152,15 +158,17 @@ const MaterialRenderTree = ({
         boxClassName={"!shadow-none !p-0"}
         layoutBodyClassName={"!my-0"}
       >
-        <DynamicForm
-          popupView
-          oldValues={selectedItem}
-          onSubmit={submit}
-          name={name}
-          onClose={() => setSelectedItem(null)}
-          refetchData={refetchData}
-          normalForm
-        />
+        {stage === 'Class' ? (
+          <FormSingular
+            name={"material_group"}
+            oldValues={selectedItem}
+            onClose={() => setSelectedItem(null)}
+          />
+        ) : (
+          <MaterialForm
+            onClose={() => setSelectedItem(null)}
+          />
+        )}
       </Modal>
       <ul
         className={`relative pr-4 ltr:!ml-4 rtl:!mr-4 rounded-md dark:before:border-dark-border ltr:before:border-l-2 rtl:before:border-r-2  before:absolute ltr:before:left-0 rtl:before:right-0 before:-z-1 before:h-full color-level-0 after:opacity-50 after:w-4 after:h-full after:absolute after:top-0`}

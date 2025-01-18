@@ -20,7 +20,6 @@ const CostCenterGeneralLedgerReport = () => {
   const name = "cost_center_general_ledger_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
-  const { CACHE_LIST } = useRefTable(name);
   const [selectedColumns, setSelectedColumns] = useState({});
   const [data, setData] = useState([]);
   const [openReportResults, setOpenReportResults] = useState(false);
@@ -56,7 +55,6 @@ const CostCenterGeneralLedgerReport = () => {
                 <ReportFilterFields title={"Fields"}>
                   <ReportFields
                     fields={fields}
-                    CACHE_LIST={CACHE_LIST}
                     sharedLabelClassName="w-[260px]"
                   />
                 </ReportFilterFields>

@@ -14,7 +14,6 @@ import { ViewEntry } from "Components/Global/ViewEntry";
 export const ReservationPropertyFields = ({
   errors,
   selectedProperty,
-  CACHE_LIST = {},
   fields = [],
 }) => {
   const { watch } = useFormContext();
@@ -36,8 +35,6 @@ export const ReservationPropertyFields = ({
           return (
             <UniqueField
               {...fieldsHash?.[field]}
-              CACHE_LIST={CACHE_LIST}
-              list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
             />
           );
         })} */}
@@ -45,15 +42,11 @@ export const ReservationPropertyFields = ({
           {...{
             ...fieldsHash?.account_id,
           }}
-          CACHE_LIST={CACHE_LIST?.account}
-          list={CACHE_LIST?.account}
         />
         <UniqueField
           {...{
             ...fieldsHash?.building_id,
           }}
-          CACHE_LIST={CACHE_LIST}
-          list={CACHE_LIST.building}
         />
         <Select
           {...fieldsHash?.property_type}
@@ -63,7 +56,6 @@ export const ReservationPropertyFields = ({
             ...fieldsHash?.property_id,
             ref_name: selectedProperty?.name,
           }}
-          CACHE_LIST={CACHE_LIST}
           list={selectedProperty?.list}
         />
         {["created_at", "book_date", "end_book_date"]?.map((field) => (
@@ -99,7 +91,6 @@ export const ReservationPropertyFields = ({
 
             <CurrencyFieldGroup
               {...fieldsHash?.currency_id}
-              list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
             />
             {[
               "debit_account_id",
@@ -113,8 +104,6 @@ export const ReservationPropertyFields = ({
                 <UniqueField
                   key={field}
                   {...fieldsHash?.[field]}
-                  CACHE_LIST={CACHE_LIST}
-                  list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
                 />
               );
             })}

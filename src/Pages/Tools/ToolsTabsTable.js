@@ -77,28 +77,33 @@ export const ToolsTabsTable = ({
           >
             <tr>
               {canInsertColor ? (
-                <th classes="px-4 py-2 border border-gray-400 min-w-[20px]"></th>
+                <th className="px-4 py-2 border border-gray-400 min-w-[20px]"></th>
               ) : null}
               {Array(selectedTab?.y ? yCount : xCount)
                 .fill(0)
                 .map((row, indexY) => (
                   <th
                     key={`${row}-${indexY}`}
-                    classes="border px-4 py-2 border-gray-400 min-w-[90px] !py-2 text-sm !px-2"
+                    className="border border-gray-400 min-w-[90px] !py-2 text-sm !px-2 "
                   >
-                    <div className="flex gap-1 justify-between items-center">
+                    <div className="flex gap-1 items-center">
                       {canInsertColor && selectedTab?.y !== "" ? (
-                        <Checkbox
-                          name={tabName}
-                          inputClassName="mr-2 !ml-0 bg-gray-500 w-9"
-                          onChange={(e) => {
-                            onSelectAllVertical(e, indexY, xCount);
-                            // onSelectAllVertical(e, indexY, yCount, tabName);
-                            // onSelectAllVertical(e, xCount, yCount, tabName);
-                          }}
-                        />
+                        <label className="flex items-center gap-4 justify-between">
+                          <input
+                            type="checkbox"
+                            name={tabName}
+                            className={
+                              "w-4 h-4 text-teal-600 disabled:opacity-50 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-gray-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 "
+                            }
+                            onChange={(e) => {
+                              onSelectAllVertical(e, indexY, xCount);
+                              // onSelectAllVertical(e, indexY, yCount, tabName);
+                              // onSelectAllVertical(e, xCount, yCount, tabName);
+                            }}
+                          />
+                          {getAlphabetSortingView(indexY + 1)}
+                        </label>
                       ) : null}
-                      {getAlphabetSortingView(indexY + 1)}
                     </div>
                   </th>
                 ))}
@@ -112,7 +117,7 @@ export const ToolsTabsTable = ({
                   <tr key={`${r}-${indexX}`}>
                     {canInsertColor ? (
                       <td
-                        className={`px-4 py-2 dark:border-dark-border !p-0 !px-2  border border-gray-400 darkL`}
+                        className={`py-2 dark:border-dark-border !p-0 !px-2  border border-gray-400 darkL`}
                       >
                         <Checkbox
                           name={tabName}
@@ -147,7 +152,7 @@ export const ToolsTabsTable = ({
               <tr>
                 {canInsertColor ? (
                   <td
-                    className={`px-4 py-2 dark:border-dark-border !p-0 !px-2  border border-gray-400 darkL`}
+                    className={`py-2 dark:border-dark-border !p-0 !px-2  border border-gray-400 darkL`}
                   >
                     <Checkbox
                       name={tabName}

@@ -1,15 +1,16 @@
 import BlockLayout from "Components/Global/BlockLayout";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "Hooks/useLocalStorage";
 import CustomTable from "./CustomTable";
 import useCurd from "Hooks/useCurd";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import getTableColumns from "Helpers/columns-structure";
 import Modal from "Components/Global/Modal/Modal";
 import { ListHeader } from "./ListHeader";
 import { PopupLinks } from "Components/Global/Modal/PopupLinks";
+import useCustomMutation from './../../Hooks/useMeutation';
 
 const LayoutWrapper = ({
   onClickDelete,
@@ -17,28 +18,34 @@ const LayoutWrapper = ({
   onClickPrint,
   FormRender,
   name: defaultName,
-  addtionalActions,
+  additionalActions,
   onClickAdd,
 }) => {
+  const navigate = useNavigate();
   const params = useParams();
   const name = defaultName || params?.name;
-  const { t } = useTranslation();
-  const navigate = useNavigate();
+  const number = params?.number
+  const code = params?.code
   const { getTable, setTable } = useLocalStorage({});
-  const { get } = useCurd();
+  const { get, getDataWithFilter } = useCurd();
   const [columnFilters, setColumnFilters] = useState([]);
-  const [openForm, setOpenForm] = useState(false);
+  console.log("🚀 ~ columnFilters:", columnFilters)
+  const [openForm, setOpenForm] = useState(!!number);
   const [rowSelection, setRowSelection] = useState([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 50,
   });
 
+  useEffect(() => {
+    if ((number || code) && !openForm) setOpenForm(true);
+  }, [number, code]);
+
   const { isError, error, isLoading, isFetching, data } = useQuery({
     queryKey: [
       "list",
-      columnFilters,
       name,
+      columnFilters,
       pagination?.pageIndex,
       pagination?.pageSize,
     ],
@@ -47,7 +54,7 @@ const LayoutWrapper = ({
       if (fn) {
         return await fn(columnFilters);
       }
-      const response = await get(name);
+      const response = await getDataWithFilter(name, columnFilters);
       return await response?.result;
     },
   });
@@ -58,13 +65,20 @@ const LayoutWrapper = ({
     else return getTableColumns(name);
   }, [name]);
 
+  console.log();
+
   return (
     <>
- 
+
       <Modal open={openForm} bodyClassName="!p-0 !overflow-hidden">
         <FormRender
-          onClose={() => setOpenForm(false)}
+          onClose={() => {
+            setOpenForm(false);
+            navigate(`/${name}`)
+          }}
           setOpenForm={setOpenForm}
+          number={number}
+          code={code}
         />
       </Modal>
       <BlockLayout
@@ -80,7 +94,7 @@ const LayoutWrapper = ({
               onClickDelete={onClickDelete}
               onClickView={onClickView}
               onClickPrint={onClickPrint}
-              addtionalActions={addtionalActions}
+              additionalActions={additionalActions}
             />
             {Object.keys(rowSelection)?.length ? (
               <span className="text-light-green font-medium text-lg capitalize">

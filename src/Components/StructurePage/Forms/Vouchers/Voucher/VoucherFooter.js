@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Switch, UploadFile } from "../../../CustomFields";
+import { CheckboxField, Input, Switch, UploadFile } from "../../../CustomFields";
 import { useTranslation } from "react-i18next";
 
 export const VoucherFooter = ({
@@ -76,7 +76,7 @@ export const VoucherFooter = ({
           />
         )}
         {PATTERN_SETTINGS?.gen_entires ? (
-          <Switch
+          <CheckboxField
             {...fields?.gen_entires}
             containerClassName="!flex-row gap-2"
             defaultChecked={values?.gen_entires}

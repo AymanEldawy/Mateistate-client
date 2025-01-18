@@ -44,7 +44,7 @@ const ToolsColColor = ({
   const itemColor = watch("grid")?.[itemData?.row_index]?.hex || itemData?.hex;
 
   return (
-    <td classes="px-4 py-2 dark:border-dark-border !p-0 border border-gray-400">
+    <td className="px-4 py-2 dark:border-dark-border !p-0 border border-gray-400">
       {isUpdatable === itemHash ? (
         <div className="px-1">
           <input

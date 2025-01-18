@@ -182,8 +182,8 @@ const Index = () => {
 
       <Route path="/bill/:code/:id" element={<BillForm />} />
       <Route path="/bill/:code" element={<BillForm />} />
-      <Route path="/cheques/:code/:name/:id" element={<ChequeForm />} />
-      <Route path="/cheques/:code/:name/" element={<ChequeForm />} />
+      <Route path="/cheque/:code/:name/:id" element={<ChequeForm />} />
+      <Route path="/cheque/:code/:name/" element={<ChequeForm />} />
       <Route path="/list/:name/" element={<List />} />
       <Route
         path="/patterns/list/:name"

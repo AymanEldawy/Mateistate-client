@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { EditIcon, PlusIcon, TrashIcon } from "Components/Icons";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import { useTranslation } from "react-i18next";
 import useCurd from "Hooks/useCurd";
-import useContextMenu from "Hooks/useContextMenu";
-import { ContextMenuComponent } from "Components/Global/ContextMenuComponent";
+import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu";
+import { EditIcon, PlusIcon, TrashIcon } from "Components/Icons";
 
 const MaterialTreeViewItem = ({
   row,
@@ -33,62 +32,67 @@ const MaterialTreeViewItem = ({
     }
   };
 
+  const title = isMaterial ? 'Material' : 'Class'
+
   return (
     <>
       <ConfirmModal onConfirm={onDeleteItem} open={open} setOpen={setOpen} />
-      <div
-        onClick={toggleOpen}
-        className="flex capitalize cursor-pointer relative"
-        onContextMenu={(e) => {
-          handleContextMenu(row?.id, e);
-        }}
-      >
-        {activeItemId === row?.id ? (
-          <ContextMenuComponent
-            contextMenuPosition={contextMenuPosition}
-            items={[
-              {
-                icon: <PlusIcon circle />,
-                name: "Add class",
-                onClick: (e) => {
-                  e.stopPropagation();
-                  onSelectedItem();
-                },
-              },
-              {
-                icon: <TrashIcon />,
-                name: "delete class",
-                onClick: () => setOpen(true),
-              },
-              {
-                icon: <PlusIcon circle />,
-                name: "Add material 1",
-                onClick: (e) => {
-                  e.stopPropagation();
-                  onSelectedItem();
-                },
-              },
-              {
-                icon: <EditIcon />,
-                name: "edit class",
-                onClick: () => {
-                  navigate(`/form/${table}/${row?.id}`);
-                },
-              },
-            ]}
-          />
-        ) : null}
-        <div className="group options flex ltr:pl-8 rtl:pr-8 min-w-[190px] hover:text-black dark:hover:text-white dark:hover:bg-dark-bg dark:hover:border-dark-border hover:bg-gray-100 border-transparent rounded border hover:border-gray-300">
-          <button className="scale-75">{icon}</button>
-          <span
-            className={`mx-2 ${
-              row?.type && row?.type !== 1 ? "text-blue-500" : ""
-            }`}
-          >{`${row?.code}-${row?.name}`}</span>
+      <ContextMenu id={row?.id} className="bg-gray-50 border border-gray-200 rounded-md p-2 text-sm shadow flex flex-col gap-1">
+        <MenuItem
+          className={`flex hover:text-blue-500 gap-2 items-center cursor-pointer whitespace-nowrap hover:bg-blue-50 text-sm p-1 text-gray-600`}
+          onClick={() => onSelectedItem(row, title)}
+        >
+          <PlusIcon className="h-[17px] w-[17px]" circle /> Add {title}
+        </MenuItem>
+        <MenuItem
+          className={`flex hover:text-blue-500 gap-2 items-center cursor-pointer whitespace-nowrap hover:bg-blue-50 text-sm p-1 text-gray-600`}
+          onClick={() => onSelectedItem(row, title)}
+        >
+          <EditIcon className="h-[17px] w-[17px]" /> Edit {title}
+        </MenuItem>
+        <MenuItem
+          className={`flex text-red-500 gap-2 items-center cursor-pointer whitespace-nowrap hover:bg-red-50 text-sm p-1`}
+          onClick={() => setOpen(true)}
+        >
+          <TrashIcon className="h-[17px] w-[17px]" /> Delete {title}
+        </MenuItem>
+        {!isMaterial && (
+          <>
+            <MenuItem
+              className="border h-[1px] border-gray-100"
+              divider />
+            <MenuItem
+              className={`flex hover:text-blue-500 gap-2 items-center cursor-pointer whitespace-nowrap hover:bg-blue-50 text-sm p-1 text-gray-600`}
+              onClick={() => onSelectedItem(row, 'Material')}
+            >
+              <PlusIcon className="h-[17px] w-[17px]" circle />
+              Add Material
+            </MenuItem>
 
-          <span className="ltr:ml-8 rtl:mr-8" />
-        </div>
+          </>
+        )}
+      </ContextMenu>
+
+      <div className=""
+        onClick={toggleOpen}
+      >
+        <ContextMenuTrigger
+          id={row?.id}
+          className="flex capitalize cursor-pointer relative"
+        >
+
+          <div className="group options flex ltr:pl-8 rtl:pr-8 min-w-[190px] hover:text-black dark:hover:text-white dark:hover:bg-dark-bg dark:hover:border-dark-border hover:bg-gray-100 border-transparent rounded border hover:border-gray-300">
+            <span className="scale-75">{icon}</span>
+            <span
+              className={`mx-2 ${row?.type && row?.type !== 1 ? "text-blue-500" : ""
+                }`}
+            >{`${row?.code}-${row?.name}`}</span>
+
+            <span className="ltr:ml-8 rtl:mr-8" />
+          </div>
+        </ContextMenuTrigger>
       </div>
+
     </>
   );
 };

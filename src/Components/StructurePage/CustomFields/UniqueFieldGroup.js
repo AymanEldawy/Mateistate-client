@@ -24,7 +24,7 @@ const REF_TABLES = {
   [CONNECT_WITH_BILL_CODE]: CONNECT_WITH_BILL_NAME,
 };
 
-const UniqueFieldGroup = ({ tab, containerClassName }) => {
+const UniqueFieldGroup = ({ tab, containerClassName, onSelectContract }) => {
   const { t } = useTranslation();
   const { control, watch, setValue } = useFormContext();
   const [list, setList] = useState([]);
@@ -50,14 +50,7 @@ const UniqueFieldGroup = ({ tab, containerClassName }) => {
     async function fetchList(table) {
       const response = await ApiActions.read(table);
       if (response?.success) {
-        const list = response?.result?.map((item) => ({
-          value: item?.id,
-          label:
-            table === CONNECT_WITH_CONTRACT_NAME?.toLocaleLowerCase()
-              ? item?.number
-              : item?.name,
-        }));
-        setList(list);
+        setList(response?.result);
       }
     }
     setSelectedItemNumber(watch(selectName));
@@ -75,13 +68,13 @@ const UniqueFieldGroup = ({ tab, containerClassName }) => {
   const getViewUrl = async (connectWithId) => {
     const response = await getConnectWithUrl(watch(selectName), connectWithId);
   };
-
+  
   return (
     <>
-      <div className={`flex flex-row gap-2 items-center ${containerClassName}`}>
+      <div className={`flex flex-row gap-2 text-sm items-center ${containerClassName}`}>
         <label
           title="connect with"
-          className="w-[100px] lg:w-[120px] shrink-0 overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize "
+          className="w-[100px] lg:w-[120px] shrink-0 overflow-hidden text-ellipsis text-sm font-normal whitespace-nowrap capitalize "
         >
           connect with
         </label>
@@ -101,13 +94,16 @@ const UniqueFieldGroup = ({ tab, containerClassName }) => {
                     styles={{
                       menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                     }}
-                    className={`border min-w-[130px] rounded-md bg-none bg-transparent`}
+                    className={`border min-w-[130px] rounded-md bg-none bg-transparent  !min-h-[30px] !h-[30px]`}
                     classNames={{
-                      control: (state) => "bg-transparent !border-none",
+                      indicatorsContainer: () => "h-[30px]",
+                      control: (state) => "bg-transparent !border-none  !min-h-[30px] !h-[30px]",
                       container: (state) =>
                         "!bg-none !bg-transparent dark:!border-dark-border",
-                      singleValue: () => "dark:text-gray-200 unique-valid",
-                      menuList: () => "dark:bg-dark-bg",
+                      singleValue: () => "dark:text-gray-200 unique-valid !-mt-[5px]",
+                      menuList: () => "dark:bg-dark-bg ",
+                      menu: () => "min-w-[190px]",
+                      input: () => "!h-[30px] !py-0 !-mt-[2px]",
                     }}
                     options={chooseList}
                     value={chooseList?.find(
@@ -128,12 +124,12 @@ const UniqueFieldGroup = ({ tab, containerClassName }) => {
 
           {selectedItemNumber > CONNECT_WITH_NOTHING_CODE ? (
             <div
-              className={`relative flex items-center border dark:border-dark-border rounded w-full`}
+              className={`relative flex items-center border dark:border-dark-border rounded w-[100px]`}
             >
               <Controller
                 name={selectNameId}
                 control={control}
-                defaultValue={null}
+                // defaultValue={null}
                 className="w-full"
                 render={({
                   field: { onChange, onBlur, ref, value },
@@ -150,31 +146,40 @@ const UniqueFieldGroup = ({ tab, containerClassName }) => {
                       }}
                       options={list}
                       name={selectNameId}
-                      className="w-full min-w-[130px] border-none"
+                      className="border-none !min-h-[30px] !h-[30px]"
                       classNames={{
-                        indicatorsContainer: () => "!hidden bg-black w-full",
-                        control: (state) => "bg-transparent !border-none",
+                        indicatorsContainer: () => "!hidden bg-black w-full h-[30px]",
+                        control: (state) => "bg-transparent !border-none  !min-h-[30px] !h-[30px]",
                         container: (state) =>
                           "!bg-none !bg-transparent !border-none w-full",
-                        singleValue: () => "dark:text-gray-200 unique-valid",
+                        singleValue: () => "dark:text-gray-200 unique-valid !-mt-[5px]",
                         menuList: () => "dark:bg-dark-bg",
+                        menu: () => "min-w-[100px]",
+                        input: () => "!h-[30px] !py-0 !-mt-[5px]",
                       }}
                       value={list?.find(
-                        (c) => c?.value === watch(selectNameId)
+                        (c) => c?.id === watch(selectNameId)
                       )}
-                      onChange={(option) => onChange(option?.value)}
+                      getOptionLabel={option => option?.number}
+                      getOptionValue={option => option?.id}
+                      onChange={(option) => {
+                        if (!!onSelectContract && watch(selectName) === CONNECT_WITH_CONTRACT_CODE) {
+                          onSelectContract(option)
+                        }
+                        onChange(option?.value)
+                      }}
                     />
                   );
                 }}
               />
 
-              <button
+              {/* <button
                 type="button"
                 disabled={selectedItemNumber <= 0}
                 className="rtl:right-auto mx-1 rounded-md p-1 disabled:hover:bg-transparent disabled:text-gray-500 text-blue-500 hover:text-white hover:bg-blue-400"
               >
                 <EyeIcon />
-              </button>
+              </button> */}
             </div>
           ) : null}
         </div>

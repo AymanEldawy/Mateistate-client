@@ -61,7 +61,7 @@ const number = (additional) => ({
   ...additional,
 });
 const created_at = (additional) => ({
-  label: "created_at",
+  label: "date",
   name: "created_at",
   type: "date",
   defaultValue: new Date(),

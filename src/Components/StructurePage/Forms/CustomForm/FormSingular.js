@@ -10,20 +10,23 @@ import { useParams } from "react-router-dom";
 import TableFields from "Components/TableComponents/TableFields";
 import getFormByTableName from "Helpers/Forms/forms";
 import useCurd from "Hooks/useCurd";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import FormLayout from "../FormWrapperLayout/FormLayout";
 import useFormPagination from "Hooks/useFormPagination";
 
 const FormSingular = ({ name, onClose, popupView, oldValues, number }) => {
   const params = useParams();
-  const id = params?.id;
   const { set, insert, getOneBy } = useCurd();
   const { setRecordResponse, appendNewRecord } = usePopupForm();
-  const formPagination = useFormPagination({ name, number: number || 1 });
+  const formPagination = useFormPagination({ name, number: number });
+  const id = formPagination?.id;
   const methods = useForm({
     defaultValues: {},
   });
-  const { fields, CACHE_LIST } = useRefTable(name);
+  const fields = useMemo(
+    () => getFormByTableName(name),
+    [name]
+  );
 
   const {
     reset,
@@ -106,7 +109,6 @@ const FormSingular = ({ name, onClose, popupView, oldValues, number }) => {
       <Fields
         values={watch()}
         errors={errors}
-        CACHE_LIST={CACHE_LIST}
         fields={fields}
         customGrid={
           name === "owner_expenses" ? "grid-cols-2 md:grid-cols-3" : ""
@@ -116,7 +118,6 @@ const FormSingular = ({ name, onClose, popupView, oldValues, number }) => {
         <TableFields
           increasable={false}
           rowsCount={1}
-          CACHE_LIST={CACHE_LIST}
           errors={errors}
           fields={getFormByTableName("owner_expenses_details")}
         />

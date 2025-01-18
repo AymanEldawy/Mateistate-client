@@ -23,6 +23,7 @@ const Vouchers = () => {
       <LayoutWrapper
         name={name}
         onClickAdd={() => setOpenLinks(true)}
+        code={params?.code}
         FormRender={(props) => {
           console.log(props, "props");
           if (params?.code) {

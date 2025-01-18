@@ -24,7 +24,6 @@ const LeasedPropertyActivityReport = () => {
   const name = "leased_property_activity_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
-  const { CACHE_LIST } = useRefTable(name);
   const [selectedColumns, setSelectedColumns] = useState({});
   const [selectedPropertyColumns, setSelectedPropertyColumns] = useState({});
   const [data, setData] = useState([]);
@@ -63,7 +62,6 @@ const LeasedPropertyActivityReport = () => {
                 <ReportFields
                   containerClassName="gap-3"
                   fields={fields}
-                  CACHE_LIST={CACHE_LIST}
                   sharedLabelClassName="w-[200px]"
                 />
               </ReportFilterFields>

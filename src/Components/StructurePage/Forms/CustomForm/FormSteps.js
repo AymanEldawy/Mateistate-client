@@ -23,7 +23,8 @@ const FormSteps = ({
   setRecordResponse,
   popupView,
   oldValues = null,
-  number
+  number,
+  code
 }) => {
   const params = useParams();
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const FormSteps = ({
   const methods = useForm({
     defaultValues: {},
   });
-  const formPagination = useFormPagination({ name, number: number || 1 });
+  const formPagination = useFormPagination({ name, number: number, code });
 
   const {
     goTo,
@@ -42,7 +43,6 @@ const FormSteps = ({
     formSettings,
     steps,
     fields,
-    CACHE_LIST,
     tabNames,
     setCurrentIndex,
   } = useFormSteps({ name });
@@ -129,7 +129,6 @@ const FormSteps = ({
                 tab={tab}
                 values={watch()?.[tab]}
                 fields={fields}
-                CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
               />
             </div>
           ) : (
@@ -138,7 +137,6 @@ const FormSteps = ({
               fields={fields}
               values={watch()?.[tab]}
               errors={errors}
-              CACHE_LIST={CACHE_LIST}
             />
           )}
         </>

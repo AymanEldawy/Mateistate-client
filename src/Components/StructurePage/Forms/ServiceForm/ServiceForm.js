@@ -147,7 +147,6 @@ const ServiceForm = ({ popupView }) => {
       {formSettings?.formType === "grid" ? (
         <TableFields
           fields={fields}
-          CACHE_LIST={CACHE_LIST}
           // increasable={false}
           tab={tab}
         />
@@ -157,7 +156,6 @@ const ServiceForm = ({ popupView }) => {
             tab={tab}
             fields={fields}
             values={+code === 3 ? watch() : watch(tab)}
-            CACHE_LIST={CACHE_LIST}
             customGrid={"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4"}
           />
         </>

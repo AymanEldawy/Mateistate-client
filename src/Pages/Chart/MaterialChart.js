@@ -58,7 +58,7 @@ const MaterialChart = () => {
           )}
         </>
       ) : (
-        <Loading withBackdrop />
+        <Loading />
       )}
     </BlockPaper>
   );

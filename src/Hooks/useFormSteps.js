@@ -20,6 +20,7 @@ const useFormSteps = ({ name }) => {
   const [fields, setFields] = useState([]);
   const [formSettings, setFormSettings] = useState({});
   const [CACHE_LIST, setCACHE_LIST] = useState({});
+  const [fieldsHash, setFieldsHash] = useState({});
 
   // Get data
   let formSchema = useMemo(() => {
@@ -63,9 +64,10 @@ const useFormSteps = ({ name }) => {
   const getRefTables = async () => {
     if (!fields?.length) return;
     let hash = {};
+    let fieldsHash = {};
     for (let i = 0; i < fields?.length; i++) {
       let field = fields?.[i];
-
+      fieldsHash[field?.name] = field;
       if (hash[field?.ref_table] || CACHE_LIST?.[field?.ref_table]) continue;
 
       if (field?.ref_table === "cost_center") {
@@ -118,6 +120,7 @@ const useFormSteps = ({ name }) => {
       ...prev,
       ...hash,
     }));
+    setFieldsHash(fieldsHash);
   };
 
   useEffect(() => {
@@ -146,6 +149,7 @@ const useFormSteps = ({ name }) => {
     forms,
     setCurrentIndex,
     setCACHE_LIST,
+    fieldsHash
   };
 };
 

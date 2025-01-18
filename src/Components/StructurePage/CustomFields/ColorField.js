@@ -52,7 +52,7 @@ const ColorField = ({
             title={label}
             htmlFor={updatedName || field?.name}
             className={
-              "w-[100px] lg:w-[130px] shrink-0 font-medium text-gray-600 overflow-hidden text-ellipsis text-xs whitespace max-h-[32px] mb-1 capitalize flex items-center gap-2 " +
+              "w-[100px] lg:w-[130px] shrink-0 font-medium text-gray-600 overflow-hidden text-ellipsis text-xs whitespace max-h-[32px] capitalize flex items-center gap-2 " +
               labelClassName
             }
           >
@@ -65,7 +65,7 @@ const ColorField = ({
         <button
           type="button"
           // className="relative border-2 border-gray-100 w-10 h-10 rounded-full overflow-hidden"
-          className={`border read-only:bg-[#006d5f1f] w-full h-8 dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${error ? "border-red-200 text-red-600" : ""
+          className={`border read-only:bg-[#2289fb1c] w-full h-8 dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${error ? "border-red-200 text-red-600" : ""
             } 
          `}
           style={{ backgroundColor: watch(updatedName || field?.name) }}

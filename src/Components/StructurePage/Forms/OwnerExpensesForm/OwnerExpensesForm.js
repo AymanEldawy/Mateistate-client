@@ -10,6 +10,7 @@ import getFormByTableName from "Helpers/Forms/forms";
 import { Fields } from "../CustomForm/Fields";
 import { insertIntoGrid } from "Helpers/Lib/vouchers-insert";
 import useCurd from "Hooks/useCurd";
+import { useMemo } from "react";
 
 const OwnerExpensesForm = () => {
   const name = "owner_expenses";
@@ -20,7 +21,6 @@ const OwnerExpensesForm = () => {
   const methods = useForm({
     defaultValues: {},
   });
-  const { fields, CACHE_LIST } = useRefTable(name);
 
   const {
     reset,
@@ -28,6 +28,11 @@ const OwnerExpensesForm = () => {
     errors,
     formState: { isDirty },
   } = methods;
+
+  const fields = useMemo(
+    () => getFormByTableName(name),
+    [name]
+  );
 
   const { isLoading } = useQuery({
     queryKey: [name, id],
@@ -103,7 +108,6 @@ const OwnerExpensesForm = () => {
         tab="owner_expenses"
         values={watch()}
         errors={errors}
-        CACHE_LIST={CACHE_LIST}
         fields={fields}
         customGrid={
           name === "owner_expenses" ? "grid-cols-2 md:grid-cols-3" : ""
@@ -113,7 +117,6 @@ const OwnerExpensesForm = () => {
         tab={"owner_expenses_details"}
         increasable={false}
         rowsCount={watch("owner_expenses_details")?.length}
-        CACHE_LIST={CACHE_LIST}
         errors={errors}
         fields={getFormByTableName("owner_expenses_details")}
       />

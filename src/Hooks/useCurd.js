@@ -1,12 +1,25 @@
 import { getOne } from "Helpers/functions";
 import { CURD } from "Helpers/Lib/api";
+import { UNIQUE_REF_TABLES } from 'Helpers/constants';
 
 const useCurd = () => {
   const curd = CURD();
 
   // get data
   const get = async (name, params) => {
-    return curd.read(name);
+    return curd.read(name, params);
+  };
+  // getDataWithFilter
+  const getDataWithFilter = async (name, filters) => {
+    let conditions = []
+    if (filters?.length) {
+      for (const filter of filters) {
+        conditions.push({ type: "and", conditions: [[filter?.id, "ilike", `%${filter?.value}%`]] })
+      }
+    }
+    return curd.read(name, {
+      conditions
+    });
   };
 
   // set data
@@ -39,26 +52,30 @@ const useCurd = () => {
 
   // getOneBy
   const getOneBy = async (name, value, column = "id", columns = ["*"]) => {
-    console.log(name, value, column);
-
     return curd.read(name, {
       conditions: [{ type: "and", conditions: [[column, "=", value]] }],
       columns,
     });
   };
 
-  const getNextOne = async (name, value, columns = ["*"]) => {
+  const getNextOne = async (name, value, columns = ["*"], code) => {
+    let condition = code ? {
+      type: "and", conditions: [["number", ">", value]]
+    } : {}
     const response = await curd.read(name, {
-      conditions: [{ type: "and", conditions: [["number", ">", value]] }],
+      conditions: [{ type: "and", conditions: [["number", ">", value]] }, condition],
       limit: 1,
       columns,
     });
     return response;
   };
 
-  const getPreviousOne = async (name, value, columns = ["*"]) => {
+  const getPreviousOne = async (name, value, columns = ["*"], code) => {
+    let condition = code ? {
+      type: "and", conditions: [["code", "=", code]]
+    } : {}
     const response = await curd.read(name, {
-      conditions: [{ type: "and", conditions: [["number", "<", value]] }],
+      conditions: [{ type: "and", conditions: [["number", "<", value]] }, condition],
       sorts: [{ column: "number", order: "DESC", nulls: "last" }],
       limit: 1,
       columns,
@@ -66,8 +83,12 @@ const useCurd = () => {
     return response;
   };
 
-  const getFirstOne = async (name, columns = ["*"]) => {
+  const getFirstOne = async (name, columns = ["*"], code) => {
+    let condition = code ? {
+      type: "and", conditions: [["code", "=", code]]
+    } : {}
     const response = await curd.read(name, {
+      conditions: [condition],
       limit: 1,
       sorts: [{ column: "number", order: "ASC", nulls: "last" }],
       columns,
@@ -75,8 +96,22 @@ const useCurd = () => {
     return response;
   };
 
-  const getLastOne = async (name, columns = ["*"]) => {
+  const getLastOne = async (name, columns = ["*"], code) => {
+    let condition = code ? {
+      type: "and", conditions: [["code", "=", code]]
+    } : {}
     const response = await curd.read(name, {
+      conditions: [condition],
+      limit: 1,
+      sorts: [{ column: "number", order: "DESC", nulls: "last" }],
+      columns,
+    });
+    return response;
+  };
+
+  const getLastOneBy = async (name, column = 'id', value, columns = ["*"]) => {
+    const response = await curd.read(name, {
+      conditions: [{ type: 'and', conditions: [[column, '=', value]] }],
       limit: 1,
       sorts: [{ column: "number", order: "DESC", nulls: "last" }],
       columns,
@@ -94,6 +129,35 @@ const useCurd = () => {
     });
   };
 
+  const getDynamicSearch = async (name, value, column = "name", user) => {
+    console.log("🚀 ~ getDynamicSearch ~ name:", name)
+    let table = name;
+    let additional = {}
+    switch (name) {
+      case UNIQUE_REF_TABLES.employee:
+      case UNIQUE_REF_TABLES.suppliers:
+      case UNIQUE_REF_TABLES.user_customer:
+      case UNIQUE_REF_TABLES.user_supplier:
+        table = 'user';
+        break;
+      case UNIQUE_REF_TABLES.clients:
+      case UNIQUE_REF_TABLES.supervisor:
+        table = 'account';
+        break;
+      default:
+        // Handle default case if needed
+        break;
+    }
+    console.log(name, value, column);
+
+    return curd.read(table, {
+      conditions: [
+        { type: "and", conditions: [[column, "ilike", `%${value}%`]] },
+        additional
+      ],
+    });
+  };
+
   return {
     get,
     set,
@@ -105,6 +169,9 @@ const useCurd = () => {
     getPreviousOne,
     getFirstOne,
     getLastOne,
+    getDataWithFilter,
+    getLastOneBy,
+    getDynamicSearch
   };
 };
 

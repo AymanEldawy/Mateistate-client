@@ -55,7 +55,7 @@ const PaymentsGridButton = ({
   );
 };
 
-export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
+const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const { watch, setValue } = useFormContext();
   const [openForm, setOpenForm] = useState(null);
@@ -157,7 +157,7 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
 
   const onClickAddNewCash = async () => {
     const number = await getVoucherLastNumber(VOUCHER_RECEIPTS_CODE);
-    const account_cash_id = await getAccountCash();
+    const account_cash_id = await getAccountCash(watch('contract.building_id'));
 
     let clientName = CACHE_LIST.account?.find(
       (c) => c?.id === watch("contract.client_id")
@@ -170,7 +170,7 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
 
     setOpenForm({
       open: true,
-      type: "VOUCEHR",
+      type: "VOUCHER",
       table: DESPATCH_TABLES_NAME.VOUCHER,
       voucherName: VOUCHER_RECEIPTS_NAME,
       voucherType: VOUCHER_RECEIPTS_CODE,
@@ -192,6 +192,7 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
       },
     });
   };
+console.log(openForm, 'op');
 
   return (
     <>
@@ -218,7 +219,7 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
             number={openForm?.oldValues?.number}
             onClose={() => setOpenForm(null)}
             voucherName={openForm?.voucherName}
-            voucherType={
+            code={
               openForm?.oldValues?.voucher_type || openForm?.voucherType
             }
             oldValues={openForm?.oldValues}
@@ -354,3 +355,6 @@ export const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
     </>
   );
 };
+
+
+export default ContractPayments

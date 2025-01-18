@@ -45,7 +45,7 @@ const TreeViewItem = ({
           <Link
             className="tooltip text-transparent group-hover:text-green-500"
             data-title={t("Edit")}
-            to={`/form/${table}/${row?.id}`}
+            to={`/${table}/${row?.id}`}
           >
             <span className="scale-75 block">
               <EditIcon />

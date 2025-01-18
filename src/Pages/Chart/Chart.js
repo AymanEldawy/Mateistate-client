@@ -81,7 +81,7 @@ const Chart = () => {
           )}
         </>
       ) : (
-        <Loading withBackdrop />
+        <Loading />
       )}
     </BlockPaper>
   );

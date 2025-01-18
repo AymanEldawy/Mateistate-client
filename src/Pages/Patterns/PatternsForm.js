@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import Loading from "Components/Global/Loading";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
 import FormLayout from "Components/StructurePage/Forms/FormWrapperLayout/FormLayout";
@@ -14,14 +15,27 @@ const CACHE_DATA = {};
 
 const PatternsForm = ({ layout, name, onClose }) => {
   const params = useParams();
+  const { getOneBy } = useCurd()
   const id = params?.id;
   const [isLoading, setIsLoading] = useState(false);
   const formPagination = useFormPagination({ name });
   const { insert, set } = useCurd();
-  const methods = useForm({
-    defaultValues: params?.id
-      ? async () => await GET_UPDATE_DATE(name, params?.id)
-      : {},
+
+  const methods = useForm();
+
+  useQuery({
+    queryKey: [
+      "list",
+      name,
+      formPagination?.currentId
+    ],
+    queryFn: async () => {
+      const response = await getOneBy(name, formPagination?.currentId);
+      // if (response?.status) {
+      reset(response?.result?.at(0))
+      // }
+      return await response?.result;
+    },
   });
 
   const {
@@ -30,7 +44,7 @@ const PatternsForm = ({ layout, name, onClose }) => {
     formState: { errors, isDirty },
     reset,
   } = methods;
-  const { currentIndex, goTo, steps, fields, CACHE_LIST } = useFormSteps({
+  const { currentIndex, goTo, steps, fields } = useFormSteps({
     name,
   });
 
@@ -82,7 +96,7 @@ const PatternsForm = ({ layout, name, onClose }) => {
       isLoading={isLoading}
 
     >
-      {isLoading && <Loading withBackdrop /> } {/* Add Spinner component */}
+      {isLoading && <Loading />} {/* Add Spinner component */}
       <div key={name}>
 
         <Fields
@@ -91,8 +105,8 @@ const PatternsForm = ({ layout, name, onClose }) => {
           // tab={tab}
           // values={watch()}
           errors={errors}
-          CACHE_LIST={CACHE_LIST}
           customGrid="grid grid-cols-2 gap-4"
+          labelClassName="!w-fit min-w-[120px] max-w-[170px]"
         />
 
       </div>

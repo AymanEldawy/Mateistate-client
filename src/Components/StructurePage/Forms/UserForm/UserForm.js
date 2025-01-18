@@ -21,6 +21,7 @@ import { insertIntoUserConnect } from "Helpers/Lib/vouchers-insert";
 import useCurd from "Hooks/useCurd";
 import FormLayout from "../FormWrapperLayout/FormLayout";
 import useFormPagination from "Hooks/useFormPagination";
+import useCustomMutation from "Hooks/useMeutation";
 
 async function getUserConnect(user_id, setIds, name, searchKey) {
   if (!user_id) return;
@@ -50,9 +51,9 @@ const UserForm = ({
   const params = useParams();
   const id = params?.id;
   const { getOneBy } = useCurd();
-  const { goTo, currentIndex, steps, fields, CACHE_LIST, setCurrentIndex } =
+  const { goTo, currentIndex, steps, fields, setCurrentIndex } =
     useFormSteps({ name });
-  const formPagination = useFormPagination({ name, number: number || 1 });
+  const formPagination = useFormPagination({ name, number: number });
 
   const { appendNewRecord } = usePopupForm();
   const methods = useForm();
@@ -67,7 +68,7 @@ const UserForm = ({
   const { isLoading } = useQuery({
     queryKey: [name, formPagination?.currentId],
     queryFn: async () => {
-      const res = await getOneBy(name, formPagination?.currentId, 'number');
+      const res = await getOneBy(name, formPagination?.currentId);
       let data = res?.result?.at(0);
       reset(data);
 
@@ -90,6 +91,8 @@ const UserForm = ({
       }
     },
   });
+
+
 
   useEffect(() => {
     if (layout !== "update" && oldValues) {
@@ -158,7 +161,7 @@ const UserForm = ({
         fields={fields}
         values={watch()}
         errors={errors}
-        CACHE_LIST={CACHE_LIST}
+        customGrid="grid md:grid-cols-3"
       />
 
       {watch("card_type") > 2 ? (

@@ -17,7 +17,6 @@ const OwnerExpensesReport = () => {
   const name = "owner_expenses_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
-  const { CACHE_LIST } = useRefTable(name, "");
   const [selectedColumns, setSelectedColumns] = useState({});
   const [openReportResults, setOpenReportResults] = useState(false);
   const [buildingsIds, setBuildingsIds] = useState({});
@@ -55,8 +54,6 @@ const OwnerExpensesReport = () => {
                     is_ref: true,
                     ref_table: "owner",
                   }}
-                  CACHE_LIST={CACHE_LIST}
-                  list={!!CACHE_LIST ? CACHE_LIST?.owner : []}
                   values={watch()}
                 />
                 <ReportFilterExpensesTypes

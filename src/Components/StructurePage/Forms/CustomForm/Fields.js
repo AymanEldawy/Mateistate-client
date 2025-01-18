@@ -20,22 +20,21 @@ export const Fields = ({
   fields,
   values,
   errors,
-  CACHE_LIST,
   tab,
   globalButtonsActions,
   containerClassName,
   customGrid,
   fieldsRow,
+  labelClassName
 }) => {
   const { watch } = useFormContext();
 
   return (
     <div
-      className={`grid ${
-        customGrid
+      className={`grid ${customGrid
           ? customGrid
           : "grid-cols-1 md:grid-cols-2"
-      } gap-[10px] gap-x-8 mb-8 w-full ${containerClassName}`}
+        } gap-[10px] gap-x-8 mb-8 w-full ${containerClassName}`}
     >
       {fields?.map((field, i) => {
         if (
@@ -50,6 +49,7 @@ export const Fields = ({
               {...field}
               key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
+              labelClassName={labelClassName}
               containerClassName="col-span-full"
               textareaClassName="min-h-[250px]"
             />
@@ -69,8 +69,6 @@ export const Fields = ({
               {...field}
               key={`${field?.name}-${i}`}
               tab={tab}
-              CACHE_LIST={CACHE_LIST}
-              list={!!CACHE_LIST ? CACHE_LIST[field?.ref_table] : []}
               errors={errors}
             />
           );
@@ -87,17 +85,15 @@ export const Fields = ({
             <UniqueField
               {...field}
               key={`${field?.name}-${i}`}
+              labelClassName={labelClassName}
               containerClassName={
                 fieldsRow ? "grid grid-cols-2 items-center gap-2" : ""
               }
-              labelClassName={fieldsRow ? "justify-end w-full flex" : ""}
               selectContainerClassName={
                 fieldsRow ? "!flex-1 w-full min-h-[20px]" : ""
               }
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               table={field?.ref_table}
-              CACHE_LIST={CACHE_LIST}
-              list={!!CACHE_LIST ? CACHE_LIST[field?.ref_table] : []}
             />
           );
         } else if (field?.key === "select") {
@@ -105,10 +101,10 @@ export const Fields = ({
             <Select
               {...field}
               key={`${field?.name}-${i}`}
+              labelClassName={labelClassName}
               containerClassName={
                 fieldsRow ? "grid grid-cols-2 items-center gap-2" : ""
               }
-              labelClassName={fieldsRow ? "justify-end w-full flex" : ""}
               selectClassName={fieldsRow ? "!flex-1 w-full h-[35px]" : ""}
               menuPortalTarget={document?.body}
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
@@ -122,6 +118,7 @@ export const Fields = ({
               {...field}
               key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
+              labelClassName={labelClassName}
               containerClassName="col-span-2"
               index={i}
               readonly={field?.readonly}
@@ -136,7 +133,7 @@ export const Fields = ({
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               labelClassName="flex flex-col-reverse !items-start"
             />
-            // <Switch
+            // <CheckboxField
             //   {...field}
             //   defaultChecked={values?.[field?.name]}
             //   key={`${field?.name}-${i}`}
@@ -173,11 +170,9 @@ export const Fields = ({
             <Input
               {...field}
               key={`${field?.name}-${i}`}
+              labelClassName={labelClassName}
               containerClassName={
                 fieldsRow ? "grid grid-cols-2 items-center gap-2" : ""
-              }
-              labelClassName={
-                fieldsRow ? "justify-end w-full flex !min-w-fit" : ""
               }
               inputClassName={fieldsRow ? "!flex-1 h-[30px]" : ""}
               updatedName={tab ? `${tab}.${field?.name}` : ""}

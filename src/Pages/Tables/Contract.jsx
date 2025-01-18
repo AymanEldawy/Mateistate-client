@@ -1,13 +1,14 @@
 import { PopupLinks } from "Components/Global/Modal/PopupLinks";
-import ContractForm from "Components/StructurePage/Forms/ContractForm/ContractForm";
+// import ContractForm from "Components/StructurePage/Forms/ContractForm/ContractForm";
 import LayoutWrapper from "Components/TableComponents/LayoutWrapper";
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import {
   Outlet,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
+const ContractForm = lazy(() => import("Components/StructurePage/Forms/ContractForm/ContractForm"))
 
 const Contract = () => {
   const name = "contract";
@@ -33,29 +34,34 @@ const Contract = () => {
       <LayoutWrapper
         name={name}
         onClickAdd={() => setOpenLinks(true)}
+        code={params?.code}
         FormRender={(props) => {
           if (code) {
             props.setOpenForm(true);
           } else return;
-          
+
           return (
-            <ContractForm
-              contractName={contractName}
-              number={params?.number}
-              name={name}
-              {...props}
-              onClose={() => {
-                navigate("/contracts/");
-                props.onClose();
-              }}
-            />
+            <Suspense>
+
+              <ContractForm
+                contractName={contractName}
+                number={params?.number}
+                name={name}
+                {...props}
+                onClose={() => {
+                  navigate("/contract/");
+                  props.onClose();
+                }}
+                code={params?.code}
+              />
+            </Suspense>
           );
         }}
-        // onClickDelete={}
-        // onClickAdd={}
-        // onClickPrint={}
-        // onClickView={}
-        // onSearch={}
+      // onClickDelete={}
+      // onClickAdd={}
+      // onClickPrint={}
+      // onClickView={}
+      // onSearch={}
       />
     </>
   );

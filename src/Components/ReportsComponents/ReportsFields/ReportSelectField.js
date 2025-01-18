@@ -46,7 +46,7 @@ const ReportSelectField = ({
           title={label}
           htmlFor={name}
           className={
-            "overflow-hidden text-ellipsis text-sm !min-w-fit font-normal whitespace-nowrap mb-1 capitalize " +
+            "overflow-hidden text-ellipsis text-sm !min-w-fit font-normal whitespace-nowrap capitalize " +
             labelClassName
           }
         >

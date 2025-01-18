@@ -21,10 +21,9 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
   const params = useParams();
   const { set, insert } = useCurd();
   const id = params?.id;
-  const { CACHE_LIST } = useRefTable("entry_grid_data");
   const methods = useForm();
   const [gridErrors, setGridErrors] = useState(null);
-  const formPagination = useFormPagination({name, number})
+  const formPagination = useFormPagination({ name, number })
 
   const {
     handleSubmit,
@@ -33,6 +32,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
     setValue,
     formState: { errors },
   } = methods;
+  console.log(formPagination, "---formPagination");
 
   const queryClientEntry = useQuery({
     queryKey: [name, formPagination?.currentId],
@@ -42,6 +42,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
         reset(res);
       }
     },
+    enabled: !!formPagination?.currentId,
   });
 
   useEffect(() => {
@@ -49,6 +50,12 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
       reset(oldValue);
     }
   }, [oldValue]);
+
+  useEffect(() => {
+    if (formPagination?.currentNumber > formPagination.lastNumber) {
+      setValue('number', formPagination?.currentNumber)
+    }
+  }, [formPagination?.currentNumber])
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
@@ -154,7 +161,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
         }
       }
     }
-  };
+  };  
 
   return (
     <FormLayout
@@ -166,13 +173,11 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
       onClose={onClose}
       tableName={name}
       formPagination={formPagination}
-      // hidePaginationBar={true}
+    // hidePaginationBar={true}
     >
       <div
         className={
-          `pb-10 ${
-
-            watch("is_deleted")
+          `pb-10 ${watch("is_deleted")
             ? "filter blur-sm grayscale pointer-events-none"
             : ""
           }`
@@ -181,16 +186,15 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
         <EntryHead
           fields={fields}
           errors={errors}
-          CACHE_LIST={CACHE_LIST}
           layout={"update"}
           values={watch()}
-          // number={number}
+          onlyView={onlyView || watch("created_from_id")}
+        // number={number}
         />
 
         <div
-          className={`min-h-[150px] mt-4 ${
-            gridErrors ? "border border-red-500" : ""
-          }`}
+          className={`min-h-[150px] mt-4 ${gridErrors ? "border border-red-500" : ""
+            }`}
         >
           {gridErrors ? (
             <ErrorText containerClassName="-mb-4 -mt-[1px] rounded-none">
@@ -203,18 +207,15 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
             tab="grid"
             errors={errors}
             withPortal
-            CACHE_LIST={CACHE_LIST}
             increasable={onlyView || watch("created_from") ? false : true}
             onlyView={onlyView || watch("created_from_id")}
-            rowsCount={10}
-            // rowsCount={!id && !onlyView ? 5 : watch("grid")?.length}
+            rowsCount={watch("created_from_id") ? watch("grid")?.length : 5}
           />
         </div>
 
         <EntryFooter
           fields={fields}
           errors={errors}
-          CACHE_LIST={CACHE_LIST}
           // number={number}
           // maxLength={maxLength}
           // goTo={goToNumber}

@@ -24,6 +24,7 @@ const FormLayout = ({
   setOpenConfirmation,
   formPagination,
   formClassName,
+  extraContentBar
 }) => {
   const refForm = useRef();
   const [height, setHeight] = useState(null);
@@ -32,16 +33,24 @@ const FormLayout = ({
     formState: { isSubmitting, isDirty, errors },
   } = methods;
 
+  useEffect(() => {
+    
+    if (formPagination?.currentNumber > formPagination?.lastNumber) {
+      console.log("reset");
+      refForm.current.reset()
+    }
+  },[formPagination?.currentNumber])
+
   return (
     <FormProvider {...methods}>
-      {isLoading || isSubmitting ? <Loading withBackdrop /> : null}
+      {isLoading || isSubmitting ? <Loading /> : null}
       <form
         onSubmit={handleSubmit(onSubmit)}
         noValidate
         ref={refForm}
         className={formClassName}
       >
-        {hideTitle ? null : <FormTitle onClose={onClose} name={name} />}
+        {hideTitle ? null : <FormTitle extraContentBar={extraContentBar} onClose={onClose} name={name} />}
 
         <div
           key={name + number}

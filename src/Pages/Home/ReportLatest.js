@@ -45,7 +45,7 @@ export const ReportLatest = ({
       </div>
       <div className={`${bodyClassName} flex-1 flex flex-col`}>
         {isLoading ? (
-          <Loading withBackdrop />
+          <Loading />
         ) : (
           <>
             {data?.result?.length ? (

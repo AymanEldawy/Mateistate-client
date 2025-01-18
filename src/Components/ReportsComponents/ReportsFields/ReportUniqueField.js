@@ -1,15 +1,12 @@
 import { useEffect } from "react";
-import { usePopupForm } from "Hooks/usePopupForm";
-import { PlusIcon, SearchIcon } from "Components/Icons";
+import { SearchIcon } from "Components/Icons";
 import { useState } from "react";
 import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
-  IGNORED_SHOW_NUMBER_TABLE,
-  UNIQUE_REF_TABLES,
+  IGNORED_SHOW_NUMBER_TABLE
 } from "Helpers/constants";
-import { DEFAULT_CURRENCY_CODE } from "Helpers/GENERATE_STARTING_DATA";
 import { ErrorText } from "Components/Global/ErrorText";
 
 const ReportUniqueField = ({
@@ -23,7 +20,6 @@ const ReportUniqueField = ({
   updatedName,
   hideLabel,
   selectContainerClassName,
-  CACHE_LIST,
   inputClassName,
   selectClassName,
   labelClassName,
@@ -57,7 +53,7 @@ const ReportUniqueField = ({
       {label && !hideLabel ? (
         <label
           title={label}
-          className={`overflow-hidden !min-w-fit whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize ${labelClassName}`}
+          className={`overflow-hidden !min-w-fit whitespace-nowrap text-ellipsis block text-sm font-normal capitalize ${labelClassName}`}
         >
           {t(label)?.replace(/_/g, " ")}
         </label>

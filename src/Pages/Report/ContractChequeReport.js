@@ -20,7 +20,6 @@ const ContractChequeReport = () => {
   const name = "contract_cheque_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
-  const { CACHE_LIST } = useRefTable(name);
   const [selectedColumns, setSelectedColumns] = useState({});
   const [buildingsIds, setBuildingsIds] = useState({});
   const [contractIds, setContractIds] = useState({});
@@ -53,7 +52,6 @@ const ContractChequeReport = () => {
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8 items-start">
               <ReportFilterFields title="Fields" containerClassName="">
                 <ReportFields
-                  CACHE_LIST={CACHE_LIST}
                   fields={fields}
                   sharedLabelClassName="w-[220px]"
                 />

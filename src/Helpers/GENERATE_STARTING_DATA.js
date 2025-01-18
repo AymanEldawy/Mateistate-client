@@ -58,14 +58,21 @@ export const BILL_CONNECT_WITH_MAINTENANCES_CODE = 1;
 export const BILL_CONNECT_WITH_MAINTENANCES_NAME = "Service";
 
 // Created From DEFAULT
-export const CREATED_FROM_CONTRACT_CODE = 1;
-export const CREATED_FROM_LAWSUIT_CODE = 2;
-export const CREATED_FROM_BILL_CODE = 3;
-export const CREATED_FROM_CHQ_CODE = 4;
-export const CREATED_FROM_VOUCHER_CODE = 5;
-export const CREATED_FROM_CHQ_OPERATION_CODE = 6;
-export const CREATED_FROM_CONTRACT_TERMINATION_CODE = 7;
-export const CREATED_FROM_CONTRACT_RESERVATION_CODE = 8;
+export const CREATED_FROM_CONTRACT = "CONTRACT";
+export const CREATED_FROM_BILL = "BILL";
+export const CREATED_FROM_CHQ = "CHQ";
+export const CREATED_FROM_VOUCHER = "VOUCHER";
+export const CREATED_FROM_CONTRACT_TERMINATION = "CONTRACT_TERMINATION";
+export const CREATED_FROM_CONTRACT_FINES = "CONTRACT_FINES";
+export const CREATED_FROM_CONTRACT_FEES = "CONTRACT_FEES";
+export const CREATED_FROM_CONTRACT_RESERVATION = "RESERVATION";
+export const CREATED_FROM_CONTRACT_LAWSUIT = "LAWSUIT";
+
+export const CREATED_FROM_CHQ_OPERATION = {
+  op_collection: 'OP_COLLECTION',
+  op_partial_collection: 'OP_PARTIAL_COLLECTION',
+  op_return: 'OP_RETURN',
+}
 
 // Currency DEFAULT
 export const DEFAULT_CURRENCY_NAME = "United Arab Emirates Dirham";
@@ -1044,7 +1051,7 @@ export async function insertIntoDefaultService() {
   for (let i = 0; i < 150; i++) {
     let service =
       default_service_update[
-        Math.floor(Math.random() * default_service_update?.length)
+      Math.floor(Math.random() * default_service_update?.length)
       ];
     await ApiActions.insert("default_service", {
       name: randomString(Math.floor(Math.random() * (30 - 10 + 1)) + 10),
@@ -1076,6 +1083,23 @@ export async function updateMaterialsPrice() {
   }
 }
 
+export async function updateNames() {
+
+  const accounts = await ApiActions.read('account');
+  console.log("🚀 ~ updateNames ~ accounts:", accounts)
+
+  for (const account of accounts?.result) {
+    const name = DEFAULT_ACCOUNTS?.find(c => c?.name === account?.name)?.ltnnanme
+    await ApiActions.update("account", {
+      conditions: [{ type: "and", conditions: [["id", "=", account.id]] }],
+      updates: {
+        name,
+        ltnname: account?.name
+      },
+    });
+  }
+}
+
 export async function updateMaterials() {
   let CATEGORIES = [];
 
@@ -1085,13 +1109,16 @@ export async function updateMaterials() {
   for (const item of ress?.result) {
     CATEGORIES?.push(item?.id);
   }
+  let i = 1
   for (const mat of matRes?.result) {
     await ApiActions.update("material", {
       conditions: [{ type: "and", conditions: [["id", "=", mat.id]] }],
       updates: {
         category_id: CATEGORIES[Math.floor(Math.random() * CATEGORIES?.length)],
+        name: 'Mat ' + i,
       },
     });
+    i++
   }
 }
 

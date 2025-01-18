@@ -16,7 +16,6 @@ import Btn from "Components/Global/Btn";
 
 const TableFields = ({
   fields,
-  CACHE_LIST,
   tab,
   deleteRowComponent,
   errors,
@@ -67,7 +66,7 @@ const TableFields = ({
 
   return (
     <>
-      <div className={`relative mt-4 overflow-x-auto ${containerClassName}`}>
+      <div className={`relative mt-4  max-h-[220px] overflow-x-auto ${containerClassName}`}>
         <table
           className={`border-collapse w-full text-xs text-left text-gray-500 dark:text-gray-400 border-[1px]  border-light-green rounded-md  ${tableClassName} ${
             tableError ? "!border-red-500" : ""
@@ -198,11 +197,6 @@ const TableFields = ({
                                   updatedName={`${tab}.${index}.${field?.name}`}
                                   table={field.ref_table}
                                   selectContainerClassName="border-none"
-                                  list={
-                                    !!CACHE_LIST
-                                      ? CACHE_LIST?.[field?.ref_table]
-                                      : []
-                                  }
                                   readOnly={onlyView || field?.readOnly}
                                 />
                               ) : (

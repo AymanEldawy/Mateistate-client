@@ -31,7 +31,7 @@ const UnregisterMaterials = ({ onClose }) => {
   return (
     <FormLayout hidePaginationBar title={"Unregister Materials"} onClose={onClose} methods={methods} name={"unregister materials"} formClassName="min-w-[90%] min-h-[350px]">
       {isLoading ? (
-        <Loading withBackdrop />
+        <Loading />
       ) : (
         <>
           {data?.length ? (

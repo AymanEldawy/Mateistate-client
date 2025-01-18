@@ -13,7 +13,6 @@ import { ReportFieldBetweenValues } from "./ReportFieldBetweenValues";
 export const ReportFields = ({
   fields,
   values,
-  CACHE_LIST,
   tab,
   containerClassName,
   sharedLabelClassName,
@@ -32,8 +31,6 @@ export const ReportFields = ({
               key={`${field?.name}-${i}`}
               updatedName={tab ? `${tab}.${field?.name}` : ""}
               table={field?.ref_table}
-              CACHE_LIST={CACHE_LIST}
-              list={!!CACHE_LIST ? CACHE_LIST[field?.ref_table] : []}
               values={values}
               labelClassName={sharedLabelClassName}
               containerClassName={sharedContainerClassName}

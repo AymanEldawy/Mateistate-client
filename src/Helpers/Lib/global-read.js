@@ -111,7 +111,7 @@ export const getAccountList = async () => {
 
 export const getBillLastNumber = async (code) => {
   const response = await ApiActions.read("bill", {
-    conditions: [{ type: "and", conditions: [["bill_kind", "=", +code]] }],
+    conditions: [{ type: "and", conditions: [["code", "=", +code]] }],
     limit: 1,
     sorts: [{ column: "number", order: "DESC", nulls: "last" }],
   });
@@ -150,6 +150,7 @@ export const getAccountCash = async (id) => {
   if (res?.success) return res?.result?.at(0)?.id;
 };
 
+
 export const getAccountReceivable = async (id) => {
   let res = null;
 
@@ -165,8 +166,7 @@ export const getAccountReceivable = async (id) => {
 
   res = await ApiActions.read("account", {
     conditions: [
-      { type: "or", conditions: [["name", "=", "Notes Receivables"]] },
-      { type: "or", conditions: [["number", "=", 122]] },
+      { type: "or", conditions: [["code", "=", 122]] },
     ],
   });
   if (res?.success) return res?.result?.at(0)?.id;
@@ -398,6 +398,68 @@ const owner_expenses = async (name) => {
   return res?.result;
 };
 
+export const getSearchContract = async (value, building_id) => {
+  const res = await ApiActions.read("contract", {
+    joins: [
+      {
+        type: "leftJoin",
+        table: "building",
+        conditions: {
+          "building.id": "contract.building_id",
+        },
+      },
+      {
+        type: "leftJoin",
+        table: "account",
+        conditions: {
+          "account.id": "contract.client_id",
+        },
+      },
+      {
+        type: "leftJoin",
+        table: "apartment",
+        conditions: {
+          "apartment.id": "contract.apartment_id",
+        },
+      },
+      {
+        type: "leftJoin",
+        table: "shop",
+        conditions: {
+          "shop.id": "contract.shop_id",
+        },
+      },
+      {
+        type: "leftJoin",
+        table: "parking",
+        conditions: {
+          "parking.id": "contract.parking_id",
+        },
+      },
+    ],
+    conditions: [
+      // { type: "or", conditions: [["building_name", "ilike", `%${value}%`]] },
+      // { type: "or", conditions: [["account.name", "ilike", `%${value}%`]] },
+      // { type: "or", conditions: [["apartment.apartment_no", "ilike", `%${value}%`]] },
+      // { type: "or", conditions: [["parking.parking_no", "ilike", `%${value}%`]] },
+      // { type: "or", conditions: [["shop.shop_no", "ilike", `%${value}%`]] },
+      { type: "or", conditions: [["contract.number", "=", value]] },
+      { type: "and", conditions: [["contract.building_id", "=", building_id]] },
+    ],
+    columns: [
+      "contract.*",
+      "building.name as building_name",
+      "account.name as account_name",
+      "apartment.apartment_no as flat_name",
+      "parking.parking_no as flat_name",
+      "shop.shop_no as flat_name",
+    ],
+  });
+
+  console.log("🚀 ~ getSearchContract ~ res:", res)
+  return res
+}
+
 export const fetchSearch = async (field, value) => {
   if (field?.is_ref && field?.no_filter) {
     const response = await ApiActions.read(
@@ -445,6 +507,7 @@ export const fetchSearch = async (field, value) => {
     return await ApiActions.read(field?.ref_table, field?.conditions || {});
   }
 };
+
 
 const data = {
   contract,

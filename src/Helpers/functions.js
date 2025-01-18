@@ -208,7 +208,7 @@ export const getCreatedFromUrl = (name, id) => {
   switch (name?.toLowerCase()) {
     case "contract":
       return {
-        href: `/contracts/${id}`,
+        href: `/contract/${id}`,
         classes: "bg-red-600 text-white p-2 rounded-md text-xs",
       };
     default:
@@ -235,7 +235,7 @@ export const getConnectWithUrl = async (number, id) => {
         conditions: [{ type: "and", conditions: [["id", "=", id]] }],
       });
       return {
-        href: `/contracts/${id}`,
+        href: `/contract/${id}`,
         classes: "bg-red-600 text-white p-2 rounded-md text-xs",
       };
     case 2:

@@ -20,6 +20,18 @@ const contract = [
     required: false,
   },
   {
+    label: "internal_number",
+    name: "internal_number",
+    type: "number",
+    required: false,
+  },
+  {
+    label: "contract_value",
+    name: "contract_value",
+    type: "number",
+    required: false,
+  },
+  {
     label: "feedback",
     name: "feedback",
     type: "boolean",
@@ -53,8 +65,8 @@ const contract = [
     hideAdd: true,
   },
   {
-    label: "contract_value",
-    name: "contract_value",
+    label: "paid_type",
+    name: "paid_type",
     key: "select",
     required: true,
     intValue: true,
@@ -78,6 +90,12 @@ const contract = [
     required: true,
   },
   {
+    label: "price_before_vat",
+    name: "price_before_vat",
+    type: "number",
+    required: true,
+  },
+  {
     label: "discount_account_id",
     name: "discount_account_id",
     type: "uuid",
@@ -94,6 +112,7 @@ const contract = [
     label: "current_securing_value",
     name: "current_securing_value",
     type: "number",
+    required: false
   },
   {
     label: "contracts_number_prev",
@@ -123,12 +142,30 @@ const contract = [
     ref_table: "account",
   },
   {
-    label: "insurance_account_id",
+    label: "security_deposit_account_id",
     name: "insurance_account_id",
     type: "uuid",
     required: false,
     is_ref: true,
     ref_table: "account",
+  },
+  {
+    label: "vat_account_id",
+    name: "vat_account_id",
+    type: "uuid",
+    required: false,
+    is_ref: true,
+    ref_table: "account",
+  },
+  {
+    label: "vat_rate",
+    name: "vat_rate",
+    type: "number",
+  },
+  {
+    label: "vat_value",
+    name: "vat_value",
+    type: "number",
   },
   {
     label: "gen_entries",
@@ -570,13 +607,13 @@ const contract_termination = [
     name: "btn_action",
     action: ACTIONS.OPEN_TERMINATION_FINES_FORM,
     label: "Open Terminations fines",
-    onClick: () => {},
+    onClick: () => { },
   },
   {
     name: "btn_action",
     action: ACTIONS.RENEW_CONTRACT,
     label: "Renew Contract",
-    onClick: () => {},
+    onClick: () => { },
   },
 ];
 
@@ -611,7 +648,7 @@ const termination_fines_grid = [
     is_ref: true,
     ref_table: "account",
   },
-  { label: "fee_amount", name: "fee_amount", type: "float4", required: false },
+  { label: "fee_amount", name: "fee_amount", type: "number", required: false },
   { label: "notes", name: "notes", type: "text", required: false },
 ];
 const contract_receipt_number = [
@@ -734,6 +771,7 @@ const apartment_sale_contract = [
     is_ref: true,
     ref_table: "apartment",
     ref_name: "apartment_no",
+    hideAdd: true,
   },
   { label: "description", name: "description", type: "text", required: false },
   {
@@ -777,6 +815,7 @@ const shop_sale_contract = [
     is_ref: true,
     ref_table: "shop",
     ref_name: "shop_no",
+    hideAdd: true,
   },
   { label: "description", name: "description", type: "text", required: false },
   {
@@ -820,6 +859,7 @@ const parking_sale_contract = [
     is_ref: true,
     ref_table: "parking",
     ref_name: "parking_no",
+    hideAdd: true,
   },
   { label: "description", name: "description", type: "text", required: false },
   {
@@ -988,7 +1028,7 @@ const land_sale_contract = [
     required: true,
     intValue: true,
     list: SELECT_LISTS("contract_paid_type"),
-    allowInsert: true,
+    selectFirstAsDefault: true,
   },
   {
     label: "revenue_account_id",
@@ -1034,6 +1074,7 @@ const apartment_rent_contract = [
     is_ref: true,
     ref_table: "apartment",
     ref_name: "apartment_no",
+    hideAdd: true,
   },
   { label: "description", name: "description", type: "text", required: false },
   {
@@ -1105,6 +1146,7 @@ const shop_rent_contract = [
     is_ref: true,
     ref_table: "shop",
     ref_name: "shop_no",
+    hideAdd: true,
   },
   {
     label: "contract_duration",
@@ -1157,6 +1199,7 @@ const parking_rent_contract = [
     is_ref: true,
     ref_table: "parking",
     ref_name: "parking_no",
+    hideAdd: true,
   },
   {
     label: "contract_duration",
@@ -1294,11 +1337,7 @@ const apartment_rent_contract_group = {
       fields: contract_termination,
       tab_name: "contract_termination",
     },
-    [APARTMENT_STEPS_CONTRACT.apartment_contract_terminationreceipts_numbers]: {
-      fields: contract_receipt_number,
-      tab_name: "contract_receipt_number",
-      formType: "grid",
-    },
+
   },
 };
 
@@ -1342,11 +1381,7 @@ const shop_rent_contract_group = {
       fields: contract_termination,
       tab_name: "contract_termination",
     },
-    [SHOP_STEPS_CONTRACT.shop_contract_receipts_numbers]: {
-      fields: contract_receipt_number,
-      tab_name: "contract_receipt_number",
-      formType: "grid",
-    },
+
   },
 };
 
@@ -1383,11 +1418,7 @@ const parking_rent_contract_group = {
       fields: contract_termination,
       tab_name: "contract_termination",
     },
-    [PARKING_STEPS_CONTRACT.parking_contract_receipts_numbers]: {
-      fields: contract_receipt_number,
-      tab_name: "contract_receipt_number",
-      formType: "grid",
-    },
+
   },
 };
 
@@ -1432,11 +1463,7 @@ const apartment_sale_contract_group = {
     //   fields: contract_termination,
     //   tab_name: "contract_termination",
     // },
-    [APARTMENT_STEPS_CONTRACT.apartment_contract_receipts_numbers]: {
-      fields: contract_receipt_number,
-      tab_name: "contract_receipt_number",
-      formType: "grid",
-    },
+
   },
 };
 
@@ -1479,11 +1506,7 @@ const shop_sale_contract_group = {
     //   fields: contract_termination,
     //   tab_name: "contract_termination",
     // },
-    [SHOP_STEPS_CONTRACT.shop_contract_receipts_numbers]: {
-      fields: contract_receipt_number,
-      tab_name: "contract_receipt_number",
-      formType: "grid",
-    },
+
   },
 };
 
@@ -1517,11 +1540,7 @@ const parking_sale_contract_group = {
     //   fields: contract_termination,
     //   tab_name: "contract_termination",
     // },
-    [PARKING_STEPS_CONTRACT.parking_contract_receipts_numbers]: {
-      fields: contract_receipt_number,
-      tab_name: "contract_receipt_number",
-      formType: "grid",
-    },
+
   },
 };
 
@@ -1565,11 +1584,7 @@ const land_sale_contract_group = {
     //   fields: contract_termination,
     //   tab_name: "contract_termination",
     // },
-    [LAND_STEPS_CONTRACT.land_contract_receipts_numbers]: {
-      fields: contract_receipt_number,
-      tab_name: "contract_receipt_number",
-      formType: "grid",
-    },
+
   },
 };
 

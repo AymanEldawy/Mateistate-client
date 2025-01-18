@@ -1,6 +1,5 @@
 import TableFields from "Components/TableComponents/TableFields";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
-import InstallmentForm from "./InstallmentForm";
 import INSERT_FUNCTION, {
   getLastNumberByColumn,
 } from "Helpers/Lib/global-insert";
@@ -10,7 +9,7 @@ import {
   CONTRACTS_ASSETS_TYPE,
 } from "Helpers/constants";
 import useFormSteps from "Hooks/useFormSteps";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -18,8 +17,7 @@ import GET_UPDATE_DATE, {
   getContractUpdate,
 } from "Helpers/Lib/global-read-update";
 import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
-import { ContractPayments } from "Components/StructurePage/Forms/ContractForm/ContractPayments";
-import { ContractFinancialForm } from "./ContractFinancialForm";
+
 import {
   CONTRACT_STATUS,
   autoMergePatternSettingsWithValues,
@@ -37,16 +35,25 @@ import {
   onWatchChangesInstallmentTab,
   onWatchChangesTerminationTab,
 } from "Helpers/Lib/contract-helpers";
+
 import {
   deleteEntry,
   generateEntryFromContract,
 } from "Helpers/Lib/vouchers-insert";
-import ContractTerminationForm from "./ContractTerminationForm";
+
 import { useQuery } from "@tanstack/react-query";
-import FormWrapperLayout from "../FormWrapperLayout/FormWrapperLayout";
 import useCurd from "Hooks/useCurd";
-import FormLayout from "../FormWrapperLayout/FormLayout";
 import useFormPagination from "Hooks/useFormPagination";
+import Btn from "Components/Global/Btn";
+import { CheckboxField, NormalSelect, Select, UniqueField } from "Components/StructurePage/CustomFields";
+import { ViewEntry } from "Components/Global/ViewEntry";
+import FormLayout from "../FormWrapperLayout/FormLayout";
+import { SearchContract } from "./SearchContract";
+
+const InstallmentForm = lazy(() => import("./InstallmentForm"));
+const ContractTerminationForm = lazy(() => import("./ContractTerminationForm"));
+const ContractPayments = lazy(() => import("Components/StructurePage/Forms/ContractForm/ContractPayments"));
+const ContractFinancialForm = lazy(() => import("./ContractFinancialForm"));
 
 const SHOULD_UPDATES = {};
 const CACHE_BUILDING_ASSETS = {};
@@ -92,10 +99,19 @@ const ContractForm = ({ number, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [shouldRefresh, setShouldRefresh] = useState(false);
   const [openInstallmentForm, setOpenInstallmentForm] = useState(false);
+  const [selectedBuilding, setSelectedBuilding] = useState(null);
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const [oldContracts, setOldContracts] = useState([]);
-  const methods = useForm();
+  const methods = useForm({
+    defaultValues: {
+      contract: {
+        paid_type: 1,
+        start_duration_date: new Date().toISOString().split("T")[0],
+        contract_duration: 3,
+      },
+    }
+  });
   const { getOneBy } = useCurd();
   const formPagination = useFormPagination({ name: "contract", number, code });
   const contractId = formPagination?.currentId;
@@ -121,7 +137,9 @@ const ContractForm = ({ number, onClose }) => {
     setFields,
     forms,
     setCurrentIndex,
+    fieldsHash
   } = useFormSteps({ name: contractName });
+
 
   // Fetch and merge pattern
   useQuery({
@@ -186,11 +204,19 @@ const ContractForm = ({ number, onClose }) => {
         field?.name === "current_securing_value" &&
         PATTERN_SETTINGS?.insurance_required
       ) {
+        console.log('called', PATTERN_SETTINGS);
+
         field.required = true;
       }
       if (
         field?.name === "insurance_account_id" &&
         PATTERN_SETTINGS?.insurance_required
+      ) {
+        field.required = true;
+      }
+      if (
+        (field?.name === "vat_account_id" || field?.name === 'vat_value' || field?.name === 'vat_rate') &&
+        PATTERN_SETTINGS?.vat_required
       ) {
         field.required = true;
       }
@@ -200,6 +226,13 @@ const ContractForm = ({ number, onClose }) => {
     setFields(newFields);
     setShouldRefresh((p) => !p);
   }, [PATTERN_SETTINGS, currentIndex]);
+
+  // useEffect(() => {
+  //   if (formPagination?.currentNumber > formPagination?.lastNumber) {
+  //     setShouldRefresh((p) => !p);
+
+  //   }
+  // }, [formPagination?.currentNumber])
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
@@ -373,7 +406,7 @@ const ContractForm = ({ number, onClose }) => {
       if (contract_id) {
         const data = await GET_UPDATE_DATE(contractName, res?.record?.id);
         reset(data);
-        await mergeInstallmentAndFirstTabData(watch("contract"), setValue);
+        await mergeInstallmentAndFirstTabData(watch("contract"), setValue, watch);
 
         if (watch("contract.paid_type") === 4) {
           setOpenInstallmentForm(true);
@@ -423,7 +456,62 @@ const ContractForm = ({ number, onClose }) => {
       onClose={onClose}
       formPagination={formPagination}
       formClassName="w-full xl:min-w-[900px] 2xl:min-w-[1200px]"
-      
+      extraContentBar={
+        <>
+          <NormalSelect
+            selectedItem={selectedBuilding}
+            list={CACHE_LIST?.building}
+            onChange={option => {
+              console.log("🚀 ~ ContractForm ~ option:", option)
+              setSelectedBuilding(option?.id)
+            }}
+          />
+          <SearchContract
+            formPagination={formPagination}
+            selectedBuilding={selectedBuilding}
+          />
+          <div className="flex gap-4 items-center justify-end">
+            <CheckboxField
+              updatedName={`contract.feedback`}
+              name="feedback"
+              label="feedback"
+            // values={values}
+            />
+            <CheckboxField
+              name="lawsuit"
+              label="lawsuit"
+              updatedName={`contract.lawsuit`}
+            // values={values}
+            />
+            <CheckboxField
+              name="gen_entries"
+              label="gen_entries"
+              updatedName={`contract.gen_entries`}
+              labelClassName="whitespace-nowrap"
+            // values={values}
+            />
+            {watch('contract.id') && watch(`contract.gen_entries`) ? (
+              <ViewEntry id={watch('contract.id')} />
+            ) : null}
+          </div>
+        </>
+      }
+      additionalButtons={
+        <>
+          {watch(`contract.paid_type`) === 1 ? (
+            <Btn
+              kind="info"
+              type="button"
+              disabled={!watch(`contract.id`)}
+              onClick={() => setOpenInstallmentForm(true)}
+            >
+              installments
+            </Btn>
+
+          ) : null}
+        </>
+      }
+
       outerDelete={() =>
         onChangeContractStatus(
           CONSTANT_COLUMNS_NAME.is_deleted,
@@ -432,24 +520,25 @@ const ContractForm = ({ number, onClose }) => {
         )
       }
     >
-      {openInstallmentForm && watch(`contract.contract_value`) ? (
-        <InstallmentForm
-          assetType={assetType}
-          CACHE_LIST={CACHE_LIST}
-          onClose={() => setOpenInstallmentForm(false)}
-          contract_id={watch(`contract.id`)}
-          openInstallmentForm={openInstallmentForm}
-          errors={errors}
-        />
+      {openInstallmentForm && watch(`contract.final_price`) ? (
+        <Suspense>
+          <InstallmentForm
+            assetType={assetType}
+            CACHE_LIST={CACHE_LIST}
+            onClose={() => setOpenInstallmentForm(false)}
+            contract_id={watch(`contract.id`)}
+            openInstallmentForm={openInstallmentForm}
+            errors={errors}
+          />
+        </Suspense>
       ) : null}
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative">
         <div
-          className={`relative ${
-            watch("contract.is_archived") || watch("contract.is_deleted")
-              ? "bg-gray-200 pointer-events-none"
-              : ""
-          }`}
+          className={`relative ${watch("contract.is_archived") || watch("contract.is_deleted")
+            ? "bg-gray-200 pointer-events-none"
+            : ""
+            }`}
         >
           {formSettings?.formType === "grid" ? (
             <div>
@@ -472,37 +561,43 @@ const ContractForm = ({ number, onClose }) => {
           ) : (
             <>
               {formSettings?.formType === "view" ? (
-                <ContractPayments
-                  contract_id={watch(`contract.id`)}
-                  CACHE_LIST={CACHE_LIST}
-                  assetType={assetType}
-                />
+                <Suspense>
+                  <ContractPayments
+                    contract_id={watch(`contract.id`)}
+                    CACHE_LIST={CACHE_LIST}
+                    assetType={assetType}
+                  />
+                </Suspense>
               ) : (
                 <>
                   {currentIndex === 0 && tab ? (
                     <div>
-                      <ContractFinancialForm
-                        number={watch("contract.number")}
-                        fields={fields}
-                        tab={tab}
-                        values={watch()?.[tab]}
-                        errors={errors}
-                        CACHE_LIST={CACHE_LIST}
-                        globalButtonsActions={globalButtonsActions}
-                        contract_id={watch(`contract.id`)}
-                        dispatchVoucherEntries={dispatchVoucherEntries}
-                        layout={contractId}
-                        assetType={assetType}
-                        contractType={type}
-                      />
+                      <Suspense>
+                        <ContractFinancialForm
+                          number={formPagination?.currentNumber}
+                          fields={fields}
+                          tab={tab}
+                          values={watch()?.[tab]}
+                          errors={errors}
+                          CACHE_LIST={CACHE_LIST}
+                          globalButtonsActions={globalButtonsActions}
+                          contract_id={watch(`contract.id`)}
+                          dispatchVoucherEntries={dispatchVoucherEntries}
+                          layout={contractId}
+                          assetType={assetType}
+                          contractType={type}
+                        />
+                      </Suspense>
                     </div>
                   ) : tab === "contract_termination" ? (
-                    <ContractTerminationForm
-                      CACHE_LIST={CACHE_LIST}
-                      tab={tab}
-                      onClickRenew={onClickRenew}
-                      SHOULD_UPDATES={SHOULD_UPDATES}
-                    />
+                    <Suspense>
+                      <ContractTerminationForm
+                        CACHE_LIST={CACHE_LIST}
+                        tab={tab}
+                        onClickRenew={onClickRenew}
+                        SHOULD_UPDATES={SHOULD_UPDATES}
+                      />
+                    </Suspense>
                   ) : (
                     <Fields
                       fields={fields}
@@ -519,7 +614,7 @@ const ContractForm = ({ number, onClose }) => {
           )}
         </div>
       </form>
-    </FormLayout>
+    </FormLayout >
   );
 };
 

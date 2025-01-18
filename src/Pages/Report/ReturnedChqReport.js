@@ -20,7 +20,6 @@ const ReturnedChqReport = () => {
   const name = "returned_cheque_report";
   const methods = useForm();
   const { handleSubmit, watch } = methods;
-  const { CACHE_LIST } = useRefTable(name, "");
   const [selectedColumns, setSelectedColumns] = useState({});
   const [searchType, setSearchType] = useState(1);
   const [buildingsIds, setBuildingsIds] = useState({});
@@ -59,7 +58,6 @@ const ReturnedChqReport = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8 items-start">
               <ReportFilterFields title="Fields">
                 <ReportFields
-                  CACHE_LIST={CACHE_LIST}
                   fields={fields}
                   sharedLabelClassName="w-[260px]"
                 />

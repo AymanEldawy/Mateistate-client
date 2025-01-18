@@ -773,7 +773,7 @@ export async function getContractMenus() {
         (c) => c.id === theItem.contract_type
       );
 
-      let link = `/contracts/${contractType?.toLowerCase()}/${
+      let link = `/contract/${contractType?.toLowerCase()}/${
         theItem.name
       }?flat_type=${assetsType?.name}&code=${theItem?.code}&number=1`;
       menus.push({
@@ -793,7 +793,7 @@ export async function getContractMenus() {
         );
 
         let name = `${subItem.name}_${contractType?.toLowerCase()}_contract`;
-        let link = `/contracts/${contractType?.toLowerCase()}/${
+        let link = `/contract/${contractType?.toLowerCase()}/${
           subItem.name
         }?flat_type=${assetsType?.name}&code=${subItem?.code}&number=1`;
 
@@ -968,7 +968,7 @@ export async function getChequesMenus() {
         isForm: true,
         key: theItem.name,
         name,
-        link: `/cheques/${theItem?.code}`,
+        link: `/cheque/${theItem?.code}`,
       });
     } else {
       let subMenu = [];
@@ -977,7 +977,7 @@ export async function getChequesMenus() {
           isForm: true,
           key: subItem.name,
           name: subItem.name,
-          link: `/cheques/${subItem?.code}`,
+          link: `/cheque/${subItem?.code}`,
         });
       }
       menus.push({

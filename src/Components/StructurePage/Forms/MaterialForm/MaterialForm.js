@@ -14,12 +14,14 @@ import { GET_UPDATE_DATE_BY_NUMBER } from "Helpers/Lib/global-read-update";
 import useCurd from "Hooks/useCurd";
 import FormLayout from "../FormWrapperLayout/FormLayout";
 
+
+
 const MaterialForm = ({ popupView, onClose }) => {
   const name = "material";
   const params = useParams();
   const navigate = useNavigate();
   const materialId = params?.id;
-  const { remove } = useCurd();
+  const { remove, getOneBy, getLastOneBy } = useCurd();
   const methods = useForm({
     defaultValues: getResetFields(name),
   });
@@ -30,7 +32,6 @@ const MaterialForm = ({ popupView, onClose }) => {
     tab,
     steps,
     fields,
-    CACHE_LIST,
     setCurrentIndex,
     formSettings,
   } = useFormSteps({ name });
@@ -53,19 +54,35 @@ const MaterialForm = ({ popupView, onClose }) => {
   });
 
   useEffect(() => {
-    if(!materialId) {
+    if (!materialId) {
       setValue('material.defaults1', true)
     }
   }, [materialId])
 
+  const onSelectGroup = async (materialGroupId) => {
+    const response = await getLastOneBy("material", 'material_group_id', materialGroupId);
+    let row = response?.result?.[0];
+    if (row) {
+      let code = +row?.code + 1;
+      setValue('material.code', code)
+    } else {
+      const response = await getOneBy("material_group", materialGroupId);
+      let row = response?.result?.[0];
+      let code = row?.code + "01";
+      setValue('material.code', code)
+    }
+  };
 
-  
-    useEffect(() => {
-      const subscription = watch((value, { name, type }) => {
 
-      });
-      return () => subscription.unsubscribe();
-    }, [watch]);
+
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      if (name === 'material.material_group_id') {
+        onSelectGroup(watch('material.material_group_id'))
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const onDelete = async () => {
     let data = watch(name);
@@ -91,7 +108,7 @@ const MaterialForm = ({ popupView, onClose }) => {
   };
 
   console.log(watch());
-  
+
   return (
     <FormLayout
       name={name}
@@ -108,7 +125,6 @@ const MaterialForm = ({ popupView, onClose }) => {
           tab={tab}
           errors={errors}
           formSettings={formSettings}
-          CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
           fields={fields}
           values={watch()?.[tab]}
           rowsCount={watch()?.[tab]?.length}
@@ -121,7 +137,6 @@ const MaterialForm = ({ popupView, onClose }) => {
               fields={fields}
               values={watch()?.[tab]}
               errors={errors}
-              CACHE_LIST={CACHE_LIST}
             />
           ) : (
             <Fields
@@ -129,7 +144,6 @@ const MaterialForm = ({ popupView, onClose }) => {
               fields={fields}
               values={watch()?.[tab]}
               errors={errors}
-              CACHE_LIST={CACHE_LIST}
             />
           )}
         </>

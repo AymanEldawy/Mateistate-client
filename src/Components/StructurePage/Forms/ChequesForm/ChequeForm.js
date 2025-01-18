@@ -1,10 +1,7 @@
-import BlockPaper from "Components/Global/BlockPaper";
-import { Button } from "Components/Global/Button";
-import FormHeadingTitle from "Components/Global/FormHeadingTitle";
 import Modal from "Components/Global/Modal/Modal";
 import getFormByTableName from "Helpers/Forms/forms";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { OperationsForm } from "./OperationsForm";
@@ -24,8 +21,7 @@ import {
   deleteEntry,
   generateEntryFromCheque,
 } from "Helpers/Lib/vouchers-insert";
-import { CREATED_FROM_CHQ_CODE } from "Helpers/GENERATE_STARTING_DATA";
-import useRefTable from "Hooks/useRefTables";
+import { CREATED_FROM_CHQ } from "Helpers/GENERATE_STARTING_DATA";
 import { removeNullValues } from "Helpers/functions";
 import { useQuery } from "@tanstack/react-query";
 import { ViewEntry } from "Components/Global/ViewEntry";
@@ -35,16 +31,19 @@ import useFormPagination from "Hooks/useFormPagination";
 
 const CACHE_CHEQUE_DATA = {};
 
-// deposit_status
-
-const mergePatternWithChequeData = (pattern) => {
-  let patternValues = {};
+const mergePatternWithChequeData = (pattern, watch, setValue) => {
 
   if (pattern?.auto_gen_entries) {
-    patternValues.gen_entries = true;
+    setValue('gen_entries', true)
   }
 
-  return patternValues;
+  if (pattern?.code) {
+    setValue('code', pattern?.code)
+  }
+  if (pattern?.default_account_id) {
+    setValue('account_id', pattern?.default_account_id)
+  }
+
 };
 
 const ChequeForm = ({
@@ -64,9 +63,18 @@ const ChequeForm = ({
   const chqId = params?.id;
   const { set, insert, getOneBy } = useCurd();
   const { dispatchVoucherEntries } = useVoucherEntriesView();
-  const { CACHE_LIST, setCACHE_LIST } = useRefTable(name);
-  const formPagination = useFormPagination({ name, number });
-  const methods = useForm();
+  const code = params?.code || patternCode;
+  const [selectedFormOperation, setSelectedFormOperation] = useState({});
+  const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
+  const formPagination = useFormPagination({ name, number, code });
+
+  const methods = useForm({
+    defaultValues: {
+      created_at: new Date().toISOString().split("T")[0],
+      gen_entries: true
+    }
+  });
+
   let {
     watch,
     setValue,
@@ -74,9 +82,6 @@ const ChequeForm = ({
     formState: { errors, isDirty, dirtyFields, isSubmitting },
     handleSubmit,
   } = methods;
-  const code = params?.code || patternCode;
-  const [selectedFormOperation, setSelectedFormOperation] = useState({});
-  const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
 
   useQuery({
     queryKey: ["cheque", "cheque_pattern"],
@@ -109,18 +114,34 @@ const ChequeForm = ({
     const subscription = watch((value, { name, type }) => {
       if (name === "without_due_date" && watch(name)) {
         setValue("due_date", null);
-        setValue("due_end_date", null);
+        setValue("end_due_date", null);
       }
+
+      if (name === 'customer_id') {
+        fetchAccount(watch(name))
+      }
+      // if(name === 'account_id' && type === 'change') {
+      //   fetchCustomer(watch(name))
+      // }
     });
     return () => subscription.unsubscribe();
   }, [watch]);
 
+  const fetchAccount = async (customerId) => {
+    const res = await getOneBy('user', customerId, 'id', ['account_id']);
+    setValue('account_id', res?.result?.at(0)?.account_id);
+  }
+  const fetchCustomer = async (accountId) => {
+    const res = await getOneBy('user', accountId, 'account_id', ['id']);
+    setValue('customer_id', res?.result?.at(0)?.id || null);
+  }
+
   useEffect(() => {
-    if (oldValues && PATTERN_SETTINGS && !oldValues?.number) {
-      reset({
-        ...mergePatternWithChequeData(PATTERN_SETTINGS, watch, setValue),
-        ...oldValues,
-      });
+    if (oldValues && PATTERN_SETTINGS && !formPagination?.currentId) {
+      reset(oldValues);
+      mergePatternWithChequeData(PATTERN_SETTINGS, watch, setValue)
+    } else if (formPagination?.currentNumber > formPagination?.lastNumber) {
+      reset(mergePatternWithChequeData(PATTERN_SETTINGS, watch, setValue));
     }
   }, [oldValues, PATTERN_SETTINGS?.id]);
 
@@ -138,6 +159,16 @@ const ChequeForm = ({
     []
   );
 
+  const onSelectContract = async (contract) => {
+    setValue('account_id', contract?.client_id)
+    setValue('cost_center_id', contract?.cost_center_id)
+    setValue('observe_cost_center_id', contract?.cost_center_id)
+    if (contract?.client_id) {
+      const customer = await getOneBy('user', contract?.client_id, 'account_id', ['id']);
+      setValue('customer_id', customer?.result?.at(0)?.id)
+    }
+  }
+
   const onClickAddNew = () => {
     reset({
       ...resetChequeFields(),
@@ -149,7 +180,7 @@ const ChequeForm = ({
   const onSubmit = async (value) => {
     if (!isDirty) return;
     let values = {
-      type: +PATTERN_SETTINGS?.code,
+      code: +PATTERN_SETTINGS?.code,
       cheque_pattern_id: PATTERN_SETTINGS?.id,
       ...removeNullValues(value),
     };
@@ -187,7 +218,7 @@ const ChequeForm = ({
         if (chq_id) {
           await generateEntryFromCheque({
             created_from_id: chq_id,
-            created_from: CREATED_FROM_CHQ_CODE,
+            created_from: CREATED_FROM_CHQ,
             created_from_code: +PATTERN_SETTINGS?.code,
             values,
           });
@@ -200,7 +231,7 @@ const ChequeForm = ({
 
   return (
     <>
-      {isLoading || isSubmitting ? <Loading withBackdrop /> : null}
+      {isLoading || isSubmitting ? <Loading /> : null}
       <Modal
         open={selectedFormOperation?.table}
         onClose={() => setSelectedFormOperation({})}
@@ -215,102 +246,113 @@ const ChequeForm = ({
           PATTERN_SETTINGS={PATTERN_SETTINGS}
           name={selectedFormOperation?.table || ""}
           chqValues={watch()}
-          CACHE_LIST={CACHE_LIST}
           refetch={refetch}
         />
       </Modal>
       <FormLayout
+        key={formPagination?.currentNumber}
         name={PATTERN_SETTINGS?.name}
         onClose={() => {
-          console.log(outerClose, "outerClose");
-
           onClose();
           if (outerClose) outerClose();
         }}
+        onSubmit={onSubmit}
         formPagination={formPagination}
         methods={methods}
+        formClassName="w-full xl:min-w-[900px] 2xl:min-w-[1200px]"
+        extraContentBar={
+          <>
+            <CheckboxField {...fields?.feedback} values={watch()} />
+            <CheckboxField {...fields?.gen_entries} values={watch()} />
+            {watch("id") && PATTERN_SETTINGS?.auto_gen_entries ? (
+              <ViewEntry id={watch("id")} />
+            ) : null}
+          </>
+        }
+
       >
         <div key={name} className="relative px-4">
-          <div className="flex items-center justify-between mb-4">
-            <Input {...fields?.number} labelClassName="!w-[60px]" />
-            <div className="flex items-center gap-4 ">
-              <CheckboxField {...fields?.feedback} values={watch()} />
-              <CheckboxField {...fields?.gen_entries} values={watch()} />
-              {watch("id") && PATTERN_SETTINGS?.auto_gen_entries ? (
-                <ViewEntry id={watch("id")} />
-              ) : null}
+
+          <div className="grid gap-y-2 gap-x-8 grid-cols-3">
+            <div className="flex flex-col gap-2">
+              <Input {...fields?.internal_number} />
+              <Input {...fields?.amount} values={watch()} />
+              <UniqueField
+                {...fields?.customer_id}
+                values={watch()}
+              />
+              <Input
+                {...fields?.beneficiary_name}
+                values={watch()}
+              />
+              <UniqueFieldGroup values={watch()} onSelectContract={onSelectContract} />
+              {["parking_id", "shop_id", "apartment_id"]?.map((field) => {
+                let name = field?.replace(/_id/g, "");
+                if (watch(field)) {
+                  return (
+                    <UniqueField
+                      key={field}
+                      {...fields?.[field]}
+                      table={field?.replace("_id", "")}
+                      values={watch()}
+                    />
+                  );
+                }
+              })}
+
             </div>
-          </div>
-          <div className="grid gap-y-3 gap-x-8 grid-cols-2">
-            <Input {...fields?.amount} values={watch()} />
-            <div className="flex gap-2 items-center">
-              <UniqueFieldGroup values={watch()} />
-            </div>
-            <CurrencyFieldGroup
-              CACHE_LIST={CACHE_LIST}
-              list={!!CACHE_LIST ? CACHE_LIST?.currency : []}
-              values={watch()}
-            />
-            <Input
-              {...fields?.beneficiary_name}
-              // inputClassName="bg-gray-100"
-              values={watch()}
-            />
-            {["parking_id", "shop_id", "apartment_id"]?.map((field) => {
-              let name = field?.replace(/_id/g, "");
-              if (watch(field)) {
+            <div className="flex flex-col gap-2">
+
+              {[
+                "account_id",
+                "cost_center_id",
+                "observe_account_id",
+                "observe_cost_center_id",
+              ]?.map((field) => {
+                let name = field?.replace(/observe_|_id/g, "");
                 return (
                   <UniqueField
                     key={field}
                     {...fields?.[field]}
                     table={field?.replace("_id", "")}
-                    CACHE_LIST={CACHE_LIST}
-                    list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
                     values={watch()}
                   />
                 );
-              }
-            })}
-
-            {[
-              "account_id",
-              "cost_center_id",
-              "observe_account_id",
-              "observe_cost_center_id",
-            ]?.map((field) => {
-              let name = field?.replace(/observe_|_id/g, "");
-              return (
-                <UniqueField
-                  key={field}
-                  {...fields?.[field]}
-                  table={field?.replace("_id", "")}
-                  CACHE_LIST={CACHE_LIST}
-                  list={!!CACHE_LIST ? CACHE_LIST?.[name] : []}
-                  values={watch()}
-                />
-              );
-            })}
-
-            <Input
-              {...fields?.due_date}
-              updatedName={`.due_date`}
-              values={watch()}
-            />
-            <Input
-              {...fields?.end_due_date}
-              updatedName={`.end_due_date`}
-              values={watch()}
-            />
-            <UniqueField
-              {...fields?.bank_id}
-              CACHE_LIST={CACHE_LIST}
-              list={!!CACHE_LIST ? CACHE_LIST?.bank : []}
-              values={watch()}
-            />
-            <div className="flex items-center justify-between">
-              <CheckboxField {...fields?.deposit_status} values={watch()} />
-              <CheckboxField {...fields?.without_due_date} values={watch()} />
+              })}
+              <UniqueField
+                {...fields?.bank_id}
+                values={watch()}
+              />
             </div>
+            <div className="flex flex-col gap-2">
+              <CurrencyFieldGroup
+                values={watch()}
+              />
+              <Input {...fields?.created_at} />
+              <CheckboxField {...fields?.without_due_date} values={watch()} />
+              {
+                watch('without_due_date') ? null :
+                  (
+                    <>
+                      <Input
+                        {...fields?.due_date}
+                        updatedName={`.due_date`}
+                        values={watch()}
+                        required={!watch('without_due_date')}
+                      />
+                      <Input
+                        {...fields?.end_due_date}
+                        updatedName={`.end_due_date`}
+                        values={watch()}
+                      />
+                    </>
+                  )
+              }
+              <CheckboxField {...fields?.deposit_status} values={watch()} />
+
+            </div>
+
+
           </div>
           <div className=" grid gap-y-3 gap-x-8 grid-cols-2 mt-4">
             <Textarea
@@ -331,9 +373,6 @@ const ChequeForm = ({
             chqValues={watch()}
           />
 
-          <div className="flex justify-between gap-6 items-center mt-4 border-t pt-4">
-            <Button title={"Save"} />
-          </div>
         </div>
       </FormLayout>
     </>

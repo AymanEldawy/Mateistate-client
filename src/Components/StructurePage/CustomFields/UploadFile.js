@@ -59,7 +59,7 @@ const UploadFile = ({
             <label
               title={label}
               htmlFor={label}
-              className="overflow-hidden flex gap-1 items-center text-ellipsis text-sm font-normal mb-1 capitalize"
+              className="overflow-hidden flex gap-1 items-center text-ellipsis text-sm font-normal capitalize"
             >
               {label}
               {field?.required ? (

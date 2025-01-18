@@ -1,5 +1,5 @@
 import { ApiActions } from "Helpers/Lib/api";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getLastNumberByColumn } from "../../../../Helpers/Lib/global-insert";
 import useRefTable from "Hooks/useRefTables";
 import { useForm } from "react-hook-form";
@@ -24,6 +24,7 @@ import NewUniqueField from "Components/StructurePage/CustomFields/NewUniqueField
 import useFormPagination from "Hooks/useFormPagination";
 import { FormStepPagination } from "Components/Global/FormStepPagination";
 import FormLayout from "../FormWrapperLayout/FormLayout";
+import getFormByTableName from "Helpers/Forms/forms";
 
 const automaticChangesOnAccount = async (name, watch, setValue) => {
   if (name === "parent_id") {
@@ -95,7 +96,6 @@ const AccountForm = ({ onClose, popupView, number }) => {
     setError,
     clearErrors,
   } = methods;
-  const { CACHE_LIST, fields } = useRefTable(name);
   const [isLoading, setIsLoading] = useState(false);
   const [totalPercentage, setTotalPercentage] = useState(1);
   const formPagination = useFormPagination({ name, number: number });
@@ -130,10 +130,15 @@ const AccountForm = ({ onClose, popupView, number }) => {
     enabled: !!id,
   });
 
+  const fields = useMemo(
+    () => getFormByTableName(name),
+    [name]
+  );
+
   useEffect(() => {
     if (formPagination?.currentNumber > formPagination?.lastNumber) {
       reset({});
-      console.log("reset form");
+      // console.log("reset form");
     }
   }, [formPagination?.currentNumber]);
 
@@ -250,7 +255,7 @@ const AccountForm = ({ onClose, popupView, number }) => {
 
       if (!params?.id) {
         let record = res?.record;
-        accountQueryClient.refresh();
+        accountQueryClient?.refresh();
       }
 
       if (!!setRecordResponse) {
@@ -265,10 +270,6 @@ const AccountForm = ({ onClose, popupView, number }) => {
       toast.error(res?.error?.detail);
     }
     setIsLoading(false);
-  };
-
-  const changeValue = () => {
-    setValue("parent_id", "7c566459-8455-4b01-bb44-22298606273f");
   };
 
   return (
@@ -286,12 +287,8 @@ const AccountForm = ({ onClose, popupView, number }) => {
       }
       formPagination={formPagination}
     >
-      <button type="button" onClick={changeValue}>
-        cclcd
-      </button>
-  
+
       <AccountFormFields
-        CACHE_LIST={CACHE_LIST}
         fields={fields}
         errors={errors}
         watch={watch}

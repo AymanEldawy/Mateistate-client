@@ -11,4 +11,5 @@ export { default as SearchBar } from "./SearchBar";
 export { default as ColorField } from "./ColorField";
 export { default as UniqueFieldGroup } from "./UniqueFieldGroup";
 export { default as CurrencyFieldGroup } from "./CurrencyFieldGroup";
+export { default as NormalSelect } from "./NormalSelect";
 export { default as CheckboxField } from "./CheckboxField";

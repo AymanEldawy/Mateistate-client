@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { VoucherHead } from "./VoucherHead";
 import { VoucherFooter } from "./VoucherFooter";
 import getFormByTableName from "Helpers/Forms/forms";
-import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import TableFields from "Components/TableComponents/TableFields";
 import { toast } from "react-toastify";
@@ -13,15 +12,25 @@ import {
   generateEntryFromVoucher,
   insertIntoGrid,
 } from "Helpers/Lib/vouchers-insert";
-import { CREATED_FROM_VOUCHER_CODE } from "Helpers/GENERATE_STARTING_DATA";
-import useRefTable from "Hooks/useRefTables";
 import { useQuery } from "@tanstack/react-query";
-import FormWrapperLayout from "../../FormWrapperLayout/FormWrapperLayout";
 import useCurd from "Hooks/useCurd";
 import FormLayout from "../../FormWrapperLayout/FormLayout";
 import useFormPagination from "Hooks/useFormPagination";
+import { CheckboxField } from "Components/StructurePage/CustomFields";
+import { ViewEntry } from "Components/Global/ViewEntry";
+import { CREATED_FROM_VOUCHER } from "Helpers/GENERATE_STARTING_DATA";
 
 let CACHE_ROW_VALUE = {};
+
+const mergePatternWithVoucherData = (pattern) => {
+  let patternValues = {};
+
+  if (pattern?.auto_gen_entries) {
+    patternValues.gen_entries = true;
+  }
+
+  return patternValues;
+};
 
 const VoucherForm = ({
   voucherName,
@@ -34,16 +43,21 @@ const VoucherForm = ({
   onClose,
   code,
 }) => {
+  console.log("🚀 ~ oldValues:", oldValues)
   const name = "voucher_main_data";
   const type = code;
-  const methods = useForm();
+  const methods = useForm({
+    defaultValues: {
+      gen_entries: true
+    }
+  });
   const { set, insert, getOneBy } = useCurd();
-  const { CACHE_LIST } = useRefTable("voucher_grid_data");
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const [gridFields, setGridFields] = useState([]);
   const formPagination = useFormPagination({
     name,
     number,
+    code
   });
   const id = formPagination?.currentId;
 
@@ -119,6 +133,19 @@ const VoucherForm = ({
       reset(oldValues);
     }
   }, [oldValues?.number]);
+
+  useEffect(() => {
+    if (oldValues && PATTERN_SETTINGS && !formPagination?.currentId) {
+      reset({
+        ...mergePatternWithVoucherData(PATTERN_SETTINGS, watch, setValue),
+        ...oldValues,
+      });
+    } else if (formPagination?.currentNumber > formPagination?.lastNumber) {
+      reset({
+        ...mergePatternWithVoucherData(PATTERN_SETTINGS, watch, setValue),
+      });
+    }
+  }, [oldValues, PATTERN_SETTINGS?.id]);
 
   useEffect(() => {
     const getVoucherPattern = async () => {
@@ -207,9 +234,9 @@ const VoucherForm = ({
 
       if (PATTERN_SETTINGS?.auto_gen_entries || watch("gen_entries")) {
         // Generate A Constraint
-        generateEntryFromVoucher({
+        await generateEntryFromVoucher({
           values: value,
-          created_from: CREATED_FROM_VOUCHER_CODE,
+          created_from: CREATED_FROM_VOUCHER,
           created_from_code: +type,
           grid,
           created_from_id: itemId,
@@ -224,11 +251,12 @@ const VoucherForm = ({
           ? `Successfully update row: ${values?.name} in ${name}`
           : "Successfully added item in " + name
       );
-      queryClientNewVoucher?.refetch();
     } else {
       toast.error(res?.error?.detail);
     }
   };
+  console.log(watch(), 'wa');
+
 
   return (
     <FormLayout
@@ -241,20 +269,39 @@ const VoucherForm = ({
         onClose();
       }}
       formPagination={formPagination}
+      extraContentBar={
+        <>
+          <div className="flex gap-4 items-center justify-end">
+            <CheckboxField
+              updatedName={`feedback`}
+              name="feedback"
+              label="feedback"
+            />
+            <CheckboxField
+              name="gen_entries"
+              label="gen_entries"
+              updatedName={`gen_entries`}
+              labelClassName="whitespace-nowrap"
+            />
+            {watch('id') ? (
+              <ViewEntry id={watch('id')} />
+            ) : null}
+          </div>
+        </>
+      }
     >
       <VoucherHead
         fields={fields}
         name={name}
         errors={errors}
-        CACHE_LIST={CACHE_LIST}
         PATTERN_SETTINGS={PATTERN_SETTINGS}
       />
       <TableFields
         fields={gridFields}
         tab="grid"
         errors={errors}
-        rowsCount={watch("grid")?.length || 1}
-        CACHE_LIST={CACHE_LIST}
+        rowsCount={watch("grid")?.length || 5}
+        onlyView={watch('id') && watch('connect_with_id')}
         withPortal
         rowStyles={(index) => {
           if (PATTERN_SETTINGS?.even_table_color && index % 2 === 0) {
@@ -268,7 +315,6 @@ const VoucherForm = ({
         fields={fields}
         name={name}
         errors={errors}
-        CACHE_LIST={CACHE_LIST}
         isNewOne={!id}
         PATTERN_SETTINGS={PATTERN_SETTINGS}
       />

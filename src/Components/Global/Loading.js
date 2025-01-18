@@ -1,13 +1,11 @@
-import Backdrop from "Components/Global/Backdrop";
 import logoImg from "Assets/Images/Mati-Estate-Logo-Animaitona02.gif";
-const Loading = ({ withBackdrop, logo, backdropClasses, hideText }) => {
-  let classes = withBackdrop
-    ? "!fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-    : "";
-  return (
-    <>
-      {withBackdrop ? <Backdrop open={true} classes={backdropClasses} /> : null}
-      <div className={`relative rounded-full text-center z-[100] ${classes}`}>
+import { createPortal } from "react-dom";
+const Loading = ({ logo }) => {
+  return createPortal(
+    <div
+      className=" fixed top-0 left-0 bottom-0 right-0 z-50 flex items-center justify-center backdrop-blur-sm bg-[#0008] pointer-events-auto opacity-1"
+    >
+      <div className={`relative rounded-full text-center z-[100]`}>
         {logo ? (
           <img src={logoImg} alt="mateistate" className="w-96 object-contain" />
         ) : (
@@ -44,7 +42,10 @@ const Loading = ({ withBackdrop, logo, backdropClasses, hideText }) => {
           </h3>
         )}
       </div>
-    </>
+    </div>,
+    document.getElementById("portal-modal-loading")
+
+
   );
 };
 

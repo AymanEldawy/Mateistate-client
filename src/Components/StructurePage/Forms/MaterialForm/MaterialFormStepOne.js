@@ -14,7 +14,6 @@ export const MaterialFormStepOne = ({
   fields,
   values = {},
   errors,
-  CACHE_LIST,
 }) => {
   const { watch, setValue } = useFormContext();
   const fieldsHash = useMemo(() => {
@@ -66,8 +65,6 @@ export const MaterialFormStepOne = ({
         />
         <UniqueField
           {...fieldsHash?.material_group_id}
-          CACHE_LIST={CACHE_LIST}
-          list={!!CACHE_LIST ? CACHE_LIST?.material_group : []}
           updatedName={tab ? `${tab}.material_group_id` : ""}
           required
         />
@@ -78,8 +75,6 @@ export const MaterialFormStepOne = ({
         />
         <UniqueField
           {...fieldsHash?.category_id}
-          CACHE_LIST={CACHE_LIST}
-          list={!!CACHE_LIST ? CACHE_LIST?.category : []}
           updatedName={tab ? `${tab}.category_id` : ""}
         />
       </div>
@@ -88,6 +83,7 @@ export const MaterialFormStepOne = ({
           {...fieldsHash?.unit1}
           updatedName={tab ? `${tab}.unit1` : ""}
           readOnly={readOnly1}
+          labelClassName={"w-[90px]"}
         />
         <CheckboxField
           {...fieldsHash?.defaults1}

@@ -75,25 +75,32 @@ export async function fetchAndMergeBuildingInfo(buildingId, setValue) {
   });
   if (response?.success) {
     let data = response?.result?.at(0);
-    setValue(`contract.lessor_id`, data?.lessor_id);
-    setValue(
-      "contract_commission.commission_percentage",
-      data?.commission_rate
-    );
-    setValue(
-      "contract_commission.commission_from_owner_account_id",
-      data?.owner_account_id
-    );
-    setValue("contract_commission.commission_account_id", data?.revenue_id);
-    setValue(`contract.revenue_account_id`, data?.revenue_id);
-    setValue(
-      `contract.discount_account_id`,
-      data?.building_discount_account_id
-    );
-    setValue(
-      `contract.insurance_account_id`,
-      data?.building_insurance_account_id
-    );
+    if (data?.lessor_id)
+      setValue(`contract.lessor_id`, data?.lessor_id);
+    if (data?.commission_rate) {
+
+      setValue(
+        "contract_commission.commission_percentage",
+        data?.commission_rate
+      );
+      setValue(
+        "contract_commission.commission_from_owner_account_id",
+        data?.owner_account_id
+      );
+      setValue("contract_commission.commission_account_id", data?.revenue_id);
+    }
+    if (data?.revenue_id)
+      setValue(`contract.revenue_account_id`, data?.revenue_id);
+    if (data?.building_discount_account_id)
+      setValue(
+        `contract.discount_account_id`,
+        data?.building_discount_account_id
+      );
+    if (data?.building_insurance_account_id)
+      setValue(
+        `contract.insurance_account_id`,
+        data?.building_insurance_account_id
+      );
   }
 }
 
@@ -113,14 +120,41 @@ export async function fetchAndMergeAssetInfo(asset, assetId, setValue) {
 
 export function onWatchChangesInTab1(name, setValue, watch, SHOULD_UPDATES) {
   switch (name) {
-    case "discount_rate":
-    case "contract_value": {
+    case 'contract_value': {
+      setValue('contract.price_before_vat', watch('contract.contract_value'))
+      setValue('contract.final_price', watch('contract.contract_value'))
+      return;
+    }
+    // case 'building_id': {
+    //   ['apartment_id', 'parking_id', 'shop_id']?.forEach(flat => {
+    //     console.log('called apartemtn', flat, watch(`contract.${flat}`));
+
+    //     if (watch(`contract.${flat}`)) {
+    //       console.log('called', true);
+    //       setValue(`contract.${flat}`, undefined)
+    //     }
+    //   })
+    //   return;
+    // }
+    case "vat_rate": {
+      let discount = watch(`contract.vat_rate`) || 0;
+      let price_before_vat = +watch(`contract.price_before_vat`);
+      let vatValue = (discount / 100) * price_before_vat || 0;
+      let newFinalPrice = price_before_vat + vatValue;
+
+      setValue(`contract.final_price`, newFinalPrice);
+      setValue("installment.total_amount", newFinalPrice);
+      setValue(`contract.vat_value`, vatValue);
+      return
+    }
+    case "discount_rate": {
       let discount = watch(`contract.discount_rate`) || 0;
       let price = watch(`contract.contract_value`);
       let finalPrice = price - (discount / 100) * price;
       let discountValue = price - finalPrice;
 
       setValue(`contract.final_price`, finalPrice);
+      setValue(`contract.price_before_vat`, finalPrice);
       setValue("installment.total_amount", price);
       if (discount)
         setValue(`contract.discount_value`, discountValue?.toFixed(2));
@@ -136,7 +170,7 @@ export function onWatchChangesInTab1(name, setValue, watch, SHOULD_UPDATES) {
 
       return;
     }
-    
+
     case "start_duration_date":
     case "contract_duration":
       calculateContractDuration(watch, setValue, SHOULD_UPDATES);
@@ -185,23 +219,36 @@ export const calculateContractDuration = async (
     default:
       break;
   }
-  setValue(`contract.end_duration_date`, end_duration_date);
-  return { end_duration_date, first_installment_date };
+  let subDate = new Date(end_duration_date)
+  subDate.setDate(subDate.getDate() - 1);
+  setValue(`contract.end_duration_date`, subDate);
+  return { end_duration_date: subDate, first_installment_date };
 };
 
-export async function mergeInstallmentAndFirstTabData(firstTabData, setValue) {
-  let total = firstTabData?.contract_value;
+export async function mergeInstallmentAndFirstTabData(firstTabData, setValue, watch) {
+  let total = firstTabData?.final_price;
   let date = firstTabData?.start_duration_date || firstTabData?.property_delivery_date;
+
+  if (!watch('installment.each_number')) {
+    setValue("installment.each_number", 3);
+  }
+
+  if (!watch('installment.installments_numbers')) {
+    setValue("installment.installments_numbers", 4);
+  }
 
   if (total) {
     setValue("installment.total_amount", total);
   }
+  
   if (date) {
     setValue(
       `installment.first_installment_date`,
       new Date(date)?.toISOString()?.substring(0, 10)
     );
   }
+
+  
 }
 
 export function onWatchChangesInstallmentTab(name, value, setValue, watch) {
@@ -216,8 +263,8 @@ export function onWatchChangesInstallmentTab(name, value, setValue, watch) {
 
       return;
 
-    case "gen_entries_type":
-      if (value === 3) {
+    case "has_first_batch":
+      if (!value) {
         setValue("installment.payment_date", null);
         setValue("installment.first_batch", 0);
       }
@@ -284,6 +331,16 @@ export async function autoMergePatternSettingsWithValues(
     setValue(
       `contract.discount_account_id`,
       pattern?.default_discount_account_id
+    );
+  if (pattern?.default_vat_account_id)
+    setValue(
+      `contract.vat_account_id`,
+      pattern?.default_vat_account_id
+    );
+  if (pattern?.vat_rate)
+    setValue(
+      `contract.vat_rate`,
+      pattern?.vat_rate
     );
   if (pattern?.gen_entries)
     setValue(`contract.gen_entries`, pattern?.gen_entries);
@@ -371,8 +428,8 @@ export function dividePrice(
   duration,
   each_duration
 ) {
-  const monthlyPrice = Math.floor(price / numbers);
-  const remainingPrice = price % numbers;
+  const monthlyPrice = (price / numbers).toFixed(2);
+  // const remainingPrice = price % numbers;
 
   const result = [];
 
@@ -406,9 +463,6 @@ export function dividePrice(
       ?.substring(0, 10);
     result.push({ month: formattedDate, price: monthlyPrice, end });
   }
-
-  if (result[result.length - 1]?.price)
-    result[result.length - 1].price += remainingPrice;
 
   return result;
 }

@@ -642,8 +642,8 @@ export const SELECT_LISTS = (listName) => {
     installment_each_number: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
 
     installment_voucher_type: [
+      { name: "No Cash payment.", id: 0 },
       { name: "Receipt voucher.", id: 1 },
-      { name: "No down payment.", id: 3 },
       // { name: "Journal voucher.", id: 2 },
     ],
 
@@ -702,10 +702,9 @@ export const SELECT_LISTS = (listName) => {
     ],
 
     contract_paid_type: [
-      { name: "Cash", id: 1 },
-      { name: "Plan", id: 2 },
+      { name: "Installment", id: 1 },
+      { name: "Cash", id: 2 },
       { name: "Later", id: 3 },
-      { name: "Installment", id: 4 },
     ],
     contract_round_to: [
       { name: "Without rounding", id: 0 },
@@ -899,7 +898,6 @@ const GLOBAL_CONTRACT_STEPS = {
   contract_linked_parking_step: "linked parking",
   contract_contract_cycle_step: "contract cycle",
   contract_termination_step: "termination",
-  contract_receipts_numbers_step: "receipts numbers",
 };
 
 export const APARTMENT_STEPS_CONTRACT = {
@@ -917,8 +915,6 @@ export const APARTMENT_STEPS_CONTRACT = {
     GLOBAL_CONTRACT_STEPS.contract_contract_cycle_step,
   apartment_contract_termination:
     GLOBAL_CONTRACT_STEPS.contract_termination_step,
-  apartment_contract_receipts_numbers:
-    GLOBAL_CONTRACT_STEPS.contract_receipts_numbers_step,
 };
 export const SHOP_STEPS_CONTRACT = {
   shop_contract_general: GLOBAL_CONTRACT_STEPS.contract_general_step,
@@ -932,8 +928,6 @@ export const SHOP_STEPS_CONTRACT = {
     GLOBAL_CONTRACT_STEPS.contract_linked_parking_step,
   shop_rent_contract_cycle: GLOBAL_CONTRACT_STEPS.contract_contract_cycle_step,
   shop_contract_termination: GLOBAL_CONTRACT_STEPS.contract_termination_step,
-  shop_contract_receipts_numbers:
-    GLOBAL_CONTRACT_STEPS.contract_receipts_numbers_step,
 };
 export const LAND_STEPS_CONTRACT = {
   land_contract_general: GLOBAL_CONTRACT_STEPS.contract_general_step,
@@ -947,8 +941,6 @@ export const LAND_STEPS_CONTRACT = {
     GLOBAL_CONTRACT_STEPS.contract_linked_parking_step,
   land_rent_contract_cycle: GLOBAL_CONTRACT_STEPS.contract_contract_cycle_step,
   land_contract_termination: GLOBAL_CONTRACT_STEPS.contract_termination_step,
-  land_contract_receipts_numbers:
-    GLOBAL_CONTRACT_STEPS.contract_receipts_numbers_step,
 };
 
 export const PARKING_STEPS_CONTRACT = {
@@ -959,8 +951,7 @@ export const PARKING_STEPS_CONTRACT = {
   parking_contract_pictures: GLOBAL_CONTRACT_STEPS.contract_pictures_step,
   parking_contract_other_fees: GLOBAL_CONTRACT_STEPS.contract_other_fees_step,
   parking_contract_termination: GLOBAL_CONTRACT_STEPS.contract_termination_step,
-  parking_contract_receipts_numbers:
-    GLOBAL_CONTRACT_STEPS.contract_receipts_numbers_step,
+
 };
 
 export const FLAT_PROPERTY_COLORS = {

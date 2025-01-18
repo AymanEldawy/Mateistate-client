@@ -25,7 +25,7 @@ const Material = () => {
 
           return <MaterialForm name={name} {...props} />;
         }}
-        addtionalActions={
+        additionalActions={
           <Btn kind="error" onClick={() => setOpen(true)}>
             Unregister materials
           </Btn>

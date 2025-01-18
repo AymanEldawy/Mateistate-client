@@ -90,7 +90,7 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
 
   return (
     <>
-      {isLoading ? <Loading withBackdrop /> : null}
+      {isLoading ? <Loading /> : null}
       <BlockPaper
         contentBar={
           <ToolsContentBar

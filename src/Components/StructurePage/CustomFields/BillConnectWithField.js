@@ -4,16 +4,12 @@ import { useState } from "react";
 import Select from "react-select";
 import { useFormContext, Controller } from "react-hook-form";
 import { SELECT_LISTS } from "Helpers/constants";
-import { ApiActions } from "Helpers/Lib/api";
 import { useTranslation } from "react-i18next";
 import { getConnectWithUrl } from "Helpers/functions";
 import {
   BILL_CONNECT_WITH_MAINTENANCES_CODE,
-  BILL_CONNECT_WITH_MAINTENANCES_NAME,
-  CONNECT_WITH_CONTRACT_NAME,
-  CONNECT_WITH_NOTHING_CODE,
+  BILL_CONNECT_WITH_MAINTENANCES_NAME, CONNECT_WITH_NOTHING_CODE
 } from "Helpers/GENERATE_STARTING_DATA";
-import { ErrorText } from "Components/Global/ErrorText";
 import { getServiceWithRequestedMaterials } from "Helpers/Lib/global-read";
 
 const REF_TABLES = {
@@ -80,7 +76,7 @@ const BillConnectWithField = ({ tab, old }) => {
           title="connect with"
           className={`${
             old && "w-[190px]"
-          } overflow-selectName text-ellipsis text-sm font-normal whitespace-nowrap mb-1 capitalize`}
+          } overflow-selectName text-ellipsis text-sm font-normal whitespace-nowrap capitalize`}
         >
           connect with
         </label>
@@ -121,7 +117,7 @@ const BillConnectWithField = ({ tab, old }) => {
         <div className="flex flex-row items-center ">
           <label
             title="connect with id"
-            className="overflow-hidden w-[190px] whitespace-nowrap text-ellipsis block text-sm font-normal mb-1 capitalize"
+            className="overflow-hidden w-[190px] whitespace-nowrap text-ellipsis block text-sm font-normal capitalize"
           >
             connect with id
           </label>

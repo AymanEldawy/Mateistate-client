@@ -28,7 +28,6 @@ const ChequeReport = () => {
   const [buildingsIds, setBuildingsIds] = useState([]);
   const [chqIds, setChqIds] = useState({});
   const [contractIds, setContractIds] = useState({});
-  const { CACHE_LIST } = useRefTable("cheque");
   const [data, setData] = useState([]);
   const [openReportResults, setOpenReportResults] = useState(false);
   
@@ -62,8 +61,6 @@ const ChequeReport = () => {
             <div className="grid md:grid sm:grid-cols-2 md:grid-cols-3 gap-4 items-start">
               <ReportFilterFields title="fields">
                 <ReportFields
-                  CACHE_LIST={CACHE_LIST}
-                  list={!!CACHE_LIST ? CACHE_LIST?.account : []}
                   fields={fields}
                   containerClassName="!mb-0 gap-3"
                   sharedLabelClassName="w-[200px]"

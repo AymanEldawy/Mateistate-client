@@ -75,7 +75,7 @@ const Input = ({
                   title={label}
                   htmlFor={updatedName || field?.name}
                   className={
-                    "overflow-hidden text-ellipsis min-w-fit text-sm font-normal whitespace-nowrap mb-1 capitalize flex items-center gap-2 " +
+                    "overflow-hidden text-ellipsis min-w-fit text-sm font-normal whitespace-nowrap capitalize flex items-center gap-2 " +
                     (old && " w-[190px] !whitespace-normal ") +
                     labelClassName
                   }
@@ -91,7 +91,7 @@ const Input = ({
                   {...field}
                   ref={ref}
                   wrapperClassName="w-full"
-                  className={`border h-[39px] w-full cursor-pointer read-only:bg-[#006d5f1f] flex items-center gap-2 dark:read-only:bg-[#444] rounded ltr:!pl-7 rtl:!pr-7 p-1 ${inputClassName} ${
+                  className={`border h-[39px] w-full cursor-pointer read-only:bg-[#2289fb1c] flex items-center gap-2 dark:read-only:bg-[#444] rounded ltr:!pl-7 rtl:!pr-7 p-1 ${inputClassName} ${
                     error ? "border-red-200 text-red-500" : ""
                   }`}
                   calendarIconClassname={`${
@@ -135,7 +135,7 @@ const Input = ({
                 <input
                   ref={ref}
                   name={updatedName || field?.name}
-                  className={`border h-[39px] read-only:bg-[#006d5f1f] w-full dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${
+                  className={`border h-[39px] read-only:bg-[#2289fb1c] w-full dark:read-only:bg-[#444] rounded p-1 ${inputClassName} ${
                     error ? "border-red-200 text-red-500" : ""
                   } 
               `}
