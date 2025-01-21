@@ -15,11 +15,12 @@ const Tools = () => {
   const { refetch } = useQuery({
     queryKey: ["property_values"],
     queryFn: async () => {
-      const response = await getOneBy("property_values", id);
+      const response = await getOneBy("property_values", row?.id, 'building_id');
       reset({
         grid: response?.result?.sort((a, b) => a?.row_index - b?.row_index),
       });
     },
+    enabled: !!row?.id
   });
   useQuery({
     queryKey: ["building", id],

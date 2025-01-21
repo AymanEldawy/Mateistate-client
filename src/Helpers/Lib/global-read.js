@@ -460,6 +460,8 @@ export const getSearchContract = async (value, building_id) => {
   return res
 }
 
+
+
 export const fetchSearch = async (field, value) => {
   if (field?.is_ref && field?.no_filter) {
     const response = await ApiActions.read(
@@ -531,3 +533,4 @@ export default function getTableData(name, filters) {
   const fn = data?.[name] || data?.list;
   return fn(filters, name);
 }
+

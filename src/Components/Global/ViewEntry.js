@@ -3,7 +3,7 @@ import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import React from "react";
 import Btn from "./Btn";
 
-export const ViewEntry = ({ id }) => {
+export const ViewEntry = ({ id, created_from }) => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   return (
     <Btn
@@ -13,6 +13,7 @@ export const ViewEntry = ({ id }) => {
       // className="bg-blue-500 text-xs whitespace-nowrap text-white px-2 py-1 rounded-md flex items-center gap-2"
       onClick={() =>
         dispatchVoucherEntries({
+          created_from,
           table: "entry_main_data",
           grid: "entry_grid_data",
           ref_name: "created_from_id",

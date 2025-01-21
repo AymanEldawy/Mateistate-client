@@ -20,6 +20,7 @@ const LayoutWrapper = ({
   name: defaultName,
   additionalActions,
   onClickAdd,
+  outerData
 }) => {
   const navigate = useNavigate();
   const params = useParams();
@@ -29,7 +30,6 @@ const LayoutWrapper = ({
   const { getTable, setTable } = useLocalStorage({});
   const { get, getDataWithFilter } = useCurd();
   const [columnFilters, setColumnFilters] = useState([]);
-  console.log("🚀 ~ columnFilters:", columnFilters)
   const [openForm, setOpenForm] = useState(!!number);
   const [rowSelection, setRowSelection] = useState([]);
   const [pagination, setPagination] = useState({
@@ -53,6 +53,8 @@ const LayoutWrapper = ({
       let fn = null;
       if (fn) {
         return await fn(columnFilters);
+      } else if(outerData) {
+        return await outerData(columnFilters)
       }
       const response = await getDataWithFilter(name, columnFilters);
       return await response?.result;
@@ -64,8 +66,6 @@ const LayoutWrapper = ({
     if (localColumns) return JSON.parse(localColumns);
     else return getTableColumns(name);
   }, [name]);
-
-  console.log();
 
   return (
     <>
@@ -91,7 +91,7 @@ const LayoutWrapper = ({
                 setOpenForm(true);
               }}
               // onSearch={onSearch}
-              onClickDelete={onClickDelete}
+              onClickDelete={onClickDelete ? () => onClickDelete(rowSelection) : null}
               onClickView={onClickView}
               onClickPrint={onClickPrint}
               additionalActions={additionalActions}

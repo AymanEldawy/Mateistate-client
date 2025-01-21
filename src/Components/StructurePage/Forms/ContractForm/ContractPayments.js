@@ -192,7 +192,6 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
       },
     });
   };
-console.log(openForm, 'op');
 
   return (
     <>

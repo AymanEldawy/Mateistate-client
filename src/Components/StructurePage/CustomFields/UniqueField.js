@@ -72,7 +72,6 @@ const UniqueField = ({
         queryFn: async () => {
           if (!value && !id) return;
 
-          console.log('called', id, value);
           let response = null;
           if (id) {
             response = await getOneBy(tableName, value, "id");
@@ -85,7 +84,7 @@ const UniqueField = ({
           }
           return response?.result;
         },
-        enable: !!value || !!id
+        enable: !!value || !!id || !!tableName
       });
       if (id) {
         setDefaultOption(res?.[0]);
@@ -104,9 +103,6 @@ const UniqueField = ({
     // console.log(name, watch('customer_id'), defaultOption?.id);
     if (!watch(updatedName || name)) return;
     if (defaultOption && defaultOption?.[ref_col || 'id'] === watch(updatedName || name)) return;
-
-    console.log('ch', defaultOption, defaultOption?.[ref_col || 'id'], watch(updatedName || name));
-    console.log('refresh', name, updatedName, watch(updatedName || name));
 
     loadOptions(watch(updatedName || field?.name), '', true)
 

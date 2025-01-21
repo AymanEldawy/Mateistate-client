@@ -78,7 +78,6 @@ const NewUniqueField = ({
   useEffect(() => {
     // console.log(defaultOption, watch(updatedName || name), 'test');
     if (defaultOption && defaultOption?.[ref_col || 'id'] === watch(updatedName || name)) return;
-    console.log('refresh');
 
     loadOptions(watch(updatedName || field?.name), '', true)
 
@@ -94,7 +93,6 @@ const NewUniqueField = ({
         field: { onChange, onBlur, ref, value },
         fieldState: { error },
       }) => {
-        console.log("🚀 ~ value:", value, field?.name)
         // const val = refCont?.current?.getValue();
         // let optionValue = val?.at(0)?.[field?.ref_col || "id"];
         // if ((!val?.length && value) || (value && value !== optionValue)) {

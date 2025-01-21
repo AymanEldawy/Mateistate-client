@@ -70,7 +70,7 @@ const ChequeForm = ({
 
   const methods = useForm({
     defaultValues: {
-      created_at: new Date().toISOString().split("T")[0],
+      created_at: new Date(),
       gen_entries: true
     }
   });

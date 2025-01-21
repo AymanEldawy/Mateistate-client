@@ -30,7 +30,6 @@ export const AccountFormFields = ({
     return hash;
   }, []);
 
-  console.log(watch());
 
   return (
     <div>

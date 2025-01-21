@@ -36,7 +36,6 @@ const FormLayout = ({
   useEffect(() => {
     
     if (formPagination?.currentNumber > formPagination?.lastNumber) {
-      console.log("reset");
       refForm.current.reset()
     }
   },[formPagination?.currentNumber])
@@ -50,7 +49,7 @@ const FormLayout = ({
         ref={refForm}
         className={formClassName}
       >
-        {hideTitle ? null : <FormTitle extraContentBar={extraContentBar} onClose={onClose} name={name} />}
+        {hideTitle ? null : <FormTitle isDirty={isDirty} extraContentBar={extraContentBar} onClose={onClose} name={name} />}
 
         <div
           key={name + number}

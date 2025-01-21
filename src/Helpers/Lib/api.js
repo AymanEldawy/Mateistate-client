@@ -97,7 +97,7 @@ export function CURD() {
   // Remove Entry
   const removeEntry = async (id) => {
     const res = await matieStateClient.deleteRecords("entry_main_data", {
-      conditions: [{ type: "and", conditions: [["created_from_id", "=", id]] }],
+      conditions: [{ type: "and", conditions: id?.length ? [["created_from_id", "in", id]] : [["created_from_id", "=", id]] }],
     });
     return res;
   };

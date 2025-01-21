@@ -49,6 +49,7 @@ import { CheckboxField, NormalSelect, Select, UniqueField } from "Components/Str
 import { ViewEntry } from "Components/Global/ViewEntry";
 import FormLayout from "../FormWrapperLayout/FormLayout";
 import { SearchContract } from "./SearchContract";
+import { CREATED_FROM_CHQ, CREATED_FROM_CONTRACT, CREATED_FROM_CONTRACT_FEES } from "Helpers/GENERATE_STARTING_DATA";
 
 const InstallmentForm = lazy(() => import("./InstallmentForm"));
 const ContractTerminationForm = lazy(() => import("./ContractTerminationForm"));
@@ -103,11 +104,15 @@ const ContractForm = ({ number, onClose }) => {
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const [oldContracts, setOldContracts] = useState([]);
+  let date = new Date();
   const methods = useForm({
     defaultValues: {
       contract: {
         paid_type: 1,
-        start_duration_date: new Date().toISOString().split("T")[0],
+        start_duration_date: new Date(),
+        issue_date: new Date(),
+        // should update
+        end_duration_date: new Date(date.setFullYear(date.getFullYear() + 1)),
         contract_duration: 3,
       },
     }
@@ -123,6 +128,7 @@ const ContractForm = ({ number, onClose }) => {
     setValue,
     reset,
   } = methods;
+
 
   const {
     currentIndex,
@@ -159,16 +165,16 @@ const ContractForm = ({ number, onClose }) => {
   });
 
   // Fetch Last contract number
-  useQuery({
-    queryKey: ["contract", code],
-    queryFn: async () => {
-      const lastNumber = await getLastNumberByColumn("contract", "code", +code);
+  // useQuery({
+  //   queryKey: ["contract", code],
+  //   queryFn: async () => {
+  //     const lastNumber = await getLastNumberByColumn("contract", "code", +code);
 
-      if (!watch("contract.number")) {
-        setValue(`contract.number`, +lastNumber + 1);
-      }
-    },
-  });
+  //     if (!watch("contract.number")) {
+  //       setValue(`contract.number`, +lastNumber + 1);
+  //     }
+  //   },
+  // });
 
   const contractQueryClient = useQuery({
     queryKey: ["contract", code, contractId],
@@ -204,7 +210,6 @@ const ContractForm = ({ number, onClose }) => {
         field?.name === "current_securing_value" &&
         PATTERN_SETTINGS?.insurance_required
       ) {
-        console.log('called', PATTERN_SETTINGS);
 
         field.required = true;
       }
@@ -247,7 +252,7 @@ const ContractForm = ({ number, onClose }) => {
           break;
         case `contract.building_id`:
           if (watch(name)) {
-            fetchAndMergeBuildingInfo(watch(name), setValue);
+            fetchAndMergeBuildingInfo(watch(name), setValue, SHOULD_UPDATES);
             filterAssetsByBuilding(
               watch(name),
               assetType,
@@ -310,6 +315,8 @@ const ContractForm = ({ number, onClose }) => {
 
   useEffect(() => {
     if (contractId) return;
+
+    setValue("contract.number", +formPagination?.currentNumber || 1);
     autoMergePatternSettingsWithValues(
       PATTERN_SETTINGS,
       watch,
@@ -317,7 +324,9 @@ const ContractForm = ({ number, onClose }) => {
       tabNames
     );
     // setShouldRefresh((p) => !p);
-  }, [code, type, assetType, PATTERN_SETTINGS?.id, contractId]);
+  }, [code, type, assetType, PATTERN_SETTINGS?.id, contractId, formPagination?.currentNumber]);
+
+  console.log(watch());
 
   const globalButtonsActions = (action) => {
     switch (action) {
@@ -330,34 +339,34 @@ const ContractForm = ({ number, onClose }) => {
   };
 
   const onClickRenew = async () => {
-    let newDate = new Date(watch(`contract.end_duration_date`));
-    setValue(
-      `contract.start_duration_date`,
-      new Date(newDate.setDate(newDate.getDate() + 1))
-    );
-
-    const { end_duration_date } = await calculateContractDuration(
-      watch,
-      setValue,
-      SHOULD_UPDATES
-    );
     let contract = watch("contract");
-
     delete contract.id;
     delete contract.number;
-
+    const startDate = new Date(contract?.start_duration_date);
+    const endDate = new Date(contract?.end_duration_date);
+    const differenceMs = endDate.getTime() - startDate.getTime();
+    const newStartDate = new Date(endDate.getTime() + (24 * 60 * 60 * 1000));
+    const newEndDate = new Date(newStartDate.getTime() + differenceMs);
+    setValue(
+      `contract.start_duration_date`,
+      newStartDate
+    );
+    setValue(
+      `contract.end_duration_date`,
+      newEndDate
+    );
     let contractNumbers = +contract.contracts_number_prev + 1;
     contract.contracts_number_prev = contractNumbers || 1;
     contract.contracts_number_current = contractNumbers || 2;
     contract.status = CONTRACT_STATUS.RENEWdD;
-
     contract.previous_securing = contract?.current_securing_value;
     contract.current_securing_value = 0;
-
-    contract.end_duration_date = end_duration_date;
     reset({ contract });
     setCurrentIndex(0);
+    formPagination.setCurrentNumber(+formPagination.lastNumber + 1)
+
   };
+
 
   // Handel Submit
   const onSubmit = async (value) => {
@@ -422,6 +431,7 @@ const ContractForm = ({ number, onClose }) => {
 
   const genEntry = async (contract_id) => {
     let contract = watch("contract");
+    let commission = watch("contract_commission");
 
     const assetsTypeNumber = CACHE_LIST?.[assetType]?.find(
       (c) => c?.id === contract?.[`${assetType}_id`]
@@ -437,9 +447,9 @@ const ContractForm = ({ number, onClose }) => {
       assetsType: assetType,
       assetsTypeNumber,
       buildingNumber,
-      contractNumber: watch("contract.number"),
+      contractNumber: formPagination?.currentNumber,
       values: contract,
-      commission: watch("contract_commission"),
+      commission,
     });
   };
 
@@ -461,10 +471,12 @@ const ContractForm = ({ number, onClose }) => {
           <NormalSelect
             selectedItem={selectedBuilding}
             list={CACHE_LIST?.building}
+            labelClassName="!w-fit"
+            selectClassNames="!bg-red-100"
             onChange={option => {
-              console.log("🚀 ~ ContractForm ~ option:", option)
               setSelectedBuilding(option?.id)
             }}
+            label="Buildings"
           />
           <SearchContract
             formPagination={formPagination}
@@ -491,13 +503,16 @@ const ContractForm = ({ number, onClose }) => {
             // values={values}
             />
             {watch('contract.id') && watch(`contract.gen_entries`) ? (
-              <ViewEntry id={watch('contract.id')} />
+              <ViewEntry id={watch('contract.id')} created_from={CREATED_FROM_CONTRACT} />
             ) : null}
           </div>
         </>
       }
       additionalButtons={
         <>
+          {watch('contract.id') && (
+            <Btn kind="warn" onClick={onClickRenew} containerClassName="mx-4">Renew Contract</Btn>
+          )}
           {watch(`contract.paid_type`) === 1 ? (
             <Btn
               kind="info"
@@ -557,6 +572,9 @@ const ContractForm = ({ number, onClose }) => {
                       : PATTERN_SETTINGS?.table_color2,
                 })}
               />
+              {tab === 'contract_other_fees' && watch('contract_other_fees.0.id') && (
+                <ViewEntry id={watch('contract.id')} created_from={CREATED_FROM_CONTRACT_FEES} />
+              )}
             </div>
           ) : (
             <>

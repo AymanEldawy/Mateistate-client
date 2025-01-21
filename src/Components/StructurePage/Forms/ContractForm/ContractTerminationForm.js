@@ -12,6 +12,7 @@ import { CONTRACT_STATUS } from "Helpers/Lib/contract-helpers";
 import { ViewEntry } from "Components/Global/ViewEntry";
 import Btn from "Components/Global/Btn";
 import TableFields from "Components/TableComponents/TableFields";
+import { CREATED_FROM_CONTRACT_FINES } from './../../../../Helpers/GENERATE_STARTING_DATA';
 
 const ContractTerminationForm = ({
   CACHE_LIST,
@@ -38,7 +39,7 @@ const ContractTerminationForm = ({
   }, []);
 
   const fields_grid = useMemo(
-    () => getFormByTableName("termination_fines_grid"),
+    () => getFormByTableName("contract_fines_grid"),
     []
   );
 
@@ -52,7 +53,7 @@ const ContractTerminationForm = ({
             setValue("contract.status", CONTRACT_STATUS.TERMINATED);
           } else {
             delete SHOULD_UPDATES[tab];
-            setValue("contract.status", CONTRACT_STATUS.ON);
+            setValue("contract.status", CONTRACT_STATUS.Valid);
           }
           break;
 
@@ -63,47 +64,38 @@ const ContractTerminationForm = ({
     return () => subscription.unsubscribe();
   }, [watch]);
 
+
   return (
     <>
-
-      <div className="flex items-center justify-between gap-4 border-b p-2  -mt-2">
-        <div className="flex items-center gap-4">
-          <CheckboxField {...fields?.gen_entries} updatedName={`${tab}.gen_entries`} />
-          {watch(`${tab}.id`) ? <ViewEntry id={watch(`${tab}.id`)} /> : null}
-        </div>
-        <div className="flex items-center gap-4">
-          {stage === 1 ? (
-
-            <Btn
-              type="button"
-              onClick={() => setStage(2)}
-            >
-              Open Termination fees
-            </Btn>
-          ) : (
-            <Btn
-              type="button"
-              kind="error"
-              onClick={() => setStage(1)}
-            >
-              close Termination fees
-            </Btn>
-          )}
-          <Btn
-            kind="warn"
-            disabled={!watch(`${tab}.terminated`) || !watch(`${tab}.id`)}
-            onClick={onClickRenew}
-            containerClassName="!text-black"
-          >
-            Renew Contract
-          </Btn>
-        </div>
+      <div className="bg-gray-100 border-b  flex items-center -mt-2 w-fit">
+        <button
+          type="button"
+          className={`text-sm !border-none p-2 py-1 duration-200 font-normal capitalize ${stage === 2 && 'bg-blue-100 text-blue-600 border-b shadow'}`}
+          onClick={() => setStage(2)}
+          isActive={stage === 2}
+        >
+          Termination fees
+        </button>
+        <button
+          type="button"
+          className={`text-sm !border-none p-2 py-1 duration-200 font-normal capitalize ${stage === 1 && 'bg-blue-100 text-blue-600 border-b shadow'}`}
+          onClick={() => setStage(1)}
+          isActive={stage === 1}
+        >
+          Termination
+        </button>
       </div>
       <div className="">
         {stage === 1 ? (
           <div className="grid sm:grid-cols-2 gap-4 md:gap-8 lg:gap-12 my-4">
             <div className="flex flex-col gap-4">
-              <CheckboxField {...fields?.terminated} updatedName={`${tab}.terminated`} />
+              <div className="flex items-center gap-10">
+                <CheckboxField {...fields?.terminated} updatedName={`${tab}.terminated`} />
+                <div className="">
+                  <CheckboxField {...fields?.gen_entries} updatedName={`${tab}.gen_entries`} />
+                  {watch(`${tab}.id`) ? <ViewEntry id={watch(`${tab}.id`)} /> : null}
+                </div>
+              </div>
               <Input
                 {...fields?.termination_date}
                 updatedName={`${tab}.termination_date`}
@@ -169,7 +161,7 @@ const ContractTerminationForm = ({
                   tab={tab}
                 />
               ) : null}
-              <Btn kind="info" containerClassName="!w-fit">
+              <Btn kind="info" containerClassName="!w-fit text-sm">
                 Print Clearance
               </Btn>
 
@@ -179,12 +171,13 @@ const ContractTerminationForm = ({
           <div className="">
             <TableFields
               fields={fields_grid}
-              tab="termination_fines_grid"
+              tab="contract_fines_grid"
               CACHE_LIST={CACHE_LIST}
-              rowsCount={watch("termination_fines_grid")?.length || 5}
+              rowsCount={watch("contract_fines_grid")?.length || 5}
               withPortal
             />
-            {watch(`termination_fines_grid.0.id`) ? <ViewEntry id={watch(`${tab}.id`)} /> : null}
+            <div className="mt-4" />
+            {watch(`contract_fines_grid.0.id`) ? <ViewEntry id={watch(`contract.id`)} created_from={CREATED_FROM_CONTRACT_FINES} /> : null}
           </div>
         }
       </div>

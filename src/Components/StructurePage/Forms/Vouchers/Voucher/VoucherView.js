@@ -4,16 +4,29 @@ import { useEffect, useState } from "react";
 import EntryForm from "../Entry/EntryForm";
 import { CloseIcon, NotAllowIcon } from "Components/Icons";
 import useCurd from "Hooks/useCurd";
+import FormTitle from "Components/Global/FormTitle";
 
 export const VoucherView = () => {
   const { voucherInfo, setVoucherInfo } = useVoucherEntriesView();
+  console.log("🚀 ~ VoucherView ~ voucherInfo:", voucherInfo)
   const [values, setValues] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const{getOneBy}= useCurd()
+  const { getOneBy, get } = useCurd()
 
   const fetchVoucher = async () => {
     setIsLoading(true);
-    const response = await getOneBy(voucherInfo?.table, voucherInfo?.id,voucherInfo?.ref_name);
+    // const response = await getOneBy(voucherInfo?.table, voucherInfo?.id,voucherInfo?.ref_name);
+    let condition = {}
+    if (voucherInfo?.created_from)
+      condition = { type: 'and', conditions: [['created_from', '=', voucherInfo?.created_from]] }
+
+    const response = await get(voucherInfo?.table, {
+      conditions: [
+        { type: 'and', conditions: [[voucherInfo?.ref_name, '=', voucherInfo?.id]] },
+        condition
+      ]
+    }
+    );
 
     if (response?.success) {
       const responseGrid = await getOneBy(
@@ -57,7 +70,7 @@ export const VoucherView = () => {
               number={values?.number}
             />
           ) : (
-            <div className="flex flex-col text-xl text-red-500 h-full">
+            <div className="flex flex-col text-xl text-red-500 h-full p-4">
               <button
                 onClick={() => setVoucherInfo({})}
                 className="h-9 w-9 rounded-full flex items-center justify-center bg-red-100 text-red-500 ltr:ml-auto rtl:mr-auto"

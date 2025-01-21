@@ -14,9 +14,6 @@ const NormalSelect = ({
   onChange,
 }) => {
 
-console.log(selectedItem, 'ldsdiasodas');
-
-
   return (
     <div
       className={`flex flex-row gap-1 ` + containerClassName}
@@ -29,7 +26,7 @@ console.log(selectedItem, 'ldsdiasodas');
             labelClassName
           }
         >
-          {title}
+          {title || label}
 
         </label>
       )}
@@ -41,7 +38,7 @@ console.log(selectedItem, 'ldsdiasodas');
           menuPlacement="auto"
           menuPortalTarget={document?.body}
           styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-          className={`min-h-[30px] h-[30px]  bg-white border rounded-md w-full field-select-container min-w-[100px]`}
+          className={`min-h-[30px] h-[30px] bg-white border rounded-md w-full field-select-container min-w-[100px] ${selectClassNames}`}
           // classNamePrefix="field-select"
           classNames={{
             control: (state) => "!border-none !min-h-[30px] !h-[30px]",

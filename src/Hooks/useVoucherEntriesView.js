@@ -6,13 +6,14 @@ export const VoucherEntriesViewContext = createContext();
 export const VoucherEntriesViewProvider = ({ children }) => {
   const [voucherInfo, setVoucherInfo] = useState({});
 
-  const dispatchVoucherEntries = ({ table, grid, ref_name, id }) => {
+  const dispatchVoucherEntries = ({ table, grid, ref_name, id, created_from }) => {
     if (id) {
       setVoucherInfo({
         table,
         grid,
         ref_name,
         id,
+        created_from
       });
     } else {
       setVoucherInfo({});

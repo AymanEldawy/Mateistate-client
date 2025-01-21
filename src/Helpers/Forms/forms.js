@@ -1178,24 +1178,15 @@ const building_real_estate_management = [
     label: "owner_account_id",
     name: "owner_account_id",
     ref_table: "account",
-    ref_table: UNIQUE_REF_TABLES.suppliers,
   }),
-  // {
-  //
-  //
-  //   is_ref: true,
-  //   ref_table: "owner",
-  //
-  //
-  // },
   {
     label: "commission_rate",
     name: "commission_rate",
     type: "number",
   },
   {
-    label: "revenue_id",
-    name: "revenue_id",
+    label: "building_revenue_account_id",
+    name: "building_revenue_account_id",
     is_ref: true,
     ref_table: "account",
   },

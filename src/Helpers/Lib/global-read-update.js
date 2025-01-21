@@ -169,21 +169,8 @@ export const getContractUpdateRestData = async (id) => {
     id
   );
 
-  const contract_terms = await fetchData("contract_terms", "contract_id", id);
-  const contract_pictures = await fetchData(
-    "contract_pictures",
-    "contract_id",
-    id
-  );
-
   const contract_other_fees = await fetchData(
     "contract_other_fees",
-    "contract_id",
-    id
-  );
-
-  const contract_fixed_assets = await fetchData(
-    "contract_fixed_assets",
     "contract_id",
     id
   );
@@ -200,22 +187,20 @@ export const getContractUpdateRestData = async (id) => {
     "contract_id",
     id
   );
-
-  const contract_receipt_number = await fetchData(
-    "contract_receipt_number",
-    "contract_id",
-    id
+  const contract_fines_grid = await fetchData(
+    "contract_fines_grid",
+    "termination_id",
+    contract_termination?.result?.at(0)?.id
   );
+
+
   const groupData = {
     contract_commission: contract_commission?.result?.at(0),
-    contract_terms: contract_terms?.result?.at(0),
-    contract_pictures: contract_pictures?.result,
     contract_other_fees: contract_other_fees?.result,
-    contract_fixed_assets: contract_fixed_assets?.result,
     contract_linked_parking: contract_linked_parking?.result,
     contract_cycle: contract_cycle?.result?.at(0),
     contract_termination: contract_termination?.result?.at(0),
-    contract_receipt_number: contract_receipt_number?.result,
+    contract_fines_grid: contract_fines_grid?.result,
   };
 
   return groupData;
@@ -228,6 +213,7 @@ export const getContractUpdate = async (id) => {
     await getInstallmentData(id);
 
   const data = await getContractUpdateRestData(id);
+  console.log("🚀 ~ getContractUpdate ~ data:", data)
   const groupData = {
     contract: contract?.result?.at(0),
     installment: installment?.result?.at(0),

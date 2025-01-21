@@ -41,22 +41,17 @@ const LanguageBar = () => {
 
   return (
     <div className="relative">
-      {open ? (
-        <div
-          className="fixed top-0 left-0 right-0 bottom-0 z-50 bg-black opacity-75"
-          onClick={() => setOpen(false)}
-        />
-      ) : null}
-      <button
-        className="p-2 rounded-full hover:bg-[#0002] relative"
+      <div
+        className="rounded-full flex items-center justify-center hover:bg-[#0002] relative h-10 w-10"
         onClick={() => setOpen(true)}
       >
         <img
           src={selectedLang?.flag}
           alt={selectedLang?.name}
-          className="w-5 h-5"
+          className="w-7 h-7 block object-cover rounded-full"
         />
-      </button>
+       
+      </div>
 
       {open ? (
         <ul className="absolute bg-white left-0 p-3 px-6 min-w-[200px] dark:bg-dark-bg shadow rounded-md top-12 z-50 text-gray-500 text-sm flex flex-col gap-3">

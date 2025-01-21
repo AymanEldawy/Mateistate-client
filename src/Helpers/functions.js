@@ -338,16 +338,16 @@ export function getUnitType(contract, value) {
 export function getContractStatus(value) {
   switch (value) {
     case 2:
-      return { value: "Expired", classes: `bg-red-100 text-red-600` };
+      return { value: "Terminate and Evacuated", classes: `bg-red-100 text-red-600` };
     case 3:
-      return { value: "Renew", classes: `bg-green-100 text-green-600` };
+      return { value: "Expired and renewed", classes: `bg-green-100 text-green-600` };
     case 4:
       return {
         value: "Expired and not renewed",
         classes: `bg-orange-100 text-orange-600`,
       };
     default:
-      return { value: "Rent", classes: `bg-blue-100 text-blue-600` };
+      return { value: "Valid", classes: `bg-blue-100 text-blue-600` };
   }
 }
 

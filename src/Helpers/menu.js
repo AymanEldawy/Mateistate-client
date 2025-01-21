@@ -1015,7 +1015,7 @@ const getMenu = async () => {
         {
           key: "contract",
           name: "contracts",
-          link: "/contracts",
+          link: "/contract",
         },
         ...contractMenu,
       ],

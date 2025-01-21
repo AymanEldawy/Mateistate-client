@@ -7,6 +7,7 @@ import {
   insertIntoGrid,
   deleteEntry,
   generateEntryFromTerminationFines,
+  generateEntryFromFees,
 } from "./vouchers-insert";
 import {
   FLATS_TABLE_NAME,
@@ -17,7 +18,7 @@ import {
 import { toast } from "react-toastify";
 import { getInsertAccountTrigger, removeNullValues } from "Helpers/functions";
 import {
-  CONNECT_WITH_CONTRACT_CODE, CREATED_FROM_CONTRACT_FINES, CREATED_FROM_CONTRACT_TERMINATION, CREATED_FROM_VOUCHER, MAIN_USERS_CODE,
+  CONNECT_WITH_CONTRACT_CODE, CREATED_FROM_CONTRACT_FEES, CREATED_FROM_CONTRACT_FINES, CREATED_FROM_CONTRACT_TERMINATION, CREATED_FROM_VOUCHER, MAIN_USERS_CODE,
   VOUCHER_RECEIPTS_CODE
 } from "Helpers/GENERATE_STARTING_DATA";
 import { getAccountCash } from "./global-read";
@@ -72,8 +73,8 @@ const CONTRACT_GRID_FORMS_NAMES = {
     table: "apartment_selling_price",
     conditions: ["price", "currency_id"],
   },
-  termination_fines_grid: {
-    table: "termination_fines_grid",
+  contract_fines_grid: {
+    table: "contract_fines_grid",
     conditions: ["account_id", "fee_amount"],
   },
 };
@@ -291,14 +292,15 @@ const dynamicInsertIntoContract = async ({
 
   if (!contract_id) {
     // Insert into contract or update
-    const number = await getNewContractNumber(data?.contract?.code);
+    // const number = await getNewContractNumber(data?.contract?.code);
     response = await ApiActions.insert("contract", {
       ...data?.contract,
       contract_type: contractType,
-      number: number || Math.floor(Math.random() * 100),
+      // number: number || Math.floor(Math.random() * 100),
     });
     contract_id = response?.record?.id;
   } else {
+    // NOTE: should update
     if (data?.contract_termination?.terminated) {
       data.contract.status = CONTRACT_STATUS.TERMINATED;
     }
@@ -333,6 +335,14 @@ const dynamicInsertIntoContract = async ({
               itemNameId: "contract_id",
               SHOULD_UPDATES,
             });
+            if (name === "contract_other_fees" && values && values?.length) {
+              await generateEntryFromFees({
+                values,
+                contractFirstTabData: data?.contract || list?.contract,
+                created_from: CREATED_FROM_CONTRACT_FEES,
+                created_from_id: contract_id
+              })
+            }
           }
         } else {
           values = removeNullValues(values);
@@ -355,6 +365,8 @@ const dynamicInsertIntoContract = async ({
               subItemId = response?.record?.id;
             }
           }
+
+
           if (name === "contract_termination" && values.gen_entries) {
             let terminationId = subItemId || values?.id || data?.contract_termination?.id
             await generateEntryFromTermination({
@@ -364,33 +376,27 @@ const dynamicInsertIntoContract = async ({
               created_from_id: terminationId,
               contractFirstTabData: data?.contract || list?.contract,
             });
-            const grid = data?.termination_fines_grid || list?.termination_fines_grid
+            
+            const grid = data?.contract_fines_grid || list?.contract_fines_grid
+
             if (grid?.length) {
               await insertIntoGridTabs({
+                itemNameId: "termination_id",
                 grid: grid,
-                tab: CONTRACT_GRID_FORMS_NAMES?.termination_fines_grid,
+                tab: CONTRACT_GRID_FORMS_NAMES?.contract_fines_grid,
                 item_id: terminationId,
-                itemNameId: "contract_termination_fines_id",
               });
 
               // Generate Entry from Termination Grid 
               await generateEntryFromTerminationFines({
                 created_from: CREATED_FROM_CONTRACT_FINES,
-                // created_from_code: CREATED_FROM_CONTRACT_TERMINATION_FINES_CODE,
                 values: grid,
-                created_from_id: terminationId,
+                created_from_id: contract_id,
                 contractFirstTabData: data?.contract || list?.contract,
               });
             }
 
           } else deleteEntry(subItemId);
-
-          if (
-            name === "contract_termination" &&
-            SHOULD_UPDATES?.termination_fines_grid
-          ) {
-
-          }
         }
       }
     }

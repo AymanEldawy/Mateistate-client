@@ -15,6 +15,7 @@ import { ToolsContentBar } from "Pages/Tools/ToolsContentBar";
 import BlockPaper from "Components/Global/BlockPaper";
 import { ToolsColorsBar } from "./ToolsColorsBar";
 import { refetchBuildingAssets } from "Helpers/functions";
+import useCurd from "Hooks/useCurd";
 
 const calculateFlats = (building) => {
   FLATS.apartment_count = building?.apartment_count * building?.apartment_floor;
@@ -39,20 +40,26 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
     UNITS_COLORED_COUNT,
     setUNITS_COLORED_COUNT,
   } = useFlatColoring();
-
   const {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
   const { watch } = useFormContext();
   const [selectedTab, setSelectedTab] = useState(
     Object.values(FLAT_PROPERTY_TABS)?.[0]
   );
   const [isLoading, setIsLoading] = useState(false);
+  const getBuildingOwning = async (building) => {
+
+  };
+
+  useEffect(() => {
+    if (!row?.id) return;
+  }, [row?.id]);
 
   useEffect(() => {
     calculateFlats(row);
+    getBuildingOwning(row);
     refetchBuildingAssets(
       row?.id,
       setFlatsDetails,
@@ -62,7 +69,7 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
   }, [row?.id]);
 
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {});
+    const subscription = watch((value, { name, type }) => { });
   }, [watch]);
 
   const onSubmit = async (value) => {
@@ -97,7 +104,7 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
             title="Flat Building Details"
             description={
               <Link
-                to={`/buildings/${row?.id}`}
+                to={`/building/${row?.number}`}
                 state={{ row, table: "building" }}
                 className="text-blue-500 dark:text-white hover:underline text-sm"
               >
@@ -124,11 +131,10 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
               return (
                 <span
                   key={key}
-                  className={`rounded-md py-1 px-2 ${
-                    val - assetsColoringCount
-                      ? "text-red-500 bg-red-50 font-normal border-red-500"
-                      : "text-gray-400"
-                  } border text-center capitalize`}
+                  className={`rounded-md py-1 px-2 ${val - assetsColoringCount
+                    ? "text-red-500 bg-red-50 font-normal border-red-500"
+                    : "text-gray-400"
+                    } border text-center capitalize`}
                 >
                   {key?.replace("_", " ")} : {val - assetsColoringCount}
                 </span>
@@ -148,11 +154,10 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
                       type="button"
                       onClick={() => setSelectedTab(tab)}
                       key={`${index}-${tab?.tabName}`}
-                      className={`${
-                        selectedTab?.tabName === tab?.tabName
-                          ? "!text-black !font-medium dark:bg-dark-border dark:!text-white bg-white"
-                          : ""
-                      } border dark:border-dark-border p-2 px-4 text-sm text-gray-500 font-normal min-w-[120px] w-fit capitalize whitespace-nowrap`}
+                      className={`${selectedTab?.tabName === tab?.tabName
+                        ? "!text-black !font-medium dark:bg-dark-border dark:!text-white bg-white"
+                        : ""
+                        } border dark:border-dark-border p-2 px-4 text-sm text-gray-500 font-normal min-w-[120px] w-fit capitalize whitespace-nowrap`}
                     >
                       {tab?.tabName}
                     </button>

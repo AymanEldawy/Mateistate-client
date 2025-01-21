@@ -27,14 +27,14 @@ const Btn = ({ children, kind, containerClassName, isLoading, isActive, ...props
 
     case 'default':
       classes =
-        `bg-gray-200 active:bg-gray-400 hover:bg-gray-700 ${isActive && 'bg-gray-700'} text-white`;
+        `bg-gray-200 active:bg-gray-400 hover:bg-gray-700 hover:text-white ${isActive && 'bg-gray-700 text-white'} text-black`;
     default:
       break;
   }
 
   return (
     <button
-      className={`text-sm flex items-center gap-4 disabled:bg-gray-200 disabled:text-gray-400 text-white px-4 h-7 tracking-wide rounded-md py-1 font-medium capitalize duration-300 ${classes} ${containerClassName}`}
+      className={`text-sm flex items-center gap-4 disabled:bg-gray-200 disabled:text-gray-400  px-4 h-7 tracking-wide rounded-md py-1 font-medium capitalize duration-300 ${classes} ${containerClassName}`}
       {...props}
     >
       {isLoading ? (

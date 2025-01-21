@@ -14,12 +14,10 @@ export const SearchContract = ({
         queryKey: ["contract", 'search', value],
         queryFn: async () => {
           let response = await getSearchContract(value);
-          console.log("🚀 ~ queryFn: ~ response:", response)
           return response?.result;
         },
         enable: !!value
       });
-      console.log(res, 'res');
 
       callback(res || []);
       return res;
@@ -46,7 +44,6 @@ export const SearchContract = ({
         input: () => "!h-[30px] !py-0 !-mt-[3px]",
       }}
       getOptionLabel={(option) => {
-        console.log("🚀 ~ option:", option)
         return option?.internal_number || `${option?.building_name}- ${option?.flat_name}`
       }}
       getOptionValue={(option) => option?.id}
@@ -54,7 +51,6 @@ export const SearchContract = ({
         loadOptions(inputValue, callback);
       }}
       onChange={option => {
-        console.log("🚀 ~ option:", option)
         formPagination?.getPaginationTable(option?.number)
       }}
     />

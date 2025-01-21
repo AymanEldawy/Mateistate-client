@@ -14,6 +14,7 @@ export { default as BuildingIcon } from './BuildingIcon'
 export { default as StoreIcon } from './StoreIcon'
 export { default as GearIcon } from './GearIcon'
 export { default as PuzzleIcon } from './PuzzleIcon';
+export { default as HomeIcon } from './HomeIcon';
 export { default as FullScreenIcon } from './FullScreenIcon';
 export { default as FitScreenIcon } from './FitScreenIcon';
 export { default as InformationIcon } from './InformationIcon';

@@ -23,7 +23,6 @@ const ContractFinancialForm = ({
   number,
   contractType,
 }) => {
-  console.log("🚀 ~ number:", number)
   const { watch } = useFormContext();
 
   const fieldsHash = useMemo(() => {
@@ -34,8 +33,7 @@ const ContractFinancialForm = ({
     return hash;
   }, [fields]);
 
-  console.log(fieldsHash?.current_securing_value,'current_securing_value');
-  
+
 
   return (
     <div className="">
@@ -60,17 +58,17 @@ const ContractFinancialForm = ({
           tab={"contract"}
         />
         <Input
-          {...fieldsHash?.internal_number}
-          updatedName={`contract.internal_number`}
+          {...fieldsHash?.issue_date}
+          containerClassName="ltr:ml-auto rtl:mr-auto"
+          updatedName={`contract.issue_date`}
           // values={values}
           tab={"contract"}
         />
 
-
       </div>
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-y-2 gap-x-6 mt-4 w-full  items-start">
         <div className="grid grid-cols-1 gap-y-2 gap-x-6 ">
-          {["client_id", "building_id", `${assetType}_id`, "lessor_id"]?.map(
+          {["client_id", "building_id", `${assetType}_id`]?.map(
             (field, i) => {
               let name = field?.replace("_id", "");
               let table = name;
@@ -80,7 +78,7 @@ const ContractFinancialForm = ({
               }
               return (
                 <UniqueFieldNormal
-                  key={i === 2 ? watch('contract.building_id') :`${field}-${i}-${number}`}
+                  key={i === 2 ? watch('contract.building_id') : `${field}-${i}-${number}`}
                   {...fieldsHash?.[field]}
                   updatedName={`contract.${field}`}
                   table={table}
@@ -92,6 +90,13 @@ const ContractFinancialForm = ({
               );
             }
           )}
+          <Input
+            {...fieldsHash?.description}
+            updatedName={`contract.description`}
+            containerClassName=" col-span-full"
+            // values={values}
+            tab={"contract"}
+          />
         </div>
         <div
           className={`grid grid-cols-1 gap-y-2 gap-x-6`}
@@ -123,12 +128,6 @@ const ContractFinancialForm = ({
           ) : (
             <>
               <Input
-                {...fieldsHash?.issue_date}
-                updatedName={`contract.issue_date`}
-                // values={values}
-                tab={"contract"}
-              />
-              <Input
                 {...fieldsHash?.property_delivery_date}
                 updatedName={`contract.property_delivery_date`}
                 // values={values}
@@ -136,14 +135,15 @@ const ContractFinancialForm = ({
               />
             </>
           )}
-           <Input
-            {...fieldsHash?.description}
-            updatedName={`contract.description`}
-            containerClassName=" col-span-full"
-            // values={values}
-            tab={"contract"}
-          />
 
+          <UniqueFieldNormal
+            {...fieldsHash?.lessor_id}
+            updatedName={`contract.lessor_id`}
+            table={'lessor'}
+            CACHE_LIST={CACHE_LIST}
+            list={CACHE_LIST?.lessor || []}
+          // values={values}
+          />
 
           {/* {watch(`contract.paid_type`) === 4 ? (
             <Button
@@ -208,7 +208,7 @@ const ContractFinancialForm = ({
         </div>
       </div>
 
-      <div className={`grid grid-cols-2 md:grid-cols-3  gap-x-6 my-4`}>
+      <div className={`grid grid-cols-2 md:grid-cols-3  gap-x-6 mb-2 mt-4`}>
         <div className="flex flex-col gap-y-2">
           {[
             "contract_value",
@@ -271,7 +271,7 @@ const ContractFinancialForm = ({
 
       <Textarea
         {...fieldsHash?.note}
-        containerClassName="mt-4"
+        containerClassName=""
         updatedName={`contract.note`}
         tab={"contract"}
         value={watch(`contract.note`)}

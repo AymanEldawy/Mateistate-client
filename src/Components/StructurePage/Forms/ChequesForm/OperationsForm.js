@@ -74,7 +74,6 @@ const mergePatternWithData = async (
   setValue("amount", chqValues?.amount);
   setValue("cheque_id", chqValues?.id);
   setValue("commission_cost_center_id", chqValues?.cost_center_id);
-  console.log(pattern, 'patter');
 
   // 
   // commission_percentage
@@ -316,7 +315,6 @@ export const OperationsForm = ({
     refetch();
   };
 
-  console.log(watch(), 'd-fd op');
 
   // Handle submit
   const onSubmit = async (value) => {
@@ -382,6 +380,7 @@ export const OperationsForm = ({
       <FormProvider {...methods}>
         <FormTitle
           name={name}
+          isDirty={isDirty}
           onClose={onClose}
           extraContentBar={
             <>

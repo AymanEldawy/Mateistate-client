@@ -57,7 +57,7 @@ const FormWrapperLayout = ({
     <>
       {/* {isLoading || isSubmitting || loadingRefTableData ? <Loading /> : null} */}
       {isLoading || isSubmitting ? <Loading /> : null}
-     
+
       <BlockPaper
         containerClassName={popupView ? "z-[102] p-0" : null}
         bodyClassName={popupView ? "!p-0" : null}
@@ -68,6 +68,7 @@ const FormWrapperLayout = ({
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <FormTitle
+              isDirty={isDirty}
               onClose={onClose}
               activeStage={currentIndex}
               steps={steps}
@@ -89,7 +90,7 @@ const FormWrapperLayout = ({
               {children}
             </div>
 
-           
+
           </form>
         </FormProvider>
       </BlockPaper>

@@ -56,20 +56,20 @@ export const DESPATCH_TABLES_NAME = {
 };
 
 export const CONTRACT_STATUS_NAMES = {
-  1: { status: "Rented", parentClass: "bg-orange-400" },
-  2: { status: "Vacant", parentClass: "bg-blue-500" },
+  1: { status: "Valid", parentClass: "bg-orange-400" },
+  2: { status: "Terminate and Evacuated", parentClass: "bg-blue-500" },
   3: { status: "Expired and not renewed", parentClass: "bg-red-500" },
-  4: { status: "Renewed", parentClass: "bg-purple-500" },
+  4: { status: "Expired and renewed", parentClass: "bg-purple-500" },
 };
 
 export const CONTRACT_STATUS = {
-  ON: 1,
-  OFF: 2,
-  TERMINATED: 3,
-  RENEWdD: 4,
+  Valid: 1,
+  Expired_and_not_renewed: 2,
+  Expired_and_renewed: 3,
+  Terminate_and_Evacuated: 4,
 };
 
-export async function fetchAndMergeBuildingInfo(buildingId, setValue) {
+export async function fetchAndMergeBuildingInfo(buildingId, setValue, SHOULD_UPDATES) {
   const response = await ApiActions.read("building", {
     conditions: [{ type: "and", conditions: [["id", "=", buildingId]] }],
   });
@@ -78,7 +78,7 @@ export async function fetchAndMergeBuildingInfo(buildingId, setValue) {
     if (data?.lessor_id)
       setValue(`contract.lessor_id`, data?.lessor_id);
     if (data?.commission_rate) {
-
+      SHOULD_UPDATES.contract_commission = true;
       setValue(
         "contract_commission.commission_percentage",
         data?.commission_rate
@@ -87,10 +87,10 @@ export async function fetchAndMergeBuildingInfo(buildingId, setValue) {
         "contract_commission.commission_from_owner_account_id",
         data?.owner_account_id
       );
-      setValue("contract_commission.commission_account_id", data?.revenue_id);
+      setValue("contract_commission.commission_account_id", data?.building_revenue_account_id);
     }
-    if (data?.revenue_id)
-      setValue(`contract.revenue_account_id`, data?.revenue_id);
+    if (data?.building_revenue_account_id)
+      setValue(`contract.revenue_account_id`, data?.building_revenue_account_id);
     if (data?.building_discount_account_id)
       setValue(
         `contract.discount_account_id`,
@@ -198,6 +198,10 @@ export const calculateContractDuration = async (
   }
 
   let end_duration_date = null;
+  if (duration === 4) {
+    setValue(`contract.end_duration_date`, new Date());
+    return
+  }
 
   switch (duration) {
     case 1:
@@ -222,7 +226,7 @@ export const calculateContractDuration = async (
   let subDate = new Date(end_duration_date)
   subDate.setDate(subDate.getDate() - 1);
   setValue(`contract.end_duration_date`, subDate);
-  return { end_duration_date: subDate, first_installment_date };
+
 };
 
 export async function mergeInstallmentAndFirstTabData(firstTabData, setValue, watch) {
@@ -240,7 +244,7 @@ export async function mergeInstallmentAndFirstTabData(firstTabData, setValue, wa
   if (total) {
     setValue("installment.total_amount", total);
   }
-  
+
   if (date) {
     setValue(
       `installment.first_installment_date`,
@@ -248,7 +252,7 @@ export async function mergeInstallmentAndFirstTabData(firstTabData, setValue, wa
     );
   }
 
-  
+
 }
 
 export function onWatchChangesInstallmentTab(name, value, setValue, watch) {

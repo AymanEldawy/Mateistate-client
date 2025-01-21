@@ -240,6 +240,7 @@ export const generateEntryFromContract = async ({
   should_update,
   commission,
 }) => {
+  console.log("🚀 ~ commission:", commission)
   let {
     currency_id: defaultCurrency,
     currency_val,
@@ -297,6 +298,8 @@ export const generateEntryFromContract = async ({
     commission?.commission_from_owner_account_id &&
     commission?.commission_account_id
   ) {
+    console.log('called check comission', commission);
+    
     let ownerTotal =
       final_price -
       ((commission?.commission_percentage / 100) * final_price).toFixed(2);
@@ -305,8 +308,8 @@ export const generateEntryFromContract = async ({
     gridRows.push({
       created_at,
       account_id: client_id,
-      debit: final_price,
-      observe_account_id: revenue_account_id,
+      debit: revenueTotal,
+      observe_account_id: commission?.commission_account_id,
       credit: 0,
       currency_id,
       cost_center_id,
@@ -325,6 +328,17 @@ export const generateEntryFromContract = async ({
       note,
     });
 
+    gridRows.push({
+      created_at,
+      account_id: client_id,
+      debit: ownerTotal,
+      observe_account_id: commission?.commission_from_owner_account_id,
+      credit: 0,
+      currency_id,
+      cost_center_id,
+      note,
+    });
+
     // owner
     gridRows.push({
       created_at,
@@ -336,7 +350,12 @@ export const generateEntryFromContract = async ({
       cost_center_id,
       note,
     });
+
+    console.log(gridRows, 'i---fdfd');
+    
   } else {
+    console.log('opposite');
+    
     gridRows.push({
       created_at,
       account_id: client_id,
@@ -440,7 +459,7 @@ export const generateEntryFromContract = async ({
     created_from: CREATED_FROM_CONTRACT,
     created_from_code: code,
     created_from_id: contractId,
-  });
+  }, { type: 'and', conditions: [['created_from', '=', CREATED_FROM_CONTRACT]] });
 
   let entry_main_data_id = response?.id;
 
@@ -869,10 +888,12 @@ export const generateEntryFromTerminationFines = async ({
   created_from_id,
   created_from_code,
   contractFirstTabData,
-  contract
 }) => {
 
-  let { client_id: account_id, number } = contractFirstTabData;
+
+  let { client_id: account_id, number, cost_center_id } = contractFirstTabData;
+
+  if (!account_id) return;
 
   const currencyResponse = await ApiActions.read("currency", {
     conditions: [
@@ -885,27 +906,35 @@ export const generateEntryFromTerminationFines = async ({
   let note = `Generated Entry From Contract number ${number} Termination Fines`;
   let amount = 0
   const grid = []
-  for (const value of values) {
-    amount += value?.fee_amount;
-    grid.push({
-      account_id,
-      observe_account_id: value?.account_id,
-      currency_id,
-      cost_center_id: contractFirstTabData?.cost_center_id,
-      debit: value?.fee_amount,
-      credit: 0,
-      note: value?.notes,
-    });
 
-    grid.push({
-      account_id: value?.account_id,
-      observe_account_id: account_id,
-      currency_id,
-      cost_center_id: contractFirstTabData?.cost_center_id,
-      debit: 0,
-      credit: value?.fee_amount,
-      note: value?.notes,
-    },)
+  for (const value of values) {
+    if (value?.fee_amount && value?.account_id) {
+      console.log("🚀 ~ value:", value)
+      amount += +value?.fee_amount;
+
+
+      grid.push({
+        account_id,
+        observe_account_id: value?.account_id,
+        currency_id,
+        cost_center_id,
+        debit: value?.fee_amount,
+        credit: 0,
+        note: value?.notes,
+      });
+
+      grid.push({
+        account_id: value?.account_id,
+        observe_account_id: account_id,
+        currency_id,
+        cost_center_id,
+        debit: 0,
+        credit: value?.fee_amount,
+        note: value?.notes,
+      })
+      console.log(grid, 'grid');
+
+    }
   }
 
 
@@ -922,35 +951,96 @@ export const generateEntryFromTerminationFines = async ({
     created_from_code,
   };
 
-  let observe_account_id = null;
-  if (!account_id) return;
-
   // insert into Entry
-  const response = await insertIntoEntry(entry, { type: 'and', conditions: [['created_from_code', '=', created_from_code]] });
+  const response = await insertIntoEntry(entry, { type: 'and', conditions: [['created_from', '=', created_from]] });
+  console.log("🚀 ~ response:", response)
 
   if (response?.id) {
-    const grid = [
-      {
-        account_id,
-        observe_account_id,
-        currency_id,
-        // cost_center_id,
-        debit: amount,
-        credit: 0,
-        note,
-      },
+    await insertIntoGrid({
+      grid,
+      itemId: response?.id,
+      tableName: "entry_main_data",
+      gridTableName: "entry_grid_data",
+      itemSearchName: "entry_main_data_id",
+    });
 
-      {
-        account_id: observe_account_id,
+    return;
+  }
+};
+
+export const generateEntryFromFees = async ({
+  values,
+  created_from,
+  created_from_id,
+  created_from_code,
+  contractFirstTabData,
+}) => {
+
+
+  let { client_id: account_id, number, cost_center_id } = contractFirstTabData;
+
+  if (!account_id) return;
+
+  const currencyResponse = await ApiActions.read("currency", {
+    conditions: [
+      { type: "and", conditions: [["code", "=", DEFAULT_CURRENCY_CODE]] },
+    ],
+  });
+
+  let currency_id = currencyResponse?.result?.at(0)?.id;
+
+  let note = `Generated Entry From Contract number ${number} Fees`;
+  let amount = 0
+  const grid = []
+
+  for (const value of values) {
+    if (value?.fee_amount && value?.account_id) {
+      console.log("🚀 ~ value:", value)
+      amount += +value?.fee_amount;
+
+
+      grid.push({
+        account_id,
+        observe_account_id: value?.account_id,
+        currency_id,
+        cost_center_id,
+        debit: value?.fee_amount,
+        credit: 0,
+        note: value?.notes,
+      });
+
+      grid.push({
+        account_id: value?.account_id,
         observe_account_id: account_id,
         currency_id,
-        // cost_center_id,
+        cost_center_id,
         debit: 0,
-        credit: amount,
-        note,
-      },
-    ];
+        credit: value?.fee_amount,
+        note: value?.notes,
+      })
+      console.log(grid, 'grid');
 
+    }
+  }
+
+
+  let entry = {
+    created_at: new Date(),
+    currency_id: currency_id,
+    currency_val: 1,
+    note,
+    debit: amount,
+    credit: amount,
+    difference: 0,
+    created_from,
+    created_from_id,
+    created_from_code,
+  };
+
+  // insert into Entry
+  const response = await insertIntoEntry(entry, { type: 'and', conditions: [['created_from', '=', created_from]] });
+
+  if (response?.id) {
     await insertIntoGrid({
       grid,
       itemId: response?.id,

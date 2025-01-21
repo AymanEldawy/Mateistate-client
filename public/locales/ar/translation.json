@@ -151,7 +151,7 @@
   "clearance_printed": "clearance_printed",
   "clearance_printed_date": "clearance_printed_date",
   "btn_action": "btn_action",
-  "contract_termination_fines_id": "contract_termination_fines_id",
+  "termination_id": "termination_id",
   "fee_amount": "fee_amount",
   "notes": "notes",
   "receipt_number": "receipt_number",

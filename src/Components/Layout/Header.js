@@ -3,8 +3,9 @@ import logo from "Assets/Images/abrepair-logo.svg";
 import BarsIcon from "Components/Icons/BarsIcon";
 import { IconsBar } from "./IconsBar";
 import { SearchBar } from "Components/StructurePage/CustomFields";
+import { HomeIcon } from "Components/Icons";
 
-function Header({ setOpen, mode, setMode }) {
+function Header({ setOpen }) {
   
   return (
     // <div className="bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 ">
@@ -13,6 +14,9 @@ function Header({ setOpen, mode, setMode }) {
         <div className="flex items-center gap-4">
           <Link className="" to="/">
             <img src={logo} alt="Abrepair" className="max-w-[140px]" />
+          </Link>
+          <Link className="h-10 w-10 flex items-center justify-center bg-[#0002] hover:bg-gray-200 hover:text-gray-600 rounded-full" to="/">
+            <HomeIcon />
           </Link>
           <button
             className="lg:hidden"

@@ -31,8 +31,8 @@ export const DashboardGridLayout = () => {
       <div className="flex-1 flex flex-col -translate-y-4 h-full gap-4">
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
           <ReportLatest
-            itemHref="/contracts"
-            href="/reports/contracts"
+            itemHref="/contract"
+            href="/reports/contract"
             name="contract"
           />
         </div>

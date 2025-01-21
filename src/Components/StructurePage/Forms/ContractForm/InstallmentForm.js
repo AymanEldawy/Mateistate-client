@@ -160,7 +160,7 @@ const InstallmentForm = ({
 
   useEffect(() => {
     if (openInstallmentForm && !watch("installment.total_amount")) {
-      mergeInstallmentAndFirstTabData(watch("contract"), setValue);
+      mergeInstallmentAndFirstTabData(watch("contract"), setValue, watch);
     }
   }, [openInstallmentForm]);
 
@@ -234,12 +234,13 @@ const InstallmentForm = ({
       }
       toast.success("Successfully saved Installment");
     } catch (error) {
-      console.log(error);
       toast.error("Failed to save Installment");
     }
     setIsLoading(false);
   };
 
+  console.log(watch());
+  
   return (
     <>
       {isLoading ? <Loading withBackdrop /> : null}
@@ -275,6 +276,7 @@ const InstallmentForm = ({
             <CurrencyFieldGroup
               tab="installment"
               list={CACHE_LIST?.currency}
+              
             />
 
             <div className={`${watch('installment.has_first_batch') ? 'col-span-2' : ''} contents gap-2 items-center justify-between`}>

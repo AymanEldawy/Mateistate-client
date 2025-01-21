@@ -161,7 +161,7 @@ const UserForm = ({
         fields={fields}
         values={watch()}
         errors={errors}
-        customGrid="grid md:grid-cols-3"
+        customGrid="grid md:grid-cols-2"
       />
 
       {watch("card_type") > 2 ? (

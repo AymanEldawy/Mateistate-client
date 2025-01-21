@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -26,6 +26,7 @@ const Input = ({
     control,
     formState: { errors },
   } = useFormContext();
+  const [hideNumber, setHideNumber] = useState(false)
 
   const watchField = field?.watch;
   const watchFieldName = tab ? `${tab}.${watchField}` : watchField;
@@ -81,14 +82,14 @@ const Input = ({
                         <CalenderIcon className="h-4 w-4" />
                       </span>
                     }
-                    minDate={new Date()}
+                    // minDate={new Date()}
                     value={value}
                     defaultValue={new Date()}
                     todayHighlight={true}
                     locale="en"
                     isClearable
                     // withPortal
-                    withPortal={withPortal}
+                    // withPortal={withPortal}
                     readOnly={
                       readOnly ||
                       (watchField &&
@@ -102,9 +103,12 @@ const Input = ({
                       onChange(date);
                     }}
                     required={field?.required}
+                    timeFormat="HH:mm"
                     dateFormat="dd-mm-yyyy"
-                  // portalId="root-portal"
-                  // dateFormat="dd/MM/yyyy"
+                    // portalId="root-portal"
+                    // dateFormat="dd-MM-yyyy"
+                    // dateFormat="dd-MM-yyyy h:mm aa"
+                  
                   //  "MMMM d, yyyy"
                   />
                 </div>
@@ -114,7 +118,7 @@ const Input = ({
                   <input
                     ref={ref}
                     name={updatedName || field?.name}
-                    className={`border h-[30px] text-xs font-medium read-only:bg-[#2289fb1c] w-full dark:read-only:bg-[#444] rounded p-1 ${isNumber && 'absolute top-0 left-0 w-full h-full opacity-0 z-10'} ${inputClassName} ${error ? "border-red-200 text-red-500" : ""
+                    className={`border h-[30px] text-xs font-medium read-only:bg-[#2289fb1c] w-full dark:read-only:bg-[#444] rounded p-1 focus-within:opacity-100 ${isNumber && 'absolute top-0 left-0 w-full h-full opacity-0 z-10'} ${inputClassName} ${error ? "border-red-200 text-red-500" : ""
                       } 
               `}
                     type={field?.type}
@@ -132,10 +136,14 @@ const Input = ({
                     onChange={(e) => {
                       onChange(e.target.value);
                     }}
-                    onBlur={onBlur}
+                    onBlur={() => {
+                      onBlur()
+                      setHideNumber(false)
+                    }}
+                    onFocus={() => setHideNumber(true)}
                   />
-                  {isNumber &&
-                    <span className="absolute w-full h-full top-0 left-0 border text-xs font-medium rounded p-1">{isNumber ? Number(value || 0)?.toLocaleString() : value}</span>
+                  {(isNumber && !hideNumber) &&
+                    <span className={`numbers absolute w-full h-full top-0 left-0 border text-xs font-medium rounded p-1 ${readOnly && 'bg-[#2289fb1c] w-full dark:bg-[#444]'}`}>{isNumber ? Number(value || 0)?.toLocaleString() : value}</span>
                   }
                 </div>
 

@@ -31,13 +31,18 @@ const CurrencyFieldGroup = ({
   const error = tab ? errors?.[tab]?.[field?.name] : errors?.[field?.name];
   const { currencies } = useGlobalOptions();
   const [currency, setCurrency] = useState(null);
-  console.log("🚀 ~ currencies:", currencies)
   const currency_id = tab ? `${tab}.currency_id` : "currency_id";
   const currency_val = tab ? `${tab}.currency_val` : "currency_val";
+  console.log("🚀 ~ currency_id:", currency_id)
+  console.log("🚀 ~ currency_val:", currency_val)
 
   useEffect(() => {
     if (!watch(currency_id)) {
-      setCurrency(currencies?.find(c => c?.code === DEFAULT_CURRENCY_CODE))
+      let defaultCurrency = currencies?.find(c => c?.code === DEFAULT_CURRENCY_CODE)
+      setCurrency(defaultCurrency)
+      if(!field?.hideValue) {
+        setValue(currency_val, defaultCurrency?.rate)
+      }
     }
   }, [currencies])
 
@@ -69,6 +74,7 @@ const CurrencyFieldGroup = ({
               field: { onChange, onBlur, ref, value },
               fieldState: { error },
             }) => {
+              console.log("🚀 ~ value:", value)
               return (
                 <Select
                   ref={ref}
@@ -97,6 +103,7 @@ const CurrencyFieldGroup = ({
                   defaultValue={currency}
                   // onChange={onChange}
                   onChange={(option) => {
+                    console.log("🚀 ~ option:", option)
                     onChange(option?.value)
                     setCurrency(option)
                   }}

@@ -20,6 +20,12 @@ const contract = [
     required: false,
   },
   {
+    label: "issue_date",
+    name: "issue_date",
+    type: "date",
+    required: true,
+  },
+  {
     label: "internal_number",
     name: "internal_number",
     type: "number",
@@ -246,8 +252,8 @@ const contract_commission = [
     type: "uuid",
     required: false,
     is_ref: true,
-    // ref_table: "account",
-    ref_table: UNIQUE_REF_TABLES.suppliers,
+    ref_table: "account",
+    // ref_table: UNIQUE_REF_TABLES.suppliers,
   },
   {
     label: "commission_from_owner_note",
@@ -287,50 +293,17 @@ const contract_cycle = [
     required: false,
     is_ref: true,
     ref_table: "contract",
-
     hide_in_form: true,
   },
-  {
-    label: "contract_documented",
-    name: "contract_documented",
-    type: "boolean",
-    required: false,
-    key: "switch",
-  },
-  {
-    label: "contract_certifying",
-    name: "contract_certifying",
-    type: "boolean",
-    required: false,
-    key: "switch",
-  },
+  
   {
     label: "contract_certifying_body",
     name: "contract_certifying_body",
     type: "text",
     required: false,
   },
-  {
-    label: "contract_received",
-    name: "contract_received",
-    type: "boolean",
-    required: false,
-    key: "switch",
-  },
-  {
-    label: "contract_delivered",
-    name: "contract_delivered",
-    type: "boolean",
-    required: false,
-    key: "switch",
-  },
-  {
-    label: "contract_signed",
-    name: "contract_signed",
-    type: "boolean",
-    required: false,
-    key: "switch",
-  },
+ 
+  
   {
     label: "municipal_license_num",
     name: "municipal_license_num",
@@ -379,6 +352,41 @@ const contract_cycle = [
     name: "civil_license_to",
     type: "date",
     required: false,
+  },
+  {
+    label: "contract_documented",
+    name: "contract_documented",
+    type: "boolean",
+    required: false,
+    key: "switch",
+  },
+  {
+    label: "contract_certifying",
+    name: "contract_certifying",
+    type: "boolean",
+    required: false,
+    key: "switch",
+  },
+  {
+    label: "contract_delivered",
+    name: "contract_delivered",
+    type: "boolean",
+    required: false,
+    key: "switch",
+  },
+  {
+    label: "contract_signed",
+    name: "contract_signed",
+    type: "boolean",
+    required: false,
+    key: "switch",
+  },
+  {
+    label: "contract_received",
+    name: "contract_received",
+    type: "boolean",
+    required: false,
+    key: "switch",
   },
 ];
 const contract_terms = [
@@ -617,12 +625,12 @@ const contract_termination = [
   },
 ];
 
-const termination_fines_grid = [
+const contract_fines_grid = [
   { label: "id", name: "id", type: "uuid", required: false },
   { label: "created_at", name: "created_at", type: "date", required: false },
   {
-    label: "contract_termination_fines_id",
-    name: "contract_termination_fines_id",
+    label: "termination_id",
+    name: "termination_id",
     type: "uuid",
     required: false,
     is_ref: true,
@@ -792,12 +800,6 @@ const apartment_sale_contract = [
     required: false,
   },
   {
-    label: "issue_date",
-    name: "issue_date",
-    type: "date",
-    required: true,
-  },
-  {
     label: "property_delivery_date",
     name: "property_delivery_date",
     type: "date",
@@ -835,12 +837,7 @@ const shop_sale_contract = [
     list: SELECT_LISTS("contract_status"),
     required: false,
   },
-  {
-    label: "issue_date",
-    name: "issue_date",
-    type: "date",
-    required: true,
-  },
+
   {
     label: "property_delivery_date",
     name: "property_delivery_date",
@@ -879,12 +876,7 @@ const parking_sale_contract = [
     list: SELECT_LISTS("contract_status"),
     required: false,
   },
-  {
-    label: "issue_date",
-    name: "issue_date",
-    type: "date",
-    required: true,
-  },
+
   {
     label: "property_delivery_date",
     name: "property_delivery_date",
@@ -1600,5 +1592,5 @@ export const CONTRACTS_FORM = {
 
   //
   contract_termination,
-  termination_fines_grid,
+  contract_fines_grid,
 };

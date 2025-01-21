@@ -4,7 +4,6 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 
 export const ChequeStatus = ({ onOpenFormOperation, pattern, chqValues }) => {
-  console.log("🚀 ~ ChequeStatus ~ chqValues:", chqValues)
   const { watch } = useFormContext();
 
   if(!chqValues?.id) return;
