@@ -2287,6 +2287,12 @@ const cheque_grid = [
     required: true,
   },
   {
+    label: "status",
+    name: "status",
+    type: "number",
+    required: true,
+  },
+  {
     label: "due_date",
     name: "due_date",
     type: "date",
@@ -2965,7 +2971,7 @@ const installment = [
 // ==== Start Operations
 const op_collection = [
   FIELDS_STRUCTURE.id(),
-  FIELDS_STRUCTURE.created_at({ hide_in_form_add: false }),
+  FIELDS_STRUCTURE.created_at({ label: 'collection date', hide_in_form: false }),
   {
     label: "amount",
     name: "amount",
@@ -3308,7 +3314,9 @@ const voucher_main_data = [
   },
 ];
 const voucher_main_data_short = [
-  FIELDS_STRUCTURE.number(),
+  FIELDS_STRUCTURE.number({
+    name: 'internal_number'
+  }),
   {
     label: "debit",
     name: "debit",

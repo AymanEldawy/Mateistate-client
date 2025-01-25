@@ -179,6 +179,7 @@ const UniqueField = ({
                   // cacheOptions
                   // defaultInputValue={value}
                   value={defaultOption}
+                  defaultValue={defaultOption}
                   // defaultValue={defaultOption}
                   getOptionValue={(option) => option?.[field?.ref_col || "id"]}
                   loadOptions={(inputValue, callback) => {

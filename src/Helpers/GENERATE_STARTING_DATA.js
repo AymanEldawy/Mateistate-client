@@ -1086,7 +1086,6 @@ export async function updateMaterialsPrice() {
 export async function updateNames() {
 
   const accounts = await ApiActions.read('account');
-  console.log("🚀 ~ updateNames ~ accounts:", accounts)
 
   for (const account of accounts?.result) {
     const name = DEFAULT_ACCOUNTS?.find(c => c?.name === account?.name)?.ltnnanme

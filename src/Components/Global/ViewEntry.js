@@ -3,7 +3,7 @@ import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 import React from "react";
 import Btn from "./Btn";
 
-export const ViewEntry = ({ id, created_from }) => {
+export const ViewEntry = ({ id, created_from, hideText }) => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   return (
     <Btn
@@ -21,7 +21,9 @@ export const ViewEntry = ({ id, created_from }) => {
         })
       }
     >
-      View Entry
+      {hideText ? null :
+        "View Entry"
+      }
       <EyeIcon className="h-5 w-5" />
     </Btn>
   );

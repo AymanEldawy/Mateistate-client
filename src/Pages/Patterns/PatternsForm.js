@@ -18,7 +18,7 @@ const PatternsForm = ({ layout, name, onClose }) => {
   const { getOneBy } = useCurd()
   const id = params?.id;
   const [isLoading, setIsLoading] = useState(false);
-  const formPagination = useFormPagination({ name });
+  const formPagination = useFormPagination({ name, number: params?.number });
   const { insert, set } = useCurd();
 
   const methods = useForm();

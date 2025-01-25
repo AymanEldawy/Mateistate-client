@@ -64,12 +64,12 @@ export const CONTRACT_STATUS_NAMES = {
 
 export const CONTRACT_STATUS = {
   Valid: 1,
-  Expired_and_not_renewed: 2,
-  Expired_and_renewed: 3,
-  Terminate_and_Evacuated: 4,
+  Terminate_and_Evacuated: 2,
+  Expired_and_not_renewed: 3,
+  Expired_and_renewed: 4,
 };
 
-export async function fetchAndMergeBuildingInfo(buildingId, setValue, SHOULD_UPDATES) {
+export async function fetchAndMergeBuildingInfo(buildingId, setValue) {
   const response = await ApiActions.read("building", {
     conditions: [{ type: "and", conditions: [["id", "=", buildingId]] }],
   });
@@ -78,7 +78,6 @@ export async function fetchAndMergeBuildingInfo(buildingId, setValue, SHOULD_UPD
     if (data?.lessor_id)
       setValue(`contract.lessor_id`, data?.lessor_id);
     if (data?.commission_rate) {
-      SHOULD_UPDATES.contract_commission = true;
       setValue(
         "contract_commission.commission_percentage",
         data?.commission_rate
@@ -118,19 +117,18 @@ export async function fetchAndMergeAssetInfo(asset, assetId, setValue) {
   }
 }
 
-export function onWatchChangesInTab1(name, setValue, watch, SHOULD_UPDATES) {
+export function onWatchChangesInTab1(name, setValue, watch) {
   switch (name) {
     case 'contract_value': {
       setValue('contract.price_before_vat', watch('contract.contract_value'))
       setValue('contract.final_price', watch('contract.contract_value'))
       return;
     }
+
     // case 'building_id': {
     //   ['apartment_id', 'parking_id', 'shop_id']?.forEach(flat => {
-    //     console.log('called apartemtn', flat, watch(`contract.${flat}`));
 
     //     if (watch(`contract.${flat}`)) {
-    //       console.log('called', true);
     //       setValue(`contract.${flat}`, undefined)
     //     }
     //   })
@@ -158,14 +156,12 @@ export function onWatchChangesInTab1(name, setValue, watch, SHOULD_UPDATES) {
       setValue("installment.total_amount", price);
       if (discount)
         setValue(`contract.discount_value`, discountValue?.toFixed(2));
-      SHOULD_UPDATES.installment = true;
 
       // if Contract has Real state management
       if (watch("contract_commission.commission_percentage")) {
         let commissionPrice = price - (discount / 100) * price;
         let commissionValue = price - commissionPrice;
         setValue(`contract_commission.commission_value`, commissionValue);
-        SHOULD_UPDATES.contract_commission = true;
       }
 
       return;
@@ -173,7 +169,7 @@ export function onWatchChangesInTab1(name, setValue, watch, SHOULD_UPDATES) {
 
     case "start_duration_date":
     case "contract_duration":
-      calculateContractDuration(watch, setValue, SHOULD_UPDATES);
+      calculateContractDuration(watch, setValue);
       return;
     default:
       return;
@@ -183,7 +179,6 @@ export function onWatchChangesInTab1(name, setValue, watch, SHOULD_UPDATES) {
 export const calculateContractDuration = async (
   watch,
   setValue,
-  SHOULD_UPDATES
 ) => {
   let duration = watch(`contract.contract_duration`);
   let start = watch(`contract.start_duration_date`);
@@ -194,7 +189,6 @@ export const calculateContractDuration = async (
   if (start) {
     first_installment_date = new Date(start)?.toISOString()?.substring(0, 10);
     setValue(`installment.first_installment_date`, first_installment_date);
-    SHOULD_UPDATES.installment = true;
   }
 
   let end_duration_date = null;
@@ -321,6 +315,7 @@ export async function autoMergePatternSettingsWithValues(
   setValue,
   tabs
 ) {
+
   if (pattern?.default_revenue_account_id)
     setValue(
       `contract.revenue_account_id`,
@@ -348,6 +343,12 @@ export async function autoMergePatternSettingsWithValues(
     );
   if (pattern?.gen_entries)
     setValue(`contract.gen_entries`, pattern?.gen_entries);
+
+  for (let i = 1; i <= 10; i++) {
+    let account = pattern?.[`default_fees_account_${i}`]
+    if (account)
+      setValue(`contract_fines_grid.${i - 1}.account_id`, account)
+  }
 }
 
 export const onWatchChangesTerminationTab = (name, value, watch, setValue) => {
@@ -554,7 +555,7 @@ export const onChangeContractStatus = async (col, watch, setValue) => {
 export const contractValidation = (contract) => {
   let isValid = true;
 
-  if (contract.current_securing_value && !contract.insurance_account_id) {
+  if (parseInt(contract.current_securing_value) > 0 && !contract.insurance_account_id) {
     isValid = false;
     toast.error(`Insurance account is Required`);
   }

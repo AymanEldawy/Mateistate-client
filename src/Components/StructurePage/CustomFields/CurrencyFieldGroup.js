@@ -33,13 +33,12 @@ const CurrencyFieldGroup = ({
   const [currency, setCurrency] = useState(null);
   const currency_id = tab ? `${tab}.currency_id` : "currency_id";
   const currency_val = tab ? `${tab}.currency_val` : "currency_val";
-  console.log("🚀 ~ currency_id:", currency_id)
-  console.log("🚀 ~ currency_val:", currency_val)
 
   useEffect(() => {
     if (!watch(currency_id)) {
       let defaultCurrency = currencies?.find(c => c?.code === DEFAULT_CURRENCY_CODE)
       setCurrency(defaultCurrency)
+      setValue(currency_id, defaultCurrency?.id)
       if(!field?.hideValue) {
         setValue(currency_val, defaultCurrency?.rate)
       }
@@ -54,7 +53,7 @@ const CurrencyFieldGroup = ({
 
   return (
     <>
-      <div className={`flex-row flex rounded-md text-sm ${containerClassName}`}>
+      <div className={`flex-row flex rounded-md text-sm h-[31px] ${containerClassName}`}>
         <label
           title="connect with id"
           className={
@@ -74,7 +73,6 @@ const CurrencyFieldGroup = ({
               field: { onChange, onBlur, ref, value },
               fieldState: { error },
             }) => {
-              console.log("🚀 ~ value:", value)
               return (
                 <Select
                   ref={ref}
@@ -103,7 +101,6 @@ const CurrencyFieldGroup = ({
                   defaultValue={currency}
                   // onChange={onChange}
                   onChange={(option) => {
-                    console.log("🚀 ~ option:", option)
                     onChange(option?.value)
                     setCurrency(option)
                   }}

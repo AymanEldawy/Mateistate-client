@@ -248,7 +248,7 @@ const TableFields = ({
                                       ) : (
                                         <>
                                           {showNumberAsLink &&
-                                          (field?.name === "number" ||
+                                          (field?.name === "internal_number" ||
                                             field?.name === "code") &&
                                           watch(`${tab}.${index}.id`) ? (
                                             // <ViewRowFrom />
@@ -259,7 +259,7 @@ const TableFields = ({
                                                   watch(`${tab}.${index}`)
                                                 );
                                               }}
-                                              className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-blue-500"
+                                              className="absolute z-10 top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-blue-500"
                                             >
                                               <SearchIcon className="text-inherit w-5 h-5" />{" "}
                                             </button>

@@ -12,15 +12,21 @@ const BillPattern = () => {
       <LayoutWrapper
         name={name}
         FormRender={(props) => {
-          console.log(props,'props');
-          
-          return <PatternsForm name={name}  {...props} />
+          console.log(props, 'props');
+
+          return <PatternsForm
+            name={name}
+            {...props}
+            onClose={() => {
+              props.onClose('/bill');
+            }}
+          />
         }}
-        // onClickDelete={}
-        // onClickAdd={}
-        // onClickPrint={}
-        // onClickView={}
-        // onSearch={}
+      // onClickDelete={}
+      // onClickAdd={}
+      // onClickPrint={}
+      // onClickView={}
+      // onSearch={}
       />
     </>
   );

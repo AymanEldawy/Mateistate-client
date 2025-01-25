@@ -153,6 +153,16 @@ export const getInstallmentData = async (contractId) => {
     conditions: [
       { type: "and", conditions: [["connect_with_id", "=", contractId]] },
     ],
+    joins: [
+      {
+        type: "leftJoin",
+        table: "voucher_grid_data",
+        conditions: {
+          "voucher_main_data.id": "voucher_grid_data.voucher_main_data_id",
+        },
+      },
+    ],
+    columns: ['voucher_main_data.*', 'voucher_grid_data.credit']
   });
 
   return {
@@ -213,7 +223,6 @@ export const getContractUpdate = async (id) => {
     await getInstallmentData(id);
 
   const data = await getContractUpdateRestData(id);
-  console.log("🚀 ~ getContractUpdate ~ data:", data)
   const groupData = {
     contract: contract?.result?.at(0),
     installment: installment?.result?.at(0),

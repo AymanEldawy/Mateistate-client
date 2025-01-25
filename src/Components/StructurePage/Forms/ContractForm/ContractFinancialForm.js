@@ -38,19 +38,6 @@ const ContractFinancialForm = ({
   return (
     <div className="">
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-x-6 w-full  items-start">
-        {watch("contract.contracts_number_prev") ? (
-          <Input
-            {...{
-              label: "prev_contracts_number",
-              name: "contracts_number_prev",
-              type: "number",
-            }}
-            updatedName={`contract.contracts_number_prev`}
-            // values={values}
-            readOnly
-            tab={"contract"}
-          />
-        ) : null}
         <Input
           {...fieldsHash?.gov_number}
           updatedName={`contract.gov_number`}
@@ -58,10 +45,20 @@ const ContractFinancialForm = ({
           tab={"contract"}
         />
         <Input
-          {...fieldsHash?.issue_date}
-          containerClassName="ltr:ml-auto rtl:mr-auto"
-          updatedName={`contract.issue_date`}
+          {...{
+            label: "prev_contracts_no",
+            name: "contracts_number_prev",
+            type: "number",
+          }}
+          updatedName={`contract.contracts_number_prev`}
           // values={values}
+          readOnly={watch(`contract.contracts_number_prev`) > 1 && watch('contract.id')}
+          tab={"contract"}
+        />
+        <Input
+          {...fieldsHash?.issue_date}
+          updatedName={`contract.issue_date`}
+          required={false}
           tab={"contract"}
         />
 
@@ -268,14 +265,18 @@ const ContractFinancialForm = ({
           value={watch(`contract.paid_type`)}
         />
       </div>
+      <div className="flex gap-x-6 items-end">
 
-      <Textarea
-        {...fieldsHash?.note}
-        containerClassName=""
-        updatedName={`contract.note`}
-        tab={"contract"}
-        value={watch(`contract.note`)}
-      />
+        <Textarea
+          {...fieldsHash?.note}
+          mainContainerClassName="flex-1 w-full"
+          updatedName={`contract.note`}
+          tab={"contract"}
+          value={watch(`contract.note`)}
+        />
+        {/* <ContractStatus status={watch('contract.status')} /> */}
+
+      </div>
 
       {/* <Select
         {...fieldsHash?.status}
@@ -284,7 +285,6 @@ const ContractFinancialForm = ({
         tab={"contract"}
         value={watch(`contract.status`)}
       /> */}
-      <ContractStatus contract_id={contract_id} tab={"contract"} />
     </div>
   );
 };

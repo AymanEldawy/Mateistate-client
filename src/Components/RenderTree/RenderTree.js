@@ -142,7 +142,7 @@ const RenderTree = ({
       <ul
         className={`relative pr-4 ltr:!ml-4 rtl:!mr-4 rounded-md dark:before:border-dark-border ltr:before:border-l-2 rtl:before:border-r-2  before:absolute ltr:before:left-0 rtl:before:right-0 before:-z-1 before:h-full color-level-0 after:opacity-50 after:w-4 after:h-full after:absolute after:top-0`}
       >
-        {displayTree(chartTree)}
+        {displayTree(chartTree?.sort((a,b) => a?.code - b?.code))}
       </ul>
     </>
   );

@@ -50,13 +50,13 @@ import { ViewEntry } from "Components/Global/ViewEntry";
 import FormLayout from "../FormWrapperLayout/FormLayout";
 import { SearchContract } from "./SearchContract";
 import { CREATED_FROM_CHQ, CREATED_FROM_CONTRACT, CREATED_FROM_CONTRACT_FEES } from "Helpers/GENERATE_STARTING_DATA";
+import { ContractStatus } from "./ContractStatus";
 
 const InstallmentForm = lazy(() => import("./InstallmentForm"));
 const ContractTerminationForm = lazy(() => import("./ContractTerminationForm"));
 const ContractPayments = lazy(() => import("Components/StructurePage/Forms/ContractForm/ContractPayments"));
 const ContractFinancialForm = lazy(() => import("./ContractFinancialForm"));
 
-const SHOULD_UPDATES = {};
 const CACHE_BUILDING_ASSETS = {};
 
 export async function filterAssetsByBuilding(
@@ -241,10 +241,17 @@ const ContractForm = ({ number, onClose }) => {
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
-      let tab = name?.split(".")?.at(0);
-      if (type) SHOULD_UPDATES[tab] = true;
-
       switch (name) {
+
+        case 'contract.end_duration_date':
+
+          if (type === 'change' && watch('contract.start_duration_date') && watch('contract.end_duration_date') && Date.parse(watch('contract.end_duration_date')) < Date.parse(watch('contract.start_duration_date'))) {
+            toast.error('End date should be grater than start date')
+            // setValue('contract.end_duration_date', new Date(watch('contract.start_duration_date')))
+          }
+          break
+
+
         case `contract.${assetType}_id`:
           if (watch(name)) {
             fetchAndMergeAssetInfo(assetType, watch(name), setValue);
@@ -252,7 +259,7 @@ const ContractForm = ({ number, onClose }) => {
           break;
         case `contract.building_id`:
           if (watch(name)) {
-            fetchAndMergeBuildingInfo(watch(name), setValue, SHOULD_UPDATES);
+            fetchAndMergeBuildingInfo(watch(name), setValue);
             filterAssetsByBuilding(
               watch(name),
               assetType,
@@ -271,11 +278,9 @@ const ContractForm = ({ number, onClose }) => {
           name?.split(".")?.at(-1),
           setValue,
           watch,
-          SHOULD_UPDATES
         );
       }
       if (name?.indexOf(`installment.`) !== -1) {
-        SHOULD_UPDATES.installment = true;
         onWatchChangesInstallmentTab(
           name?.split(".")?.at(-1),
           watch(name),
@@ -301,12 +306,17 @@ const ContractForm = ({ number, onClose }) => {
           case "amount":
           case "bank_id":
           case "end_due_date": {
-            SHOULD_UPDATES.installment = true;
             onWatchChangesInstallmentGridTab(name, setValue, watch, CACHE_LIST);
             break;
           }
           default:
             return;
+        }
+      }
+      if (name === 'contract_termination.termination_date' && type === 'change') {
+        if (Date.parse(watch(name)) < Date.parse(watch('contract.start_duration_date'))) {
+          toast.error(`Failed to set Date, termination date must be grater than start date`)
+          setValue('contract_termination.termination_date', new Date())
         }
       }
     });
@@ -326,7 +336,6 @@ const ContractForm = ({ number, onClose }) => {
     // setShouldRefresh((p) => !p);
   }, [code, type, assetType, PATTERN_SETTINGS?.id, contractId, formPagination?.currentNumber]);
 
-  console.log(watch());
 
   const globalButtonsActions = (action) => {
     switch (action) {
@@ -341,7 +350,7 @@ const ContractForm = ({ number, onClose }) => {
   const onClickRenew = async () => {
     let contract = watch("contract");
     delete contract.id;
-    delete contract.number;
+
     const startDate = new Date(contract?.start_duration_date);
     const endDate = new Date(contract?.end_duration_date);
     const differenceMs = endDate.getTime() - startDate.getTime();
@@ -353,19 +362,25 @@ const ContractForm = ({ number, onClose }) => {
     );
     setValue(
       `contract.end_duration_date`,
-      newEndDate
+      newEndDate,
+      { shouldDirty: true }
     );
     let contractNumbers = +contract.contracts_number_prev + 1;
     contract.contracts_number_prev = contractNumbers || 1;
     contract.contracts_number_current = contractNumbers || 2;
     contract.status = CONTRACT_STATUS.RENEWdD;
     contract.previous_securing = contract?.current_securing_value;
+    contract.number = +formPagination?.currentNumber + 1;
     contract.current_securing_value = 0;
     reset({ contract });
+
     setCurrentIndex(0);
     formPagination.setCurrentNumber(+formPagination.lastNumber + 1)
+    methods.trigger('contract')
+    setValue('contract.contracts_number_prev', contractNumbers || 1, { shouldDirty: true })
 
   };
+
 
 
   // Handel Submit
@@ -374,18 +389,17 @@ const ContractForm = ({ number, onClose }) => {
       return;
     }
 
+    if (watch('contract.end_duration_date') && watch('contract.start_duration_date') && Date.parse(watch('contract.end_duration_date')) < Date.parse(watch('contract.start_duration_date'))) {
+      toast.error('End date should be grater than start date')
+      return;
+    }
+
+    if (!watch('contract.status') && Date.parse(watch('contract.end_duration_date')) <= Date.parse(new Date())) {
+      setValue('contract.status', CONTRACT_STATUS.Expired_and_not_renewed);
+    }
+
     if (!contractValidation(watch("contract"))) return;
     setIsLoading(true);
-
-    if (SHOULD_UPDATES.installment) {
-      SHOULD_UPDATES.installment_grid = true;
-    }
-
-    for (const key in value) {
-      if (!SHOULD_UPDATES?.[key] && key !== "contract") {
-        delete value?.[key];
-      }
-    }
 
     setValue("contract.code", +code);
     setValue("contract.contract_pattern_id", PATTERN_SETTINGS?.id);
@@ -400,7 +414,6 @@ const ContractForm = ({ number, onClose }) => {
       contract: watch("contract"),
       tabName: contractName,
       layout: contractId,
-      SHOULD_UPDATES,
     });
 
     if (res?.success) {
@@ -450,6 +463,7 @@ const ContractForm = ({ number, onClose }) => {
       contractNumber: formPagination?.currentNumber,
       values: contract,
       commission,
+      pattern: PATTERN_SETTINGS
     });
   };
 
@@ -466,6 +480,14 @@ const ContractForm = ({ number, onClose }) => {
       onClose={onClose}
       formPagination={formPagination}
       formClassName="w-full xl:min-w-[900px] 2xl:min-w-[1200px]"
+      extraMenuContent={
+        <div className="mt-auto">
+          <ContractStatus status={watch('contract.status')} containerClassName="mb-2 mx-auto block text-center max-w-[90%]" />
+          {watch('contract.id') && (
+            <Btn kind="warn" type="button" onClick={onClickRenew} containerClassName="!text-xs mx-auto">Renew Contract</Btn>
+          )}
+        </div>
+      }
       extraContentBar={
         <>
           <NormalSelect
@@ -510,9 +532,7 @@ const ContractForm = ({ number, onClose }) => {
       }
       additionalButtons={
         <>
-          {watch('contract.id') && (
-            <Btn kind="warn" onClick={onClickRenew} containerClassName="mx-4">Renew Contract</Btn>
-          )}
+
           {watch(`contract.paid_type`) === 1 ? (
             <Btn
               kind="info"
@@ -613,7 +633,6 @@ const ContractForm = ({ number, onClose }) => {
                         CACHE_LIST={CACHE_LIST}
                         tab={tab}
                         onClickRenew={onClickRenew}
-                        SHOULD_UPDATES={SHOULD_UPDATES}
                       />
                     </Suspense>
                   ) : (

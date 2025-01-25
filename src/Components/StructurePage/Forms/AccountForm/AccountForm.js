@@ -138,7 +138,6 @@ const AccountForm = ({ onClose, popupView, number }) => {
   useEffect(() => {
     if (formPagination?.currentNumber > formPagination?.lastNumber) {
       reset({});
-      // console.log("reset form");
     }
   }, [formPagination?.currentNumber]);
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-export const FormSidebarMenu = ({ name, steps, activeStage, goTo }) => {
+export const FormSidebarMenu = ({ extraMenuContent, name, steps, activeStage, goTo }) => {
   return (
     <div className="flex sticky top-0 flex-col gap-2 bg-gray-200 py-4 text-gray-500 text-sm max-w-[150px] w-full ltr:border-r rtl:border-l border-gray-300">
       {steps?.map((step, index) => (
@@ -13,6 +13,7 @@ export const FormSidebarMenu = ({ name, steps, activeStage, goTo }) => {
           {step?.replace(/_/g, " ").replace(`${name}`, "")}
         </button>
       ))}
+      {extraMenuContent && extraMenuContent}
     </div>
   );
 };

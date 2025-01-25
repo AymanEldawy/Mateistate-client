@@ -43,7 +43,6 @@ const VoucherForm = ({
   onClose,
   code,
 }) => {
-  console.log("🚀 ~ oldValues:", oldValues)
   const name = "voucher_main_data";
   const type = code;
   const methods = useForm({
@@ -219,7 +218,6 @@ const VoucherForm = ({
         tableName: "voucher_main_data",
         gridTableName: "voucher_grid_data",
         itemSearchName: "voucher_main_data_id",
-        should_update: id,
       });
 
       if (!!setRecordResponse) {
@@ -240,7 +238,6 @@ const VoucherForm = ({
           created_from_code: +type,
           grid,
           created_from_id: itemId,
-          should_update: !id,
         });
       } else deleteEntry(itemId);
     }
@@ -255,7 +252,6 @@ const VoucherForm = ({
       toast.error(res?.error?.detail);
     }
   };
-  console.log(watch(), 'wa');
 
 
   return (

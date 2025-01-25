@@ -24,7 +24,6 @@ const MaterialChart = () => {
     setChartTree(toTree(data));
   }, [data]);
 
-  console.log(chartTree, "chartTree");
 
   const onSubmit = async (values) => {
     const res = await insert(name, values);

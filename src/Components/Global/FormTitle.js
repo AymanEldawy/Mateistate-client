@@ -8,7 +8,7 @@ const FormTitle = ({ name, onClose, extraContentBar, isDirty }) => {
 
   return (
     <>
-      <Modal open={open}>
+      <Modal open={open} containerClassName='!z-[105]'>
         <h3 className="text-yellow-600 font-semibold text-lg">Warning</h3>
         <p className="text-gray-600 text-sm">Are you sure you wan't leave the page without saving.</p>
         <div className="flex items-center gap-2 mt-4">

@@ -20,7 +20,6 @@ export const LayoutSearchBar = ({
                 },
                 enable: !!value
             });
-            console.log(res, 'res');
 
             callback(res || []);
             return res;
@@ -47,7 +46,6 @@ export const LayoutSearchBar = ({
                 input: () => "!h-[30px] !py-0 !-mt-[3px]",
             }}
             getOptionLabel={(option) => {
-                console.log("🚀 ~ option:", option)
                 return option?.internal_number || `${option?.building_name}- ${option?.flat_name}`
             }}
             getOptionValue={(option) => option?.id}
@@ -55,7 +53,6 @@ export const LayoutSearchBar = ({
                 loadOptions(inputValue, callback);
             }}
             onChange={option => {
-                console.log("🚀 ~ option:", option)
                 formPagination?.getPaginationTable(option?.number)
             }}
         />

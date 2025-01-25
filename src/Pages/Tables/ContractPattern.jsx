@@ -11,16 +11,21 @@ const ContractPattern = () => {
     <>
       <LayoutWrapper
         name={name}
-        FormRender={(props) => {
-          console.log(props, "props");
 
-          return <PatternsForm name={name} {...props} />;
+        FormRender={(props) => {
+          return <PatternsForm
+            name={name}
+            {...props}
+            onClose={() => {
+              props.onClose("/patterns/contract_pattern");
+            }}
+          />;
         }}
-        // onClickDelete={}
-        // onClickAdd={}
-        // onClickPrint={}
-        // onClickView={}
-        // onSearch={}
+      // onClickDelete={}
+      // onClickAdd={}
+      // onClickPrint={}
+      // onClickView={}
+      // onSearch={}
       />
     </>
   );

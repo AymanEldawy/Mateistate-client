@@ -42,6 +42,9 @@ const calculateChqAmount = (
   } else clearErrors("installment_grid_amount");
 };
 
+
+
+
 const installmentValidation = (watch, setError) => {
   if (+watch("installment.first_batch") > +watch("installment.total_amount")) {
     toast.error(
@@ -238,8 +241,6 @@ const InstallmentForm = ({
     }
     setIsLoading(false);
   };
-
-  console.log(watch());
   
   return (
     <>
@@ -276,7 +277,6 @@ const InstallmentForm = ({
             <CurrencyFieldGroup
               tab="installment"
               list={CACHE_LIST?.currency}
-              
             />
 
             <div className={`${watch('installment.has_first_batch') ? 'col-span-2' : ''} contents gap-2 items-center justify-between`}>

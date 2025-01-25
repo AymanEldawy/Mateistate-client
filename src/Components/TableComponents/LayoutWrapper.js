@@ -41,7 +41,7 @@ const LayoutWrapper = ({
     if ((number || code) && !openForm) setOpenForm(true);
   }, [number, code]);
 
-  const { isError, error, isLoading, isFetching, data } = useQuery({
+  const { isError, error, isLoading, isFetching, data, refetch } = useQuery({
     queryKey: [
       "list",
       name,
@@ -53,7 +53,7 @@ const LayoutWrapper = ({
       let fn = null;
       if (fn) {
         return await fn(columnFilters);
-      } else if(outerData) {
+      } else if (outerData) {
         return await outerData(columnFilters)
       }
       const response = await getDataWithFilter(name, columnFilters);
@@ -72,9 +72,9 @@ const LayoutWrapper = ({
 
       <Modal open={openForm} bodyClassName="!p-0 !overflow-hidden">
         <FormRender
-          onClose={() => {
+          onClose={(link) => {
             setOpenForm(false);
-            navigate(`/${name}`)
+            navigate(link || `/${name}`)
           }}
           setOpenForm={setOpenForm}
           number={number}
@@ -88,10 +88,11 @@ const LayoutWrapper = ({
             <ListHeader
               onClickAdd={() => {
                 if (!!onClickAdd) onClickAdd();
-                setOpenForm(true);
+                else
+                  setOpenForm(true);
               }}
               // onSearch={onSearch}
-              onClickDelete={onClickDelete ? () => onClickDelete(rowSelection) : null}
+              onClickDelete={onClickDelete ? () => onClickDelete(rowSelection, refetch) : null}
               onClickView={onClickView}
               onClickPrint={onClickPrint}
               additionalActions={additionalActions}

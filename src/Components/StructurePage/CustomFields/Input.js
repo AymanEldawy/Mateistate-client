@@ -82,13 +82,12 @@ const Input = ({
                         <CalenderIcon className="h-4 w-4" />
                       </span>
                     }
-                    // minDate={new Date()}
-                    value={value}
+                    value={new Date(value).toLocaleDateString('en-UK')}
                     defaultValue={new Date()}
                     todayHighlight={true}
                     locale="en"
                     isClearable
-                    // withPortal
+                    withPortal
                     // withPortal={withPortal}
                     readOnly={
                       readOnly ||
@@ -103,10 +102,10 @@ const Input = ({
                       onChange(date);
                     }}
                     required={field?.required}
-                    timeFormat="HH:mm"
-                    dateFormat="dd-mm-yyyy"
+                    // timeFormat="HH:mm"
+                    // dateFormat="dd-mm-yyyy"
                     // portalId="root-portal"
-                    // dateFormat="dd-MM-yyyy"
+                    dateFormat="dd-MM-yyyy"
                     // dateFormat="dd-MM-yyyy h:mm aa"
                   
                   //  "MMMM d, yyyy"

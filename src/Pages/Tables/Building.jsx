@@ -11,8 +11,9 @@ const Building = () => {
   const {remove} = useCurd()
 
 
-  const deleteBuilding = async (list) => {
+  const deleteBuilding = async (list, refetch) => {
     await remove(name, Object.keys(list))
+    refetch()
     return true
   }
 

@@ -4,10 +4,15 @@ import {
   getContractUnitType,
   getUnitType,
 } from "./functions";
-import { BanknoteIcon, UserIcon } from "Components/Icons";
+import { BanknoteIcon, PaletteIcon, PrintIcon, SearchIcon, UserIcon } from "Components/Icons";
 import IndeterminateCheckbox from "Components/TableComponents/IndeterminateCheckbox";
 import { SELECT_LISTS } from "./constants";
 import { DefaultColumnFilter } from "Components/TableComponents/ColumnFilter";
+import { ViewEntry } from "Components/Global/ViewEntry";
+import Btn from "Components/Global/Btn";
+import { CONTRACT_STATUS_NAMES, DESPATCH_TABLES_NAME } from "./Lib/contract-helpers";
+import { CHQ_RECEIVED_CODE, VOUCHER_RECEIPTS_CODE, VOUCHER_RECEIPTS_NAME } from "./GENERATE_STARTING_DATA";
+import { ContractStatus } from "Components/StructurePage/Forms/ContractForm/ContractStatus";
 
 const cheque_pattern = [
   {
@@ -219,7 +224,12 @@ const bill_pattern = [
     ),
   },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name", accessorKey: "name",
+    cell: ({ row, getValue }) => (
+      <Link className="text-blue-600 hover:underline" to={`/patterns/bill_pattern/${row?.original?.number}`}>{getValue()}</Link>
+    )
+  },
   {
     header: "bill_type",
     accessorKey: "bill_type",
@@ -428,11 +438,8 @@ const contract = [
     header: "contract_status",
     accessorKey: "status",
     cell: ({ row, getValue }) => {
-      let status = getContractStatus(getValue());
       return (
-        <span className={`px-4 text-xs w-fit block mx-auto rounded-md ${status?.classes}`}>
-          {status?.value}
-        </span>
+        <ContractStatus status={getValue()} containerClassName="mx-auto !w-fit" />
       );
     },
   },
@@ -931,7 +938,7 @@ const account = [
     enableColumnFilter: true,
     filter: 'includesStringSensitive',
     filterFn: 'inNumberRange',
-    addMeta :() => 'range',
+    addMeta: () => 'range',
     columnFiltersMeta: 'rangewithout',
   },
 
@@ -1534,12 +1541,21 @@ const building = [
     header: "name",
     accessorKey: "name",
     cell: ({ getValue, row }) => (
-      <Link
-        to={`/building/${row?.original?.number}`}
-        className="text-blue-500 font-medium hover:underline"
-      >
-        # {getValue()}
-      </Link>
+      <div className="flex items-center gap-4 justify-between">
+
+        <Link
+          to={`/building/${row?.original?.number}`}
+          className="text-blue-500 font-medium hover:underline"
+        >
+          {getValue()}
+        </Link>
+        <Link
+          to={`/tools/${row?.original?.id}`}
+          className="border capitalize hover:bg-gray-100 dark:bg-dark-border dark:text-white rounded-md px-2 py-[2px] text-sm flex items-center gap-1 font-medium "
+        >
+          <PaletteIcon className="w-5 h-5" />
+        </Link>
+      </div>
     ),
   },
   { header: "emirate", accessorKey: "emirate" },
@@ -1728,7 +1744,12 @@ const accounting_voucher_pattern = [
     ),
   },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name", accessorKey: "name",
+    cell: ({ row, getValue }) => (
+      <Link className="text-blue-600 hover:underline" to={`/patterns/accounting_voucher_pattern/${row?.original?.number}`}>{getValue()}</Link>
+    )
+  },
   { header: "list_name", accessorKey: "list_name" },
   { header: "default_account_id", accessorKey: "default_account_id" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
@@ -1996,7 +2017,11 @@ const contract_pattern = [
   },
   { header: "contract_type", accessorKey: "contract_type" },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name", accessorKey: "name", cell: ({ row, getValue }) => (
+      <Link className="text-blue-600 hover:underline" to={`/patterns/contract_pattern/${row?.original?.number}`}>{getValue()}</Link>
+    )
+  },
   { header: "list_name", accessorKey: "list_name" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
   { header: "gen_entries", accessorKey: "gen_entries" },
@@ -2394,7 +2419,12 @@ const voucher_pattern = [
     ),
   },
   { header: "code", accessorKey: "code" },
-  { header: "name", accessorKey: "name" },
+  {
+    header: "name", accessorKey: "name",
+    cell: ({ row, getValue }) => (
+      <Link className="text-blue-600 hover:underline" to={`/patterns/voucher_pattern/${row?.original?.number}`}>{getValue()}</Link>
+    )
+  },
   { header: "list_name", accessorKey: "list_name" },
   { header: "default_account_id", accessorKey: "default_account_id" },
   { header: "shortcut_key", accessorKey: "shortcut_key" },
@@ -3091,7 +3121,145 @@ const worker_category = [
   },
 ];
 
+const cheque_grid = [
+  {
+    id: "select",
+    size: 40,
+    isResizingColumn: false,
+    header: ({ table }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: table.getIsAllRowsSelected(),
+          indeterminate: table.getIsSomeRowsSelected(),
+          onChange: table.getToggleAllRowsSelectedHandler(),
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: row.getIsSelected(),
+          disabled: !row.getCanSelect(),
+          indeterminate: row.getIsSomeSelected(),
+          onChange: row.getToggleSelectedHandler(),
+        }}
+      />
+    ),
+  },
+  {
+    header: "internal_number",
+    accessorKey: "internal_number",
+    enableColumnFilter: false, cell: ({ row, getValue, table }) => {
+      return (
+        <div className="flex gap-2 items-center">
+          <button type='button' className="border px-2 py-1 font-medium hover:bg-gray-200 bg-gray-100 rounded-md flex items-center gap-2 text-sm" onClick={() => {
+            table.options.meta.setOpenForm({
+              open: true,
+              type: "CHEQUE",
+              table: DESPATCH_TABLES_NAME.CHEQUE,
+              oldValues: row?.original,
+              code: CHQ_RECEIVED_CODE,
+            })
+          }}>
+            {getValue()}
+            <SearchIcon className="h-4 w-4" />
+          </button>
+          <ViewEntry id={row?.original?.id} hideText />
+          <Btn
+            type="button"
+            onClick={() => { }}
+            containerClassName="!w-fit !px-2"
+          >
+            <PrintIcon className="w-5 h-5 text-inherit" />
+          </Btn>
+        </div>
+      )
+    }
+  },
+  { header: "amount", accessorKey: "amount", enableColumnFilter: false, },
+  {
+    header: "status", accessorKey: "status", enableColumnFilter: false, cell: ({ row }) => {
+      const displayChqStatus = () => {
+        if (row?.original?.collection_status) {
+          return <span className="text-xs px-2 p-1 rounded-md font-normal bg-green-500 text-white">Collected</span>
+        }
+        else if (row?.original?.collection_status) {
+          return <span className="text-xs px-2 p-1 rounded-md font-normal bg-yellow-500 text-white">Partial Collected</span>
+        }
+        else if (row?.original?.collection_status) {
+          return <span className="text-xs px-2 p-1 rounded-md font-normal bg-red-500 text-white">Returned</span>
+        }
+        else {
+          return <span className="text-xs px-2 p-1 rounded-md font-normal bg-gray-500 text-white">Uncollected</span>
+        }
+
+      }
+      return displayChqStatus()
+    }
+  },
+  {
+    header: "due_date", accessorKey: "due_date", enableColumnFilter: false, cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
+  {
+    header: "end_due_date", accessorKey: "end_due_date", enableColumnFilter: false, cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
+  { header: "bank_id", accessorKey: "bank_id", enableColumnFilter: false, },
+  { header: "note1", accessorKey: "note1", enableColumnFilter: false, },
+  { header: "note2", accessorKey: "note2", enableColumnFilter: false, },
+]
+
+
+const voucher_grid = [
+  {
+    header: "internal_number",
+    accessorKey: "internal_number",
+    enableColumnFilter: false, cell: ({ row, getValue, table }) => {
+      return (
+        <div className="flex gap-2 items-center">
+          <button type='button' className="border px-2 py-1 font-medium hover:bg-gray-200 bg-gray-100 rounded-md flex items-center gap-2 text-sm" onClick={() => {
+            table.options.meta.setOpenForm({
+              open: true,
+              type: "VOUCHER",
+              table: DESPATCH_TABLES_NAME.VOUCHER,
+              voucherName: VOUCHER_RECEIPTS_NAME,
+              voucherType: VOUCHER_RECEIPTS_CODE,
+              oldValues: {
+                ...row?.original,
+                grid: row?.original?.result,
+              },
+            })
+          }}>
+            {getValue()}
+            <SearchIcon className="h-4 w-4" />
+          </button>
+          <ViewEntry id={row?.original?.id} hideText />
+          <Btn
+            type="button"
+            onClick={() => { }}
+            containerClassName="!w-fit !px-2"
+          >
+            <PrintIcon className="w-5 h-5 text-inherit" />
+          </Btn>
+        </div>
+      )
+    }
+  },
+  { header: "credit", accessorKey: "credit", enableColumnFilter: false, },
+  {
+    header: "created_at", accessorKey: "created_at", enableColumnFilter: false, cell: ({ getValue }) => (
+      <span>{new Date(getValue())?.toLocaleDateString("en-UK")}</span>
+    ),
+  },
+  { header: "note", accessorKey: "note", enableColumnFilter: false, },
+]
+
 const TABLES = {
+  voucher_grid,
+  cheque_grid,
   contract,
   reservation_property,
   account,

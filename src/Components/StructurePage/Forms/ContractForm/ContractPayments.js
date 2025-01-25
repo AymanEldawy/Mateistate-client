@@ -24,6 +24,8 @@ import { useTranslation } from "react-i18next";
 import VoucherForm from "../Vouchers/Voucher/VoucherForm";
 import ChequeForm from "../ChequesForm/ChequeForm";
 import Modal from "Components/Global/Modal/Modal";
+import getTableColumns from "Helpers/columns-structure";
+import CustomTable from "Components/TableComponents/CustomTable";
 
 const PaymentsGridButton = ({
   onClickAdd,
@@ -63,15 +65,11 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
   const [selectedVoucherRows, setSelectedVoucherRows] = useState({});
   const [refresh, setRefresh] = useState(false);
   const [recordResponse, setRecordResponse] = useState([]);
+  const [selectedCheques, setSelectedCheques] = useState([]);
+  const [selectedVouchers, setSelectedVouchers] = useState([]);
   const { getOneBy } = useCurd();
-  let cheque_grid = useMemo(() => getFormByTableName("cheque_grid"), []);
-  let voucher_grid = useMemo(
-    () =>
-      getFormByTableName("voucher_main_data_short").filter(
-        (c) => c?.name !== "debit"
-      ),
-    []
-  );
+  let cheque_grid = useMemo(() => getTableColumns("cheque_grid"), []);
+  let voucher_grid = useMemo(() => getTableColumns("voucher_grid"), []);
 
   useEffect(() => {
     if (recordResponse?.table === CHQ_RECEIVED_NAME) {
@@ -193,6 +191,9 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
     });
   };
 
+  console.log(watch());
+
+
   return (
     <>
       <Modal open={openForm} bodyClassName="!p-0">
@@ -244,40 +245,52 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
           ) : null}
         </div>
         {watch("installment_grid")?.length ? (
-          <TableFields
-            fields={cheque_grid}
-            tab={"installment_grid"}
-            CACHE_LIST={CACHE_LIST}
-            rowsCount={watch("installment_grid")?.length || 10}
-            increasable={false}
-            selectedRows={selectedChqRows}
-            allowPrint
-            showNumberAsLink
-            withPortal
-            onClickPrint={(data) => console.log(data, "----")}
-            onClickOnNumber={(oldValues) => {
-              setOpenForm({
-                open: true,
-                type: "CHEQUE",
-                table: DESPATCH_TABLES_NAME.CHEQUE,
-                oldValues,
-                code: CHQ_RECEIVED_CODE,
-              });
-            }}
-            onRowClick={(index) =>
-              onSelectToPrint(index, selectedChqRows, setSelectedChqRows)
-            }
-            allowViewEntry={(row) => {
-              if (row?.id) {
-                dispatchVoucherEntries({
-                  table: "entry_main_data",
-                  grid: "entry_grid_data",
-                  ref_name: "created_from_id",
-                  id: row?.id,
-                });
-              }
+          <CustomTable
+            containerClassName="mt-2"
+            columns={cheque_grid}
+            data={watch('installment_grid')}
+            pageCount={watch('installment_grid')?.length}
+
+            rowSelection={selectedCheques}
+            setRowSelection={setSelectedCheques}
+            meta={{
+              setOpenForm
             }}
           />
+          // <TableFields
+          //   fields={cheque_grid}
+          //   tab={"installment_grid"}
+          //   CACHE_LIST={CACHE_LIST}
+          //   rowsCount={watch("installment_grid")?.length || 10}
+          //   increasable={false}
+          //   selectedRows={selectedChqRows}
+          //   allowPrint
+          //   showNumberAsLink
+          //   withPortal
+          //   onClickPrint={(data) => console.log(data, "----")}
+          //   onClickOnNumber={(oldValues) => {
+          //     setOpenForm({
+          //       open: true,
+          //       type: "CHEQUE",
+          //       table: DESPATCH_TABLES_NAME.CHEQUE,
+          //       oldValues,
+          //       code: CHQ_RECEIVED_CODE,
+          //     });
+          //   }}
+          //   onRowClick={(index) =>
+          //     onSelectToPrint(index, selectedChqRows, setSelectedChqRows)
+          //   }
+          //   allowViewEntry={(row) => {
+          //     if (row?.id) {
+          //       dispatchVoucherEntries({
+          //         table: "entry_main_data",
+          //         grid: "entry_grid_data",
+          //         ref_name: "created_from_id",
+          //         id: row?.id,
+          //       });
+          //     }
+          //   }}
+          // />
         ) : (
           <p>There is no Cheques</p>
         )}
@@ -299,53 +312,65 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
         </div>
 
         {watch("voucher_grid")?.length ? (
-          <TableFields
-            fields={voucher_grid}
-            tab={"voucher_grid"}
-            CACHE_LIST={CACHE_LIST}
-            rowsCount={watch("voucher_grid")?.length}
-            increasable={false}
-            selectedRows={selectedVoucherRows}
-            allowPrint
-            showNumberAsLink
-            withPortal
-            onClickPrint={(data) => console.log(data, "----")}
-            onClickOnNumber={async (oldValues) => {
-              const res = await getOneBy(
-                "voucher_grid_data",
-                oldValues?.id,
-                "voucher_main_data_id"
-              );
-              setOpenForm({
-                open: true,
-                type: "VOUCHER",
-                table: DESPATCH_TABLES_NAME.VOUCHER,
-                voucherName: VOUCHER_RECEIPTS_NAME,
-                voucherType: VOUCHER_RECEIPTS_CODE,
-                oldValues: {
-                  ...oldValues,
-                  grid: res?.result,
-                },
-              });
-            }}
-            onRowClick={(index) =>
-              onSelectToPrint(
-                index,
-                selectedVoucherRows,
-                setSelectedVoucherRows
-              )
-            }
-            allowViewEntry={(row) => {
-              if (row?.id) {
-                dispatchVoucherEntries({
-                  table: "entry_main_data",
-                  grid: "entry_grid_data",
-                  ref_name: "created_from_id",
-                  id: row?.id,
-                });
-              }
+
+          <CustomTable
+            containerClassName="mt-2"
+            columns={voucher_grid}
+            data={watch('voucher_grid')}
+            pageCount={watch('voucher_grid')?.length}
+            rowSelection={selectedVouchers}
+            setRowSelection={setSelectedVouchers}
+            meta={{
+              setOpenForm
             }}
           />
+          // <TableFields
+          //   fields={voucher_grid}
+          //   tab={"voucher_grid"}
+          //   CACHE_LIST={CACHE_LIST}
+          //   rowsCount={watch("voucher_grid")?.length}
+          //   increasable={false}
+          //   selectedRows={selectedVoucherRows}
+          //   allowPrint
+          //   showNumberAsLink
+          //   withPortal
+          //   onClickPrint={(data) => console.log(data, "----")}
+          //   onClickOnNumber={async (oldValues) => {
+          //     const res = await getOneBy(
+          //       "voucher_grid_data",
+          //       oldValues?.id,
+          //       "voucher_main_data_id"
+          //     );
+          //     setOpenForm({
+          //       open: true,
+          //       type: "VOUCHER",
+          //       table: DESPATCH_TABLES_NAME.VOUCHER,
+          //       voucherName: VOUCHER_RECEIPTS_NAME,
+          //       voucherType: VOUCHER_RECEIPTS_CODE,
+          //       oldValues: {
+          //         ...oldValues,
+          //         grid: res?.result,
+          //       },
+          //     });
+          //   }}
+          //   onRowClick={(index) =>
+          //     onSelectToPrint(
+          //       index,
+          //       selectedVoucherRows,
+          //       setSelectedVoucherRows
+          //     )
+          //   }
+          //   allowViewEntry={(row) => {
+          //     if (row?.id) {
+          //       dispatchVoucherEntries({
+          //         table: "entry_main_data",
+          //         grid: "entry_grid_data",
+          //         ref_name: "created_from_id",
+          //         id: row?.id,
+          //       });
+          //     }
+          //   }}
+          // />
         ) : (
           <p>There is no Cash</p>
         )}

@@ -3,17 +3,17 @@ import { CheckIcon } from "Components/Icons";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
-export const ChequeStatus = ({ onOpenFormOperation, pattern, chqValues }) => {
+export const ChequeStatus = ({ onOpenFormOperation, chqValues }) => {
   const { watch } = useFormContext();
 
-  if(!chqValues?.id) return;
+  if (!chqValues?.id) return;
   return (
     <div className="flex flex-wrap gap-6 pt-4 mt-8 mb-4">
       <Btn
         type="button"
-        kind="primary"
+        kind={watch("collection_status") ? "primary": 'default'}
         disabled={watch("partial_collection_status")}
-        classes={`disabled:bg-gray-200  flex gap-2 items-center disabled:text-gray-500 rounded-md px-4 py-2 capitalize hover:opacity-70 text-xs`}
+        classes={`disabled:bg-gray-200 flex gap-2 items-center disabled:text-gray-500 rounded-md px-4 py-2 capitalize hover:opacity-70 text-xs`}
         onClick={() =>
           onOpenFormOperation({
             table: 'op_collection',
@@ -32,7 +32,7 @@ export const ChequeStatus = ({ onOpenFormOperation, pattern, chqValues }) => {
       </Btn>
       <Btn
         type="button"
-        kind="info"
+        kind={watch("op_partial_collection") ? "info": 'default'}
         classes={`disabled:bg-gray-200  flex gap-2 items-center disabled:text-gray-500 rounded-md px-4 py-2 capitalize hover:opacity-70 text-xs`}
         disabled={watch("collection_status")}
         onClick={() =>
@@ -53,7 +53,7 @@ export const ChequeStatus = ({ onOpenFormOperation, pattern, chqValues }) => {
       </Btn>
       <Btn
         type="button"
-        kind="error"
+        kind={watch("return_status") ? "error": 'default'}
         classes={` bg-green-500 text-white disabled:bg-gray-200  flex gap-2 items-center disabled:text-gray-500 rounded-md px-4 py-2 capitalize hover:opacity-70 text-xs`}
         onClick={() =>
           onOpenFormOperation({

@@ -32,7 +32,6 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
     setValue,
     formState: { errors },
   } = methods;
-  console.log(formPagination, "---formPagination");
 
   const queryClientEntry = useQuery({
     queryKey: [name, formPagination?.currentId],

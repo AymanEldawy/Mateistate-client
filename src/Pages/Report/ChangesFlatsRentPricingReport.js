@@ -33,7 +33,6 @@ const ChangesFlatsRentPricingReport = () => {
       filters: watch(),
     });
     setData(res?.data);
-    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   console.log({

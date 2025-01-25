@@ -76,7 +76,6 @@ const NewUniqueField = ({
   };
 
   useEffect(() => {
-    // console.log(defaultOption, watch(updatedName || name), 'test');
     if (defaultOption && defaultOption?.[ref_col || 'id'] === watch(updatedName || name)) return;
 
     loadOptions(watch(updatedName || field?.name), '', true)

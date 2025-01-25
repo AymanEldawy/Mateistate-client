@@ -35,7 +35,6 @@ const MaterialForm = ({ popupView, onClose }) => {
     setCurrentIndex,
     formSettings,
   } = useFormSteps({ name });
-  console.log(steps, "steps");
 
   const {
     reset,
@@ -43,7 +42,6 @@ const MaterialForm = ({ popupView, onClose }) => {
     formState: { isDirty, errors },
     setValue,
   } = methods;
-  console.log(tab, "-dasdfdf");
 
   const { isLoading } = useQuery({
     queryKey: [name, materialId],
@@ -106,8 +104,6 @@ const MaterialForm = ({ popupView, onClose }) => {
       }
     }
   };
-
-  console.log(watch());
 
   return (
     <FormLayout

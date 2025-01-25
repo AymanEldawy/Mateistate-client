@@ -120,7 +120,6 @@ const useCurd = () => {
   };
 
   const getSearch = async (name, value, column = "name") => {
-    console.log(name, value, column);
 
     return curd.read(name, {
       conditions: [
@@ -130,7 +129,6 @@ const useCurd = () => {
   };
 
   const getDynamicSearch = async (name, value, column = "name", user) => {
-    console.log("🚀 ~ getDynamicSearch ~ name:", name)
     let table = name;
     let additional = {}
     switch (name) {
@@ -148,7 +146,6 @@ const useCurd = () => {
         // Handle default case if needed
         break;
     }
-    console.log(name, value, column);
 
     return curd.read(table, {
       conditions: [

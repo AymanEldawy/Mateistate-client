@@ -85,7 +85,6 @@ export const dynamicInsertIntoMultiStepsTable = async ({
   tableListName,
   ...additionalParams
 }) => {
-  const SHOULD_UPDATES = data?.SHOULD_UPDATES;
 
   let steps = Object.values(
     getFormByTableName(
@@ -126,7 +125,6 @@ export const dynamicInsertIntoMultiStepsTable = async ({
             grid: list[name],
             tab: CONTRACT_GRID_FORMS_NAMES?.[name],
             itemNameId: `${tableName}_id`,
-            SHOULD_UPDATES,
             item_id: tableId,
           });
         } else {
@@ -275,8 +273,6 @@ const dynamicInsertIntoContract = async ({
   contractType,
   ...additionalParams
 }) => {
-  let SHOULD_UPDATES = data?.SHOULD_UPDATES;
-
   let steps = Object.values(getFormByTableName(tableName)?.forms)?.map(
     (c) => c?.tab_name
   );
@@ -293,6 +289,9 @@ const dynamicInsertIntoContract = async ({
   if (!contract_id) {
     // Insert into contract or update
     // const number = await getNewContractNumber(data?.contract?.code);
+
+    // if(data?.contract?.end_dua)
+
     response = await ApiActions.insert("contract", {
       ...data?.contract,
       contract_type: contractType,
@@ -325,7 +324,6 @@ const dynamicInsertIntoContract = async ({
             insertIntoContractPictures({
               values,
               contract_id,
-              SHOULD_UPDATES,
             });
           } else {
             insertIntoGridTabs({
@@ -333,7 +331,6 @@ const dynamicInsertIntoContract = async ({
               tab: CONTRACT_GRID_FORMS_NAMES?.[name],
               item_id: contract_id,
               itemNameId: "contract_id",
-              SHOULD_UPDATES,
             });
             if (name === "contract_other_fees" && values && values?.length) {
               await generateEntryFromFees({
@@ -449,10 +446,12 @@ export const insertIntoContractInstallment = async ({
     let currency_val = installment?.currency_val;
     let first_batch = installment?.first_batch;
 
+    const firstBatchNote= `Generate First Cash, Contract no. ${firstTabData?.number}, Amount ${first_batch}`
+
     let entryMainData = {
       currency_id,
       currency_val,
-      note,
+      note:firstBatchNote ,
       debit: first_batch,
       credit: first_batch,
       difference: 0,
@@ -476,7 +475,7 @@ export const insertIntoContractInstallment = async ({
       credit: 0,
       // currency_id,
       cost_center_id,
-      note,
+      note: firstBatchNote,
     });
 
     gridEntry.push({
@@ -486,7 +485,7 @@ export const insertIntoContractInstallment = async ({
       credit: first_batch,
       // currency_id,
       cost_center_id,
-      note,
+      note: firstBatchNote,
     });
 
     if (installment?.has_first_batch && first_batch) {
@@ -499,7 +498,7 @@ export const insertIntoContractInstallment = async ({
         credit_amount: first_batch,
         credit_total: 0,
         debit_total: first_batch,
-        note,
+        note: firstBatchNote,
         connect_with_id: contract_id,
         is_first_batch: true,
       };
@@ -551,7 +550,7 @@ export const insertIntoContractInstallment = async ({
           // currency_id,
           cost_center_id,
           voucher_main_data_id,
-          note,
+          note: firstBatchNote,
         },
       ];
 
@@ -596,7 +595,6 @@ export const insertIntoContractInstallment = async ({
 const insertIntoContractPictures = async ({
   values,
   contract_id,
-  SHOULD_UPDATES,
 }) => {
   if (!values || !contract_id) return;
 
@@ -615,7 +613,6 @@ const insertIntoGridTabs = async ({
   tab: { table, conditions },
   item_id,
   itemNameId,
-  should_update,
 }) => {
   if (!grid || !table || !item_id) return;
 
@@ -889,6 +886,7 @@ export const generateApartments = async (
         };
 
         // insert into cost center
+        
         const cost_center_id = await generateCostCenterFromUnits({
           ...costCenterData,
           name: data?.[typeSettings?.no],

@@ -24,7 +24,8 @@ const FormLayout = ({
   setOpenConfirmation,
   formPagination,
   formClassName,
-  extraContentBar
+  extraContentBar,
+  extraMenuContent
 }) => {
   const refForm = useRef();
   const [height, setHeight] = useState(null);
@@ -61,6 +62,7 @@ const FormLayout = ({
               activeStage={activeStage}
               name={name}
               goTo={goTo}
+              extraMenuContent={extraMenuContent}
             />
           )}
           <div
@@ -78,7 +80,7 @@ const FormLayout = ({
               {additionalButtons && additionalButtons}
               <Btn
                 isLoading={isLoading}
-                disabled={!isDirty || disabledSubmit}
+                // disabled={!isDirty || disabledSubmit}
                 kind="primary"
               >
                 Save

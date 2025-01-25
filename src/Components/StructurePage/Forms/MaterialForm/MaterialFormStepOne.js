@@ -48,12 +48,6 @@ export const MaterialFormStepOne = ({
   const readOnly2 = watch("material.defaults1") || watch("material.defaults3");
   const readOnly3 = watch("material.defaults1") || watch("material.defaults2");
 
-  console.log({
-    readOnly1,
-    readOnly2,
-    readOnly3,
-  });
-
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-x-5 gap-2">

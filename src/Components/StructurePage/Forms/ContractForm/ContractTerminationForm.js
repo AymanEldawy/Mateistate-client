@@ -18,7 +18,6 @@ const ContractTerminationForm = ({
   CACHE_LIST,
   tab,
   onClickRenew,
-  SHOULD_UPDATES,
 }) => {
   const {
     watch,
@@ -49,10 +48,8 @@ const ContractTerminationForm = ({
       switch (key) {
         case "terminated":
           if (watch(name)) {
-            SHOULD_UPDATES[tab] = true;
             setValue("contract.status", CONTRACT_STATUS.TERMINATED);
           } else {
-            delete SHOULD_UPDATES[tab];
             setValue("contract.status", CONTRACT_STATUS.Valid);
           }
           break;
@@ -63,7 +60,6 @@ const ContractTerminationForm = ({
     });
     return () => subscription.unsubscribe();
   }, [watch]);
-
 
   return (
     <>
@@ -91,7 +87,7 @@ const ContractTerminationForm = ({
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-10">
                 <CheckboxField {...fields?.terminated} updatedName={`${tab}.terminated`} />
-                <div className="">
+                <div className="flex items-center gap-4">
                   <CheckboxField {...fields?.gen_entries} updatedName={`${tab}.gen_entries`} />
                   {watch(`${tab}.id`) ? <ViewEntry id={watch(`${tab}.id`)} /> : null}
                 </div>

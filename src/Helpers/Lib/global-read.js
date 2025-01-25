@@ -456,7 +456,6 @@ export const getSearchContract = async (value, building_id) => {
     ],
   });
 
-  console.log("🚀 ~ getSearchContract ~ res:", res)
   return res
 }
 

@@ -24,12 +24,14 @@ const Contract = () => {
   const contractName = `${assetType}_${type}_contract`;
   const [openLinks, setOpenLinks] = useState(false);
 
-  const deleteContract = async (list) => {
+  const deleteContract = async (list, refetch) => {
     console.log("🚀 ~ deleteContract ~ list:", list)
     await remove('contract', Object.keys(list))
+    refetch()
     return true
   }
 
+console.log(openLinks,'dsdsdldsi');
 
   return (
     <>
@@ -60,7 +62,6 @@ const Contract = () => {
                 name={name}
                 {...props}
                 onClose={() => {
-                  navigate("/contract/");
                   props.onClose();
                 }}
                 code={params?.code}

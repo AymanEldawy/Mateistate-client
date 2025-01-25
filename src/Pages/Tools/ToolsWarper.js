@@ -108,7 +108,7 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
                 state={{ row, table: "building" }}
                 className="text-blue-500 dark:text-white hover:underline text-sm"
               >
-                {row?.name ? row?.name : "Edit Building"}
+                Edit Building: {row?.name}
               </Link>
             }
           >
@@ -126,6 +126,9 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
             let assetsColoringCount = Object.keys(
               UNITS_COLORED_COUNT?.[assets] || {}
             )?.length;
+
+            console.log(key, val, assetsColoringCount, 'dsds');
+
 
             if (val)
               return (

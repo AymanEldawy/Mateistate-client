@@ -1,6 +1,6 @@
 import React from "react";
 
-const PaletteIcon = () => {
+const PaletteIcon = (props) => {
   return (
     <svg
       fill="#ebc024"
@@ -12,6 +12,7 @@ const PaletteIcon = () => {
       stroke="#ebc024"
       strokeWidth="2.56"
       transform="matrix(1, 0, 0, 1, 0, 0)rotate(90)"
+      {...props}
     >
       <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
       <g

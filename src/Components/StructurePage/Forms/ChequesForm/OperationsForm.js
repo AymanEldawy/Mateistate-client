@@ -69,11 +69,14 @@ const mergePatternWithData = async (
   pattern,
   watch,
   setValue,
-  chqValues
+  chqValues,
+  setRefresh,
 ) => {
   setValue("amount", chqValues?.amount);
   setValue("cheque_id", chqValues?.id);
   setValue("commission_cost_center_id", chqValues?.cost_center_id);
+
+  console.log(watch(), '-dsdsdsdsd', pattern);
 
   // 
   // commission_percentage
@@ -141,7 +144,7 @@ const mergePatternWithData = async (
       }
 
       if (pattern?.collection_default_observe_account_is_client) {
-        setValue("credit_account_id", chqValues?.account_id);
+        setValue("credit_account_id", chqValues?.account_id, { shouldDirty: true });
       }
 
       if (
@@ -155,7 +158,7 @@ const mergePatternWithData = async (
       const buildingAccounts = await getBuildingBank(chqValues);
       setValue("debit_account_id", buildingAccounts?.bank_id);
       setValue("credit_account_id", buildingAccounts?.cheque_id);
-      return;
+      break;
 
     case "op_partial_collection":
       if (chqValues?.amount) {
@@ -187,7 +190,7 @@ const mergePatternWithData = async (
         setValue("cost_center_id", chqValues?.cost_center_id);
       }
 
-      return;
+      break;
 
     case "op_return":
       if (pattern?.returnable_gen_entries) setValue("gen_entries", true);
@@ -224,10 +227,11 @@ const mergePatternWithData = async (
       )
         setValue("cost_center_id", chqValues?.cost_center_id);
 
-      return;
+      break;
     default:
-      return;
+      break;
   }
+  setRefresh(p => !p)
 };
 
 export const OperationsForm = ({
@@ -244,6 +248,7 @@ export const OperationsForm = ({
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDeletedSuccess, setIsDeletedSuccess] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const [partialNumbers, setPartialNumbers] = useState(0);
   const { remove, set, insert, getOneBy } = useCurd();
   const methods = useForm({
@@ -274,13 +279,13 @@ export const OperationsForm = ({
 
     getOperationData();
 
-    return () => {
-      reset({
-        credit_account_id: null,
-        debit_account_id: null,
-        note: "",
-      });
-    };
+    // return () => {
+    //   reset({
+    //     credit_account_id: null,
+    //     debit_account_id: null,
+    //     note: "",
+    //   });
+    // };
   }, [PATTERN_SETTINGS?.name, name, chqValues]);
 
   const getOperationData = async () => {
@@ -289,7 +294,7 @@ export const OperationsForm = ({
     if (response?.success && data?.id) {
       reset(data);
     } else {
-      mergePatternWithData(name, PATTERN_SETTINGS, watch, setValue, chqValues);
+      mergePatternWithData(name, PATTERN_SETTINGS, watch, setValue, chqValues, setRefresh);
     }
   };
 
@@ -368,6 +373,9 @@ export const OperationsForm = ({
     }
     setIsLoading(false);
   };
+
+  // console.log(watch(), 'called'  );
+
 
   return (
     <>

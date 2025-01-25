@@ -16,7 +16,7 @@ function Header({ setOpen }) {
             <img src={logo} alt="Abrepair" className="max-w-[140px]" />
           </Link>
           <Link className="h-10 w-10 flex items-center justify-center bg-[#0002] hover:bg-gray-200 hover:text-gray-600 rounded-full" to="/">
-            <HomeIcon />
+            <HomeIcon className="h-6 w-6" />
           </Link>
           <button
             className="lg:hidden"

@@ -8,7 +8,6 @@ import FormTitle from "Components/Global/FormTitle";
 
 export const VoucherView = () => {
   const { voucherInfo, setVoucherInfo } = useVoucherEntriesView();
-  console.log("🚀 ~ VoucherView ~ voucherInfo:", voucherInfo)
   const [values, setValues] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { getOneBy, get } = useCurd()

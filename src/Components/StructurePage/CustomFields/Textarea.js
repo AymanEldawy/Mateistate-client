@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 const Textarea = ({
   labelClassName,
   label,
+  mainContainerClassName,
   containerClassName,
   textareaClassName,
   updatedName,
@@ -27,7 +28,7 @@ const Textarea = ({
         formState: {},
       }) => {
         return (
-          <div className="flex flex-col gap-2">
+          <div className={`flex flex-col gap-2 ${mainContainerClassName}`}>
             <div className={"flex flex-col " + containerClassName}>
               {label && !hideLabel ? (
                 <label

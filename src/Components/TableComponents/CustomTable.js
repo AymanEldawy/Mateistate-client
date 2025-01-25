@@ -35,6 +35,7 @@ const CustomTable = ({
   outerSelectedId,
   setColumnFilters,
   columnFilters,
+  meta = {}
 }) => {
   const { t } = useTranslation();
   const [globalFilter, setGlobalFilter] = useState("");
@@ -83,6 +84,9 @@ const CustomTable = ({
       columnVisibility,
       pagination,
     },
+    meta: {
+      ...meta
+    }
   });
 
   const onDragStart = (e) => {
@@ -104,7 +108,7 @@ const CustomTable = ({
       <div className={`relative overflow-x-auto w-full ${containerClassName}`}>
         <table
           className={`w-[${table.getTotalSize()}] w-full border-2 ${tableClassName}`}
-          // style={{ width: table.getTotalSize() }}
+        // style={{ width: table.getTotalSize() }}
         >
           <thead className={`${tableHeadClassName} bg-gray-100 text-xs`}>
             {table.getHeaderGroups().map((headerGroup) => {
@@ -140,9 +144,9 @@ const CustomTable = ({
                             {header.isPlaceholder
                               ? null
                               : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
                           </span>
 
                           {header?.column.getCanFilter() && (
@@ -150,15 +154,15 @@ const CustomTable = ({
                               {header.isPlaceholder
                                 ? null
                                 : flexRender(
-                                    header.column.columnDef.Filter,
-                                    header.getContext()
-                                  )}
+                                  header.column.columnDef.Filter,
+                                  header.getContext()
+                                )}
                             </>
                           )}
                         </div>
                         {header.column.getCanSort() && (
                           <span className="text-xs absolute ltr:right-2 top-1 inline-block invisible group-hover:visible cursor-pointer">
-                            <SortIcon className="w-4 h-4"  />
+                            <SortIcon className="w-4 h-4" />
                           </span>
                         )}
                         <ResizeBar header={header} />
@@ -216,7 +220,9 @@ const CustomTable = ({
         </table>
       </div>
 
-      <TablePagination table={table} />
+      {pagination &&
+        <TablePagination table={table} />
+      }
 
       {!loading && !data?.length ? (
         <div className="text-red-500 mt-2">{t("no_results")}</div>

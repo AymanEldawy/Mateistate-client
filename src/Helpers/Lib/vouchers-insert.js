@@ -27,7 +27,6 @@ export const insertIntoEntry = async ({
   currency_val,
   created_from,
   created_from_id,
-  should_update,
   is_first_batch,
   created_from_code,
 }, additionalCondition = {}) => {
@@ -237,10 +236,9 @@ export const generateEntryFromContract = async ({
   assetsType,
   assetsTypeNumber,
   buildingNumber,
-  should_update,
   commission,
+  pattern
 }) => {
-  console.log("🚀 ~ commission:", commission)
   let {
     currency_id: defaultCurrency,
     currency_val,
@@ -298,8 +296,7 @@ export const generateEntryFromContract = async ({
     commission?.commission_from_owner_account_id &&
     commission?.commission_account_id
   ) {
-    console.log('called check comission', commission);
-    
+
     let ownerTotal =
       final_price -
       ((commission?.commission_percentage / 100) * final_price).toFixed(2);
@@ -351,11 +348,9 @@ export const generateEntryFromContract = async ({
       note,
     });
 
-    console.log(gridRows, 'i---fdfd');
-    
+
   } else {
-    console.log('opposite');
-    
+
     gridRows.push({
       created_at,
       account_id: client_id,
@@ -450,6 +445,7 @@ export const generateEntryFromContract = async ({
   }
 
   const response = await insertIntoEntry({
+    created_at: +pattern?.record_date_created === 1 ? values?.start_duration_date : values?.issue_date,
     currency_id,
     currency_val,
     note,
@@ -467,7 +463,6 @@ export const generateEntryFromContract = async ({
     insertIntoGrid({
       itemId: entry_main_data_id,
       grid: gridRows,
-      should_update,
       gridTableName: "entry_grid_data",
       tableName: "entry_main_data",
       itemSearchName: "entry_main_data_id",
@@ -481,7 +476,6 @@ export const generateEntryFromVoucher = async ({
   created_from,
   created_from_id,
   grid,
-  should_update,
   created_from_code,
 }) => {
   let {
@@ -494,12 +488,6 @@ export const generateEntryFromVoucher = async ({
     account_id,
     cost_center_id,
   } = values;
-
-  console.log({
-    values,
-    grid
-  });
-
 
   const response = await insertIntoEntry({
     currency_id,
@@ -552,7 +540,6 @@ export const generateEntryFromVoucher = async ({
     tableName: "entry_main_data",
     gridTableName: "entry_grid_data",
     itemSearchName: "entry_main_data_id",
-    should_update,
   });
 };
 
@@ -650,11 +637,11 @@ export const generateChequesFromInstallment = async ({
         });
 
         if (resInsert?.success) {
-          insertChq.push(item?.number);
+          insertChq.push(item?.internal_number);
           chq_id = resInsert?.record?.id;
         }
       } else {
-        deletedChq.push(item?.number);
+        deletedChq.push(item?.internal_number);
         const resDelete = await ApiActions.remove("cheque", {
           conditions: [
             { type: "and", conditions: [["id", "=", prevItem?.id]] },
@@ -669,7 +656,7 @@ export const generateChequesFromInstallment = async ({
           });
           if (res?.success) chq_id = null;
         } else {
-          deletedChq?.filter((c) => c !== item?.number);
+          deletedChq?.filter((c) => c !== item?.internal_number);
         }
       }
     }
@@ -791,7 +778,6 @@ export const generateEntryFromTermination = async ({
   contractFirstTabData,
   contract
 }) => {
-  console.log('called generateEntryFromTermination', contract);
 
   let {
     gen_entries,
@@ -909,9 +895,7 @@ export const generateEntryFromTerminationFines = async ({
 
   for (const value of values) {
     if (value?.fee_amount && value?.account_id) {
-      console.log("🚀 ~ value:", value)
       amount += +value?.fee_amount;
-
 
       grid.push({
         account_id,
@@ -932,7 +916,6 @@ export const generateEntryFromTerminationFines = async ({
         credit: value?.fee_amount,
         note: value?.notes,
       })
-      console.log(grid, 'grid');
 
     }
   }
@@ -953,7 +936,6 @@ export const generateEntryFromTerminationFines = async ({
 
   // insert into Entry
   const response = await insertIntoEntry(entry, { type: 'and', conditions: [['created_from', '=', created_from]] });
-  console.log("🚀 ~ response:", response)
 
   if (response?.id) {
     await insertIntoGrid({
@@ -995,7 +977,6 @@ export const generateEntryFromFees = async ({
 
   for (const value of values) {
     if (value?.fee_amount && value?.account_id) {
-      console.log("🚀 ~ value:", value)
       amount += +value?.fee_amount;
 
 
@@ -1018,7 +999,6 @@ export const generateEntryFromFees = async ({
         credit: value?.fee_amount,
         note: value?.notes,
       })
-      console.log(grid, 'grid');
 
     }
   }
@@ -1241,13 +1221,6 @@ export const generateEntryFromBill = async ({
   created_from_code,
   pattern,
 }) => {
-  console.log({
-    values,
-    created_from,
-    created_from_id,
-    created_from_code,
-  });
-
   const {
     currency_id = null,
     currency_val = 1,
