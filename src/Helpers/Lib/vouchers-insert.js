@@ -305,7 +305,7 @@ export const generateEntryFromContract = async ({
     gridRows.push({
       created_at,
       account_id: client_id,
-      debit: revenueTotal,
+      debit: Math.abs(revenueTotal),
       observe_account_id: commission?.commission_account_id,
       credit: 0,
       currency_id,
@@ -319,7 +319,7 @@ export const generateEntryFromContract = async ({
       account_id: commission?.commission_account_id,
       debit: 0,
       observe_account_id: client_id,
-      credit: revenueTotal,
+      credit: Math.abs(revenueTotal),
       currency_id,
       cost_center_id,
       note,
@@ -328,7 +328,7 @@ export const generateEntryFromContract = async ({
     gridRows.push({
       created_at,
       account_id: client_id,
-      debit: ownerTotal,
+      debit: Math.abs(ownerTotal),
       observe_account_id: commission?.commission_from_owner_account_id,
       credit: 0,
       currency_id,
@@ -342,7 +342,7 @@ export const generateEntryFromContract = async ({
       account_id: commission?.commission_from_owner_account_id,
       debit: 0,
       observe_account_id: client_id,
-      credit: ownerTotal,
+      credit: Math.abs(ownerTotal),
       currency_id,
       cost_center_id,
       note,
@@ -354,7 +354,7 @@ export const generateEntryFromContract = async ({
     gridRows.push({
       created_at,
       account_id: client_id,
-      debit: final_price,
+      debit: Math.abs(final_price),
       observe_account_id: revenue_account_id,
       credit: 0,
       currency_id,
@@ -367,7 +367,7 @@ export const generateEntryFromContract = async ({
       account_id: revenue_account_id,
       debit: 0,
       observe_account_id: client_id,
-      credit: final_price,
+      credit: Math.abs(final_price),
       currency_id,
       cost_center_id,
       note,
@@ -378,7 +378,7 @@ export const generateEntryFromContract = async ({
     gridRows.push({
       created_at,
       account_id: client_id,
-      debit: current_securing_value,
+      debit: Math.abs(current_securing_value),
       observe_account_id: insurance_account_id,
       credit: 0,
       currency_id,
@@ -391,7 +391,7 @@ export const generateEntryFromContract = async ({
       account_id: insurance_account_id,
       debit: 0,
       observe_account_id: client_id,
-      credit: current_securing_value,
+      credit: Math.abs(current_securing_value),
       currency_id,
       cost_center_id,
       note,
@@ -401,7 +401,7 @@ export const generateEntryFromContract = async ({
     gridRows.push({
       created_at,
       account_id: client_id,
-      debit: vat_value,
+      debit: Math.abs(vat_value),
       observe_account_id: vat_account_id,
       credit: 0,
       currency_id,
@@ -414,7 +414,7 @@ export const generateEntryFromContract = async ({
       account_id: vat_account_id,
       debit: 0,
       observe_account_id: client_id,
-      credit: vat_value,
+      credit: Math.abs(vat_value),
       currency_id,
       cost_center_id,
       note,
@@ -424,7 +424,7 @@ export const generateEntryFromContract = async ({
     gridRows.push({
       created_at,
       account_id: discount_account_id,
-      debit: discount_value,
+      debit: Math.abs(discount_value),
       observe_account_id: client_id,
       credit: 0,
       currency_id,
@@ -437,7 +437,7 @@ export const generateEntryFromContract = async ({
       account_id: client_id,
       debit: 0,
       observe_account_id: discount_account_id,
-      credit: discount_value,
+      credit: Math.abs(discount_value),
       currency_id,
       cost_center_id,
       note,
@@ -516,8 +516,8 @@ export const generateEntryFromVoucher = async ({
     currency_id,
     cost_center_id,
     note,
-    debit: values?.debit || 0,
-    credit: values?.credit || 0,
+    debit: Math.abs(values?.debit) || 0,
+    credit: Math.abs(values?.credit) || 0,
     entry_main_data_id,
   });
 
@@ -528,8 +528,8 @@ export const generateEntryFromVoucher = async ({
       currency_id,
       cost_center_id,
       note,
-      debit: values?.debit || 0,
-      credit: values?.credit || 0,
+      debit: Math.abs(values?.debit) || 0,
+      credit: Math.abs(values?.credit) || 0,
       entry_main_data_id,
     });
   }
@@ -551,7 +551,9 @@ export const generateChequesFromInstallment = async ({
   contract_id,
   cost_center_id,
 }) => {
+  console.log('called here cheque', installment_grid);
   if (!installment_grid?.length) return;
+
 
   const { currency_id } = installment;
   const responseChequePattern = await ApiActions.read("cheque_pattern", {
@@ -561,8 +563,9 @@ export const generateChequesFromInstallment = async ({
   });
 
   const pattern = responseChequePattern?.result?.at(0);
+  console.log("🚀 ~ pattern:", pattern)
 
-  if (!pattern?.gen_entries) return;
+  // if (!pattern?.gen_entries) return;
 
   let observe_account_id =
     installment_grid?.at(0)?.observe_account_id ||
@@ -678,21 +681,21 @@ export const generateChequesFromInstallment = async ({
     }
   }
 
-  if (deletedChq?.length) {
-    toast.success(`Successfully deleted Cheques numbers ${deletedChq}`, {
-      autoClose: false,
-    });
-  }
-  if (updatedChq?.length) {
-    toast.success(`Successfully updated Cheques numbers ${updatedChq}`, {
-      autoClose: false,
-    });
-  }
-  if (insertChq?.length) {
-    toast.success(`Successfully inserted Cheques numbers ${insertChq}`, {
-      autoClose: false,
-    });
-  }
+  // if (deletedChq?.length) {
+  //   toast.success(`Successfully deleted Cheques numbers ${deletedChq}`, {
+  //     autoClose: false,
+  //   });
+  // }
+  // if (updatedChq?.length) {
+  //   toast.success(`Successfully updated Cheques numbers ${updatedChq}`, {
+  //     autoClose: false,
+  //   });
+  // }
+  // if (insertChq?.length) {
+  //   toast.success(`Successfully inserted Cheques numbers ${insertChq}`, {
+  //     autoClose: false,
+  //   });
+  // }
   return;
 };
 
@@ -723,8 +726,8 @@ export const generateEntryFromCheque = async ({
     currency_id: currency_id,
     currency_val: currency_val || 1,
     note,
-    debit: amount, // cash
-    credit: amount, // customer
+    debit: Math.abs(amount), // cash
+    credit: Math.abs(amount), // customer
     difference: 0,
     created_from,
     created_from_id,
@@ -742,7 +745,7 @@ export const generateEntryFromCheque = async ({
         observe_account_id: account_id,
         currency_id,
         cost_center_id,
-        debit: amount,
+        debit: Math.abs(amount),
         credit: 0,
         note,
       },
@@ -753,7 +756,7 @@ export const generateEntryFromCheque = async ({
         currency_id,
         cost_center_id,
         debit: 0,
-        credit: amount,
+        credit: Math.abs(amount),
         note,
       },
     ];
@@ -807,8 +810,8 @@ export const generateEntryFromTermination = async ({
     currency_id: currency_id,
     currency_val: 1,
     note,
-    debit: amount,
-    credit: amount,
+    debit: Math.abs(amount),
+    credit: Math.abs(amount),
     difference: 0,
     created_from,
     created_from_id,
@@ -840,7 +843,7 @@ export const generateEntryFromTermination = async ({
         observe_account_id,
         currency_id,
         // cost_center_id,
-        debit: amount,
+        debit: Math.abs(amount),
         credit: 0,
         note,
       },
@@ -851,7 +854,7 @@ export const generateEntryFromTermination = async ({
         currency_id,
         // cost_center_id,
         debit: 0,
-        credit: amount,
+        credit: Math.abs(amount),
         note,
       },
     ];
@@ -902,7 +905,7 @@ export const generateEntryFromTerminationFines = async ({
         observe_account_id: value?.account_id,
         currency_id,
         cost_center_id,
-        debit: value?.fee_amount,
+        debit: Math.abs(value?.fee_amount),
         credit: 0,
         note: value?.notes,
       });
@@ -913,7 +916,7 @@ export const generateEntryFromTerminationFines = async ({
         currency_id,
         cost_center_id,
         debit: 0,
-        credit: value?.fee_amount,
+        credit: Math.abs(value?.fee_amount),
         note: value?.notes,
       })
 
@@ -926,8 +929,8 @@ export const generateEntryFromTerminationFines = async ({
     currency_id: currency_id,
     currency_val: 1,
     note,
-    debit: amount,
-    credit: amount,
+    debit: Math.abs(amount),
+    credit: Math.abs(amount),
     difference: 0,
     created_from,
     created_from_id,
@@ -996,7 +999,7 @@ export const generateEntryFromFees = async ({
         currency_id,
         cost_center_id,
         debit: 0,
-        credit: value?.fee_amount,
+        credit: Math.abs(value?.fee_amount),
         note: value?.notes,
       })
 
@@ -1009,8 +1012,8 @@ export const generateEntryFromFees = async ({
     currency_id: currency_id,
     currency_val: 1,
     note,
-    debit: amount,
-    credit: amount,
+    debit: Math.abs(amount),
+    credit: Math.abs(amount),
     difference: 0,
     created_from,
     created_from_id,
@@ -1056,8 +1059,8 @@ export const generateEntryFromChqOperation = async ({
     currency_id: currency_id,
     currency_val: currency_val || 1,
     note,
-    debit: amount, // cash
-    credit: amount, // customer
+    debit: Math.abs(amount), // cash
+    credit: Math.abs(amount), // customer
     difference: 0,
     created_from,
     created_from_id,
@@ -1074,7 +1077,7 @@ export const generateEntryFromChqOperation = async ({
         observe_account_id: credit_account_id,
         currency_id,
         cost_center_id,
-        debit: amount,
+        debit: Math.abs(amount),
         credit: 0,
         note,
       },
@@ -1085,7 +1088,7 @@ export const generateEntryFromChqOperation = async ({
         currency_id,
         cost_center_id,
         debit: 0,
-        credit: amount,
+        credit: Math.abs(amount),
         note,
       },
     ];
@@ -1125,8 +1128,8 @@ export const generateEntryFromReservation = async ({
     currency_id: currency_id,
     currency_val: currency_val || 1,
     note,
-    debit: payment_amount, // cash
-    credit: payment_amount, // customer
+    debit: Math.abs(payment_amount), // cash
+    credit: Math.abs(payment_amount), // customer
     difference: 0,
     created_from,
     created_from_id,
@@ -1154,7 +1157,7 @@ export const generateEntryFromReservation = async ({
         currency_id,
         cost_center_id,
         debit: 0,
-        credit: payment_amount,
+        credit: Math.abs(payment_amount),
         note,
       },
     ];
@@ -1241,8 +1244,8 @@ export const generateEntryFromBill = async ({
     currency_id,
     currency_val,
     note,
-    debit: totalAmount,
-    credit: totalAmount,
+    debit: Math.abs(totalAmount),
+    credit: Math.abs(totalAmount),
     difference: 0,
     created_from,
     created_from_id,
@@ -1316,7 +1319,7 @@ export const generateEntryFromBilInput = async ({
     ...defaultRow,
     account_id: material_account_id,
     observe_account_id: credit_account_id,
-    debit: subtotal,
+    debit: Math.abs(subtotal),
     credit: 0,
   });
 
@@ -1325,7 +1328,7 @@ export const generateEntryFromBilInput = async ({
     account_id: credit_account_id,
     observe_account_id: material_account_id,
     debit: 0,
-    credit: subtotal,
+    credit: Math.abs(subtotal),
   });
 
   // If there is a VAT
@@ -1334,7 +1337,7 @@ export const generateEntryFromBilInput = async ({
       ...defaultRow,
       account_id: vat_account_id,
       observe_account_id: credit_account_id,
-      debit: vat_amount,
+      debit: Math.abs(vat_amount),
       credit: 0,
     });
 
@@ -1343,7 +1346,7 @@ export const generateEntryFromBilInput = async ({
       account_id: credit_account_id,
       observe_account_id: vat_account_id,
       debit: 0,
-      credit: vat_amount,
+      credit: Math.abs(vat_amount),
     });
   }
   // If there is a DISCOUNTS
@@ -1369,7 +1372,7 @@ export const generateEntryFromBilInput = async ({
         account_id: observe_discount_account_id,
         observe_account_id: discount_account_id,
         debit: 0,
-        credit: discounts,
+        credit: Math.abs(discounts),
         cost_center_id: row?.cost_center_id || cost_center_id,
         note: row?.note || `note`,
       });
@@ -1398,7 +1401,7 @@ export const generateEntryFromBilInput = async ({
           account_id: observe_extras_account_id,
           observe_account_id: extra_account_id,
           debit: 0,
-          credit: extras,
+          credit: Math.abs(extras),
           cost_center_id: row?.cost_center_id || cost_center_id,
           note: row?.note || `note`,
         });
@@ -1460,7 +1463,7 @@ export const generateEntryFromBilOutput = async ({
     ...defaultRow,
     account_id: debit_account_id,
     observe_account_id: material_account_id,
-    debit: subtotal,
+    debit: Math.abs(subtotal),
     credit: 0,
   });
 
@@ -1469,7 +1472,7 @@ export const generateEntryFromBilOutput = async ({
     account_id: material_account_id,
     observe_account_id: debit_account_id,
     debit: 0,
-    credit: subtotal,
+    credit: Math.abs(subtotal),
   });
 
   // If there is a VAT
@@ -1478,7 +1481,7 @@ export const generateEntryFromBilOutput = async ({
       ...defaultRow,
       account_id: debit_account_id,
       observe_account_id: vat_account_id,
-      debit: vat_amount,
+      debit: Math.abs(vat_amount),
       credit: 0,
     });
 
@@ -1487,7 +1490,7 @@ export const generateEntryFromBilOutput = async ({
       account_id: vat_account_id,
       observe_account_id: debit_account_id,
       debit: 0,
-      credit: vat_amount,
+      credit: Math.abs(vat_amount),
     });
   }
   // If there is a DISCOUNTS
@@ -1502,7 +1505,7 @@ export const generateEntryFromBilOutput = async ({
           ...defaultRow,
           account_id: observe_discount_account_id,
           observe_account_id: discount_account_id,
-          debit: discounts,
+          debit: Math.abs(discounts),
           credit: 0,
           cost_center_id: row?.cost_center_id || cost_center_id,
           note: row?.note || `note`,
@@ -1512,7 +1515,7 @@ export const generateEntryFromBilOutput = async ({
           account_id: discount_account_id,
           observe_account_id: observe_discount_account_id,
           debit: 0,
-          credit: discounts,
+          credit: Math.abs(discounts),
           cost_center_id: row?.cost_center_id || cost_center_id,
           note: row?.note || `note`,
         });
@@ -1531,7 +1534,7 @@ export const generateEntryFromBilOutput = async ({
           ...defaultRow,
           account_id: observe_extras_account_id,
           observe_account_id: extra_account_id,
-          debit: extras,
+          debit: Math.abs(extras),
           credit: 0,
           cost_center_id: row?.cost_center_id || cost_center_id,
           note: row?.note || `note`,
@@ -1542,7 +1545,7 @@ export const generateEntryFromBilOutput = async ({
           account_id: extra_account_id,
           observe_account_id: observe_extras_account_id,
           debit: 0,
-          credit: extras,
+          credit: Math.abs(extras),
           cost_center_id: row?.cost_center_id || cost_center_id,
           note: row?.note || `note`,
         });

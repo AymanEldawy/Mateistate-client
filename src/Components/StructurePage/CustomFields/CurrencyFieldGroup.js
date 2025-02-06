@@ -43,7 +43,7 @@ const CurrencyFieldGroup = ({
         setValue(currency_val, defaultCurrency?.rate)
       }
     }
-  }, [currencies])
+  }, [currencies, tab, watch])
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {

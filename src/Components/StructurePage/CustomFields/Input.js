@@ -76,6 +76,7 @@ const Input = ({
                       }`}
                     calendarIconClassname={`-ml-1 pointer-events-none !cursor-pointer`}
                     showIcon
+                    yearDropdownItemNumber={15}
                     selected={value ? new Date(value) : ""}
                     icon={
                       <span>
@@ -83,7 +84,8 @@ const Input = ({
                       </span>
                     }
                     value={new Date(value).toLocaleDateString('en-UK')}
-                    defaultValue={new Date()}
+                    // defaultValue={new Date()}
+                    showYearDropdown
                     todayHighlight={true}
                     locale="en"
                     isClearable

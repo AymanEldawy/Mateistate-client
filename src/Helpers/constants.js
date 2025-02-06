@@ -877,7 +877,6 @@ export const BILL_PATTERN_STEPS = {
 
 export const CHEQUE_PATTERN_STEPS = {
   cheque_pattern_general: "cheque_pattern_general",
-  cheque_pattern_deportable: "cheque_pattern_deportable",
   cheque_pattern_collection: "cheque_pattern_collection",
   cheque_pattern_commission: "cheque_pattern_commission",
   cheque_pattern_partial_collection: "cheque_pattern_partial_collection",

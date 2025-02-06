@@ -150,6 +150,7 @@ const InstallmentForm = ({
   const { watch, setValue, setError, clearErrors } = useFormContext();
   const [totalCheAmount, setTotalChqAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAllowToRegenerate, setIsAllowToRegenerate] = useState(false);
 
   const fields_form = useMemo(() => {
     let hash = {}
@@ -159,17 +160,27 @@ const InstallmentForm = ({
     return hash
 
   }, []);
+
   const fields_grid = useMemo(() => getFormByTableName("cheque_grid"), []);
+
+  const checkIsAllowToRegenerate = () => {
+    for (const item of watch("installment_grid")) {
+      console.log("🚀 ~ checkIsAllowToRegenerate ~ item:", item)
+    }
+  }
 
   useEffect(() => {
     if (openInstallmentForm && !watch("installment.total_amount")) {
       mergeInstallmentAndFirstTabData(watch("contract"), setValue, watch);
+
     }
   }, [openInstallmentForm]);
 
   useEffect(() => {
-    if (watch("installment_grid"))
+    if (watch("installment_grid")) {
       calculateChqAmount(watch, setError, setTotalChqAmount, clearErrors);
+      checkIsAllowToRegenerate()
+    }
   }, []);
 
   useEffect(() => {
@@ -231,6 +242,7 @@ const InstallmentForm = ({
       });
       const { installment, installment_grid, voucher_grid } =
         await getInstallmentData(contract_id);
+
       if (installment?.success) {
         setValue("voucher_grid", voucher_grid?.result);
         setValue("installment_grid", installment_grid?.result);
@@ -241,7 +253,7 @@ const InstallmentForm = ({
     }
     setIsLoading(false);
   };
-  
+
   return (
     <>
       {isLoading ? <Loading withBackdrop /> : null}

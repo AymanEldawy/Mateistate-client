@@ -1,4 +1,4 @@
-import { INSERT_DEFAULT_ACCOUNTS, INSERT_DEFAULT_CATEGORY, INSERT_DEFAULT_DATA, INSERT_DEFAULT_LACK_REASONS, insertIntoDefaultService, insertIntoMaterials, insertIntoNotification, insertIntoProblems, insertTimes, updateCategoryProblem, updateDefaultService, updateMaterials, updateMaterialsPrice, updateProblems, updateUserToken, updateVerifedUsers, updateNames } from "Helpers/GENERATE_STARTING_DATA";
+import { INSERT_DEFAULT_ACCOUNTS, INSERT_DEFAULT_CATEGORY, INSERT_DEFAULT_DATA, INSERT_DEFAULT_LACK_REASONS, insertIntoDefaultService, insertIntoMaterials, insertIntoNotification, insertIntoProblems, insertTimes, updateCategoryProblem, updateDefaultService, updateMaterials, updateMaterialsPrice, updateProblems, updateUserToken, updateVerifedUsers, updateNames, INSERT_DEFAULT_CHEQUES } from "Helpers/GENERATE_STARTING_DATA";
 import { ReportCount } from "./ReportCount";
 import { ReportLatest } from "./ReportLatest";
 
@@ -8,19 +8,20 @@ export const DashboardGridLayout = () => {
     // await INSERT_DEFAULT_ACCOUNTS()
     // await INSERT_DEFAULT_DATA()
     // await updateMaterials()
-    // await updateCategoryProblem();
     // await insertIntoMaterials();
     // await updateMaterialsPrice();
     // await INSERT_DEFAULT_CATEGORY();
     // await INSERT_DEFAULT_LACK_REASONS()
+    // await updateCategoryProblem();
     // await insertIntoProblems();
     // await updateUserToken();
     // await updateMaterials();
-    await updateNames();
+    // await updateNames();
     // await updateVerifedUsers();
     // await insertTimes();
     // await insertIntoDefaultService();
     // await insertIntoNotification()
+    await INSERT_DEFAULT_CHEQUES()
   }
 
 

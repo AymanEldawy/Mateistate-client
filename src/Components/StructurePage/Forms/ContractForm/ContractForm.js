@@ -418,21 +418,23 @@ const ContractForm = ({ number, onClose }) => {
 
     if (res?.success) {
       let firstTabData = watch("contract");
-      let contract_id = res?.record?.id;
+      let contract_id = watch('contract.id') || res?.record?.id;
+      const isNew = res?.record?.id
       setOldContracts((prev) => [...prev, firstTabData]);
-
       if (watch("contract.gen_entries")) {
         await genEntry(contract_id || watch("contract.id"));
       } else deleteEntry(contract_id);
 
-      if (contract_id) {
-        const data = await GET_UPDATE_DATE(contractName, res?.record?.id);
-        reset(data);
+      if (isNew) {
         await mergeInstallmentAndFirstTabData(watch("contract"), setValue, watch);
-
         if (watch("contract.paid_type") === 4) {
           setOpenInstallmentForm(true);
         }
+      }
+      if (contract_id) {
+        console.log(contract_id, 'contract_id', 'called');
+        const data = await GET_UPDATE_DATE(contractName, contract_id);
+        reset(data);
       }
 
       toast.success("Successfully Saved contract ");
@@ -482,7 +484,6 @@ const ContractForm = ({ number, onClose }) => {
       formClassName="w-full xl:min-w-[900px] 2xl:min-w-[1200px]"
       extraMenuContent={
         <div className="mt-auto">
-          <ContractStatus status={watch('contract.status')} containerClassName="mb-2 mx-auto block text-center max-w-[90%]" />
           {watch('contract.id') && (
             <Btn kind="warn" type="button" onClick={onClickRenew} containerClassName="!text-xs mx-auto">Renew Contract</Btn>
           )}

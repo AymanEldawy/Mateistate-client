@@ -10,10 +10,13 @@ const useFormPagination = ({ name, number, code }) => {
   const [lastNumber, setLastNumber] = useState(number);
   const [currentId, setCurrentId] = useState(null);
 
+  console.log(name, number, code, 'ssds');
+  
   useEffect(() => {
     if (number) {
       getPaginationTable();
       setCurrentNumber(number);
+      goLast();
     } else if (!currentNumber) {
       goLast(true);
     }

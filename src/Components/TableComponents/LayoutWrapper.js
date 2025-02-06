@@ -28,7 +28,7 @@ const LayoutWrapper = ({
   const number = params?.number
   const code = params?.code
   const { getTable, setTable } = useLocalStorage({});
-  const { get, getDataWithFilter } = useCurd();
+  const { get, getDataWithFilter, remove } = useCurd();
   const [columnFilters, setColumnFilters] = useState([]);
   const [openForm, setOpenForm] = useState(!!number);
   const [rowSelection, setRowSelection] = useState([]);
@@ -67,6 +67,12 @@ const LayoutWrapper = ({
     else return getTableColumns(name);
   }, [name]);
 
+  const deleteBuilding = async () => {
+    await remove(name, Object.keys(rowSelection))
+    refetch()
+    return true
+  }
+
   return (
     <>
 
@@ -92,7 +98,7 @@ const LayoutWrapper = ({
                   setOpenForm(true);
               }}
               // onSearch={onSearch}
-              onClickDelete={onClickDelete ? () => onClickDelete(rowSelection, refetch) : null}
+              onClickDelete={onClickDelete ? () => onClickDelete(rowSelection, refetch) : deleteBuilding}
               onClickView={onClickView}
               onClickPrint={onClickPrint}
               additionalActions={additionalActions}

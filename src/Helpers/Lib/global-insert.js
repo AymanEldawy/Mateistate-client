@@ -273,6 +273,7 @@ const dynamicInsertIntoContract = async ({
   contractType,
   ...additionalParams
 }) => {
+  console.log("🚀 ~ data:", data)
   let steps = Object.values(getFormByTableName(tableName)?.forms)?.map(
     (c) => c?.tab_name
   );
@@ -301,7 +302,9 @@ const dynamicInsertIntoContract = async ({
   } else {
     // NOTE: should update
     if (data?.contract_termination?.terminated) {
-      data.contract.status = CONTRACT_STATUS.TERMINATED;
+      console.log('change state to terminated', data?.contract);
+      data.contract.status = CONTRACT_STATUS.Expired_and_not_renewed;
+      console.log('2 change state to terminated', data?.contract);
     }
 
     response = await ApiActions.update("contract", {
@@ -375,6 +378,7 @@ const dynamicInsertIntoContract = async ({
             });
             
             const grid = data?.contract_fines_grid || list?.contract_fines_grid
+            console.log("🚀 ~ grid:", grid)
 
             if (grid?.length) {
               await insertIntoGridTabs({
@@ -431,6 +435,8 @@ export const insertIntoContractInstallment = async ({
     const cost_center_id = firstTabData?.cost_center_id;
 
     if (installment_id) {
+      console.log('called here installment');
+      
       await generateChequesFromInstallment({
         installment,
         installment_grid,
@@ -908,7 +914,8 @@ export const generateApartments = async (
             });
           }
         } else {
-          FAILED_INSERTED_FLATS.push(data?.[typeSettings?.no]);
+          // should update later
+          // FAILED_INSERTED_FLATS.push(data?.[typeSettings?.no]);
         }
       }
     }

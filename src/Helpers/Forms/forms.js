@@ -1177,7 +1177,8 @@ const building_real_estate_management = [
   FIELDS_STRUCTURE.account({
     label: "owner_account_id",
     name: "owner_account_id",
-    ref_table: "account",
+    ref_table: UNIQUE_REF_TABLES.suppliers,
+
   }),
   {
     label: "commission_rate",
@@ -2416,81 +2417,6 @@ const cheque_general = [
   },
 ];
 
-const cheque_deportable = [
-  {
-    label: "deportable",
-    name: "deportable",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "deportable_gen_entries",
-    name: "deportable_gen_entries",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "deportable_auto_gen_entries",
-    name: "deportable_auto_gen_entries",
-    type: "checkbox",
-    key: "switch",
-
-    disabledCondition: "deportable_gen_entries",
-  },
-  {
-    label: "deportable_auto_transfer_entry",
-    name: "deportable_auto_transfer_entry",
-    type: "checkbox",
-    key: "switch",
-
-    disabledCondition: "deportable_gen_entries",
-  },
-  {
-    label: "deportable_default_account_is_owner",
-    name: "deportable_default_account_is_owner",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "deportable_default_observe_account_is_client",
-    name: "deportable_default_observe_account_is_client",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "deportable_move_cost_center_debit",
-    name: "deportable_move_cost_center_debit",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "deportable_move_cost_center_credit",
-    name: "deportable_move_cost_center_credit",
-    type: "checkbox",
-    key: "switch",
-  },
-  {
-    label: "deportable_debit_account_id",
-    name: "deportable_debit_account_id",
-    is_ref: true,
-    ref_table: "account",
-  },
-  {
-    label: "deportable_default_date",
-    name: "deportable_default_date",
-    key: "select",
-    list: SELECT_LISTS("cheque_pattern_default_date"),
-    intValue: true,
-    selectFirstAsDefault: true,
-  },
-  {
-    label: "deportable_credit_account_id",
-    name: "deportable_credit_account_id",
-    is_ref: true,
-    ref_table: "account",
-  },
-];
-
 const cheque_collection = [
   {
     label: "collection",
@@ -2824,10 +2750,6 @@ const cheque_group = {
       fields: cheque_general,
       tab_name: "cheque_pattern",
     },
-    // [CHEQUE_PATTERN_STEPS.cheque_pattern_deportable]: {
-    //   fields: cheque_deportable,
-    //   tab_name: "cheque_deportable",
-    // },
     [CHEQUE_PATTERN_STEPS.cheque_pattern_collection]: {
       fields: cheque_collection,
       tab_name: "cheque_collection",

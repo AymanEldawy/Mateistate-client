@@ -52,7 +52,7 @@ const ContractFinancialForm = ({
           }}
           updatedName={`contract.contracts_number_prev`}
           // values={values}
-          readOnly={watch(`contract.contracts_number_prev`) > 1 && watch('contract.id')}
+          readOnly={watch('contract.id')}
           tab={"contract"}
         />
         <Input
@@ -264,6 +264,8 @@ const ContractFinancialForm = ({
           tab={"contract"}
           value={watch(`contract.paid_type`)}
         />
+        <div />
+        <ContractStatus status={watch('contract.status')} containerClassName="!mt-2 flex items-center justify-center !text-base w-full block text-center" />
       </div>
       <div className="flex gap-x-6 items-end">
 

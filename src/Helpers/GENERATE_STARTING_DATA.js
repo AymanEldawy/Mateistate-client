@@ -173,10 +173,6 @@ let SHARED_CHQ = {
   collection: true,
   collection_auto_gen_entries: true,
   collection_auto_transfer_entry: true,
-  deportable: true,
-  deportable_auto_gen_entries: true,
-  deportable_auto_transfer_entry: true,
-  deportable_gen_entries: false,
   gen_entries: true,
   partial_auto_gen_entries: true,
   partial_auto_transfer_entry: true,
@@ -190,9 +186,6 @@ let SHARED_CHQ = {
   collection_gen_entries: true,
   collection_move_cost_center_credit: true,
   collection_move_cost_center_debit: true,
-  deportable_default_date: 1,
-  deportable_move_cost_center_credit: true,
-  deportable_move_cost_center_debit: true,
   partial_move_cost_center_credit: true,
   partial_move_cost_center_debit: true,
   returnable_active_operations: true,
@@ -248,7 +241,6 @@ export const DEFAULT_CHQ_INFO = [
     auto_transfer_entry: true,
     collection_default_date: 0,
     commission_type: 0,
-    deportable_default_date: 0,
     gen_entries: true,
     name: CHQ_PAID_NAME,
     paper_type: 1,
@@ -261,7 +253,6 @@ export const DEFAULT_CHQ_INFO = [
     auto_transfer_entry: true,
     collection_default_date: 0,
     commission_type: 0,
-    deportable_default_date: 0,
     gen_entries: true,
     name: CHQ_RECEIVED_NAME,
     paper_type: 2,
@@ -892,14 +883,15 @@ export async function INSERT_DEFAULT_CATEGORY() {
 export async function INSERT_DEFAULT_CHEQUES(ACCOUNT_IDS) {
   for (const cheque of DEFAULT_CHQ_INFO) {
     // merge accounts
-    if (cheque.code === CHQ_PAID_CODE) {
-    }
+    // if (cheque.code === CHQ_PAID_CODE) {
 
-    if (cheque.code === CHQ_RECEIVED_CODE) {
-      cheque.returnable_credit_account_id = ACCOUNT_IDS["122"];
-      cheque.collection_credit_account_id = ACCOUNT_IDS["122"];
-      cheque.default_account_id = ACCOUNT_IDS["122"];
-    }
+    // }
+
+    // if (cheque.code === CHQ_RECEIVED_CODE) {
+    //   cheque.returnable_credit_account_id = ACCOUNT_IDS["122"];
+    //   cheque.collection_credit_account_id = ACCOUNT_IDS["122"];
+    //   cheque.default_account_id = ACCOUNT_IDS["122"];
+    // }
 
     await ApiActions.insert("cheque_pattern", cheque);
   }

@@ -212,6 +212,7 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
                 (c) => c.code === +openForm?.code
               )?.name
             }
+            callback={() => setOpenForm(null)}
           />
         )}
         {openForm?.type === "VOUCHER" && (
@@ -250,7 +251,6 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
             columns={cheque_grid}
             data={watch('installment_grid')}
             pageCount={watch('installment_grid')?.length}
-
             rowSelection={selectedCheques}
             setRowSelection={setSelectedCheques}
             meta={{

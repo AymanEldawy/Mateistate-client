@@ -7,6 +7,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 const ChequePattern = () => {
   const name = "cheque_pattern";
   const navigate = useNavigate();
+  
   return (
     <>
       <LayoutWrapper

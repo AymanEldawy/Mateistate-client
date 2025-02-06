@@ -229,7 +229,7 @@ const UniqueField = ({
 
                       dispatchForm({
                         open: true,
-                        table: tableName,
+                        table: refTable,
                         oldValues,
                         additional: {
                           setValue,

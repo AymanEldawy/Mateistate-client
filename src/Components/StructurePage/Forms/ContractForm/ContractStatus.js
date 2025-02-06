@@ -9,11 +9,6 @@ export const ContractStatus = ({ status, containerClassName }) => {
       className={`text-xs capitalize w-fit gap-2 px-4 py-1 rounded-lg text-white font-medium ${state?.parentClass} ${containerClassName}`}
     >
       {state?.status}
-      {/* {t("status")}:{ }
-      <span
-        className={`${state?.childClass} bg-[#ffffff26] text-white px-4 py-1 font-medium rounded-md`}
-      >
-      </span> */}
     </p>
   );
 };

@@ -1,9 +1,6 @@
-// Example Usage of MatieStateClient
-
 import Cookies from "js-cookie";
 import MatieStateClient from "./MatieStateClient";
 import { toast } from "react-toastify";
-import { v4 as uuidv4 } from "uuid";
 
 export const SHOULD_DELETE_ENTRY = {
   account: true,
@@ -18,6 +15,7 @@ export const SHOULD_DELETE_ENTRY = {
 };
 
 export const baseURL = "http://66.29.143.191/";
+// export const baseURL = "http://api.matiestate.com/";
 // export const baseURL = "http://localhost:5000";
 
 export function CURD() {
