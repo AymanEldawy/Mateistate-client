@@ -14,7 +14,8 @@ export const SHOULD_DELETE_ENTRY = {
   contract_termination: true,
 };
 
-export const baseURL = "http://66.29.143.191/";
+// export const baseURL = "http://66.29.143.191/";
+export const baseURL = "https://api.matiestate.com";
 // export const baseURL = "http://api.matiestate.com/";
 // export const baseURL = "http://localhost:5000";
 
