@@ -76,7 +76,6 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
     let index = watch("installment_grid").length;
     setValue(`installment_grid.${index}`, data);
     setRefresh((p) => !p);
-
   }
 
   const updateVoucherGrid = (data, grid) => {
@@ -87,8 +86,7 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
       ...grid?.at(0),
       id: data?.id,
     });
-    setRefresh((p) => !p);
-
+    setRefresh((p) => !p)
   }
 
   const onSelectToPrint = (row, selectedRows, setSelectedRows) => {
