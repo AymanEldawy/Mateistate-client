@@ -64,39 +64,32 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
   const [selectedChqRows, setSelectedChqRows] = useState({});
   const [selectedVoucherRows, setSelectedVoucherRows] = useState({});
   const [refresh, setRefresh] = useState(false);
-  const [recordResponse, setRecordResponse] = useState([]);
+  // const [recordResponse, setRecordResponse] = useState([]);
   const [selectedCheques, setSelectedCheques] = useState([]);
   const [selectedVouchers, setSelectedVouchers] = useState([]);
   const { getOneBy } = useCurd();
   let cheque_grid = useMemo(() => getTableColumns("cheque_grid"), []);
   let voucher_grid = useMemo(() => getTableColumns("voucher_grid"), []);
 
-  useEffect(() => {
-    if (recordResponse?.table === CHQ_RECEIVED_NAME) {
-      let { response } = recordResponse;
-      if (recordResponse?.method === METHODS.INSERT) {
-        let index = watch("installment_grid").length;
-        setValue(`installment_grid.${index}`, response?.record);
-        setRecordResponse({});
-      } else {
-      }
-    } else if (recordResponse?.table === VOUCHER_RECEIPTS_NAME) {
-      let { response, grid } = recordResponse;
+  const updateChequeGrid = (data) => {
+    console.log("🚀 ~ updateChequeGrid ~ data:", data)
+    let index = watch("installment_grid").length;
+    setValue(`installment_grid.${index}`, data);
+    setRefresh((p) => !p);
 
-      if (recordResponse?.method === METHODS.INSERT) {
-        if (response?.success) {
-          let index = watch("voucher_grid").length;
-          setValue(`voucher_grid.${index}`, {
-            ...response?.record,
-            ...grid?.at(0),
-            id: response?.record?.id,
-          });
-          setRecordResponse({});
-        }
-      } else {
-      }
-    }
-  }, [recordResponse]);
+  }
+
+  const updateVoucherGrid = (data, grid) => {
+    console.log("🚀 ~ updateVoucherGrid ~ data:", data)
+    let index = watch("voucher_grid").length;
+    setValue(`voucher_grid.${index}`, {
+      data,
+      ...grid?.at(0),
+      id: data?.id,
+    });
+    setRefresh((p) => !p);
+
+  }
 
   const onSelectToPrint = (row, selectedRows, setSelectedRows) => {
     let rows = selectedRows;
@@ -136,7 +129,7 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
       table: DESPATCH_TABLES_NAME.CHEQUE,
       code: CHQ_RECEIVED_CODE,
       oldValues: {
-        type: CHQ_RECEIVED_CODE,
+        code: CHQ_RECEIVED_CODE,
         installment_id: watch("installment.id"),
         connect_with: CONNECT_WITH_CONTRACT_CODE,
         connect_with_id: contract_id,
@@ -152,6 +145,7 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
       },
     });
   };
+
 
   const onClickAddNewCash = async () => {
     const number = await getVoucherLastNumber(VOUCHER_RECEIPTS_CODE);
@@ -206,7 +200,7 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
             popupView
             action={openForm?.action}
             outerClose={() => setOpenForm(null)}
-            setRecordResponse={setRecordResponse}
+            updateChequeGrid={updateChequeGrid}
             tableName={
               Object.values(DEFAULT_CHQ_INFO)?.find(
                 (c) => c.code === +openForm?.code
@@ -224,7 +218,7 @@ const ContractPayments = ({ contract_id, CACHE_LIST, assetType }) => {
               openForm?.oldValues?.voucher_type || openForm?.voucherType
             }
             oldValues={openForm?.oldValues}
-            setRecordResponse={setRecordResponse}
+            updateVoucherGrid={updateVoucherGrid}
             outerClose={() => setOpenForm(null)}
             popupView
           />

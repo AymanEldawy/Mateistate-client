@@ -32,7 +32,7 @@ export const ChequeStatus = ({ onOpenFormOperation, chqValues }) => {
       </Btn>
       <Btn
         type="button"
-        kind={watch("op_partial_collection") ? "info": 'default'}
+        kind={watch("partial_collection_status") ? "info": 'default'}
         classes={`disabled:bg-gray-200  flex gap-2 items-center disabled:text-gray-500 rounded-md px-4 py-2 capitalize hover:opacity-70 text-xs`}
         disabled={watch("collection_status")}
         onClick={() =>

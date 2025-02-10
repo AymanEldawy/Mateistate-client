@@ -42,7 +42,7 @@ const FormWrapperLayout = ({
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitting, isDirty, errors },
+    formState: { isSubmitting, isDirty, errors, isSubmitSuccessful },
     watch,
   } = methods;
   const [openConfirmation, setOpenConfirmation] = useState(false);
@@ -51,6 +51,11 @@ const FormWrapperLayout = ({
     reset(getResetFields(tableName || name));
   }, [location?.pathname]);
 
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset(undefined, { keepValues: true, keepDirty: false, keepDefaultValues: false });
+    }
+  }, [isSubmitSuccessful, reset]);
 
 
   return (

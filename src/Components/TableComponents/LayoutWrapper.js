@@ -80,6 +80,7 @@ const LayoutWrapper = ({
         <FormRender
           onClose={(link) => {
             setOpenForm(false);
+            refetch();
             navigate(link || `/${name}`)
           }}
           setOpenForm={setOpenForm}

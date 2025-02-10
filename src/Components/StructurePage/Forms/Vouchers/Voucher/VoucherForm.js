@@ -36,7 +36,7 @@ const VoucherForm = ({
   voucherName,
   voucherType,
   popupView,
-  setRecordResponse,
+  updateVoucherGrid,
   oldValues = null,
   outerClose,
   number,
@@ -220,14 +220,8 @@ const VoucherForm = ({
         itemSearchName: "voucher_main_data_id",
       });
 
-      if (!!setRecordResponse) {
-        setRecordResponse({
-          table: name,
-          response: res,
-          method: values?.id ? METHODS.UPDATE : METHODS.INSERT,
-          grid,
-          id: values?.id,
-        });
+      if (!!updateVoucherGrid && res?.record) {
+        updateVoucherGrid(res?.record, grid)
       }
 
       if (PATTERN_SETTINGS?.auto_gen_entries || watch("gen_entries")) {

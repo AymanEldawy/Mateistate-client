@@ -1,8 +1,6 @@
 import TableFields from "Components/TableComponents/TableFields";
 import { Fields } from "Components/StructurePage/Forms/CustomForm/Fields";
-import INSERT_FUNCTION, {
-  getLastNumberByColumn,
-} from "Helpers/Lib/global-insert";
+import INSERT_FUNCTION from "Helpers/Lib/global-insert";
 import {
   ACTIONS,
   CONSTANT_COLUMNS_NAME,
@@ -20,9 +18,7 @@ import { useVoucherEntriesView } from "Hooks/useVoucherEntriesView";
 
 import {
   CONTRACT_STATUS,
-  autoMergePatternSettingsWithValues,
-  calculateContractDuration,
-  contractValidation,
+  autoMergePatternSettingsWithValues, contractValidation,
   fetchAndMergeAssetInfo,
   fetchAndMergeBuildingInfo,
   fetchContractRestData,
@@ -33,7 +29,7 @@ import {
   onWatchChangesInTab1,
   onWatchChangesInstallmentGridTab,
   onWatchChangesInstallmentTab,
-  onWatchChangesTerminationTab,
+  onWatchChangesTerminationTab
 } from "Helpers/Lib/contract-helpers";
 
 import {
@@ -45,12 +41,11 @@ import { useQuery } from "@tanstack/react-query";
 import useCurd from "Hooks/useCurd";
 import useFormPagination from "Hooks/useFormPagination";
 import Btn from "Components/Global/Btn";
-import { CheckboxField, NormalSelect, Select, UniqueField } from "Components/StructurePage/CustomFields";
+import { CheckboxField, NormalSelect } from "Components/StructurePage/CustomFields";
 import { ViewEntry } from "Components/Global/ViewEntry";
 import FormLayout from "../FormWrapperLayout/FormLayout";
 import { SearchContract } from "./SearchContract";
-import { CREATED_FROM_CHQ, CREATED_FROM_CONTRACT, CREATED_FROM_CONTRACT_FEES } from "Helpers/GENERATE_STARTING_DATA";
-import { ContractStatus } from "./ContractStatus";
+import { CREATED_FROM_CONTRACT, CREATED_FROM_CONTRACT_FEES } from "Helpers/GENERATE_STARTING_DATA";
 
 const InstallmentForm = lazy(() => import("./InstallmentForm"));
 const ContractTerminationForm = lazy(() => import("./ContractTerminationForm"));
@@ -348,39 +343,46 @@ const ContractForm = ({ number, onClose }) => {
   };
 
   const onClickRenew = async () => {
-    let contract = watch("contract");
-    delete contract.id;
 
+    return ;
+    let contract = watch("contract");
     const startDate = new Date(contract?.start_duration_date);
     const endDate = new Date(contract?.end_duration_date);
     const differenceMs = endDate.getTime() - startDate.getTime();
     const newStartDate = new Date(endDate.getTime() + (24 * 60 * 60 * 1000));
     const newEndDate = new Date(newStartDate.getTime() + differenceMs);
-    setValue(
-      `contract.start_duration_date`,
-      newStartDate
-    );
-    setValue(
-      `contract.end_duration_date`,
-      newEndDate,
-      { shouldDirty: true }
-    );
+    const newContract = {};
     let contractNumbers = +contract.contracts_number_prev + 1;
-    contract.contracts_number_prev = contractNumbers || 1;
-    contract.contracts_number_current = contractNumbers || 2;
-    contract.status = CONTRACT_STATUS.RENEWdD;
-    contract.previous_securing = contract?.current_securing_value;
-    contract.number = +formPagination?.currentNumber + 1;
-    contract.current_securing_value = 0;
-    reset({ contract });
 
-    setCurrentIndex(0);
-    formPagination.setCurrentNumber(+formPagination.lastNumber + 1)
-    methods.trigger('contract')
-    setValue('contract.contracts_number_prev', contractNumbers || 1, { shouldDirty: true })
+    newContract.start_duration_date = newStartDate;
+    newContract.end_duration_date = newEndDate;
+    newContract.contracts_number_prev = contractNumbers || 1;
+    newContract.contracts_number_current = contractNumbers || 2;
+    newContract.status = CONTRACT_STATUS.RENEWdD;
+    newContract.previous_securing = contract?.current_securing_value;
+    newContract.number = +formPagination?.currentNumber + 1;
+    newContract.current_securing_value = 0;
+
+    // const res = await renewContract(watch(), newContract);
+    // console.log("🚀 ~ onClickRenew ~ res:", res)
+    // if (res?.success) {
+    //   setCurrentIndex(0);
+    //   reset({
+    //     defaultValues: {
+    //       contract: newContract
+    //     }
+    //   });
+    //   formPagination.setCurrentNumber(+formPagination.lastNumber + 1)
+    // }
 
   };
 
+  const testReset = () => {
+    reset(undefined, { keepDirtyValues: true })
+  }
+
+
+  console.log(watch(), 'watch');
 
 
   // Handel Submit
@@ -556,6 +558,7 @@ const ContractForm = ({ number, onClose }) => {
         )
       }
     >
+      <button type="button" onClick={testReset} > test reset</button>
       {openInstallmentForm && watch(`contract.final_price`) ? (
         <Suspense>
           <InstallmentForm

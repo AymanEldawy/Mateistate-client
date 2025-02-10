@@ -35,7 +35,7 @@ const CurrencyFieldGroup = ({
   const currency_val = tab ? `${tab}.currency_val` : "currency_val";
 
   useEffect(() => {
-    if (!watch(currency_id)) {
+    if (!watch(currency_id) && currencies?.length) {
       let defaultCurrency = currencies?.find(c => c?.code === DEFAULT_CURRENCY_CODE)
       setCurrency(defaultCurrency)
       setValue(currency_id, defaultCurrency?.id)
@@ -43,7 +43,11 @@ const CurrencyFieldGroup = ({
         setValue(currency_val, defaultCurrency?.rate)
       }
     }
-  }, [currencies, tab, watch])
+  }, [currencies, tab, field?.hideValue, watch, setValue, currency_id, currency_val]);
+
+  // useEffect(() => {
+  //   setValue(currency_id, currency?.id)
+  // }, [currency, setCurrency]);
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {

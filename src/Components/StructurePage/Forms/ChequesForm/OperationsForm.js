@@ -74,15 +74,12 @@ const mergePatternWithData = async (
 ) => {
   setValue("amount", chqValues?.amount);
   setValue("cheque_id", chqValues?.id);
-  setValue("commission_cost_center_id", chqValues?.cost_center_id);
 
-  console.log(watch(), '-dsdsdsdsd', pattern);
-
-  // 
   // commission_percentage
   // commission_value
 
   if (pattern?.commission_credit_account_id) {
+    setValue("commission_cost_center_id", chqValues?.cost_center_id);
     setValue('commission_credit_id', pattern?.commission_credit_account_id)
   }
 
@@ -160,38 +157,6 @@ const mergePatternWithData = async (
       setValue("credit_account_id", buildingAccounts?.cheque_id);
       break;
 
-    case "op_partial_collection":
-      if (chqValues?.amount) {
-        setValue("total_value", chqValues?.amount);
-        setValue("total_sum", chqValues?.amount);
-        setValue("rest", chqValues?.amount);
-      }
-      if (pattern?.partial_credit_account_id) {
-        setValue("credit_account_id", pattern?.partial_credit_account_id);
-      }
-
-      if (pattern?.partial_default_observe_account_is_client) {
-        setValue("credit_account_id", chqValues?.account_id);
-      }
-
-      if (pattern?.partial_debit_account_id) {
-        setValue("debit_account_id", pattern?.partial_debit_account_id);
-      }
-
-      if (pattern?.partial_default_account_is_building_bank) {
-      }
-
-      if (pattern?.partial_gen_entries) setValue("gen_entries", true);
-
-      if (
-        pattern?.partial_move_cost_center_debit ||
-        pattern?.partial_move_cost_center_credit
-      ) {
-        setValue("cost_center_id", chqValues?.cost_center_id);
-      }
-
-      break;
-
     case "op_return":
       if (pattern?.returnable_gen_entries) setValue("gen_entries", true);
       if (pattern?.returnable_credit_account_id) {
@@ -249,7 +214,6 @@ export const OperationsForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isDeletedSuccess, setIsDeletedSuccess] = useState(false);
   const [refresh, setRefresh] = useState(false);
-  const [partialNumbers, setPartialNumbers] = useState(0);
   const { remove, set, insert, getOneBy } = useCurd();
   const methods = useForm({
     defaultValues: {},
@@ -286,6 +250,9 @@ export const OperationsForm = ({
     //     note: "",
     //   });
     // };
+    return () => {
+      reset({});
+    }
   }, [PATTERN_SETTINGS?.name, name, chqValues]);
 
   const getOperationData = async () => {
@@ -298,21 +265,18 @@ export const OperationsForm = ({
     }
   };
 
+  console.log(name, 'name');
+
+
   const onDelete = async () => {
     const response = await remove(name, watch("id"));
     if (response?.success) {
-      setIsDeletedSuccess(true);
       updateStatus(false);
+      onClose();
     }
   };
 
   const updateStatus = async (status) => {
-    if (
-      selectedFormOperation?.status_name === "partial_collection_status" &&
-      partialNumbers > 1
-    )
-      return;
-
     let updates = {
       [selectedFormOperation?.status_name]: status,
     };
@@ -320,18 +284,11 @@ export const OperationsForm = ({
     refetch();
   };
 
-
   // Handle submit
   const onSubmit = async (value) => {
     if (!isDirty) return;
     setIsLoading(true);
-
     let res = null;
-
-    if (name === "op_partial_collection" && +watch("rest") < 0) {
-      toast.error("Failed to enter value the rest must be more or equal 0");
-      return;
-    }
 
     if (watch("id")) {
       res = await set(name, value, watch("id"));
@@ -374,7 +331,7 @@ export const OperationsForm = ({
     setIsLoading(false);
   };
 
-  // console.log(watch(), 'called'  );
+  console.log(watch(), 'watch op');
 
 
   return (
@@ -401,51 +358,33 @@ export const OperationsForm = ({
           }
         />
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="p-4">
-          {name === "op_partial_collection" ? (
-            <PartialCollectionFrom
-              errors={errors}
-              fields={fields}
-              chequeId={chqValues?.id}
-              PATTERN_SETTINGS={PATTERN_SETTINGS}
-              dispatchVoucherEntries={dispatchVoucherEntries}
-              popupView
-              chqValues={chqValues}
-              isLoading={isLoading}
-              setOpenConfirmation={setOpenConfirmation}
-              isDeletedSuccess={isDeletedSuccess}
-              setIsDeletedSuccess={setIsDeletedSuccess}
-              setPartialNumbers={setPartialNumbers}
-            />
-          ) : (
-            <>
-              <Fields
-                customGrid="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-                values={getValues()}
-                errors={errors}
-                fields={fields}
-              />
-              <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
 
-                <div className="flex items-center gap-4">
-                  {watch("id") ? (
-                    <button
-                      type="button"
-                      onClick={() => setOpenConfirmation(true)}
-                      className={`flex items-center gap-2 px-2 py-1 rounded-md bg-red-500 text-white`}
-                    >
-                      <TrashIcon className="w-5 h-5" />
-                      Delete
-                    </button>
-                  ) : null}
-                  <Button
-                    title="Save"
-                    loading={loading}
-                    disabled={isSubmitting || loading}
-                  />
-                </div>
-              </div>
-            </>
-          )}
+          <Fields
+            customGrid="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            values={getValues()}
+            errors={errors}
+            fields={fields}
+          />
+          <div className="flex justify-between gap-4 items-center mt-4 border-t pt-4">
+
+            <div className="flex items-center gap-4">
+              {watch("id") ? (
+                <button
+                  type="button"
+                  onClick={() => setOpenConfirmation(true)}
+                  className={`flex items-center gap-2 px-2 py-1 rounded-md bg-red-500 text-white`}
+                >
+                  <TrashIcon className="w-5 h-5" />
+                  Delete
+                </button>
+              ) : null}
+              <Button
+                title="Save"
+                loading={loading}
+                disabled={isSubmitting || loading}
+              />
+            </div>
+          </div>
         </form>
       </FormProvider>
     </>

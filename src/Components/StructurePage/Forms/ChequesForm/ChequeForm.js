@@ -28,6 +28,7 @@ import { ViewEntry } from "Components/Global/ViewEntry";
 import useCurd from "Hooks/useCurd";
 import FormLayout from "../FormWrapperLayout/FormLayout";
 import useFormPagination from "Hooks/useFormPagination";
+import { PartialCollectionFrom } from "./PartialCollectionFrom";
 
 const CACHE_CHEQUE_DATA = {};
 
@@ -52,7 +53,7 @@ const ChequeForm = ({
   patternCode,
   popupView,
   outerClose,
-  setRecordResponse,
+  updateChequeGrid,
   oldValues,
   action,
   number,
@@ -196,13 +197,8 @@ const ChequeForm = ({
       chq_id = res?.record?.id;
     }
 
-    if (!!setRecordResponse) {
-      setRecordResponse({
-        table: name,
-        response: res,
-        method: values?.id ? METHODS.UPDATE : METHODS.INSERT,
-        id: values?.id,
-      });
+    if (!!updateChequeGrid && res?.record) {
+      updateChequeGrid(res?.record);
     }
 
     if (res?.success) {
@@ -240,14 +236,28 @@ const ChequeForm = ({
         boxClassName={"!shadow-none !p-0"}
         layoutBodyClassName={"!my-0"}
       >
-        <OperationsForm
-          onClose={() => setSelectedFormOperation({})}
-          selectedFormOperation={selectedFormOperation}
-          PATTERN_SETTINGS={PATTERN_SETTINGS}
-          name={selectedFormOperation?.table || ""}
-          chqValues={watch()}
-          refetch={refetch}
-        />
+        {
+          selectedFormOperation?.table === 'op_partial_collection' ? (
+            <PartialCollectionFrom
+              chequeId={watch('id')}
+              PATTERN_SETTINGS={PATTERN_SETTINGS}
+              chqValues={watch()}
+              setOpenConfirmation={setSelectedFormOperation}
+              onClose={() => setSelectedFormOperation({})}
+              refresh={refetch}
+            />
+          ) : (
+            <OperationsForm
+              onClose={() => setSelectedFormOperation({})}
+              selectedFormOperation={selectedFormOperation}
+              PATTERN_SETTINGS={PATTERN_SETTINGS}
+              name={selectedFormOperation?.table || ""}
+              chqValues={watch()}
+              refetch={refetch}
+            />
+
+          )
+        }
       </Modal>
       <FormLayout
         key={formPagination?.currentNumber}
