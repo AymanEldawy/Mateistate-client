@@ -558,7 +558,7 @@ const ContractForm = ({ number, onClose }) => {
         )
       }
     >
-      <button type="button" onClick={testReset} > test reset</button>
+      {/* <button type="button" onClick={testReset} > test reset</button> */}
       {openInstallmentForm && watch(`contract.final_price`) ? (
         <Suspense>
           <InstallmentForm
