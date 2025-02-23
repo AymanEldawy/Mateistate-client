@@ -646,3 +646,12 @@ div:has(input:focus) .numbers {
 .react-datepicker__year-option {
   padding: 5px;
 }
+
+
+textPath {
+  display: none;
+}
+
+text.recharts-text.recharts-polar-radius-axis-tick-value {
+  display: none;
+}

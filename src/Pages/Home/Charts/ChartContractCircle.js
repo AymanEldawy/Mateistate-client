@@ -47,7 +47,7 @@ const data = [
 ];
 
 const style = {
-  top: '50%',
+  top: '100%',
   right: 0,
   transform: 'translate(0, -50%)',
   lineHeight: '24px',
@@ -56,15 +56,16 @@ const style = {
 export const ChartContractCircle = () => {
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <RadialBarChart cx="50%" cy="50%" innerRadius="10%" outerRadius="80%" barSize={10} data={data}>
+      <RadialBarChart className='-mt-8' cx="50%" cy="50%" innerRadius="10%" outerRadius="100%" barSize={18} data={data}>
         <RadialBar
           minAngle={15}
           label={{ position: 'insideStart', fill: '#fff' }}
           background
           clockWise
           dataKey="uv"
+          // legendType='star'
         />
-        <Legend iconSize={10} layout="vertical" verticalAlign="middle" wrapperStyle={style} />
+        <Legend iconSize={10} layout="horizontal" verticalAlign="bottom" wrapperStyle={style} />
       </RadialBarChart>
     </ResponsiveContainer>)
 }

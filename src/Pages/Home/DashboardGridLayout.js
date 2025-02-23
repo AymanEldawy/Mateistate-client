@@ -12,6 +12,7 @@ import ChartContractExpired from "./Charts/ChartContractExpired";
 import { BuildIcon, PlusIcon, ShopIcon, TrashIcon, TruckIcon, UserIcon } from "Components/Icons";
 import { BoxWrapper } from "./BoxWrapper";
 import ChartContractNear from "./Charts/ChartContractNear";
+import ChartBottom from "./Charts/ChartBottom";
 
 export const DashboardGridLayout = () => {
 
@@ -37,7 +38,7 @@ export const DashboardGridLayout = () => {
 
 
   return (
-    <div className="flex gap-4 px-8 h-[100lvh] mb-4">
+    <div className="flex gap-4 px-6 h-[100lvh] mb-4">
       {/* <button onClick={loadData}>load data</button> */}
       <div className="flex-1 flex flex-col -translate-y-4 h-full gap-4">
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
@@ -62,7 +63,7 @@ export const DashboardGridLayout = () => {
             <BoxWrapper
               className="flex flex-col gap-2 items-center justify-center text-primary"
               icon={
-                <span className="bg-yellow-600 flex items-center justify-center h-12 w-12 rounded-full"><BuildIcon className="text-white h-8 w-8" /></span>
+                <span className="bg-yellow-600 flex items-center justify-center h-8 w-8 rounded-full"><BuildIcon className="text-white h-6 w-6" /></span>
               }
               title={`Flats`}
               number={`2459`}
@@ -72,7 +73,7 @@ export const DashboardGridLayout = () => {
             <BoxWrapper
               className="flex flex-col gap-2 items-center justify-center text-primary"
               icon={
-                <span className="bg-indigo-600 flex items-center justify-center h-12 w-12 rounded-full"><TruckIcon className="text-white h-8 w-8" /></span>
+                <span className="bg-indigo-600 flex items-center justify-center h-8 w-8 rounded-full"><TruckIcon className="text-white h-6 w-6" /></span>
               }
               title={`parking`}
               number={`320`}
@@ -82,7 +83,7 @@ export const DashboardGridLayout = () => {
             <BoxWrapper
               className="flex flex-col gap-2 items-center justify-center text-primary"
               icon={
-                <span className="bg-green-600 flex items-center justify-center h-12 w-12 rounded-full"><ShopIcon className="text-white h-8 w-8" /></span>
+                <span className="bg-green-600 flex items-center justify-center h-8 w-8 rounded-full"><ShopIcon className="text-white h-6 w-6" /></span>
               }
               title={`Shops`}
               number={`350`}
@@ -101,7 +102,7 @@ export const DashboardGridLayout = () => {
                 {/* <ReportCount name="land" href="/list/land" /> */}
 
                 <BoxWrapper
-                  icon={<span className="bg-red-600 flex items-center justify-center h-12 w-12 rounded-full"><TrashIcon className="text-white h-8 w-8" /></span>}
+                  icon={<span className="bg-red-600 flex items-center justify-center h-8 w-8 rounded-full"><TrashIcon className="text-white h-6 w-6" /></span>}
                   number={350}
                   title="Contract Near to expired"
                 />
@@ -109,7 +110,7 @@ export const DashboardGridLayout = () => {
               <div className=" shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 flex-1">
                 {/* <ReportCount name="villa" href="/list/villa" /> */}
                 <BoxWrapper
-                  icon={<span className="bg-teal-600 flex items-center justify-center h-12 w-12 rounded-full"><PlusIcon className="text-white h-8 w-8" /></span>}
+                  icon={<span className="bg-teal-600 flex items-center justify-center h-8 w-8 rounded-full"><PlusIcon className="text-white h-6 w-6" /></span>}
                   number={31}
                   title="new Contract"
                 />
@@ -118,7 +119,7 @@ export const DashboardGridLayout = () => {
           </div>
           <div className="flex-1 flex-col flex gap-4 mb-2">
             <div className="shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 flex-1">
-
+              <ChartBottom />
             </div>
           </div>
           {/* <div className="flex-1 flex-col flex gap-4">
