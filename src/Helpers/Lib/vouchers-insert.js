@@ -94,15 +94,21 @@ export const insertIntoGrid = async ({
   itemId,
   gridTableName,
   itemSearchName,
+  order
 }) => {
-  const prevGrid = await ApiActions.read(gridTableName, {
+  let params = {
     conditions: [
       {
         type: "and",
         conditions: [[itemSearchName, "=", itemId]],
       },
     ],
-  });
+  }
+  if (order) {
+    params.sorts = [{ column: "number", order: "ASC", nulls: "last" }]
+  }
+
+  const prevGrid = await ApiActions.read(gridTableName, params);
 
   let prevCount = prevGrid?.result?.length;
   let currentCount = grid?.length;
@@ -230,14 +236,11 @@ export const insertIntoVoucher = async ({
 
 // generate Entry From Contract
 export const generateEntryFromContract = async ({
-  values,
+  contract,
   contractId,
-  contractNumber,
-  assetsType,
-  assetsTypeNumber,
-  buildingNumber,
   commission,
-  pattern
+  pattern,
+  note,
 }) => {
   let {
     currency_id: defaultCurrency,
@@ -256,7 +259,7 @@ export const generateEntryFromContract = async ({
     final_price,
     price_before_vat,
     code
-  } = values;
+  } = contract;
 
   let currency_id = defaultCurrency;
   if (!currency_id) {
@@ -269,7 +272,6 @@ export const generateEntryFromContract = async ({
     currency_val = 1;
   }
 
-  let note = `Contract rent number ${contractNumber} ${assetsType} name ${assetsTypeNumber} building name ${buildingNumber}`;
   let debit = +final_price;
 
   if (current_securing_value) {
@@ -278,10 +280,6 @@ export const generateEntryFromContract = async ({
   if (vat_value) {
     debit += +vat_value;
   }
-
-  // if (discount_value) {
-  //   debit += +discount_value;
-  // }
 
   let credit = debit;
 
@@ -311,6 +309,7 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 1,
     });
 
     // revenue
@@ -323,6 +322,8 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 2,
+
     });
 
     gridRows.push({
@@ -334,6 +335,7 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 3,
     });
 
     // owner
@@ -346,6 +348,7 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 4,
     });
 
 
@@ -360,6 +363,8 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 5,
+
     });
 
     gridRows.push({
@@ -371,6 +376,8 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 6,
+
     });
   }
 
@@ -384,6 +391,8 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 7,
+
     });
 
     gridRows.push({
@@ -395,6 +404,8 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 8,
+
     });
   }
   if (vat_value && vat_account_id) {
@@ -407,6 +418,7 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 9,
     });
 
     gridRows.push({
@@ -418,6 +430,7 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 10,
     });
   }
   if (discount_account_id && discount_value) {
@@ -430,6 +443,8 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 11,
+
     });
 
     gridRows.push({
@@ -441,11 +456,13 @@ export const generateEntryFromContract = async ({
       currency_id,
       cost_center_id,
       note,
+      number: 12,
+
     });
   }
 
   const response = await insertIntoEntry({
-    created_at: +pattern?.record_date_created === 1 ? values?.start_duration_date : values?.issue_date,
+    created_at: +pattern?.record_date_created === 1 ? contract?.start_duration_date : contract?.issue_date,
     currency_id,
     currency_val,
     note,
@@ -466,7 +483,9 @@ export const generateEntryFromContract = async ({
       gridTableName: "entry_grid_data",
       tableName: "entry_main_data",
       itemSearchName: "entry_main_data_id",
+      order: true,
     });
+    console.log("🚀 ~ gridRows:", gridRows)
   }
 };
 
@@ -482,11 +501,11 @@ export const generateEntryFromVoucher = async ({
     currency_id,
     currency_val,
     note,
-    debit,
-    credit,
     difference,
     account_id,
     cost_center_id,
+    debit_amount: debit = 0,
+    credit_amount: credit = 0
   } = values;
 
   const response = await insertIntoEntry({
@@ -516,23 +535,29 @@ export const generateEntryFromVoucher = async ({
     currency_id,
     cost_center_id,
     note,
-    debit: Math.abs(values?.debit) || 0,
-    credit: Math.abs(values?.credit) || 0,
+    debit: Math.abs(debit) || 0,
+    credit: Math.abs(credit) || 0,
     entry_main_data_id,
+    number: 1,
   });
-
+  let count = 1
   for (const item of grid) {
+    count++
     gridRows.push({
       account_id: item?.account_id,
       observe_account_id: account_id,
       currency_id,
       cost_center_id,
       note,
-      debit: Math.abs(values?.debit) || 0,
-      credit: Math.abs(values?.credit) || 0,
+      debit: Math.abs(debit) || 0,
+      credit: Math.abs(credit) || 0,
       entry_main_data_id,
+      number: count,
     });
   }
+
+  console.log(values, gridRows, 'vouchers');
+
 
   insertIntoGrid({
     itemId: entry_main_data_id,
@@ -540,6 +565,7 @@ export const generateEntryFromVoucher = async ({
     tableName: "entry_main_data",
     gridTableName: "entry_grid_data",
     itemSearchName: "entry_main_data_id",
+    order: true,
   });
 };
 
@@ -719,7 +745,7 @@ export const generateEntryFromCheque = async ({
     internal_number
   } = values;
 
-  let note = `Generated Entry From cheque number ${number} amount ${amount}`;
+  let note = `Generated Entry From cheque number ${internal_number || number || 'no number'} amount ${amount}`;
 
   let entry = {
     created_at: date,
@@ -748,6 +774,7 @@ export const generateEntryFromCheque = async ({
         debit: Math.abs(amount),
         credit: 0,
         note,
+        number: 1
       },
 
       {
@@ -758,6 +785,7 @@ export const generateEntryFromCheque = async ({
         debit: 0,
         credit: Math.abs(amount),
         note,
+        number: 2
       },
     ];
 
@@ -767,6 +795,7 @@ export const generateEntryFromCheque = async ({
       tableName: "entry_main_data",
       gridTableName: "entry_grid_data",
       itemSearchName: "entry_main_data_id",
+      order: true,
     });
 
     return;
@@ -846,6 +875,7 @@ export const generateEntryFromTermination = async ({
         debit: Math.abs(amount),
         credit: 0,
         note,
+        number: 1
       },
 
       {
@@ -856,6 +886,7 @@ export const generateEntryFromTermination = async ({
         debit: 0,
         credit: Math.abs(amount),
         note,
+        number: 2
       },
     ];
 
@@ -865,6 +896,7 @@ export const generateEntryFromTermination = async ({
       tableName: "entry_main_data",
       gridTableName: "entry_grid_data",
       itemSearchName: "entry_main_data_id",
+      order: true,
     });
 
     return;
@@ -895,7 +927,7 @@ export const generateEntryFromTerminationFines = async ({
   let note = `Generated Entry From Contract number ${number} Termination Fines`;
   let amount = 0
   const grid = []
-
+  let count = 1
   for (const value of values) {
     if (value?.fee_amount && value?.account_id) {
       amount += +value?.fee_amount;
@@ -908,8 +940,9 @@ export const generateEntryFromTerminationFines = async ({
         debit: Math.abs(value?.fee_amount),
         credit: 0,
         note: value?.notes,
+        number: count
       });
-
+      count += 1
       grid.push({
         account_id: value?.account_id,
         observe_account_id: account_id,
@@ -918,8 +951,9 @@ export const generateEntryFromTerminationFines = async ({
         debit: 0,
         credit: Math.abs(value?.fee_amount),
         note: value?.notes,
+        number: count
       })
-
+      count += 1
     }
   }
 
@@ -947,6 +981,7 @@ export const generateEntryFromTerminationFines = async ({
       tableName: "entry_main_data",
       gridTableName: "entry_grid_data",
       itemSearchName: "entry_main_data_id",
+      order: true,
     });
 
     return;
@@ -977,11 +1012,10 @@ export const generateEntryFromFees = async ({
   let note = `Generated Entry From Contract number ${number} Fees`;
   let amount = 0
   const grid = []
-
+  let count = 1
   for (const value of values) {
     if (value?.fee_amount && value?.account_id) {
       amount += +value?.fee_amount;
-
 
       grid.push({
         account_id,
@@ -991,8 +1025,9 @@ export const generateEntryFromFees = async ({
         debit: value?.fee_amount,
         credit: 0,
         note: value?.notes,
+        number: count
       });
-
+      count += 1
       grid.push({
         account_id: value?.account_id,
         observe_account_id: account_id,
@@ -1001,8 +1036,9 @@ export const generateEntryFromFees = async ({
         debit: 0,
         credit: Math.abs(value?.fee_amount),
         note: value?.notes,
+        number: count
       })
-
+      count += 1
     }
   }
 
@@ -1030,6 +1066,7 @@ export const generateEntryFromFees = async ({
       tableName: "entry_main_data",
       gridTableName: "entry_grid_data",
       itemSearchName: "entry_main_data_id",
+      order: true,
     });
 
     return;
@@ -1080,6 +1117,7 @@ export const generateEntryFromChqOperation = async ({
         debit: Math.abs(amount),
         credit: 0,
         note,
+        number: 1
       },
 
       {
@@ -1090,6 +1128,7 @@ export const generateEntryFromChqOperation = async ({
         debit: 0,
         credit: Math.abs(amount),
         note,
+        number: 2
       },
     ];
 
@@ -1099,6 +1138,7 @@ export const generateEntryFromChqOperation = async ({
       tableName: "entry_main_data",
       gridTableName: "entry_grid_data",
       itemSearchName: "entry_main_data_id",
+      order: true,
     });
 
     return;
@@ -1149,6 +1189,7 @@ export const generateEntryFromReservation = async ({
         debit: payment_amount,
         credit: 0,
         note,
+        number: 1
       },
 
       {
@@ -1159,6 +1200,7 @@ export const generateEntryFromReservation = async ({
         debit: 0,
         credit: Math.abs(payment_amount),
         note,
+        number: 2
       },
     ];
 
@@ -1168,6 +1210,7 @@ export const generateEntryFromReservation = async ({
       tableName: "entry_main_data",
       gridTableName: "entry_grid_data",
       itemSearchName: "entry_main_data_id",
+      order: true,
     });
 
     return;
@@ -1380,6 +1423,7 @@ export const generateEntryFromBilInput = async ({
   }
   // If there is a EXTRAS
   if (extras) {
+    let count = 1
     for (const row of values?.bill_discounts_details) {
       if (row?.extra) {
         extra_account_id = row?.account_id || extra_account_id;
@@ -1394,7 +1438,9 @@ export const generateEntryFromBilInput = async ({
           credit: 0,
           cost_center_id: row?.cost_center_id || cost_center_id,
           note: row?.note || `note`,
+          number: count
         });
+        count += 1
 
         gridRows.push({
           ...defaultRow,
@@ -1404,7 +1450,10 @@ export const generateEntryFromBilInput = async ({
           credit: Math.abs(extras),
           cost_center_id: row?.cost_center_id || cost_center_id,
           note: row?.note || `note`,
+          number: count
         });
+        count += 1
+
       }
     }
   }
@@ -1415,6 +1464,7 @@ export const generateEntryFromBilInput = async ({
     gridTableName: "entry_grid_data",
     tableName: "entry_main_data",
     itemSearchName: "entry_main_data_id",
+    order: true,
   });
 };
 
@@ -1524,6 +1574,7 @@ export const generateEntryFromBilOutput = async ({
   }
   // If there is a EXTRAS
   if (extras) {
+    let count = 1
     for (const row of values?.bill_discounts_details) {
       if (row?.extra) {
         extra_account_id = row?.account_id || extra_account_id;
@@ -1538,7 +1589,9 @@ export const generateEntryFromBilOutput = async ({
           credit: 0,
           cost_center_id: row?.cost_center_id || cost_center_id,
           note: row?.note || `note`,
+          number: count
         });
+        count += 1
 
         gridRows.push({
           ...defaultRow,
@@ -1548,7 +1601,10 @@ export const generateEntryFromBilOutput = async ({
           credit: Math.abs(extras),
           cost_center_id: row?.cost_center_id || cost_center_id,
           note: row?.note || `note`,
+          number: count
         });
+        count += 1
+
       }
     }
   }
@@ -1559,5 +1615,6 @@ export const generateEntryFromBilOutput = async ({
     gridTableName: "entry_grid_data",
     tableName: "entry_main_data",
     itemSearchName: "entry_main_data_id",
+    order: true,
   });
 };

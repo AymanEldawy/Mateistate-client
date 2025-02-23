@@ -3259,14 +3259,16 @@ const voucher_grid_data = [
     label: "debit",
     name: "debit",
     type: "number",
+    required: false
   },
   {
     label: "credit",
     name: "credit",
     type: "number",
+    required: false
   },
-  FIELDS_STRUCTURE.account(),
-  FIELDS_STRUCTURE.cost_center(),
+  FIELDS_STRUCTURE.account({required: false}),
+  FIELDS_STRUCTURE.cost_center({required: false}),
   {
     label: "voucher_main_data_id",
     name: "voucher_main_data_id",

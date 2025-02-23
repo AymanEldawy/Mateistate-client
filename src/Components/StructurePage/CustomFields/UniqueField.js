@@ -71,6 +71,7 @@ const UniqueField = ({
         queryKey: ["list", tableName, 'search', id, value],
         queryFn: async () => {
           if (!value && !id) return;
+          if (!tableName) return;
 
           let response = null;
           if (id) {

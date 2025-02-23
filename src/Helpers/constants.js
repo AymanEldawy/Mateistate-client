@@ -1194,8 +1194,6 @@ export const FLATS = {
   store_count: 0,
   warehouse_count: 0,
   shop_count: 0,
-  // service_apartments: 0,
-  // drivers_apartments: 0,
   underground_parking: 0,
 };
 

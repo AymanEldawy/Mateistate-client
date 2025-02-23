@@ -127,9 +127,6 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
               UNITS_COLORED_COUNT?.[assets] || {}
             )?.length;
 
-            console.log(key, val, assetsColoringCount, 'dsds');
-
-
             if (val)
               return (
                 <span

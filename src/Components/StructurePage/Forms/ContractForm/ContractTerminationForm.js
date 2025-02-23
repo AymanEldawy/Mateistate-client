@@ -48,7 +48,7 @@ const ContractTerminationForm = ({
       switch (key) {
         case "terminated":
           if (watch(name)) {
-            setValue("contract.status", CONTRACT_STATUS.TERMINATED);
+            setValue("contract.status", CONTRACT_STATUS.Terminate_and_Evacuated);
           } else {
             setValue("contract.status", CONTRACT_STATUS.Valid);
           }

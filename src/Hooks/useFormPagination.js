@@ -9,8 +9,6 @@ const useFormPagination = ({ name, number, code }) => {
   const [currentNumber, setCurrentNumber] = useState();
   const [lastNumber, setLastNumber] = useState(number);
   const [currentId, setCurrentId] = useState(null);
-
-  console.log(name, number, code, 'ssds');
   
   useEffect(() => {
     if (number) {

@@ -20,6 +20,7 @@ const Timing = () => {
         period: 1,
         start_day: new Date(),
         long: 3,
+        
       },
     },
   });

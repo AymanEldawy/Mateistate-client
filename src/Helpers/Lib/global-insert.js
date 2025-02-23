@@ -24,7 +24,7 @@ import {
 import { getAccountCash } from "./global-read";
 import { CONTRACT_STATUS } from "./contract-helpers";
 
-const CONTRACT_GRID_FORMS_NAMES = {
+export const CONTRACT_GRID_FORMS_NAMES = {
   bill_material_details: {
     table: "bill_material_details",
     conditions: ["material_id", "total_price"],
@@ -273,7 +273,6 @@ const dynamicInsertIntoContract = async ({
   contractType,
   ...additionalParams
 }) => {
-  console.log("🚀 ~ data:", data)
   let steps = Object.values(getFormByTableName(tableName)?.forms)?.map(
     (c) => c?.tab_name
   );
@@ -302,9 +301,7 @@ const dynamicInsertIntoContract = async ({
   } else {
     // NOTE: should update
     if (data?.contract_termination?.terminated) {
-      console.log('change state to terminated', data?.contract);
-      data.contract.status = CONTRACT_STATUS.Expired_and_not_renewed;
-      console.log('2 change state to terminated', data?.contract);
+      data.contract.status = CONTRACT_STATUS.Terminate_and_Evacuated;
     }
 
     response = await ApiActions.update("contract", {
@@ -376,9 +373,8 @@ const dynamicInsertIntoContract = async ({
               created_from_id: terminationId,
               contractFirstTabData: data?.contract || list?.contract,
             });
-            
+
             const grid = data?.contract_fines_grid || list?.contract_fines_grid
-            console.log("🚀 ~ grid:", grid)
 
             if (grid?.length) {
               await insertIntoGridTabs({
@@ -435,8 +431,7 @@ export const insertIntoContractInstallment = async ({
     const cost_center_id = firstTabData?.cost_center_id;
 
     if (installment_id) {
-      console.log('called here installment');
-      
+
       await generateChequesFromInstallment({
         installment,
         installment_grid,
@@ -452,12 +447,12 @@ export const insertIntoContractInstallment = async ({
     let currency_val = installment?.currency_val;
     let first_batch = installment?.first_batch;
 
-    const firstBatchNote= `Generate First Cash, Contract no. ${firstTabData?.number}, Amount ${first_batch}`
+    const firstBatchNote = `Generate First Cash, Contract no. ${firstTabData?.number}, Amount ${first_batch}`
 
     let entryMainData = {
       currency_id,
       currency_val,
-      note:firstBatchNote ,
+      note: firstBatchNote,
       debit: first_batch,
       credit: first_batch,
       difference: 0,
@@ -482,6 +477,7 @@ export const insertIntoContractInstallment = async ({
       // currency_id,
       cost_center_id,
       note: firstBatchNote,
+      number: 1
     });
 
     gridEntry.push({
@@ -492,6 +488,7 @@ export const insertIntoContractInstallment = async ({
       // currency_id,
       cost_center_id,
       note: firstBatchNote,
+      number: 2
     });
 
     if (installment?.has_first_batch && first_batch) {
@@ -581,6 +578,7 @@ export const insertIntoContractInstallment = async ({
           tableName: "entry_main_data",
           gridTableName: "entry_grid_data",
           itemSearchName: "entry_main_data_id",
+          order: true,
         });
         // toast.success("Successfully Generate Entry from First Payment Cash");
       } else {
@@ -614,7 +612,7 @@ const insertIntoContractPictures = async ({
   }
 };
 
-const insertIntoGridTabs = async ({
+export const insertIntoGridTabs = async ({
   grid,
   tab: { table, conditions },
   item_id,
@@ -635,6 +633,7 @@ const insertIntoGridTabs = async ({
   let currentCount = grid?.length;
 
   let length = Math.max(prevCount, currentCount);
+  let newList = []
 
   for (let i = 0; i < length; i++) {
     let item = grid?.[i];
@@ -642,27 +641,34 @@ const insertIntoGridTabs = async ({
     let isValid = true;
 
     if (JSON.stringify(item) === JSON.stringify(prevItem)) continue;
-
+    let errors = []
     for (const condition of conditions) {
       if (!item?.[condition]) {
         isValid = false;
+        errors.push({
+          name: condition,
+          message: condition + 'is required'
+        })
       }
     }
-
     if (isValid) {
       if (item.id && item && prevItem) {
-        await ApiActions.update(table, {
+        const res = await ApiActions.update(table, {
           conditions: [
             { type: "and", conditions: [["id", "=", prevItem?.id]] },
           ],
           updates: item,
         });
+        if (res?.success)
+          newList.push(item)
       } else {
         if (item) {
-          await ApiActions.insert(table, {
+          const res = await ApiActions.insert(table, {
             ...item,
             [itemNameId]: item_id,
           });
+          if (res?.success)
+            newList.push(item)
         } else {
           await ApiActions.remove(table, {
             conditions: [
@@ -671,8 +677,15 @@ const insertIntoGridTabs = async ({
           });
         }
       }
+    } else {
+      console.warn({
+        name: table,
+        data: grid,
+        errors
+      });
     }
   }
+  return newList
 };
 
 // Insert to Apartment Rent Contract and other relation tables
@@ -892,7 +905,7 @@ export const generateApartments = async (
         };
 
         // insert into cost center
-        
+
         const cost_center_id = await generateCostCenterFromUnits({
           ...costCenterData,
           name: data?.[typeSettings?.no],

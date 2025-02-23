@@ -46,6 +46,7 @@ import { ViewEntry } from "Components/Global/ViewEntry";
 import FormLayout from "../FormWrapperLayout/FormLayout";
 import { SearchContract } from "./SearchContract";
 import { CREATED_FROM_CONTRACT, CREATED_FROM_CONTRACT_FEES } from "Helpers/GENERATE_STARTING_DATA";
+import CONTRACT_CURD_FUNCTIONS from "Helpers/Lib/contract.api";
 
 const InstallmentForm = lazy(() => import("./InstallmentForm"));
 const ContractTerminationForm = lazy(() => import("./ContractTerminationForm"));
@@ -344,7 +345,7 @@ const ContractForm = ({ number, onClose }) => {
 
   const onClickRenew = async () => {
 
-    return ;
+    return;
     let contract = watch("contract");
     const startDate = new Date(contract?.start_duration_date);
     const endDate = new Date(contract?.end_duration_date);
@@ -364,7 +365,6 @@ const ContractForm = ({ number, onClose }) => {
     newContract.current_securing_value = 0;
 
     // const res = await renewContract(watch(), newContract);
-    // console.log("🚀 ~ onClickRenew ~ res:", res)
     // if (res?.success) {
     //   setCurrentIndex(0);
     //   reset({
@@ -382,7 +382,6 @@ const ContractForm = ({ number, onClose }) => {
   }
 
 
-  console.log(watch(), 'watch');
 
 
   // Handel Submit
@@ -410,23 +409,26 @@ const ContractForm = ({ number, onClose }) => {
       CONTRACTS_ASSETS_TYPE?.[searchQuery.get("flat_type")]
     );
 
-    const getTheFunInsert = INSERT_FUNCTION[contractName];
+    let contract = watch('contract');
+
+    const getTheFunInsert = CONTRACT_CURD_FUNCTIONS?.[contractName];
     const res = await getTheFunInsert({
       ...value,
       contract: watch("contract"),
       tabName: contractName,
       layout: contractId,
+      // note,
     });
+
+    console.log(res,'-resf');
+    
 
     if (res?.success) {
       let firstTabData = watch("contract");
       let contract_id = watch('contract.id') || res?.record?.id;
       const isNew = res?.record?.id
+      await generateEntry(contract_id)
       setOldContracts((prev) => [...prev, firstTabData]);
-      if (watch("contract.gen_entries")) {
-        await genEntry(contract_id || watch("contract.id"));
-      } else deleteEntry(contract_id);
-
       if (isNew) {
         await mergeInstallmentAndFirstTabData(watch("contract"), setValue, watch);
         if (watch("contract.paid_type") === 4) {
@@ -434,7 +436,6 @@ const ContractForm = ({ number, onClose }) => {
         }
       }
       if (contract_id) {
-        console.log(contract_id, 'contract_id', 'called');
         const data = await GET_UPDATE_DATE(contractName, contract_id);
         reset(data);
       }
@@ -446,9 +447,11 @@ const ContractForm = ({ number, onClose }) => {
     setIsLoading(false);
   };
 
-  const genEntry = async (contract_id) => {
-    let contract = watch("contract");
-    let commission = watch("contract_commission");
+
+  const generateEntry = async (contract_id) => {
+    const contract = watch('contract')
+    console.log("🚀 ~ generateEntry ~ contract:", contract)
+    const contract_commission = watch('contract_commission')
 
     const assetsTypeNumber = CACHE_LIST?.[assetType]?.find(
       (c) => c?.id === contract?.[`${assetType}_id`]
@@ -457,19 +460,20 @@ const ContractForm = ({ number, onClose }) => {
       (c) => c?.id === contract?.building_id
     )?.name;
 
-    if (!contract_id) return;
+    let note = `Contract rent number ${formPagination?.currentNumber} ${assetType} name ${assetsTypeNumber} building name ${buildingNumber}`;
+    if (contract_id && contract?.gen_entries) {
+      await generateEntryFromContract({
+        contractId: contract_id,
+        pattern: PATTERN_SETTINGS,
+        contract,
+        commission: contract_commission,
+        note
+      });
+    } else {
+      deleteEntry(contract_id);
+    }
+  }
 
-    generateEntryFromContract({
-      contractId: contract_id,
-      assetsType: assetType,
-      assetsTypeNumber,
-      buildingNumber,
-      contractNumber: formPagination?.currentNumber,
-      values: contract,
-      commission,
-      pattern: PATTERN_SETTINGS
-    });
-  };
 
   return (
     <FormLayout

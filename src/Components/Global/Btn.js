@@ -2,32 +2,32 @@ import React from "react";
 
 const Btn = ({ children, kind, containerClassName, isLoading, isActive, ...props }) => {
 
-  let classes = `bg-blue-500 active:bg-blue-700 hover:bg-blue-700 ${isActive && 'bg-blue-700'} text-white`;
+  let classes = `text-blue-500 bg-blue-100 border border-transparent active:border-blue-700 hover:text-blue-700 ${isActive && 'border-blue-700'}`;
 
   switch (kind) {
     case "success":
       classes =
-        `bg-green-500 active:bg-green-700 hover:bg-green-700 ${isActive && 'bg-green-700'} text-white`;
+        `text-green-500 bg-green-100 border border-transparent active:border-green-700 hover:text-green-700 ${isActive && 'border-green-700'}`;
       break;
     case "primary":
       classes =
-        `bg-[#06a96c] active:bg-[#06a96c] hover:bg-[#06a96c] ${isActive && 'bg-[#06a96c]'} text-white`;
+        `text-[#06a96c] bg-green-100 border border-transparent active:border-[#06a96c] hover:text-[#06a96c] ${isActive && 'border-[#06a96c]'}`;
       break;
     case "error":
-      classes = `bg-red-500 active:bg-red-700 hover:bg-red-700 ${isActive && 'bg-red-700'} text-white`;
+      classes = `text-red-500 bg-red-100 border border-transparent active:border-red-700 hover:text-red-700 ${isActive && 'border-red-700'}`;
       break;
     case "info":
       classes =
-        `bg-indigo-500 active:bg-indigo-700 hover:bg-indigo-700 ${isActive && 'bg-indigo-700'} text-white`;
+        `text-indigo-500 bg-indigo-100 border border-transparent active:border-indigo-700 hover:text-indigo-700 ${isActive && 'border-indigo-700'}`;
       break;
     case "warn":
       classes =
-        `bg-yellow-500 active:bg-yellow-700 hover:bg-yellow-700 ${isActive && 'bg-yellow-700'} text-white`;
+        `text-yellow-500 bg-yellow-100 border border-transparent active:border-yellow-700 hover:text-yellow-700 ${isActive && 'border-yellow-700'}`;
       break;
 
     case 'default':
       classes =
-        `bg-gray-200 active:bg-gray-400 hover:bg-gray-700 hover:text-white ${isActive && 'bg-gray-700 text-white'} text-black`;
+        `bg-gray-200 border border-transparent active:border-gray-400 hover:text-gray-700 hover:text-white ${isActive && 'border-gray-700'} text-black`;
     default:
       break;
   }

@@ -101,6 +101,8 @@ const AccountForm = ({ onClose, popupView, number }) => {
   const formPagination = useFormPagination({ name, number: number });
   const id = formPagination?.currentId;
 
+  console.log(watch(), 'sdsds', formPagination.currentNumber);
+
   const accountQueryClient = useQuery({
     queryKey: [name, id],
     queryFn: async () => {
@@ -124,6 +126,7 @@ const AccountForm = ({ onClose, popupView, number }) => {
         }
 
         reset(account);
+
         return account;
       }
     },
@@ -263,6 +266,7 @@ const AccountForm = ({ onClose, popupView, number }) => {
 
       if (!params?.id) {
         await appendNewRecord(res);
+
         reset();
       }
     } else {

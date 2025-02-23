@@ -53,6 +53,7 @@ const VoucherForm = ({
   const { set, insert, getOneBy } = useCurd();
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const [gridFields, setGridFields] = useState([]);
+  const [reCalculate, setReCalculate] = useState(false);
   const formPagination = useFormPagination({
     name,
     number,
@@ -181,12 +182,37 @@ const VoucherForm = ({
       let subName = name?.split(".")?.at(-1);
       let row = name?.split(".")?.[1];
 
-      if (subName === "credit" || subName === "debit")
-        calculateAmount(row, currentVal, subName);
+      if (subName === "credit" || subName === "debit") {
+        // calculateAmount(row, currentVal, subName);
+        setReCalculate(p => !p)
+        console.log('called recred',);
+
+
+      }
+
     });
 
     return () => subscription.unsubscribe();
   }, [watch]);
+
+  useMemo(() => {
+    let grid = watch("grid");
+    if (grid?.length) {
+      let debit = 0
+      let credit = 0
+      for (const item of grid) {
+        credit += +item?.credit
+        debit += +item?.debit
+
+      }
+      setValue('debit_amount', debit)
+      setValue('credit_total', debit)
+      setValue('credit_amount', credit)
+      setValue('debit_total', credit)
+    }
+  }, [reCalculate])
+
+  console.log(watch(), 'WA');
 
   const onSubmit = async () => {
     if (!isDirty) return;
@@ -290,8 +316,8 @@ const VoucherForm = ({
         fields={gridFields}
         tab="grid"
         errors={errors}
-        rowsCount={watch("grid")?.length || 5}
-        onlyView={watch('id') && watch('connect_with_id')}
+        rowsCount={watch("grid")?.length || 1}
+        onlyView={watch('id') && watch('is_first_batch')}
         withPortal
         rowStyles={(index) => {
           if (PATTERN_SETTINGS?.even_table_color && index % 2 === 0) {

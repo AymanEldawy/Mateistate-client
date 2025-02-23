@@ -1,10 +1,21 @@
 import { INSERT_DEFAULT_ACCOUNTS, INSERT_DEFAULT_CATEGORY, INSERT_DEFAULT_DATA, INSERT_DEFAULT_LACK_REASONS, insertIntoDefaultService, insertIntoMaterials, insertIntoNotification, insertIntoProblems, insertTimes, updateCategoryProblem, updateDefaultService, updateMaterials, updateMaterialsPrice, updateProblems, updateUserToken, updateVerifedUsers, updateNames, INSERT_DEFAULT_CHEQUES } from "Helpers/GENERATE_STARTING_DATA";
 import { ReportCount } from "./ReportCount";
 import { ReportLatest } from "./ReportLatest";
+import { ContractChart } from "./ContractChart";
+import { WrapperChart } from "./Charts/WapperChart";
+import { ChartContractCircle } from "./Charts/ChartContractCircle";
+import { ChartAccount } from "./Charts/ChartAccount";
+import ChartBuilding from "./Charts/ChartBuilding";
+import { ChartFlat } from "./Charts/ChartFlat";
+import ChartRevenues from "./Charts/ChartRevenues";
+import ChartContractExpired from "./Charts/ChartContractExpired";
+import { BuildIcon, PlusIcon, ShopIcon, TrashIcon, TruckIcon, UserIcon } from "Components/Icons";
+import { BoxWrapper } from "./BoxWrapper";
+import ChartContractNear from "./Charts/ChartContractNear";
 
 export const DashboardGridLayout = () => {
 
-  const loadData  = async () => {
+  const loadData = async () => {
     // await INSERT_DEFAULT_ACCOUNTS()
     // await INSERT_DEFAULT_DATA()
     // await updateMaterials()
@@ -25,74 +36,121 @@ export const DashboardGridLayout = () => {
   }
 
 
-
   return (
-    <div className="flex gap-4 h-full px-8">
-      <button onClick={loadData}>load data</button>
+    <div className="flex gap-4 px-8 h-[100lvh] mb-4">
+      {/* <button onClick={loadData}>load data</button> */}
       <div className="flex-1 flex flex-col -translate-y-4 h-full gap-4">
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
-          <ReportLatest
-            itemHref="/contract"
-            href="/reports/contract"
+          <WrapperChart
             name="contract"
-          />
+          >
+            <ChartContractCircle />
+          </WrapperChart>
         </div>
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 h-1/2">
-          <ReportLatest
-            itemHref="/buildings/update"
-            href="/buildings"
+          <WrapperChart
             name="building"
-          />
+          >
+            <ChartBuilding />
+          </WrapperChart>
         </div>
       </div>
       <div className="flex-[2] flex flex-col gap-4">
         <div className="flex gap-4 h-1/5">
           <div className="flex-1 shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2">
-            <ReportCount name="building" href="buildings" />
+            {/* <ChartFlat name="Flats"/> */}
+            <BoxWrapper
+              className="flex flex-col gap-2 items-center justify-center text-primary"
+              icon={
+                <span className="bg-yellow-600 flex items-center justify-center h-12 w-12 rounded-full"><BuildIcon className="text-white h-8 w-8" /></span>
+              }
+              title={`Flats`}
+              number={`2459`}
+            />
           </div>
           <div className="flex-1 shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2">
-            <ReportCount name="apartment" href="list/apartment" />
+            <BoxWrapper
+              className="flex flex-col gap-2 items-center justify-center text-primary"
+              icon={
+                <span className="bg-indigo-600 flex items-center justify-center h-12 w-12 rounded-full"><TruckIcon className="text-white h-8 w-8" /></span>
+              }
+              title={`parking`}
+              number={`320`}
+            />
           </div>
           <div className="flex-1 shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2">
-            <ReportCount name="parking" href="list/parking" />
-          </div>
-          <div className="flex-1 shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2">
-            <ReportCount name="shop" href="list/shop" />
+            <BoxWrapper
+              className="flex flex-col gap-2 items-center justify-center text-primary"
+              icon={
+                <span className="bg-green-600 flex items-center justify-center h-12 w-12 rounded-full"><ShopIcon className="text-white h-8 w-8" /></span>
+              }
+              title={`Shops`}
+              number={`350`}
+            />
           </div>
         </div>
         <div className="flex-1 flex flex-col gap-4">
           <div className="flex-1 flex gap-4">
-            <div className=" shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 flex-1"></div>
+            <div className=" shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 flex-1">
+              <WrapperChart name="Expired Contract">
+                <ChartContractExpired />
+              </WrapperChart>
+            </div>
             <div className="flex flex-col gap-4 h-full w-1/3">
               <div className=" shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 flex-1">
-                <ReportCount name="land" href="/list/land" />
+                {/* <ReportCount name="land" href="/list/land" /> */}
+
+                <BoxWrapper
+                  icon={<span className="bg-red-600 flex items-center justify-center h-12 w-12 rounded-full"><TrashIcon className="text-white h-8 w-8" /></span>}
+                  number={350}
+                  title="Contract Near to expired"
+                />
               </div>
               <div className=" shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 flex-1">
-                <ReportCount name="villa" href="/list/villa" />
+                {/* <ReportCount name="villa" href="/list/villa" /> */}
+                <BoxWrapper
+                  icon={<span className="bg-teal-600 flex items-center justify-center h-12 w-12 rounded-full"><PlusIcon className="text-white h-8 w-8" /></span>}
+                  number={31}
+                  title="new Contract"
+                />
               </div>
             </div>
           </div>
-          <div className="flex-1 flex-col flex gap-4">
-            <div className="shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 flex-1"></div>
+          <div className="flex-1 flex-col flex gap-4 mb-2">
+            <div className="shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 flex-1">
+
+            </div>
           </div>
+          {/* <div className="flex-1 flex-col flex gap-4">
+            <div className="shadow hover:shadow-md hover:border bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2 flex-1">
+              <WrapperChart name="Revenues ">
+                <ChartRevenues />
+              </WrapperChart>
+            </div>
+          </div> */}
         </div>
       </div>
       <div className="flex-1 flex flex-col -translate-y-4 h-full gap-4">
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2  h-1/2">
-          <ReportLatest
-            itemHref="/update/account"
+          <WrapperChart
             name="account"
-            href="/list/account"
-          />
+          >
+            <ChartAccount />
+          </WrapperChart>
         </div>
         <div className="flex-1 shadow overflow-hidden bg-white dark:bg-dark-bg dark:text-gray-200 rounded-md p-2  h-1/2">
-          <ReportLatest
+          {/* <ReportLatest
             itemHref="/update/cheque"
             colSearchName="number"
             name="cheque"
             title="cheque"
             href="/reports/cheques"
-          />
+          /> */}
+          <WrapperChart
+            name="Cheques"
+          >
+            <ChartRevenues />
+          </WrapperChart>
         </div>
       </div>
     </div>

@@ -75,13 +75,13 @@ export const VoucherFooter = ({
             multiple
           />
         )}
-        {PATTERN_SETTINGS?.gen_entires ? (
+        {PATTERN_SETTINGS?.gen_entries ? (
           <CheckboxField
-            {...fields?.gen_entires}
+            {...fields?.gen_entries}
             containerClassName="!flex-row gap-2"
-            defaultChecked={values?.gen_entires}
+            defaultChecked={values?.gen_entries}
             values={values}
-            value={values?.gen_entires || ""}
+            value={values?.gen_entries || ""}
             name="gen_entries"
             label="Generate a constraint"
           />

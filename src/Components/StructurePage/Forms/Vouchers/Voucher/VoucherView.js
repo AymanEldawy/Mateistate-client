@@ -33,10 +33,12 @@ export const VoucherView = () => {
         response?.result?.at(0)?.id,
         `${voucherInfo?.table}_id`
       );
+      let grid =  responseGrid?.result?.sort((a, b) => a?.number - a?.number)
+      console.log("🚀 ~ fetchVoucher ~ grid:", grid)
 
       setValues({
         ...response?.result?.at(0),
-        grid: responseGrid?.result,
+        grid,
       });
     }
     setIsLoading(false);

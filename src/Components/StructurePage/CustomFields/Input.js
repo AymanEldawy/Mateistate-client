@@ -44,6 +44,8 @@ const Input = ({
         fieldState: { error },
         formState: { },
       }) => {
+        const date = new Date();
+
         return (
           <div className={`flex flex-col gap-1 ${mainContainerClassName}`}>
             <div
@@ -83,13 +85,15 @@ const Input = ({
                         <CalenderIcon className="h-4 w-4" />
                       </span>
                     }
-                    value={new Date(value).toLocaleDateString('en-UK')}
+                    value={value ? new Date(value).toLocaleDateString('en-UK') : null}
                     // defaultValue={new Date()}
+                    maxDate={date?.setDate(date.getFullYear() + 2)}
                     showYearDropdown
                     todayHighlight={true}
                     locale="en"
                     isClearable
                     withPortal
+                    showMonthDropdown
                     // withPortal={withPortal}
                     readOnly={
                       readOnly ||
@@ -108,8 +112,8 @@ const Input = ({
                     // dateFormat="dd-mm-yyyy"
                     // portalId="root-portal"
                     dateFormat="dd-MM-yyyy"
-                    // dateFormat="dd-MM-yyyy h:mm aa"
-                  
+                  // dateFormat="dd-MM-yyyy h:mm aa"
+
                   //  "MMMM d, yyyy"
                   />
                 </div>

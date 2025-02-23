@@ -324,7 +324,7 @@ body table tbody td input:not(:read-only) {
 
 .react-datepicker__close-icon::after {
   background: #f005;
-  display: flex;  
+  display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
@@ -334,8 +334,6 @@ body table tbody td input:not(:read-only) {
 div:has(input:focus) .numbers {
   background-color: #ff0;
 } */
-
-
 
 /********* date picker styles *********/
 /* Popper */
@@ -556,4 +554,95 @@ div:has(input:focus) .numbers {
 }
 .react-datepicker__time-list-item--selected {
   background-color: #3b82f6 !important;
+}
+
+/* .react-datepicker__year-dropdown {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 280px;
+  z-index: 1;
+  background: #fff;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+} */
+.react-datepicker__year-option {
+  padding: 5px;
+}
+
+/* .react-datepicker__year-option:has(a) {
+  position: absolute;
+} */
+
+.react-datepicker__header {
+  background: white;
+}
+
+.react-datepicker__navigation--previous,
+.react-datepicker__navigation--next {
+  width: 35px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @apply bg-white scale-90
+}
+.react-datepicker__navigation--previous {
+  left: 190px !important;
+}
+.react-datepicker__navigation--next {
+  right: 10px !important;
+}
+
+.react-datepicker__navigation--previous span,
+.react-datepicker__navigation--next  span {
+  top: -3px !important;
+}
+
+.react-datepicker__header__dropdown.react-datepicker__header__dropdown--scroll {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 8px;
+  @apply bg-gray-100;
+}
+
+
+.react-datepicker__header__dropdown.react-datepicker__header__dropdown--scroll
+  > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+  margin: 0 !important;
+}
+
+.react-datepicker__month-read-view,
+.react-datepicker__year-read-view {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+.react-datepicker__month-dropdown,
+.react-datepicker__year-dropdown {
+  top: 10px;
+  left: 0;
+  width: 100%;
+  height: 310px;
+  overflow: auto;
+}
+
+.react-datepicker__month-read-view--down-arrow,
+.react-datepicker__year-read-view--down-arrow {
+  right: 0;
+  position: relative;
+  order: 2;
+}
+.react-datepicker__month-option,
+.react-datepicker__year-option {
+  padding: 5px;
 }

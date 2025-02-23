@@ -3181,16 +3181,16 @@ const cheque_grid = [
     header: "status", accessorKey: "status", enableColumnFilter: false, cell: ({ row }) => {
       const displayChqStatus = () => {
         if (row?.original?.collection_status) {
-          return <span className="text-xs px-2 p-1 rounded-md font-normal bg-green-500 text-white">Collected</span>
+          return <span className="text-xs px-2 p-1 rounded-md font-normal text-green-500 bg-green-100 ">Collected</span>
         }
         else if (row?.original?.collection_status) {
-          return <span className="text-xs px-2 p-1 rounded-md font-normal bg-yellow-500 text-white">Partial Collected</span>
+          return <span className="text-xs px-2 p-1 rounded-md font-normal text-yellow-500 bg-yellow-100 ">Partial Collected</span>
         }
         else if (row?.original?.collection_status) {
-          return <span className="text-xs px-2 p-1 rounded-md font-normal bg-red-500 text-white">Returned</span>
+          return <span className="text-xs px-2 p-1 rounded-md font-normal text-red-500 bg-red-100 ">Returned</span>
         }
         else {
-          return <span className="text-xs px-2 p-1 rounded-md font-normal bg-gray-500 text-white">Uncollected</span>
+          return <span className="text-xs px-2 p-1 rounded-md font-normal text-gray-500 bg-gray-100 ">Uncollected</span>
         }
 
       }
