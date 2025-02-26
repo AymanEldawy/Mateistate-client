@@ -464,22 +464,23 @@ save
 - [] entires distibutive
 
 ## Required todos
+
 - [x] bill patterns default
 - [x] bill form
 - [x] material form
 - [x] back in top
 
-
 ## new note
-- [X] group material code 
-- [X] material code inhterited from parent 
-- [X] unique code in each table 
-- [X] material type default sotred 
-- [X] material form 
-- [X] all dates are default today 
-- [X] payment method default cash 
-- [X] material search witn multple keys 
-- [X] bill form
+
+- [x] group material code
+- [x] material code inhterited from parent
+- [x] unique code in each table
+- [x] material type default sotred
+- [x] material form
+- [x] all dates are default today
+- [x] payment method default cash
+- [x] material search witn multple keys
+- [x] bill form
 - [x] material register
 - [x] work times
 - [x] first batch fix contract
@@ -505,7 +506,26 @@ save
 - [] to form
 
 ## Latest Notes
-- stroe tree view 
+
+-X stroe tree view
+
 - materials & class tree view
 - material form
 - new report layoutx
+
+## convert
+
+all froms to popup as nested rout
+
+route
+menu
+popup form
+dynamic form is nested route
+only popup
+redesign unique field
+layout form
+
+## Change
+
+type -> code in cheque
+bill_kind -> code in bill
