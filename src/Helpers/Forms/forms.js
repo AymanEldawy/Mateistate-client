@@ -434,11 +434,13 @@ const account = [
     label: "final_id",
     name: "final_id",
     no_filter: true,
+    required: false,
   }),
   FIELDS_STRUCTURE.account({
     label: "parent_id",
     name: "parent_id",
     no_filter: true,
+    required: false,
   }),
 ];
 

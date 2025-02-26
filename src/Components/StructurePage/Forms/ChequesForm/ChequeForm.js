@@ -141,6 +141,7 @@ const ChequeForm = ({
     if (oldValues && PATTERN_SETTINGS && !formPagination?.currentId) {
       reset(oldValues);
       mergePatternWithChequeData(PATTERN_SETTINGS, watch, setValue)
+      fetchCustomer(oldValues?.account_id)
     } else if (formPagination?.currentNumber > formPagination?.lastNumber) {
       reset(mergePatternWithChequeData(PATTERN_SETTINGS, watch, setValue));
     }

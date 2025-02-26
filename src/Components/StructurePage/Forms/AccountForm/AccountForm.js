@@ -25,6 +25,7 @@ import useFormPagination from "Hooks/useFormPagination";
 import { FormStepPagination } from "Components/Global/FormStepPagination";
 import FormLayout from "../FormWrapperLayout/FormLayout";
 import getFormByTableName from "Helpers/Forms/forms";
+import UniqueSearchField from "Components/StructurePage/CustomFields/UniqueSearchField";
 
 const automaticChangesOnAccount = async (name, watch, setValue) => {
   if (name === "parent_id") {
@@ -289,6 +290,11 @@ const AccountForm = ({ onClose, popupView, number }) => {
           watch(ACCOUNT_DISTRIBUTIVE_TYPE_NAME)?.length < 2)
       }
       formPagination={formPagination}
+      extraContentBar={
+        <UniqueSearchField
+          // loadOptions={}
+        />
+      }
     >
 
       <AccountFormFields

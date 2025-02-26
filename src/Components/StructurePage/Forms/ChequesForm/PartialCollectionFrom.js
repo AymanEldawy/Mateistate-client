@@ -159,9 +159,11 @@ export const PartialCollectionFrom = ({
     return () => subscription.unsubscribe();
   }, [watch]);
 
-  const onClickAddNew = (data) => {
-    console.log('called new', data);
+  console.log(watch(), 'wta');
 
+
+  const onClickAddNew = (data) => {
+    if (!data) return;
     let total_sum_prev = (data?.total_sum_prev || 0) + data?.amount;
 
     setValue("id", null);
@@ -211,7 +213,7 @@ export const PartialCollectionFrom = ({
     } else {
       delete value?.id;
 
-      res = await insert(name, value);
+      res = await insert(name, { ...value, number });
 
       if (res?.success) {
         updateStatus();
