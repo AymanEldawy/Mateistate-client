@@ -72,6 +72,8 @@ const ToolsWarper = ({ row, refetchPropertyValuesData }) => {
     const subscription = watch((value, { name, type }) => { });
   }, [watch]);
 
+  console.log(watch(), flatsDetails, 'watch');
+  
   const onSubmit = async (value) => {
     let grid = watch("grid");
     setIsLoading(true);

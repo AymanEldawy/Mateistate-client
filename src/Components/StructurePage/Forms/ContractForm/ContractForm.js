@@ -420,8 +420,8 @@ const ContractForm = ({ number, onClose }) => {
       // note,
     });
 
-    console.log(res,'-resf');
-    
+    console.log(res, '-resf');
+
 
     if (res?.success) {
       let firstTabData = watch("contract");
@@ -473,7 +473,6 @@ const ContractForm = ({ number, onClose }) => {
       deleteEntry(contract_id);
     }
   }
-
 
   return (
     <FormLayout

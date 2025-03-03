@@ -23,6 +23,8 @@ import { updateChqStatus } from "Helpers/Lib/cheque-helpers";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import Loading from "Components/Global/Loading";
 import FormTitle from "Components/Global/FormTitle";
+import useOptimisticMutation from "Hooks/useOptimisticMutation";
+import usePartialPagination from "Hooks/usePartialPagination";
 
 const mergePattern = (pattern, chqValues, setValue) => {
 
@@ -79,42 +81,62 @@ export const PartialCollectionFrom = ({
     handleSubmit,
     clearErrors
   } = methods
-  const { remove, set, insert } = useCurd()
+  const { remove, set, insert, getOneBy } = useCurd()
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [number, setNumber] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [maxLength, setMaxLength] = useState(false);
-  const { getNextOne, getPreviousOne, getLastOneBy, getFirstOne } = useCurd();
-  const queryClient = new QueryClient();
+  const {
+    getNextPartial,
+    getPreviousPartial,
+    getFirstPartial,
+    getLastPartial,
+  } = usePartialPagination(chequeId)
+  const queryClient = useQueryClient()
+
+
 
   const partialData = useQuery({
     queryKey: [name, chequeId],
     queryFn: async () => {
-      const response = await getLastOneBy(name, "cheque_id", chequeId);
+      const response = await getLastPartial(chequeId);
+      console.log("🚀 ~ queryFn: ~ response:", response)
       if (response?.success) {
-        onClickAddNew(response?.result?.at(0));
-        setMaxLength(response?.result?.at(0)?.number);
+        onClickAddNew(response?.result?.at(-1));
+        setMaxLength(response?.result?.at(-1)?.number);
+        return response
       }
     },
   });
-
-  const go = async (key) => {
-    queryClient.fetchQuery({
-      queryKey: [name, key, chequeId],
-      queryFn: async () => {
-        const res = key === 'prev' ? await getPreviousOne(name, number) : await getNextOne(name, number);
-        if (res?.result?.length) {
-          setNumber(res?.result?.at(0)?.number);
-          reset(res?.result?.at(0));
-        }
-      }
-    });
-  }
 
   useEffect(() => {
     if (!PATTERN_SETTINGS || chqValues?.partial_collection_status) return;
     mergePattern(PATTERN_SETTINGS, chqValues, setValue);
   }, [PATTERN_SETTINGS, chqValues?.partial_collection_status]);
+
+  const goNext = async () => {
+    queryClient.fetchQuery({
+      queryKey: [number, chequeId, 'next'],
+      queryFn: async () => {
+        const res = await getNextPartial(number, chequeId)
+        let data = res?.result?.at(0)
+        setNumber(data?.number)
+        reset(data)
+      }
+    })
+  }
+
+  const goBack = async () => {
+    queryClient.fetchQuery({
+      queryKey: [number, chequeId, 'back'],
+      queryFn: async () => {
+        const res = await getPreviousPartial(number, chequeId)
+        let data = res?.result?.at(0)
+        setNumber(data?.number)
+        reset(data)
+      }
+    })
+  }
 
   const fields = useMemo(() => {
     let list = getFormByTableName(name);
@@ -188,7 +210,7 @@ export const PartialCollectionFrom = ({
     }
   };
 
-  const updateStatus = async (status) => {
+  const updateStatus = async () => {
     setIsLoading(true);
     const res = await updateChqStatus({ 'partial_collection_status': true }, chqValues?.id);
     if (res?.success) {
@@ -196,6 +218,9 @@ export const PartialCollectionFrom = ({
     }
     setIsLoading(false);
   };
+
+  console.log(partialData.data);
+
 
   const onSubmit = async (value) => {
     if (!isDirty) return;
@@ -250,9 +275,6 @@ export const PartialCollectionFrom = ({
     }
     setIsLoading(false);
   };
-
-  console.log(watch("rest"), 'rest');
-
 
   return (
     <>
@@ -341,7 +363,7 @@ export const PartialCollectionFrom = ({
                   <button
                     disabled={+number === 1}
                     type="button"
-                    onClick={() => go('prev')}
+                    onClick={goBack}
                     className="bg-blue-500 text-white disabled:text-gray-300 dark:disabled:!text-gray-700 disabled:opacity-90 disabled:bg-gray-100 rounded-md shadow flex items-center justify-center p-1"
                   >
                     <ChevronIcon className="rtl:-rotate-90 ltr:rotate-90 w-6 h-6 text-inherit" />
@@ -353,7 +375,7 @@ export const PartialCollectionFrom = ({
                     disabled={number >= maxLength}
                     type="button"
                     className="bg-blue-500 text-white disabled:bg-gray-100 rounded-md shadow flex items-center justify-center p-1"
-                    onClick={() => go('next')}
+                    onClick={goNext}
                   >
                     <ChevronIcon className="rtl:rotate-90 ltr:-rotate-90 w-6 h-6 text-inherit" />
                   </button>
