@@ -1,29 +1,24 @@
-import { Button } from "Components/Global/Button";
-import { ChevronIcon, EyeIcon, PlusIcon, TrashIcon } from "Components/Icons";
+import { ChevronIcon, PlusIcon, TrashIcon } from "Components/Icons";
 import {
   CheckboxField,
   CurrencyFieldGroup,
-  Input,
-  Switch,
-  Textarea,
-  UniqueField,
+  Input, Textarea,
+  UniqueField
 } from "Components/StructurePage/CustomFields";
 import getFormByTableName from "Helpers/Forms/forms";
 import { useEffect, useMemo, useState } from "react";
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
-import { Query, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import { FormProvider, useForm } from "react-hook-form";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ViewEntry } from "Components/Global/ViewEntry";
 import { toast } from "react-toastify";
 import useCurd from "Hooks/useCurd";
 import Btn from "Components/Global/Btn";
-import { ErrorText } from "Components/Global/ErrorText";
 import { deleteEntry, generateEntryFromChqOperation } from "Helpers/Lib/vouchers-insert";
 import { CREATED_FROM_CHQ_OPERATION } from "Helpers/GENERATE_STARTING_DATA";
 import { updateChqStatus } from "Helpers/Lib/cheque-helpers";
 import ConfirmModal from "Components/Global/Modal/ConfirmModal";
 import Loading from "Components/Global/Loading";
 import FormTitle from "Components/Global/FormTitle";
-import useOptimisticMutation from "Hooks/useOptimisticMutation";
 import usePartialPagination from "Hooks/usePartialPagination";
 
 const mergePattern = (pattern, chqValues, setValue) => {
@@ -96,17 +91,17 @@ export const PartialCollectionFrom = ({
 
 
 
-  const partialData = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: [name, chequeId],
     queryFn: async () => {
       const response = await getLastPartial(chequeId);
-      console.log("🚀 ~ queryFn: ~ response:", response)
       if (response?.success) {
-        onClickAddNew(response?.result?.at(-1));
-        setMaxLength(response?.result?.at(-1)?.number);
-        return response
+        onClickAddNew(response?.result?.at(0));
+        setMaxLength(response?.result?.at(0)?.number);
       }
+      return response?.result
     },
+    enabled: !!chequeId
   });
 
   useEffect(() => {
@@ -158,9 +153,11 @@ export const PartialCollectionFrom = ({
         let total = +watch("total_value") || 0;
 
         let theTotalRest = total - prev - amount;
+        console.log(theTotalRest,'theTotalRest');
+        
         let theTotalSum = prev + amount;
 
-        if (theTotalRest < 0) {
+        if (theTotalRest <= -1) {
           toast.error(
             "Failed to enter value the rest can't be less than 0",
             {
@@ -181,11 +178,13 @@ export const PartialCollectionFrom = ({
     return () => subscription.unsubscribe();
   }, [watch]);
 
-  console.log(watch(), 'wta');
-
 
   const onClickAddNew = (data) => {
     if (!data) return;
+    if (data?.rest === 0) {
+      reset(data);
+      return
+    }
     let total_sum_prev = (data?.total_sum_prev || 0) + data?.amount;
 
     setValue("id", null);
@@ -212,14 +211,13 @@ export const PartialCollectionFrom = ({
 
   const updateStatus = async () => {
     setIsLoading(true);
-    const res = await updateChqStatus({ 'partial_collection_status': true }, chqValues?.id);
+    let complete = +watch('rest') === 0
+    const res = await updateChqStatus({ [complete ? 'collection_status' : 'partial_collection_status']: true }, chqValues?.id);
     if (res?.success) {
-      partialData?.refresh();
+      refetch();
     }
     setIsLoading(false);
   };
-
-  console.log(partialData.data);
 
 
   const onSubmit = async (value) => {
@@ -381,7 +379,7 @@ export const PartialCollectionFrom = ({
                   </button>
                 </div>
 
-                {number <= +maxLength ? (
+                {number <= +maxLength && watch('rest') > 0 ? (
                   <button
                     type="button"
                     onClick={() => onClickAddNew(watch())}
