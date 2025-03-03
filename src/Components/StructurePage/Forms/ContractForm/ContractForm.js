@@ -345,16 +345,26 @@ const ContractForm = ({ number, onClose }) => {
 
   const onClickRenew = async () => {
 
-    return;
+    setValue('contract_termination.terminated', true)
+    setValue('contract_termination.termination_date', new Date())
+
+    if (watch('contract_termination.terminated')) {
+      console.log('called', 'sa', watch());
+
+      await onSubmit(watch());
+    }
+
     let contract = watch("contract");
     const startDate = new Date(contract?.start_duration_date);
     const endDate = new Date(contract?.end_duration_date);
     const differenceMs = endDate.getTime() - startDate.getTime();
     const newStartDate = new Date(endDate.getTime() + (24 * 60 * 60 * 1000));
     const newEndDate = new Date(newStartDate.getTime() + differenceMs);
-    const newContract = {};
+    const newContract = {
+      ...contract
+    };
+    delete newContract.id;
     let contractNumbers = +contract.contracts_number_prev + 1;
-
     newContract.start_duration_date = newStartDate;
     newContract.end_duration_date = newEndDate;
     newContract.contracts_number_prev = contractNumbers || 1;
@@ -365,30 +375,27 @@ const ContractForm = ({ number, onClose }) => {
     newContract.current_securing_value = 0;
 
     // const res = await renewContract(watch(), newContract);
-    // if (res?.success) {
-    //   setCurrentIndex(0);
-    //   reset({
-    //     defaultValues: {
-    //       contract: newContract
-    //     }
-    //   });
-    //   formPagination.setCurrentNumber(+formPagination.lastNumber + 1)
-    // }
 
+    setCurrentIndex(0);
+    reset({
+      contract: newContract
+    });
+    console.log(watch(), '-ddsds');
+
+    formPagination.setCurrentNumber(+formPagination.lastNumber + 1)
+    await onSubmit(watch())
   };
-
-  const testReset = () => {
-    reset(undefined, { keepDirtyValues: true })
-  }
-
-
-
 
   // Handel Submit
   const onSubmit = async (value) => {
-    if (!isDirty) {
+    console.log('called,');
+
+    if (!isDirty && !watch('contract.id')) {
       return;
     }
+
+    console.log('process save');
+
 
     if (watch('contract.end_duration_date') && watch('contract.start_duration_date') && Date.parse(watch('contract.end_duration_date')) < Date.parse(watch('contract.start_duration_date'))) {
       toast.error('End date should be grater than start date')
@@ -450,7 +457,6 @@ const ContractForm = ({ number, onClose }) => {
 
   const generateEntry = async (contract_id) => {
     const contract = watch('contract')
-    console.log("🚀 ~ generateEntry ~ contract:", contract)
     const contract_commission = watch('contract_commission')
 
     const assetsTypeNumber = CACHE_LIST?.[assetType]?.find(
