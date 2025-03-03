@@ -87,6 +87,7 @@ export async function filterAssetsByBuilding(
 }
 
 const ContractForm = ({ number, onClose }) => {
+  const name = 'contract';
   const params = useParams();
   const [searchQuery] = useSearchParams();
   const type = params?.type;
@@ -100,7 +101,9 @@ const ContractForm = ({ number, onClose }) => {
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const [oldContracts, setOldContracts] = useState([]);
+  const { getOneBy, remove } = useCurd();
   let date = new Date();
+
   const methods = useForm({
     defaultValues: {
       contract: {
@@ -113,10 +116,6 @@ const ContractForm = ({ number, onClose }) => {
       },
     }
   });
-  const { getOneBy } = useCurd();
-  const formPagination = useFormPagination({ name: "contract", number, code });
-  const contractId = formPagination?.currentId;
-
   const {
     handleSubmit,
     watch,
@@ -124,7 +123,8 @@ const ContractForm = ({ number, onClose }) => {
     setValue,
     reset,
   } = methods;
-
+  const formPagination = useFormPagination({ name: "contract", number, code, reset });
+  const contractId = formPagination?.currentId;
 
   const {
     currentIndex,
@@ -227,13 +227,6 @@ const ContractForm = ({ number, onClose }) => {
     setFields(newFields);
     setShouldRefresh((p) => !p);
   }, [PATTERN_SETTINGS, currentIndex]);
-
-  // useEffect(() => {
-  //   if (formPagination?.currentNumber > formPagination?.lastNumber) {
-  //     setShouldRefresh((p) => !p);
-
-  //   }
-  // }, [formPagination?.currentNumber])
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
@@ -479,6 +472,7 @@ const ContractForm = ({ number, onClose }) => {
       deleteEntry(contract_id);
     }
   }
+
 
   return (
     <FormLayout

@@ -34,7 +34,6 @@ const FormSteps = ({
   const methods = useForm({
     defaultValues: {},
   });
-  const formPagination = useFormPagination({ name, number: number, code });
 
   const {
     goTo,
@@ -52,6 +51,7 @@ const FormSteps = ({
     formState: { errors, isDirty },
     reset,
   } = methods;
+  const formPagination = useFormPagination({ name, number: number, code, reset });
 
   const { isLoading } = useQuery({
     queryKey: [name, id],
@@ -69,18 +69,6 @@ const FormSteps = ({
       reset({ ...watch(), ...oldValues });
     }
   }, [oldValues]);
-
-  const onDelete = async () => {
-    let data = watch(tabNames?.[0]);
-
-    let res = await remove(name, data?.id);
-    if (res?.success) {
-      if (SHOULD_DELETE_COST_CENTER?.[tabNames[0]]) {
-        await remove("cost_center", data?.cost_center_id);
-      }
-      navigate(-1);
-    }
-  };
 
   // Handel Submit
   const onSubmit = async (value) => {
@@ -119,7 +107,7 @@ const FormSteps = ({
       activeStage={currentIndex}
       formPagination={formPagination}
       formClassName="w-full xl:w-[900px] 2xl:w-[1200px]"
-    
+
     >
       {fields?.length ? (
         <>

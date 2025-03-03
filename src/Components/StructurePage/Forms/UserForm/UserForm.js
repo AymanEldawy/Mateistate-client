@@ -50,10 +50,11 @@ const UserForm = ({
   const name = "user";
   const params = useParams();
   const id = params?.id;
-  const { getOneBy } = useCurd();
+  const { getOneBy, remove } = useCurd();
+  const [buildingsIds, setBuildingsIds] = useState({});
+  const [categoriesIds, setCategoriesIds] = useState({});
   const { goTo, currentIndex, steps, fields, setCurrentIndex } =
     useFormSteps({ name });
-  const formPagination = useFormPagination({ name, number: number });
 
   const { appendNewRecord } = usePopupForm();
   const methods = useForm();
@@ -62,8 +63,7 @@ const UserForm = ({
     formState: { errors, isDirty },
     reset,
   } = methods;
-  const [buildingsIds, setBuildingsIds] = useState({});
-  const [categoriesIds, setCategoriesIds] = useState({});
+  const formPagination = useFormPagination({ name, number: number, reset });
 
   const { isLoading } = useQuery({
     queryKey: [name, formPagination?.currentId],

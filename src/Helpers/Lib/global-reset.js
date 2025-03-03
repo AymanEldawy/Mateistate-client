@@ -4,6 +4,9 @@ import {
 } from "Helpers/constants";
 
 export const contract = {
+  apartment_id: null,
+  parking_id: null,
+  shop_id: null,
   building_id: null,
   client_id: null,
   contract_duration: null,
@@ -20,9 +23,6 @@ export const contract = {
   lessor_id: null,
   paid_type: null,
   previous_securing: null,
-  shop_id: null,
-  parking_id: null,
-  apartment_id: null,
   end_duration_date: null,
   gen_entries: true,
   revenue_account_id: null,
@@ -38,6 +38,19 @@ const account = {
   parent_id: null,
   type: 1,
 };
+
+const owner = {
+  address: '',
+  cell_phone: '',
+  email: '',
+  fax: '',
+  id_card: '',
+  ltnname: '',
+  mailbox: '',
+  name: '',
+  nationality: undefined,
+  phone: ''
+}
 
 const cost_center = {
   note: null,
@@ -244,12 +257,14 @@ const owner_expenses_types = {
 };
 
 const owner_expenses = {};
+
 const category = {
   description: "",
   image: "",
   name: "",
   parent_id: "",
 };
+
 const category_problem = {
   category_id: "",
   description: "",
@@ -270,6 +285,7 @@ const RESET_FIELDS = {
   building,
   owner_expenses_types,
   owner_expenses,
+  owner,
 };
 
 export function getResetFields(name) {

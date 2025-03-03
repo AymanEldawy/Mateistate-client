@@ -50,16 +50,10 @@ const VoucherForm = ({
       gen_entries: true
     }
   });
-  const { set, insert, getOneBy } = useCurd();
+  const { set, insert, getOneBy, remove } = useCurd();
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const [gridFields, setGridFields] = useState([]);
   const [reCalculate, setReCalculate] = useState(false);
-  const formPagination = useFormPagination({
-    name,
-    number,
-    code
-  });
-  const id = formPagination?.currentId;
 
   const {
     watch,
@@ -67,7 +61,14 @@ const VoucherForm = ({
     setValue,
     formState: { errors, isDirty },
   } = methods;
-
+  const formPagination = useFormPagination({
+    name,
+    number,
+    code,
+    reset
+  });
+  const id = formPagination?.currentId;
+  
   const queryClientNewVoucher = useQuery({
     queryKey: ["voucher_main_data", id, type],
     queryFn: async () => {
@@ -272,7 +273,6 @@ const VoucherForm = ({
       toast.error(res?.error?.detail);
     }
   };
-
 
   return (
     <FormLayout

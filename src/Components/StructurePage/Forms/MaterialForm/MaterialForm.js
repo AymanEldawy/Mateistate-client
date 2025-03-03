@@ -71,8 +71,6 @@ const MaterialForm = ({ popupView, onClose }) => {
     }
   };
 
-
-
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
       if (name === 'material.material_group_id') {
@@ -81,12 +79,6 @@ const MaterialForm = ({ popupView, onClose }) => {
     });
     return () => subscription.unsubscribe();
   }, [watch]);
-
-  const onDelete = async () => {
-    let data = watch(name);
-    const response = await remove(name, materialId);
-    navigate(-1);
-  };
 
   const onSubmit = async (value) => {
     if (!isDirty) return;

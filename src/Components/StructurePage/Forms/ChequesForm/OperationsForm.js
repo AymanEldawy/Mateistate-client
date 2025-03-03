@@ -240,16 +240,8 @@ export const OperationsForm = ({
       !selectedFormOperation?.table
     )
       return;
-
     getOperationData();
-
-    // return () => {
-    //   reset({
-    //     credit_account_id: null,
-    //     debit_account_id: null,
-    //     note: "",
-    //   });
-    // };
+    
     return () => {
       reset({});
     }

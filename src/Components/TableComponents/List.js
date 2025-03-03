@@ -73,13 +73,9 @@ const List = ({ tableName, allowPrint, hideAdd, urlToAdd }) => {
     const res = await remove(name, ids);
     if (res?.success) {
       refetch();
-      // setRowSelection([]);
-      // await refetchData();
     }
     setOpenConfirmation(false);
   };
-
-  const closeContextMenu = () => setContextMenu(null);
 
   return (
     <>

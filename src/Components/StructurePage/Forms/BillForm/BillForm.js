@@ -50,12 +50,9 @@ const BillForm = ({
   const navigate = useNavigate();
   const [refresh, setRefresh] = useState(false);
   const code = params?.code || patternCode;
-  const formPagination = useFormPagination({ name, number: params?.number, code: params?.code });
   const [activeTab, setActiveTab] = useState(1);
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const [openMaterialForm, setOpenMaterialForm] = useState(false);
-  const id = formPagination?.currentId;
-
   const methods = useForm({
     defaultValues: {
       bill: {
@@ -71,7 +68,8 @@ const BillForm = ({
     formState: { errors, isDirty },
     clearErrors,
   } = methods;
-
+  const formPagination = useFormPagination({ name, number: params?.number, code: params?.code, reset });
+  const id = formPagination?.currentId;
 
   useQuery({
     queryKey: ["auto-increment", code],
@@ -350,13 +348,6 @@ const BillForm = ({
       if (!params?.id) navigate(`/bill/${code}/${response?.record?.number}`);
     } else {
       toast.error(`Field to save Bill ${watch("bill.number")}`);
-    }
-  };
-
-  const onDelete = async () => {
-    const response = await remove("bill", params?.id);
-    if (response?.success) {
-      navigate(-1);
     }
   };
 

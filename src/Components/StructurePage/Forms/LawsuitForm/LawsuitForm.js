@@ -56,18 +56,6 @@ const LawsuitForm = ({ popupView }) => {
     },
   });
 
-  const onDelete = async () => {
-    let data = watch(name);
-    const response = await remove(name, data?.id);
-
-    if (response?.success) {
-      await remove("cost_center", data?.main_cost_center_id);
-      await remove("account", data?.building_account_id);
-
-      onDeleteItem(data?.number);
-    }
-  };
-
   const onSubmit = async (value) => {
     if (!isDirty) {
       toast.error("You must to fill out some Units");
@@ -96,7 +84,6 @@ const LawsuitForm = ({ popupView }) => {
       steps={steps}
       goToStep={goTo}
       currentIndex={currentIndex}
-      outerDelete={onDelete}
       setCurrentIndex={setCurrentIndex}
       // additionalButtons={
       //   <Link

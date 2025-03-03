@@ -69,8 +69,8 @@ const ReservationPropertyForm = ({ onClose, popupView, number }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState([]);
-  const { set, insert, getOneBy } = useCurd();
-  const formPagination = useFormPagination({ name, number })
+  const { set, insert, getOneBy, remove } = useCurd();
+  const formPagination = useFormPagination({ name, number, reset })
 
   const reservationQueryClient = useQuery({
     queryKey: [name, id],
@@ -139,6 +139,7 @@ const ReservationPropertyForm = ({ onClose, popupView, number }) => {
     [name]
   );
 
+
   return (
     <FormLayout
       name={name}
@@ -149,7 +150,7 @@ const ReservationPropertyForm = ({ onClose, popupView, number }) => {
       formPagination={formPagination}
       number={number}
 
->
+    >
       <ReservationPropertyFields
         key={id}
         fields={fields}

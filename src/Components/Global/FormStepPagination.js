@@ -22,7 +22,6 @@ export const FormStepPagination = ({ formPagination }) => {
     goNew,
   } = formPagination || {};
 
-
   return (
     <div className="flex flex-nowrap w-fit items-center justify-center gap-1 dark:bg-[#f1f1f121] dark:text-white">
       <button
@@ -84,7 +83,10 @@ export const FormStepPagination = ({ formPagination }) => {
           New
         </span>
       ) : (
-        <Btn type="button" onClick={goNew} containerClassName="mx-4" >Add new</Btn>
+        <Btn type="button" onClick={goNew} containerClassName="mx-4" >
+          <PlusIcon className="w-5 h-5" />
+          Add new
+        </Btn>
       )}
     </div>
   );

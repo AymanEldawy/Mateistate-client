@@ -97,13 +97,11 @@ const BuildingForm = ({ onClose }) => {
   const number = params?.number;
   const { remove, getOneBy } = useCurd();
   const navigate = useNavigate();
-  const formPagination = useFormPagination({ name, number });
   const methods = useForm({
     defaultValues: getResetFields(name),
   });
   const buildingId = formPagination?.currentId;
   const [currentSubIndex, setCurrentSubIndex] = useState(0);
-
   const {
     goTo,
     currentIndex,
@@ -114,13 +112,13 @@ const BuildingForm = ({ onClose }) => {
     formSettings,
     onDeleteItem,
   } = useFormSteps({ name: "building_group_short" });
-
   const {
     reset,
     watch,
     formState: { isDirty, errors },
     setValue,
   } = methods;
+  const formPagination = useFormPagination({ name, number, reset });
 
   const { isLoading } = useQuery({
     queryKey: [name, buildingId],
@@ -142,7 +140,7 @@ const BuildingForm = ({ onClose }) => {
   }, [watch]);
 
   useEffect(() => {
-    if(formPagination?.currentNumber > formPagination?.lastNumber) {
+    if (formPagination?.currentNumber > formPagination?.lastNumber) {
       reCalculateFlats(watch)
     }
   }, [formPagination?.currentNumber])

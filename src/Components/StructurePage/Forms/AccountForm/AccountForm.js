@@ -85,10 +85,9 @@ const calculatePercentage = (watch, setTotalPercentage) => {
 const AccountForm = ({ onClose, popupView, number }) => {
   const name = "account";
   const params = useParams();
-  const { set, insert, getOneBy } = useCurd();
+  const { set, insert, getOneBy, remove } = useCurd();
   const { setRecordResponse, appendNewRecord } = usePopupForm();
   const methods = useForm({ shouldUnregister: true });
-
   const {
     reset,
     watch,
@@ -99,11 +98,9 @@ const AccountForm = ({ onClose, popupView, number }) => {
   } = methods;
   const [isLoading, setIsLoading] = useState(false);
   const [totalPercentage, setTotalPercentage] = useState(1);
-  const formPagination = useFormPagination({ name, number: number });
+  const formPagination = useFormPagination({ name, number: number, reset });
   const id = formPagination?.currentId;
-
-  console.log(watch(), 'sdsds', formPagination.currentNumber);
-
+  
   const accountQueryClient = useQuery({
     queryKey: [name, id],
     queryFn: async () => {
@@ -138,12 +135,6 @@ const AccountForm = ({ onClose, popupView, number }) => {
     () => getFormByTableName(name),
     [name]
   );
-
-  useEffect(() => {
-    if (formPagination?.currentNumber > formPagination?.lastNumber) {
-      reset({});
-    }
-  }, [formPagination?.currentNumber]);
 
   useEffect(() => {
     let isAccount = name === "account";
@@ -267,7 +258,6 @@ const AccountForm = ({ onClose, popupView, number }) => {
 
       if (!params?.id) {
         await appendNewRecord(res);
-
         reset();
       }
     } else {
@@ -292,7 +282,7 @@ const AccountForm = ({ onClose, popupView, number }) => {
       formPagination={formPagination}
       extraContentBar={
         <UniqueSearchField
-          // loadOptions={}
+        // loadOptions={}
         />
       }
     >

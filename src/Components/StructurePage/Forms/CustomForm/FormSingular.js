@@ -16,10 +16,8 @@ import useFormPagination from "Hooks/useFormPagination";
 
 const FormSingular = ({ name, onClose, popupView, oldValues, number }) => {
   const params = useParams();
-  const { set, insert, getOneBy } = useCurd();
+  const { set, insert, getOneBy, remove } = useCurd();
   const { setRecordResponse, appendNewRecord } = usePopupForm();
-  const formPagination = useFormPagination({ name, number: number });
-  const id = formPagination?.id;
   const methods = useForm({
     defaultValues: {},
   });
@@ -34,18 +32,21 @@ const FormSingular = ({ name, onClose, popupView, oldValues, number }) => {
     errors,
     formState: { isDirty },
   } = methods;
+  const formPagination = useFormPagination({ name, number: number, reset });
+  const id = formPagination?.currentId;
 
+  console.log(watch(), formPagination?.currentId, '-sdsdsd');
+  
   const { isLoading } = useQuery({
     queryKey: [name, formPagination?.currentId, formPagination?.currentNumber],
     queryFn: async () => {
       // const data = await getOneBy(name, id);
+      console.log(watch(), formPagination?.currentId, '-sdsdsdaaaa');
       const data = await getOneBy(name, formPagination?.currentId);
 
       let result = data?.result?.at(0);
       if (result?.id) {
         reset(result);
-      } else {
-        reset({});
       }
     },
     enabled: !!formPagination?.currentId,
@@ -57,6 +58,8 @@ const FormSingular = ({ name, onClose, popupView, oldValues, number }) => {
     }
   }, [oldValues]);
 
+  console.log(oldValues,'-vols');
+  
   // Handel Submit
   const onSubmit = async (value) => {
     if (!isDirty) return;

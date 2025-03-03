@@ -15,10 +15,9 @@ const CACHE_DATA = {};
 
 const PatternsForm = ({ layout, name, onClose }) => {
   const params = useParams();
-  const { getOneBy } = useCurd()
+  const { getOneBy, remove } = useCurd()
   const id = params?.id;
   const [isLoading, setIsLoading] = useState(false);
-  const formPagination = useFormPagination({ name, number: params?.number });
   const { insert, set } = useCurd();
 
   const methods = useForm();
@@ -44,11 +43,11 @@ const PatternsForm = ({ layout, name, onClose }) => {
     formState: { errors, isDirty },
     reset,
   } = methods;
+  const formPagination = useFormPagination({ name, number: params?.number, reset });
+
   const { currentIndex, goTo, steps, fields } = useFormSteps({
     name,
   });
-
-  const onDelete = async () => { };
 
   const onSubmit = async (values) => {
     if (!isDirty) return;
@@ -87,12 +86,10 @@ const PatternsForm = ({ layout, name, onClose }) => {
       activeStage={currentIndex}
       goTo={goTo}
       formClassName="w-full xl:min-w-[900px] 2xl:min-w-[1200px]"
-
       name={name}
       onClose={onClose}
       formPagination={formPagination}
       methods={methods} onSubmit={onSubmit}
-      onDelete={onDelete}
       isLoading={isLoading}
 
     >

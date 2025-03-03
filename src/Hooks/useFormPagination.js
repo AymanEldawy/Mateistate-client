@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import useCurd from "./useCurd";
+import { getResetFields } from "Helpers/Lib/global-reset";
 
 const columns = ["id", "number"];
 
-const useFormPagination = ({ name, number, code }) => {
+const useFormPagination = ({ name, number, code, reset }) => {
   const { getOneBy, getNextOne, getPreviousOne, getFirstOne, getLastOne } =
     useCurd();
   const [currentNumber, setCurrentNumber] = useState();
   const [lastNumber, setLastNumber] = useState(number);
   const [currentId, setCurrentId] = useState(null);
-  
+
   useEffect(() => {
     if (number) {
       getPaginationTable();
@@ -63,6 +64,8 @@ const useFormPagination = ({ name, number, code }) => {
   const goNew = async () => {
     if (lastNumber) {
       setCurrentNumber(+lastNumber + 1);
+      setCurrentId(null)
+      reset(getResetFields(name))
     } else {
       goLast(true);
     }

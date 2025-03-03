@@ -19,12 +19,10 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
   // const [number, setNumber] = useState(0)
   const name = "entry_main_data";
   const params = useParams();
-  const { set, insert } = useCurd();
+  const { set, insert, remove } = useCurd();
   const id = params?.id;
   const methods = useForm();
   const [gridErrors, setGridErrors] = useState(null);
-  const formPagination = useFormPagination({ name, number })
-
   const {
     handleSubmit,
     watch,
@@ -32,7 +30,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
     setValue,
     formState: { errors },
   } = methods;
-
+  const formPagination = useFormPagination({ name, number })
   const queryClientEntry = useQuery({
     queryKey: [name, formPagination?.currentId],
     queryFn: async () => {
@@ -160,7 +158,7 @@ const EntryForm = ({ oldValue, onlyView, outerClose, onClose, number }) => {
         }
       }
     }
-  };  
+  };
 
   return (
     <FormLayout

@@ -62,12 +62,11 @@ const ChequeForm = ({
   const name = "cheque";
   const params = useParams();
   const chqId = params?.id;
-  const { set, insert, getOneBy } = useCurd();
+  const { set, insert, getOneBy, remove } = useCurd();
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const code = params?.code || patternCode;
   const [selectedFormOperation, setSelectedFormOperation] = useState({});
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
-  const formPagination = useFormPagination({ name, number, code });
 
   const methods = useForm({
     defaultValues: {
@@ -83,6 +82,7 @@ const ChequeForm = ({
     formState: { errors, isDirty, dirtyFields, isSubmitting },
     handleSubmit,
   } = methods;
+  const formPagination = useFormPagination({ name, number, code, reset });
 
   useQuery({
     queryKey: ["cheque", "cheque_pattern"],
