@@ -129,9 +129,14 @@ input:focus-visible {
   outline: none;
 }
 
+.primary-menu ul,
 .primary-menu li:hover > ul {
   /* pointer-events: all;
   opacity: 1; */
+  background: #f5f4f4;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding: 0;
 }
 .primary-menu > li:last-child > ul,
 .primary-menu > li:nth-last-child(2) > ul {
@@ -585,7 +590,7 @@ div:has(input:focus) .numbers {
   display: flex;
   align-items: center;
   justify-content: center;
-  @apply bg-white scale-90
+  @apply bg-white scale-90;
 }
 .react-datepicker__navigation--previous {
   left: 190px !important;
@@ -595,7 +600,7 @@ div:has(input:focus) .numbers {
 }
 
 .react-datepicker__navigation--previous span,
-.react-datepicker__navigation--next  span {
+.react-datepicker__navigation--next span {
   top: -3px !important;
 }
 
@@ -607,7 +612,6 @@ div:has(input:focus) .numbers {
   margin-top: 8px;
   @apply bg-gray-100;
 }
-
 
 .react-datepicker__header__dropdown.react-datepicker__header__dropdown--scroll
   > div {
@@ -646,7 +650,6 @@ div:has(input:focus) .numbers {
 .react-datepicker__year-option {
   padding: 5px;
 }
-
 
 textPath {
   display: none;

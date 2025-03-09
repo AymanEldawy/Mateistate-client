@@ -10,19 +10,21 @@ const Menu = ({ menu }) => {
   const [dropdown, setDropdown] = React.useState();
 
   const handleClickMenu = (level, id) => {
-    setDropdown((prev) => ({
-      ...prev,
-      [level]: id
-    }));
-  };
+    if (level === 0) {
+      setDropdown({
+        [level]: id
+      })
+    } else {
+      setDropdown((prev) => ({
+        ...prev,
+        [level]: id
+      }));
+    };
+  }
 
   const closeDropDown = (e) => {
-    console.log('called', '-');
-
     setDropdown("");
   };
-
-  console.log(dropdown);
 
   const list = (links, level) => {
     return (
@@ -30,19 +32,23 @@ const Menu = ({ menu }) => {
         .map((item, i) => {
           if (item?.children) {
             return (
-              <li key={item?.name} className="relative group" onClick={(e) => {
-                e.stopPropagation()
-                handleClickMenu(level, item?.name)
-              }}>
-                <button className="whitespace-nowrap flex items-center  hover:text-blue-600  dark:hover:bg-transparent dark:hover:text-white w-full ">
-                  <span className="scale-[65%]">{item?.icon}</span>
+              <li
+                key={item?.name}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleClickMenu(level, item?.name)
+                }}
+                className={`relative border border-transparent group hover:bg-gray-100 hover:border-[#ddd] ${item?.name === dropdown?.[level] ? 'bg-gray-100 border-[#ddd]' : ''}`}
+              >
+                <button className="whitespace-nowrap flex justify-between items-center px-1 py-1 w-full ">
+                  <span className="scale-[60%] pr-1 rtl:pl-1">{item?.icon}</span>
                   {t(item.name)}
-                  <span className="ml-auto rtl:mr-auto pl-2 rtl:pr-2">
+                  <span className="ml-auto rtl:mr-auto pl-4 rtl:pr-4">
                     <ChevronIcon className="h-3 w-3" />
                   </span>
                 </button>
                 <ul
-                  className={`${item?.classes} ${item?.name === dropdown?.[level] ? 'opacity-1 pointer-events-auto' : 'opacity-0 pointer-events-none '} gap-x-1 absolute bg-white bg_dark shadow top-[40px] py-4 rounded-md z-[99]`}
+                  className={`${item?.classes} ${item?.name === dropdown?.[level] ? 'min-w-full opacity-1 pointer-events-auto' : 'opacity-0 pointer-events-none '} gap-x-1 absolute bg-white bg_dark top-[32px] py-4 rounded-md z-[99]`}
                 >
                   {list(item.children, level + 1)}
                 </ul>
@@ -51,34 +57,38 @@ const Menu = ({ menu }) => {
           }
           if (item?.subChild) {
             return (
-              <li key={item?.name} className="relative" onClick={(e) => {
-                e.stopPropagation()
-                handleClickMenu(level, item?.name)
-              }}>
-                <button className="whitespace-nowrap gap-2 hover:text-blue-600 hover:bg-gray-100 dark:hover:bg-transparent dark:hover:text-white w-full flex items-center ">
+              <li
+                key={item?.name}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleClickMenu(level, item?.name)
+                }}
+                className={`relative border border-transparent hover:bg-[#e4e4e4] hover:border-[#ddd] group ${item?.name === dropdown?.[level] ? 'bg-[#e4e4e4] border-[#ddd]' : ''}`}
+              >
+                <button className="whitespace-nowrap justify-between gap-2 px-2 py-2 w-full flex items-center ">
                   {t(item.name)}
                   <span className="-rotate-90">
                     <ChevronIcon className="!w-3 !h-3 " />
                   </span>
                 </button>
-                <ul className={`absolute ${item?.classes} ${item?.name === dropdown?.[level] ? 'opacity-1 pointer-events-auto' : 'opacity-0 pointer-events-none '} bg-white bg_dark gap-x-1 shadow top-[0] py-4 rounded-md z-[99] left-full`}>
+                <ul className={`absolute ${item?.classes} ${item?.name === dropdown?.[level] ? 'min-w-full opacity-1 pointer-events-auto' : 'opacity-0 pointer-events-none '} bg-white bg_dark gap-x-1 top-[0] py-4 rounded-md z-[99] left-full`}>
                   {list(item.subChild)}
                 </ul>
               </li>
             );
           }
           return (
-            <li key={item?.name} className="relative" onClick={(e) => {
+            <li key={item?.name} className="relative hover:bg-[#e4e4e4] hover:border-[#ddd]" onClick={(e) => {
               e.stopPropagation()
               setDropdown('')
             }}>
               {item?.link === "" ? (
-                <button className="whitespace-nowrap capitalize hover:text-blue-600 dark:hover:bg-transparent dark:hover:text-white w-full flex">
+                <button className="whitespace-nowrap px-2 py-2 capitalize w-full flex">
                   {t(item.name)}
                 </button>
               ) : (
                 <Link
-                  className={`whitespace-nowrap capitalize hover:text-blue-600 dark:hover:bg-transparent dark:hover:text-white w-full flex ${item?.classes}`}
+                  className={`whitespace-nowrap px-2 py-2 capitalize w-full flex ${item?.classes}`}
                   to={item?.link}
                 >
                   {t(item.name)}
@@ -94,8 +104,8 @@ const Menu = ({ menu }) => {
     <>
       <div className={`h-full w-full fixed top-0 left-0 z-[30] ${dropdown ? '' : 'hidden'}`} onClick={closeDropDown} />
       <div className="shadow bg-white dark:bg-dark-bg hidden lg:block z-[31] text-xs font-medium">
-        <div className="max-w-[1400px] mx-auto">
-          <ul className="primary-menu text-gray-500 gap-x-1 dark:text-gray-400 font-medium flex items-center capitalize">
+        <div className="container mx-auto">
+          <ul className="primary-menu text-gray-500 dark:text-gray-400 font-medium flex items-center capitalize">
             {list(menu, 0)}
           </ul>
         </div>
