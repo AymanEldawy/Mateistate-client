@@ -220,7 +220,7 @@ export const calculateContractDuration = async (
   let subDate = new Date(end_duration_date)
   // subDate.setDate(subDate.getDate() - 1);
   subDate.setDate(subDate.getDate() - 1);
-  setValue(`contract.end_duration_date`, subDate);
+  setValue(`contract.end_duration_date`, new Date(subDate));
 
 };
 
