@@ -80,7 +80,8 @@ const UniqueField = ({
             response = await getDynamicSearch(
               tableName,
               value,
-              field?.ref_name || "name"
+              field?.ref_name || "name",
+              field?.ref_table
             );
           }
           return response?.result;

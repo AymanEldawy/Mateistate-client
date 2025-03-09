@@ -140,7 +140,6 @@
   | final_price                 | (%name%)\_rent_contract |
   | discount_account_id         |         account         |
   | previous_securing           | (%name%)\_rent_contract |
-  | current_securing_percentage | (%name%)\_rent_contract |
   | current_securing_value      | (%name%)\_rent_contract |
   | start_duration_date         | (%name%)\_rent_contract |
   | end_duration_date           | (%name%)\_rent_contract |
@@ -190,7 +189,6 @@
   | final_price                 | (%name%)\_rent_contract |
   | discount_account_id         |         account         |
   | previous_securing           | (%name%)\_rent_contract |
-  | current_securing_percentage | (%name%)\_rent_contract |
   | current_securing_value      | (%name%)\_rent_contract |
   | start_duration_date         | (%name%)\_rent_contract |
   | end_duration_date           | (%name%)\_rent_contract |
@@ -241,7 +239,6 @@
   | final_price                 | (%name%)\_rent_contract |
   | discount_account_id         |         account         |
   | previous_securing           | (%name%)\_rent_contract |
-  | current_securing_percentage | (%name%)\_rent_contract |
   | current_securing_value      | (%name%)\_rent_contract |
   | start_duration_date         | (%name%)\_rent_contract |
   | end_duration_date           | (%name%)\_rent_contract |

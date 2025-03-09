@@ -43,7 +43,7 @@ const Input = ({
         field: { onChange, onBlur, ref, value, onFocus },
         fieldState: { error },
         formState: { },
-      }) => {
+      }) => {        
         const date = new Date();
 
         return (
@@ -72,7 +72,7 @@ const Input = ({
 
                   <DatePicker
                     {...field}
-                    // ref={ref}
+                    ref={ref}
                     wrapperClassName="w-full"
                     className={`border text-xs font-medium h-[30px] flex-1 !w-full cursor-pointer read-only:bg-[#2289fb1c] flex items-center gap-1 dark:read-only:bg-[#444] rounded ltr:!pl-7 rtl:!pr-7 p-1 ${inputClassName} ${error ? "border-red-200 text-red-500" : ""
                       }`}
@@ -85,14 +85,14 @@ const Input = ({
                         <CalenderIcon className="h-4 w-4" />
                       </span>
                     }
-                    value={value ? new Date(value).toLocaleDateString('en-UK') : null}
+                    // value={value ? new Date(value).toLocaleDateString('en-UK') : null}
                     // defaultValue={new Date()}
                     maxDate={date?.setDate(date.getFullYear() + 2)}
                     showYearDropdown
                     todayHighlight={true}
                     locale="en"
                     isClearable
-                    withPortal
+                    withPortal={withPortal}
                     showMonthDropdown
                     // withPortal={withPortal}
                     readOnly={
@@ -135,7 +135,7 @@ const Input = ({
                         watch(field?.disabledCondition))
                     }
                     placeholder={isNumber ? "0" : ""}
-                    // defaultValue={field?.defaultValue}
+                    autoComplete={updatedName || field?.name}
                     value={value}
                     // value={watch(updatedName || field?.name)}
                     onChange={(e) => {

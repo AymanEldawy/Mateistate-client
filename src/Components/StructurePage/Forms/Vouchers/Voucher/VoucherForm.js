@@ -317,7 +317,7 @@ const VoucherForm = ({
         tab="grid"
         errors={errors}
         rowsCount={watch("grid")?.length || 1}
-        onlyView={watch('id') && watch('is_first_batch')}
+        // onlyView={watch('id') && watch('is_first_batch')}
         withPortal
         rowStyles={(index) => {
           if (PATTERN_SETTINGS?.even_table_color && index % 2 === 0) {

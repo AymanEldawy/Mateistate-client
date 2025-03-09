@@ -130,8 +130,8 @@ input:focus-visible {
 }
 
 .primary-menu li:hover > ul {
-  pointer-events: all;
-  opacity: 1;
+  /* pointer-events: all;
+  opacity: 1; */
 }
 .primary-menu > li:last-child > ul,
 .primary-menu > li:nth-last-child(2) > ul {

@@ -86,6 +86,12 @@ export async function filterAssetsByBuilding(
   }));
 }
 
+function getNextYear() {
+  let date = new Date();
+  date.setDate(date.getDate() - 1);
+  return new Date(date.setFullYear(date.getFullYear() + 1))
+}
+
 const ContractForm = ({ number, onClose }) => {
   const name = 'contract';
   const params = useParams();
@@ -102,7 +108,6 @@ const ContractForm = ({ number, onClose }) => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const [oldContracts, setOldContracts] = useState([]);
   const { getOneBy, remove } = useCurd();
-  let date = new Date();
 
   const methods = useForm({
     defaultValues: {
@@ -111,7 +116,7 @@ const ContractForm = ({ number, onClose }) => {
         start_duration_date: new Date(),
         issue_date: new Date(),
         // should update
-        end_duration_date: new Date(date.setFullYear(date.getFullYear() + 1)),
+        end_duration_date: getNextYear(),
         contract_duration: 3,
       },
     }

@@ -13,7 +13,14 @@ const FormTitle = ({ name, onClose, extraContentBar, isDirty }) => {
         <p className="text-gray-600 text-sm">Are you sure you wan't leave the page without saving.</p>
         <div className="flex items-center gap-2 mt-4">
           <Btn onClick={() => setOpen(false)} kind="default">Cancel</Btn>
-          <Btn onClick={onClose} kind="error">Exist</Btn>
+          <Btn
+            onClick={() => {
+              onClose();
+              setOpen(false)
+            }}
+            kind="error">
+            Exist
+          </Btn>
         </div>
       </Modal>
       <div className="flex justify-between w-full bg-gray-100 p-2  py-2 border-b border-b-gray-300">

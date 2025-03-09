@@ -131,15 +131,25 @@ const useCurd = () => {
   const getDynamicSearch = async (name, value, column = "name", user) => {
     let table = name;
     let additional = {}
-    switch (name) {
+    switch (name || user) {
       case UNIQUE_REF_TABLES.employee:
-      case UNIQUE_REF_TABLES.suppliers:
+        additional = { type: "and", conditions: [['card_type', "=", 4]] }
+        table = 'user';
+        break;
+      case UNIQUE_REF_TABLES.supervisor:
+        additional = { type: "and", conditions: [['card_type', "=", 3]] }
+        table = 'user';
+        break;
       case UNIQUE_REF_TABLES.user_customer:
+        additional = { type: "and", conditions: [['card_type', "=", 1]] }
+        table = 'user';
+        break;
       case UNIQUE_REF_TABLES.user_supplier:
+        additional = { type: "and", conditions: [['card_type', "=", 2]] }
         table = 'user';
         break;
       case UNIQUE_REF_TABLES.clients:
-      case UNIQUE_REF_TABLES.supervisor:
+      case UNIQUE_REF_TABLES.suppliers:
         table = 'account';
         break;
       default:

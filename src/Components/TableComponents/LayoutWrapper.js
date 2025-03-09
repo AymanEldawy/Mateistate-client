@@ -75,9 +75,9 @@ const LayoutWrapper = ({
 
   return (
     <>
-
       <Modal open={openForm} bodyClassName="!p-0 !overflow-hidden">
         <FormRender
+          key={number}
           onClose={(link) => {
             setOpenForm(false);
             refetch();

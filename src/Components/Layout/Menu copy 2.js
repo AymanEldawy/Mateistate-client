@@ -34,7 +34,7 @@ const Menu = ({ menu }) => {
                 e.stopPropagation()
                 handleClickMenu(level, item?.name)
               }}>
-                <button className="whitespace-nowrap flex items-center  hover:text-blue-600  dark:hover:bg-transparent dark:hover:text-white w-full ">
+                <button className="whitespace-nowrap flex justify-between items-center  hover:text-blue-600  dark:hover:bg-transparent dark:hover:text-white py-2 w-full ">
                   <span className="scale-[65%]">{item?.icon}</span>
                   {t(item.name)}
                   <span className="ml-auto rtl:mr-auto pl-2 rtl:pr-2">
@@ -42,7 +42,7 @@ const Menu = ({ menu }) => {
                   </span>
                 </button>
                 <ul
-                  className={`${item?.classes} ${item?.name === dropdown?.[level] ? 'opacity-1 pointer-events-auto' : 'opacity-0 pointer-events-none '} gap-x-1 absolute bg-white bg_dark shadow top-[40px] py-4 rounded-md z-[99]`}
+                  className={`${item?.classes} ${item?.name === dropdown?.[level] ? 'opacity-1 pointer-events-auto' : 'opacity-0 pointer-events-none '} absolute bg-white bg_dark shadow top-[40px] py-4 rounded-md z-[99]`}
                 >
                   {list(item.children, level + 1)}
                 </ul>
@@ -55,13 +55,13 @@ const Menu = ({ menu }) => {
                 e.stopPropagation()
                 handleClickMenu(level, item?.name)
               }}>
-                <button className="whitespace-nowrap gap-2 hover:text-blue-600 hover:bg-gray-100 dark:hover:bg-transparent dark:hover:text-white w-full flex items-center ">
+                <button className="whitespace-nowrap gap-2 justify-between hover:text-blue-600 py-2 hover:bg-gray-100 dark:hover:bg-transparent dark:hover:text-white px-4 w-full flex items-center ">
                   {t(item.name)}
                   <span className="-rotate-90">
                     <ChevronIcon className="!w-3 !h-3 " />
                   </span>
                 </button>
-                <ul className={`absolute ${item?.classes} ${item?.name === dropdown?.[level] ? 'opacity-1 pointer-events-auto' : 'opacity-0 pointer-events-none '} bg-white bg_dark gap-x-1 shadow top-[0] py-4 rounded-md z-[99] left-full`}>
+                <ul className={`absolute ${item?.classes} ${item?.name === dropdown?.[level] ? 'opacity-1 pointer-events-auto' : 'opacity-0 pointer-events-none '} bg-white bg_dark shadow top-[0] py-4 rounded-md z-[99] left-full`}>
                   {list(item.subChild)}
                 </ul>
               </li>
@@ -73,12 +73,12 @@ const Menu = ({ menu }) => {
               setDropdown('')
             }}>
               {item?.link === "" ? (
-                <button className="whitespace-nowrap capitalize hover:text-blue-600 dark:hover:bg-transparent dark:hover:text-white w-full flex">
+                <button className="whitespace-nowrap capitalize hover:text-blue-600 dark:hover:bg-transparent dark:hover:text-white py-2 px-4 w-full flex">
                   {t(item.name)}
                 </button>
               ) : (
                 <Link
-                  className={`whitespace-nowrap capitalize hover:text-blue-600 dark:hover:bg-transparent dark:hover:text-white w-full flex ${item?.classes}`}
+                  className={`whitespace-nowrap capitalize hover:text-blue-600 dark:hover:bg-transparent dark:hover:text-white py-2 px-4 w-full flex ${item?.classes}`}
                   to={item?.link}
                 >
                   {t(item.name)}
@@ -93,9 +93,9 @@ const Menu = ({ menu }) => {
   return (
     <>
       <div className={`h-full w-full fixed top-0 left-0 z-[30] ${dropdown ? '' : 'hidden'}`} onClick={closeDropDown} />
-      <div className="shadow bg-white dark:bg-dark-bg hidden lg:block z-[31] text-xs font-medium">
+      <div className="shadow bg-white dark:bg-dark-bg hidden lg:block z-[31]">
         <div className="max-w-[1400px] mx-auto">
-          <ul className="primary-menu text-gray-500 gap-x-1 dark:text-gray-400 font-medium flex items-center capitalize">
+          <ul className="primary-menu text-gray-500 dark:text-gray-400 text-sm font-medium min-h-[40px] flex gap-1 items-center justify-between capitalize">
             {list(menu, 0)}
           </ul>
         </div>

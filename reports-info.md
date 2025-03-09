@@ -249,3 +249,6 @@ date from & to
 - gross Profit (total bill - total cost)
 - Profit/bills rate ()
 - Profit/cost rate
+
+
+

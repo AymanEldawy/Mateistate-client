@@ -18,7 +18,7 @@ export const menuData = [
     name: "Accounts",
     link: "accounts",
     icon: <UserIcon />,
-    classes: "grid grid-cols-3 min-w-[650px] items gap-1",
+    // classes: "grid grid-cols-3 min-w-[650px] items gap-1",
     children: [
 
       {
@@ -54,11 +54,7 @@ export const menuData = [
           },
         ],
       },
-      {
-        key: "Customer",
-        name: "Customer/Supplier Card",
-        link: "/user",
-      },
+    
       { key: "owner-card", name: "owner card", link: "/owner" },
       { key: "seller-card", name: "seller card", link: "/seller" },
       { key: "lessor-card", name: "lessor card", link: "/lessor" },
@@ -71,12 +67,13 @@ export const menuData = [
     name: "Cards",
     link: "cards",
     icon: <ClipboardIcon />,
-    classes: "grid grid-cols-3 min-w-[650px] items gap-1",
+    // classes: "grid grid-cols-3 min-w-[650px] items gap-1",
     children: [
+
       {
-        key: "reservation_property",
-        name: "reservation property Card",
-        link: "/reservation_property",
+        key: "Customer",
+        name: "Customer/Supplier Card",
+        link: "/user",
       },
       {
         key: "Building",
@@ -129,7 +126,11 @@ export const menuData = [
           },
         ],
       },
-      
+      {
+        key: "reservation_property",
+        name: "reservation property Card",
+        link: "/reservation_property",
+      },
     ],
   },
 
@@ -179,7 +180,7 @@ export const menuData = [
     name: "Accounting Reports",
     link: "",
     icon: <ToolsIcon />,
-    classes: "flex !flex-col",
+    classes: "flex !flex-col max-h-[400px] overflow-auto",
     children: [
       {
         key: "Reports cheques",

@@ -3164,7 +3164,7 @@ const cheque_grid = [
             {getValue()}
             <SearchIcon className="h-4 w-4" />
           </button>
-          <ViewEntry id={row?.original?.id} hideText />
+          {/* <ViewEntry id={row?.original?.id} hideText /> */}
           <Btn
             type="button"
             onClick={() => { }}
@@ -3236,7 +3236,7 @@ const voucher_grid = [
             {getValue()}
             <SearchIcon className="h-4 w-4" />
           </button>
-          <ViewEntry id={row?.original?.id} hideText />
+          {/* <ViewEntry id={row?.original?.id} hideText /> */}
           <Btn
             type="button"
             onClick={() => { }}

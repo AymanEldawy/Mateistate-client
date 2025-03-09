@@ -70,6 +70,7 @@ const FormLayout = ({
           noValidate
           ref={refForm}
           className={formClassName}
+          autocomplete="off"
         >
           {hideTitle ? null : <FormTitle isDirty={isDirty} extraContentBar={extraContentBar} onClose={onClose} name={name} />}
 

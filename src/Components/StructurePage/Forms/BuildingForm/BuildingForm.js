@@ -100,7 +100,6 @@ const BuildingForm = ({ onClose }) => {
   const methods = useForm({
     defaultValues: getResetFields(name),
   });
-  const buildingId = formPagination?.currentId;
   const [currentSubIndex, setCurrentSubIndex] = useState(0);
   const {
     goTo,
@@ -119,6 +118,7 @@ const BuildingForm = ({ onClose }) => {
     setValue,
   } = methods;
   const formPagination = useFormPagination({ name, number, reset });
+  const buildingId = formPagination?.currentId;
 
   const { isLoading } = useQuery({
     queryKey: [name, buildingId],

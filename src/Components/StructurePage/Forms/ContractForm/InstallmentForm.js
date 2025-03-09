@@ -19,15 +19,35 @@ import { getAccountReceivable } from "Helpers/Lib/global-read";
 import FormTitle from "Components/Global/FormTitle";
 import { CheckboxField, CurrencyFieldGroup, Input, Select, UniqueField } from "Components/StructurePage/CustomFields";
 
+
+const updateNote = (watch, setValue, CACHE_LIST, index) => {
+  let item = watch(`installment_grid.${index}`)
+  const client = CACHE_LIST?.[UNIQUE_REF_TABLES.clients]?.find(
+    (c) => c.id === watch(`contract.client_id`)
+  );
+  const bank_id = item?.bank_id || watch("installment.bank_id");
+  const bank = CACHE_LIST?.bank?.find((c) => c.id === bank_id);
+  let count = 0;
+
+
+  console.log(item, bank, bank_id, '-dsa');
+  const note1 = `received chq number ${item?.internal_number || 'ـــ'} from mr ${client?.name || 'ـــ'} ${item?.amount || 'ـــ'} due date ${item?.due_Date || 'ـــ'} end date ${item?.end_due_date || 'ـــ'} bank name ${bank?.name || 'ـــ'}`;
+  setValue(`installment_grid.${count}.note1`, note1)
+}
+
+
+
 const calculateChqAmount = (
   watch,
   setError,
   setTotalChqAmount,
-  clearErrors
+  clearErrors,
+  CACHE_LIST,
+  setValue
 ) => {
   let grid = watch("installment_grid");
-
   let count = 0;
+
   for (const item of grid) {
     count += +item?.amount;
   }
@@ -96,10 +116,10 @@ const generatePaymentBatches = async (
   const beneficiary_name = watch("installment.beneficiary_name");
   const account_id = watch(`contract.client_id`);
   let observe_account_id = await getAccountReceivable(watch(`contract.building_id`))
-  const bank_id = watch("installment.bank_id");
   const client = CACHE_LIST?.[UNIQUE_REF_TABLES.clients]?.find(
     (c) => c.id === watch(`contract.client_id`)
   );
+  const bank_id = watch("installment.bank_id");
   const bank = CACHE_LIST?.bank?.find((c) => c.id === bank_id);
 
   const result = dividePrice(
@@ -152,6 +172,9 @@ const InstallmentForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isAllowToRegenerate, setIsAllowToRegenerate] = useState(false);
 
+  console.log(CACHE_LIST, '-ds');
+
+
   const fields_form = useMemo(() => {
     let hash = {}
     for (let field of getFormByTableName("installment")) {
@@ -178,14 +201,19 @@ const InstallmentForm = ({
 
   useEffect(() => {
     if (watch("installment_grid")) {
-      calculateChqAmount(watch, setError, setTotalChqAmount, clearErrors);
+      calculateChqAmount(watch, setError, setTotalChqAmount, clearErrors, CACHE_LIST, setValue);
       checkIsAllowToRegenerate()
     }
   }, []);
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
-      if (name?.indexOf("installment.") !== -1) clearErrors(name);
+      if (name?.indexOf("installment.") !== -1) {
+        clearErrors(name);
+      }
+      if (name?.indexOf('installment_grid') !== -1 && type) {
+        updateNote(watch, setValue, CACHE_LIST, name?.split('.')[1])
+      }
       if (name?.indexOf(".amount") !== -1) {
         calculateChqAmount(watch, setError, setTotalChqAmount, clearErrors);
       }
@@ -291,7 +319,7 @@ const InstallmentForm = ({
               list={CACHE_LIST?.currency}
             />
 
-            <div className={`${watch('installment.has_first_batch') ? 'col-span-2' : ''} contents gap-2 items-center justify-between`}>
+            <div className={`${watch('installment.has_first_batch') ? 'col-span-2' : 'ـــ'} contents gap-2 items-center justify-between`}>
 
               <div className="flex gap-x-6 items-center w-full">
                 <CheckboxField

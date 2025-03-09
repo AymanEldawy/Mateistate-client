@@ -13,6 +13,7 @@ import { BuildIcon, PlusIcon, ShopIcon, TrashIcon, TruckIcon, UserIcon } from "C
 import { BoxWrapper } from "./BoxWrapper";
 import ChartContractNear from "./Charts/ChartContractNear";
 import ChartBottom from "./Charts/ChartBottom";
+import { useEffect } from "react";
 
 export const DashboardGridLayout = () => {
 
@@ -35,7 +36,6 @@ export const DashboardGridLayout = () => {
     // await insertIntoNotification()
     await INSERT_DEFAULT_CHEQUES()
   }
-
 
   return (
     <div className="flex gap-4 px-6 h-[100lvh] mb-4">
