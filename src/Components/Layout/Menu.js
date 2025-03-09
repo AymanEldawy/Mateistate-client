@@ -2,7 +2,7 @@ import * as React from "react";
 
 import menuData from "Helpers/menu";
 import { Link } from "react-router-dom";
-import { ChevronIcon } from "Components/Icons";
+import { ArrowSolidIcon, ChevronIcon } from "Components/Icons";
 import { useTranslation } from "react-i18next";
 
 const Menu = ({ menu }) => {
@@ -44,7 +44,7 @@ const Menu = ({ menu }) => {
                   <span className="scale-[60%] pr-1 rtl:pl-1">{item?.icon}</span>
                   {t(item.name)}
                   <span className="ml-auto rtl:mr-auto pl-4 rtl:pr-4">
-                    <ChevronIcon className="h-3 w-3" />
+                    <ArrowSolidIcon className="h-4 w-4 rotate-90" />
                   </span>
                 </button>
                 <ul
@@ -67,9 +67,7 @@ const Menu = ({ menu }) => {
               >
                 <button className="whitespace-nowrap justify-between gap-2 px-2 py-2 w-full flex items-center ">
                   {t(item.name)}
-                  <span className="-rotate-90">
-                    <ChevronIcon className="!w-3 !h-3 " />
-                  </span>
+                  <ArrowSolidIcon className="!w-4 !h-4 rtl:rotate-180" />
                 </button>
                 <ul className={`absolute ${item?.classes} ${item?.name === dropdown?.[level] ? 'min-w-full opacity-1 pointer-events-auto' : 'opacity-0 pointer-events-none '} bg-white bg_dark gap-x-1 top-[0] py-4 rounded-md z-[99] left-full`}>
                   {list(item.subChild)}
