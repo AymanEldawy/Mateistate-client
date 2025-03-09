@@ -102,7 +102,7 @@ const Menu = ({ menu }) => {
     <>
       <div className={`h-full w-full fixed top-0 left-0 z-[30] ${dropdown ? '' : 'hidden'}`} onClick={closeDropDown} />
       <div className="shadow bg-white dark:bg-dark-bg hidden lg:block z-[31] text-xs font-medium">
-        <div className="container mx-auto">
+        <div className="w-fit mx-auto">
           <ul className="primary-menu text-gray-500 dark:text-gray-400 font-medium flex items-center capitalize">
             {list(menu, 0)}
           </ul>
