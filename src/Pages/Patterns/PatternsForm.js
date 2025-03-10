@@ -21,6 +21,13 @@ const PatternsForm = ({ layout, name, onClose }) => {
   const { insert, set } = useCurd();
 
   const methods = useForm();
+  const {
+    handleSubmit,
+    watch,
+    formState: { errors, isDirty },
+    reset,
+  } = methods;
+  const formPagination = useFormPagination({ name, number: params?.number, reset });
 
   useQuery({
     queryKey: [
@@ -37,13 +44,7 @@ const PatternsForm = ({ layout, name, onClose }) => {
     },
   });
 
-  const {
-    handleSubmit,
-    watch,
-    formState: { errors, isDirty },
-    reset,
-  } = methods;
-  const formPagination = useFormPagination({ name, number: params?.number, reset });
+
 
   const { currentIndex, goTo, steps, fields } = useFormSteps({
     name,

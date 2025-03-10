@@ -35,6 +35,9 @@ const UniqueField = ({
   old,
   ...field
 }) => {
+
+  console.log(field, '---sd');
+
   const { getDynamicSearch, getOneBy } = useCurd();
   const { dispatchForm } = usePopupForm();
   const { control, watch, setValue } = useFormContext();
@@ -51,12 +54,12 @@ const UniqueField = ({
       case UNIQUE_REF_TABLES.employee:
       case UNIQUE_REF_TABLES.suppliers:
       case UNIQUE_REF_TABLES.user_customer:
+      case UNIQUE_REF_TABLES.supervisor:
+      case UNIQUE_REF_TABLES.clients:
       case UNIQUE_REF_TABLES.user_supplier:
         setTableName('user')
-        break;
-      case UNIQUE_REF_TABLES.clients:
-      case UNIQUE_REF_TABLES.supervisor:
-        setTableName('account')
+        // break;
+        // setTableName('account')
         break;
       default:
         setTableName(ref_table)
@@ -231,7 +234,7 @@ const UniqueField = ({
 
                       dispatchForm({
                         open: true,
-                        table: refTable,
+                        table: tableName || refTable,
                         oldValues,
                         additional: {
                           setValue,
