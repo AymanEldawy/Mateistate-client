@@ -176,18 +176,16 @@ export function onWatchChangesInTab1(name, setValue, watch) {
   }
 }
 
-export const calculateContractDuration = async (
+export const calculateContractDuration = (
   watch,
   setValue,
 ) => {
   let duration = watch(`contract.contract_duration`);
-  let start = watch(`contract.start_duration_date`);
-  let date = new Date(start);
+  let date = new Date(watch(`contract.start_duration_date`));
 
-  // change first installment date value
   let first_installment_date = null;
-  if (start) {
-    first_installment_date = new Date(start)?.toISOString()?.substring(0, 10);
+  if (date) {
+    first_installment_date = new Date(date)?.toISOString()?.substring(0, 10);
     setValue(`installment.first_installment_date`, first_installment_date);
   }
 
@@ -199,29 +197,21 @@ export const calculateContractDuration = async (
 
   switch (duration) {
     case 1:
-      end_duration_date = new Date(date.setMonth(date.getMonth() + 3))
-        ?.toISOString()
-        ?.substring(0, 10);
-
+      date = new Date(date.setMonth(date.getMonth() + 3))
       break;
     case 2:
-      end_duration_date = new Date(date.setMonth(date.getMonth() + 6))
-        ?.toISOString()
-        ?.substring(0, 10);
+      date = new Date(date.setMonth(date.getMonth() + 6))
       break;
     case 3:
-      end_duration_date = new Date(date.setMonth(date.getMonth() + 12))
-        ?.toISOString()
-        ?.substring(0, 10);
+      date = new Date(date.setFullYear(date.getFullYear() + 1))
       break;
     default:
       break;
   }
-  let subDate = new Date(end_duration_date)
+  let subDate = new Date(date)
   // subDate.setDate(subDate.getDate() - 1);
   subDate.setDate(subDate.getDate() - 1);
   setValue(`contract.end_duration_date`, new Date(subDate));
-
 };
 
 export async function mergeInstallmentAndFirstTabData(firstTabData, setValue, watch) {
