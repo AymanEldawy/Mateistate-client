@@ -45,8 +45,11 @@ import { CheckboxField, NormalSelect } from "Components/StructurePage/CustomFiel
 import { ViewEntry } from "Components/Global/ViewEntry";
 import FormLayout from "../FormWrapperLayout/FormLayout";
 import { SearchContract } from "./SearchContract";
-import { CREATED_FROM_CONTRACT, CREATED_FROM_CONTRACT_FEES } from "Helpers/GENERATE_STARTING_DATA";
+import { CREATED_FROM_CONTRACT, CREATED_FROM_CONTRACT_FEES, DEFAULT_CHQ_INFO } from "Helpers/GENERATE_STARTING_DATA";
 import CONTRACT_CURD_FUNCTIONS from "Helpers/Lib/contract.api";
+import Modal from "Components/Global/Modal/Modal";
+import VoucherForm from "../Vouchers/Voucher/VoucherForm";
+import ChequeForm from "../ChequesForm/ChequeForm";
 
 const InstallmentForm = lazy(() => import("./InstallmentForm"));
 const ContractTerminationForm = lazy(() => import("./ContractTerminationForm"));
@@ -108,6 +111,7 @@ const ContractForm = ({ number, onClose }) => {
   const { dispatchVoucherEntries } = useVoucherEntriesView();
   const [oldContracts, setOldContracts] = useState([]);
   const { getOneBy, remove } = useCurd();
+  const [openForm, setOpenForm] = useState(null);
 
   const methods = useForm({
     defaultValues: {
@@ -478,192 +482,294 @@ const ContractForm = ({ number, onClose }) => {
     }
   }
 
+  const updateGrid = (gridName, data) => {
+    const list = watch(gridName) || [];
+    const isNew = openForm?.isNew;
+    console.log(openForm, '---');
+
+    if (isNew) {
+      setValue(`${gridName}.${list.length}`, data);
+    } else {
+      const index = list.findIndex(item => item?.id === data?.id);
+      if (index !== -1) {
+        setValue(`${gridName}.${index}`, data);
+      } else {
+        console.warn(`Entry with id ${data?.id} not found in ${gridName}`);
+      }
+    }
+
+    setShouldRefresh(prev => !prev);
+  };
+
+  const updateChequeGrid = (data) => {
+    updateGrid("installment_grid", data);
+  };
+
+  const updateVoucherGrid = (data, grid) => {
+    updateGrid("voucher_grid", data, grid);
+  };
+
+  // const updateChequeGrid = (data) => {
+  //   let list = watch("installment_grid")
+  //   let len = list.length;
+  //   if (openForm?.isNew) {
+  //     setValue(`installment_grid.${len}`, data);
+  //   } else {
+  //     for (let i = 0; i < len; i++) {
+  //       let item = list[i]
+  //       if (item?.id === data?.id) {
+  //         setValue(`installment_grid.${i}`, data);          
+  //       }
+  //     }
+  //   }
+  //   setShouldRefresh((p) => !p);
+  // }
+
+  // const updateVoucherGrid = (data, grid) => {
+  //   let list = watch("voucher_grid")
+  //   let len = list.length;
+
+  //   if (openForm?.isNew) {
+  //     setValue(`voucher_grid.${len}`, {
+  //       ...data,
+  //       ...grid?.at(0),
+  //       id: data?.id,
+  //     });
+  //   } else {
+  //     for (let i = 0; i < len; i++) {
+  //       let item = list[i]
+  //       if (item?.id === data?.id) {
+  //         console.log('called voucher', item);
+  //       }
+  //     }
+  //   }
+  //   setShouldRefresh((p) => !p);
+  // }
 
   return (
-    <FormLayout
-      tableName="contract"
-      name={contractName}
-      isLoading={isLoading || contractQueryClient?.isLoading}
-      onSubmit={onSubmit}
-      methods={methods}
-      steps={steps}
-      goTo={goTo}
-      activeStage={currentIndex}
-      onClose={onClose}
-      formPagination={formPagination}
-      formClassName="w-full xl:min-w-[900px] 2xl:min-w-[1200px]"
-      extraMenuContent={
-        <div className="mt-auto">
-          {watch('contract.id') && (
-            <Btn kind="warn" type="button" onClick={onClickRenew} containerClassName="!text-xs mx-auto">Renew Contract</Btn>
-          )}
-        </div>
-      }
-      extraContentBar={
-        <>
-          <NormalSelect
-            selectedItem={selectedBuilding}
-            list={CACHE_LIST?.building}
-            labelClassName="!w-fit"
-            selectClassNames="!bg-red-100"
-            onChange={option => {
-              setSelectedBuilding(option?.id)
-            }}
-            label="Buildings"
+    <>
+      <Modal open={openForm} bodyClassName="!p-0" key={openForm?.type}>
+        {openForm?.type === "CHEQUE" && (
+          <ChequeForm
+            number={openForm?.oldValues?.number}
+            onClose={() => setOpenForm(null)}
+            oldValues={openForm?.oldValues}
+            patternCode={+openForm?.code}
+            popupView
+            action={openForm?.action}
+            outerClose={() => setOpenForm(null)}
+            updateChequeGrid={updateChequeGrid}
+            tableName={
+              Object.values(DEFAULT_CHQ_INFO)?.find(
+                (c) => c.code === +openForm?.code
+              )?.name
+            }
+            callback={() => setOpenForm(null)}
           />
-          <SearchContract
-            formPagination={formPagination}
-            selectedBuilding={selectedBuilding}
+        )}
+        {openForm?.type === "VOUCHER" && (
+          <VoucherForm
+            number={openForm?.oldValues?.number}
+            onClose={() => setOpenForm(null)}
+            voucherName={openForm?.voucherName}
+            code={
+              openForm?.oldValues?.voucher_type || openForm?.voucherType
+            }
+            oldValues={openForm?.oldValues}
+            updateVoucherGrid={updateVoucherGrid}
+            outerClose={() => setOpenForm(null)}
+            popupView
           />
-          <div className="flex gap-4 items-center justify-end">
-            <CheckboxField
-              updatedName={`contract.feedback`}
-              name="feedback"
-              label="feedback"
-            // values={values}
-            />
-            <CheckboxField
-              name="lawsuit"
-              label="lawsuit"
-              updatedName={`contract.lawsuit`}
-            // values={values}
-            />
-            <CheckboxField
-              name="gen_entries"
-              label="gen_entries"
-              updatedName={`contract.gen_entries`}
-              labelClassName="whitespace-nowrap"
-            // values={values}
-            />
-            {watch('contract.id') && watch(`contract.gen_entries`) ? (
-              <ViewEntry id={watch('contract.id')} created_from={CREATED_FROM_CONTRACT} />
-            ) : null}
+        )}
+      </Modal>
+
+      <FormLayout
+        tableName="contract"
+        name={contractName}
+        isLoading={isLoading || contractQueryClient?.isLoading}
+        onSubmit={onSubmit}
+        methods={methods}
+        steps={steps}
+        goTo={goTo}
+        activeStage={currentIndex}
+        onClose={onClose}
+        formPagination={formPagination}
+        formClassName="w-full xl:min-w-[900px] 2xl:min-w-[1200px]"
+        extraMenuContent={
+          <div className="mt-auto">
+            {watch('contract.id') && (
+              <Btn kind="warn" type="button" onClick={onClickRenew} containerClassName="!text-xs mx-auto">Renew Contract</Btn>
+            )}
           </div>
-        </>
-      }
-      additionalButtons={
-        <>
-
-          {watch(`contract.paid_type`) === 1 ? (
-            <Btn
-              kind="info"
-              type="button"
-              disabled={!watch(`contract.id`)}
-              onClick={() => setOpenInstallmentForm(true)}
-            >
-              installments
-            </Btn>
-
-          ) : null}
-        </>
-      }
-
-      outerDelete={() =>
-        onChangeContractStatus(
-          CONSTANT_COLUMNS_NAME.is_deleted,
-          watch,
-          setValue
-        )
-      }
-    >
-      {/* <button type="button" onClick={testReset} > test reset</button> */}
-      {openInstallmentForm && watch(`contract.final_price`) ? (
-        <Suspense>
-          <InstallmentForm
-            assetType={assetType}
-            CACHE_LIST={CACHE_LIST}
-            onClose={() => setOpenInstallmentForm(false)}
-            contract_id={watch(`contract.id`)}
-            openInstallmentForm={openInstallmentForm}
-            errors={errors}
-          />
-        </Suspense>
-      ) : null}
-
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative">
-        <div
-          className={`relative ${watch("contract.is_archived") || watch("contract.is_deleted")
-            ? "bg-gray-200 pointer-events-none"
-            : ""
-            }`}
-        >
-          {formSettings?.formType === "grid" ? (
-            <div>
-              <TableFields
-                tab={tab}
-                errors={errors}
-                formSettings={formSettings}
-                CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
-                fields={fields}
-                values={watch()?.[tab]}
-                rowsCount={watch()?.[tab]?.length}
-                rowStyles={(index) => ({
-                  background:
-                    index % 2
-                      ? PATTERN_SETTINGS?.table_color1
-                      : PATTERN_SETTINGS?.table_color2,
-                })}
+        }
+        extraContentBar={
+          <>
+            <NormalSelect
+              selectedItem={selectedBuilding}
+              list={CACHE_LIST?.building}
+              labelClassName="!w-fit"
+              selectClassNames="!bg-red-100"
+              onChange={option => {
+                setSelectedBuilding(option?.id)
+              }}
+              label="Buildings"
+            />
+            <SearchContract
+              formPagination={formPagination}
+              selectedBuilding={selectedBuilding}
+            />
+            <div className="flex gap-4 items-center justify-end">
+              <CheckboxField
+                updatedName={`contract.feedback`}
+                name="feedback"
+                label="feedback"
+              // values={values}
               />
-              {tab === 'contract_other_fees' && watch('contract_other_fees.0.id') && (
-                <ViewEntry id={watch('contract.id')} created_from={CREATED_FROM_CONTRACT_FEES} />
-              )}
+              <CheckboxField
+                name="lawsuit"
+                label="lawsuit"
+                updatedName={`contract.lawsuit`}
+              // values={values}
+              />
+              <CheckboxField
+                name="gen_entries"
+                label="gen_entries"
+                updatedName={`contract.gen_entries`}
+                labelClassName="whitespace-nowrap"
+              // values={values}
+              />
+              {watch('contract.id') && watch(`contract.gen_entries`) ? (
+                <ViewEntry id={watch('contract.id')} created_from={CREATED_FROM_CONTRACT} />
+              ) : null}
             </div>
-          ) : (
-            <>
-              {formSettings?.formType === "view" ? (
-                <Suspense>
-                  <ContractPayments
-                    contract_id={watch(`contract.id`)}
-                    CACHE_LIST={CACHE_LIST}
-                    assetType={assetType}
-                  />
-                </Suspense>
-              ) : (
-                <>
-                  {currentIndex === 0 && tab ? (
-                    <div>
+          </>
+        }
+        additionalButtons={
+          <>
+
+            {watch(`contract.paid_type`) === 1 ? (
+              <Btn
+                kind="info"
+                type="button"
+                disabled={!watch(`contract.id`)}
+                onClick={() => setOpenInstallmentForm(true)}
+              >
+                installments
+              </Btn>
+
+            ) : null}
+          </>
+        }
+
+        outerDelete={() =>
+          onChangeContractStatus(
+            CONSTANT_COLUMNS_NAME.is_deleted,
+            watch,
+            setValue
+          )
+        }
+      >
+        {/* <button type="button" onClick={testReset} > test reset</button> */}
+        {openInstallmentForm && watch(`contract.final_price`) ? (
+          <Suspense>
+            <InstallmentForm
+              assetType={assetType}
+              CACHE_LIST={CACHE_LIST}
+              onClose={() => setOpenInstallmentForm(false)}
+              contract_id={watch(`contract.id`)}
+              openInstallmentForm={openInstallmentForm}
+              errors={errors}
+            />
+          </Suspense>
+        ) : null}
+
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative">
+          <div
+            className={`relative ${watch("contract.is_archived") || watch("contract.is_deleted")
+              ? "bg-gray-200 pointer-events-none"
+              : ""
+              }`}
+          >
+            {formSettings?.formType === "grid" ? (
+              <div>
+                <TableFields
+                  tab={tab}
+                  errors={errors}
+                  formSettings={formSettings}
+                  CACHE_LIST={!!CACHE_LIST ? CACHE_LIST : undefined}
+                  fields={fields}
+                  values={watch()?.[tab]}
+                  rowsCount={watch()?.[tab]?.length}
+                  rowStyles={(index) => ({
+                    background:
+                      index % 2
+                        ? PATTERN_SETTINGS?.table_color1
+                        : PATTERN_SETTINGS?.table_color2,
+                  })}
+                />
+                {tab === 'contract_other_fees' && watch('contract_other_fees.0.id') && (
+                  <ViewEntry id={watch('contract.id')} created_from={CREATED_FROM_CONTRACT_FEES} />
+                )}
+              </div>
+            ) : (
+              <>
+                {formSettings?.formType === "view" ? (
+                  <Suspense>
+                    <ContractPayments
+                      contract_id={watch(`contract.id`)}
+                      CACHE_LIST={CACHE_LIST}
+                      assetType={assetType}
+                      setOpenForm={setOpenForm}
+                    />
+                  </Suspense>
+                ) : (
+                  <>
+                    {currentIndex === 0 && tab ? (
+                      <div>
+                        <Suspense>
+                          <ContractFinancialForm
+                            number={formPagination?.currentNumber}
+                            fields={fields}
+                            tab={tab}
+                            values={watch()?.[tab]}
+                            errors={errors}
+                            CACHE_LIST={CACHE_LIST}
+                            globalButtonsActions={globalButtonsActions}
+                            contract_id={watch(`contract.id`)}
+                            dispatchVoucherEntries={dispatchVoucherEntries}
+                            layout={contractId}
+                            assetType={assetType}
+                            contractType={type}
+                          />
+                        </Suspense>
+                      </div>
+                    ) : tab === "contract_termination" ? (
                       <Suspense>
-                        <ContractFinancialForm
-                          number={formPagination?.currentNumber}
-                          fields={fields}
-                          tab={tab}
-                          values={watch()?.[tab]}
-                          errors={errors}
+                        <ContractTerminationForm
                           CACHE_LIST={CACHE_LIST}
-                          globalButtonsActions={globalButtonsActions}
-                          contract_id={watch(`contract.id`)}
-                          dispatchVoucherEntries={dispatchVoucherEntries}
-                          layout={contractId}
-                          assetType={assetType}
-                          contractType={type}
+                          tab={tab}
+                          onClickRenew={onClickRenew}
                         />
                       </Suspense>
-                    </div>
-                  ) : tab === "contract_termination" ? (
-                    <Suspense>
-                      <ContractTerminationForm
-                        CACHE_LIST={CACHE_LIST}
+                    ) : (
+                      <Fields
+                        fields={fields}
                         tab={tab}
-                        onClickRenew={onClickRenew}
+                        values={watch()?.[tab]}
+                        errors={errors}
+                        CACHE_LIST={CACHE_LIST}
+                        globalButtonsActions={globalButtonsActions}
                       />
-                    </Suspense>
-                  ) : (
-                    <Fields
-                      fields={fields}
-                      tab={tab}
-                      values={watch()?.[tab]}
-                      errors={errors}
-                      CACHE_LIST={CACHE_LIST}
-                      globalButtonsActions={globalButtonsActions}
-                    />
-                  )}
-                </>
-              )}
-            </>
-          )}
-        </div>
-      </form>
-    </FormLayout >
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </form>
+      </FormLayout>
+    </>
+
   );
 };
 

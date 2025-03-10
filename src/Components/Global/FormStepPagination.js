@@ -22,6 +22,18 @@ export const FormStepPagination = ({ formPagination }) => {
     goNew,
   } = formPagination || {};
 
+  const handleChange = (e) => {
+    // Allow only numeric input
+    setCurrentNumber(e.target.value.replace(/[^0-9]/g, ""));
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 13) { // Enter key
+      e.preventDefault(); // Prevent form submission
+      goTo(+e.target.value); // Call `goTo` function with the numeric value
+    }
+  };
+
   return (
     <div className="flex flex-nowrap w-fit items-center justify-center gap-1 dark:bg-[#f1f1f121] dark:text-white">
       <button
@@ -44,20 +56,9 @@ export const FormStepPagination = ({ formPagination }) => {
         <input
           type="number"
           className="p-[2px] rounded h-[28px] text-center w-fit max-w-[56px] text-sm bg-gray-200"
-          inputMode="numeric"
           value={currentNumber}
-          onChange={(e) => {
-            setCurrentNumber(e.target.value.replace(/[^0-9]/g, ""));
-          }}
-          onKeyDown={(e) => {
-
-            if (e.keyCode === 13) { // Enter key
-              e.preventDefault(); // Prevent form submission
-              goTo(+e.target.value);
-            }
-          }}
-          defaultValue={1}
-          placeholder="1"
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
         />
         /
         {lastNumber}

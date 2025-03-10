@@ -49,21 +49,17 @@ const mergePatternWithChequeData = (pattern, watch, setValue) => {
 
 const ChequeForm = ({
   layout,
-  tableName,
   patternCode,
-  popupView,
   outerClose,
   updateChequeGrid,
   oldValues,
-  action,
   number,
   onClose,
 }) => {
   const name = "cheque";
   const params = useParams();
   const chqId = params?.id;
-  const { set, insert, getOneBy, remove } = useCurd();
-  const { dispatchVoucherEntries } = useVoucherEntriesView();
+  const { set, insert, getOneBy } = useCurd();
   const code = params?.code || patternCode;
   const [selectedFormOperation, setSelectedFormOperation] = useState({});
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
@@ -97,6 +93,7 @@ const ChequeForm = ({
   const { isLoading, refetch } = useQuery({
     queryKey: ["cheque", name, code, formPagination?.currentId],
     queryFn: async () => {
+      if (!oldValues) return
       const response = await getOneBy("cheque", formPagination?.currentId);
       reset(response?.result?.at(0));
     },
@@ -139,11 +136,11 @@ const ChequeForm = ({
 
   useEffect(() => {
     if (oldValues && PATTERN_SETTINGS && !formPagination?.currentId) {
-      reset(oldValues);
+      reset({ ...oldValues });
       mergePatternWithChequeData(PATTERN_SETTINGS, watch, setValue)
       fetchCustomer(oldValues?.account_id)
     } else if (formPagination?.currentNumber > formPagination?.lastNumber) {
-      reset(mergePatternWithChequeData(PATTERN_SETTINGS, watch, setValue));
+      mergePatternWithChequeData(PATTERN_SETTINGS, watch, setValue)
     }
   }, [oldValues, PATTERN_SETTINGS?.id]);
 
@@ -198,8 +195,8 @@ const ChequeForm = ({
       chq_id = res?.record?.id;
     }
 
-    if (!!updateChequeGrid && res?.record) {
-      updateChequeGrid(res?.record);
+    if (!!updateChequeGrid) {
+      updateChequeGrid(res?.record || values);
     }
 
     if (res?.success) {
@@ -282,12 +279,12 @@ const ChequeForm = ({
         }
 
       >
-        <div key={name} className="relative px-4">
+        <div key={`${name}-${number}`} className="relative px-4">
 
           <div className="grid gap-y-2 gap-x-8 grid-cols-3">
             <div className="flex flex-col gap-2">
-              <Input {...fields?.internal_number} />
-              <Input {...fields?.amount} values={watch()} />
+              <Input key={'internal_number'} {...fields?.internal_number} />
+              <Input key={'amount'} {...fields?.amount} values={watch()} />
               <UniqueField
                 {...fields?.customer_id}
                 values={watch()}
@@ -298,7 +295,6 @@ const ChequeForm = ({
               />
               <UniqueFieldGroup values={watch()} onSelectContract={onSelectContract} />
               {["parking_id", "shop_id", "apartment_id"]?.map((field) => {
-                let name = field?.replace(/_id/g, "");
                 if (watch(field)) {
                   return (
                     <UniqueField

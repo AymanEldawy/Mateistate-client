@@ -19,7 +19,6 @@ const UserBar = () => {
         className="flex w-full mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
         id="user-menu-button"
         aria-expanded="true"
-        data-dropdown-toggle="user-dropdown"
         data-dropdown-placement="bottom"
         onClick={() => setOpen(p => !p)}
       >
@@ -33,7 +32,6 @@ const UserBar = () => {
       {open ? (
         <div
           className="z-50 absolute ltr:right-0 rtl:left-0 top-6 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
-          id="user-dropdown"
         >
           <div className="px-4 py-3">
             <span className="block text-sm text-gray-900 dark:text-white">

@@ -3159,6 +3159,7 @@ const cheque_grid = [
               table: DESPATCH_TABLES_NAME.CHEQUE,
               oldValues: row?.original,
               code: CHQ_RECEIVED_CODE,
+              voucher_id: row?.original.id
             })
           }}>
             {getValue()}
@@ -3183,10 +3184,10 @@ const cheque_grid = [
         if (row?.original?.collection_status) {
           return <span className="text-xs px-2 p-1 rounded-md font-normal text-green-500 bg-green-100 ">Collected</span>
         }
-        else if (row?.original?.collection_status) {
+        else if (row?.original?.partial_collection_status) {
           return <span className="text-xs px-2 p-1 rounded-md font-normal text-yellow-500 bg-yellow-100 ">Partial Collected</span>
         }
-        else if (row?.original?.collection_status) {
+        else if (row?.original?.return_status) {
           return <span className="text-xs px-2 p-1 rounded-md font-normal text-red-500 bg-red-100 ">Returned</span>
         }
         else {
@@ -3227,8 +3228,13 @@ const voucher_grid = [
               table: DESPATCH_TABLES_NAME.VOUCHER,
               voucherName: VOUCHER_RECEIPTS_NAME,
               voucherType: VOUCHER_RECEIPTS_CODE,
+              cheque_id: row?.original.id,
               oldValues: {
                 ...row?.original,
+                credit_total: 0,
+                debit_total: 0,
+                debit_amount: 0,
+                credit_amount: 0,
                 grid: row?.original?.result,
               },
             })

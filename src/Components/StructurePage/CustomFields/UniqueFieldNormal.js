@@ -65,6 +65,7 @@ const UniqueFieldNormal = ({
 
   return (
     <Controller
+      key={updatedName || field.name}
       name={updatedName || field.name}
       control={control}
       defaultValue={null}

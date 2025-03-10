@@ -22,16 +22,6 @@ import { CREATED_FROM_VOUCHER } from "Helpers/GENERATE_STARTING_DATA";
 
 let CACHE_ROW_VALUE = {};
 
-const mergePatternWithVoucherData = (pattern) => {
-  let patternValues = {};
-
-  if (pattern?.auto_gen_entries) {
-    patternValues.gen_entries = true;
-  }
-
-  return patternValues;
-};
-
 const VoucherForm = ({
   voucherName,
   voucherType,
@@ -43,14 +33,21 @@ const VoucherForm = ({
   onClose,
   code,
 }) => {
+
+  console.log(updateVoucherGrid, 'updateVoucherGrid');
+
   const name = "voucher_main_data";
   const type = code;
   const methods = useForm({
     defaultValues: {
-      gen_entries: true
+      gen_entries: true,
+      credit_total: 0,
+      debit_total: 0,
+      debit_amount: 0,
+      credit_amount: 0,
     }
   });
-  const { set, insert, getOneBy, remove } = useCurd();
+  const { set, insert, getOneBy } = useCurd();
   const [PATTERN_SETTINGS, setPATTERN_SETTINGS] = useState({});
   const [gridFields, setGridFields] = useState([]);
   const [reCalculate, setReCalculate] = useState(false);
@@ -68,7 +65,7 @@ const VoucherForm = ({
     reset
   });
   const id = formPagination?.currentId;
-  
+
   const queryClientNewVoucher = useQuery({
     queryKey: ["voucher_main_data", id, type],
     queryFn: async () => {
@@ -131,20 +128,20 @@ const VoucherForm = ({
 
   useEffect(() => {
     if (oldValues && !oldValues?.number) {
-      reset(oldValues);
+      reset({ ...oldValues });
     }
   }, [oldValues?.number]);
 
   useEffect(() => {
     if (oldValues && PATTERN_SETTINGS && !formPagination?.currentId) {
       reset({
-        ...mergePatternWithVoucherData(PATTERN_SETTINGS, watch, setValue),
+        // ...mergePatternWithVoucherData(PATTERN_SETTINGS, watch, setValue),
         ...oldValues,
       });
     } else if (formPagination?.currentNumber > formPagination?.lastNumber) {
-      reset({
-        ...mergePatternWithVoucherData(PATTERN_SETTINGS, watch, setValue),
-      });
+      // reset({
+      //   ...mergePatternWithVoucherData(PATTERN_SETTINGS, watch, setValue),
+      // });
     }
   }, [oldValues, PATTERN_SETTINGS?.id]);
 
@@ -202,8 +199,8 @@ const VoucherForm = ({
       let debit = 0
       let credit = 0
       for (const item of grid) {
-        credit += +item?.credit
-        debit += +item?.debit
+        credit += +item?.credit || 0
+        debit += +item?.debit || 0
 
       }
       setValue('debit_amount', debit)
@@ -247,8 +244,11 @@ const VoucherForm = ({
         itemSearchName: "voucher_main_data_id",
       });
 
-      if (!!updateVoucherGrid && res?.record) {
-        updateVoucherGrid(res?.record, grid)
+      if (!!updateVoucherGrid) {
+        updateVoucherGrid({
+          ...value,
+          credit: grid?.at(0)?.credit
+        })
       }
 
       if (PATTERN_SETTINGS?.auto_gen_entries || watch("gen_entries")) {

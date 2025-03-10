@@ -33,7 +33,7 @@ const Menu = ({ menu }) => {
           if (item?.children) {
             return (
               <li
-                key={item?.name}
+                key={`${item?.name}-${i}-${level}`}
                 onClick={(e) => {
                   e.stopPropagation()
                   handleClickMenu(level, item?.name)
@@ -58,7 +58,7 @@ const Menu = ({ menu }) => {
           if (item?.subChild) {
             return (
               <li
-                key={item?.name}
+                key={`${item?.name}-${i}-${level}`}
                 onClick={(e) => {
                   e.stopPropagation()
                   handleClickMenu(level, item?.name)
@@ -76,10 +76,12 @@ const Menu = ({ menu }) => {
             );
           }
           return (
-            <li key={item?.name} className="relative hover:bg-[#e4e4e4] hover:border-[#ddd]" onClick={(e) => {
-              e.stopPropagation()
-              setDropdown('')
-            }}>
+            <li
+              key={`${item?.name}-${i}-${level}`}
+              className="relative hover:bg-[#e4e4e4] hover:border-[#ddd]" onClick={(e) => {
+                e.stopPropagation()
+                setDropdown('')
+              }}>
               {item?.link === "" ? (
                 <button className="whitespace-nowrap px-2 py-2 capitalize w-full flex">
                   {t(item.name)}

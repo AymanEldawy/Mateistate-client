@@ -1,5 +1,5 @@
 import useFormSteps from "Hooks/useFormSteps";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Fields } from "../CustomForm/Fields";
@@ -25,71 +25,7 @@ const SUB_STEPS = [
   "building_real_estate_development",
 ];
 
-const calculateFlats = (name, watch) => {
-  let flat = name?.split(".").at(-1);
-  switch (flat) {
-    case "apartment_count":
-    case "apartment_floor":
-      FLATS.apartment_count =
-        watch("apartment_count") * watch("apartment_floor");
-      return;
-    case "penthouse_count":
-    case "penthouse_floor":
-      FLATS.penthouse_count =
-        watch("penthouse_count") * watch("penthouse_floor");
 
-      return;
-    case "parking_count":
-    case "parking_floor":
-      FLATS.parking_count = watch("parking_count") * watch("parking_floor");
-
-      return;
-    case "mezzanine_count":
-    case "mezzanine_floor":
-      FLATS.mezzanine_count =
-        watch("mezzanine_count") * watch("mezzanine_floor");
-
-      return;
-    case "office_count":
-    case "office_floor":
-      FLATS.office_count = watch("office_count") * watch("office_floor");
-
-      return;
-    case "store_count":
-      FLATS.store_count = watch("store_count");
-      return;
-
-    case "shop_count":
-      FLATS.shop_count = watch("shop_count");
-
-      return;
-    case "warehouse_count":
-      FLATS.warehouse_count = watch("warehouse_count");
-
-      return;
-    case "service_apartments":
-      FLATS.service_apartments = watch("service_apartments");
-
-      return;
-    case "drivers_apartments":
-      FLATS.drivers_apartments = watch("drivers_apartments");
-
-      return;
-    case "underground_parking":
-      let underground_parking = watch("underground_parking");
-      FLATS.underground_parking = underground_parking;
-
-      return;
-    default:
-      return;
-  }
-};
-
-const reCalculateFlats = (watch) => {
-  for (const flat of Object.keys(FLATS)) {
-    calculateFlats(flat, watch);
-  }
-};
 
 const BuildingForm = ({ onClose }) => {
   const name = "building";
@@ -110,6 +46,7 @@ const BuildingForm = ({ onClose }) => {
     setCurrentIndex,
     formSettings,
     onDeleteItem,
+
   } = useFormSteps({ name: "building_group_short" });
   const {
     reset,
@@ -120,13 +57,77 @@ const BuildingForm = ({ onClose }) => {
   const formPagination = useFormPagination({ name, number, reset });
   const buildingId = formPagination?.currentId;
 
+
+  const calculateFlats = (name) => {
+    // return
+    let flat = name?.split(".").at(-1);
+    switch (flat) {
+      case "apartment_count":
+      case "apartment_floor":
+        FLATS.apartment_count =
+          watch("apartment_count") * watch("apartment_floor");
+        break;
+      case "penthouse_count":
+      case "penthouse_floor":
+        FLATS.penthouse_count =
+          watch("penthouse_count") * watch("penthouse_floor");
+
+        break;
+      case "parking_count":
+      case "parking_floor":
+        FLATS.parking_count = watch("parking_count") * watch("parking_floor");
+
+        break;
+      case "mezzanine_count":
+      case "mezzanine_floor":
+        FLATS.mezzanine_count =
+          watch("mezzanine_count") * watch("mezzanine_floor");
+
+        break;
+      case "office_count":
+      case "office_floor":
+        FLATS.office_count = watch("office_count") * watch("office_floor");
+
+        break;
+      case "store_count":
+        FLATS.store_count = watch("store_count");
+        break;
+
+      case "shop_count":
+        FLATS.shop_count = watch("shop_count");
+
+        break;
+      case "warehouse_count":
+        FLATS.warehouse_count = watch("warehouse_count");
+
+        break;
+      case "service_apartments":
+        FLATS.service_apartments = watch("service_apartments");
+
+        break;
+      case "drivers_apartments":
+        FLATS.drivers_apartments = watch("drivers_apartments");
+
+        break;
+      case "underground_parking":
+        let underground_parking = watch("underground_parking");
+        FLATS.underground_parking = underground_parking;
+
+        break;
+      default:
+        return;
+    }
+  };
+
   const { isLoading } = useQuery({
     queryKey: [name, buildingId],
     queryFn: async () => {
       const res = await getOneBy("building", buildingId);
       if (res?.success) {
         reset(res?.result?.at(0));
-        reCalculateFlats(watch);
+        for (const flat of Object.keys(FLATS)) {
+          calculateFlats(flat, watch);
+        }
       }
     },
     enabled: !!buildingId
@@ -134,6 +135,7 @@ const BuildingForm = ({ onClose }) => {
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
+      if (!type) return
       calculateFlats(name, watch, setValue);
     });
     return () => subscription.unsubscribe();
@@ -141,7 +143,9 @@ const BuildingForm = ({ onClose }) => {
 
   useEffect(() => {
     if (formPagination?.currentNumber > formPagination?.lastNumber) {
-      reCalculateFlats(watch)
+      for (const flat of Object.keys(FLATS)) {
+        calculateFlats(flat, watch);
+      }
     }
   }, [formPagination?.currentNumber])
 
@@ -282,14 +286,14 @@ const BuildingForm = ({ onClose }) => {
             }
           />
           {currentIndex === 1 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols- gap-2 text-xs ">
               {Object.entries(FLATS)?.map(([key, val]) => {
                 return (
                   <span
                     key={key}
-                    className="bg-blue-50 rounded-md py-1 px-2 whitespace-nowrap text-blue-500 border text-center capitalize"
+                    className="bg-blue-50 rounded-md py-1 px-2 whitespace-nowrap text-blue-500 border text-center capitalize flex items-center gap-2 justify-between"
                   >
-                    {key?.replace("_", " ")} : {val}
+                    {key?.replace(/_|count/ig, " ")} <span className="p-[2px] rounded-md bg-blue-500 text-white px-2">{val || 0}</span>
                   </span>
                 );
               })}

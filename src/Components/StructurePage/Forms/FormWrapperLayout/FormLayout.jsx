@@ -62,7 +62,8 @@ const FormLayout = ({
         setOpen={setOpenConfirmation}
       />
 
-      <FormProvider {...methods}
+      <FormProvider
+        {...methods}
         key={name + number}
       >
         <form
@@ -70,7 +71,7 @@ const FormLayout = ({
           noValidate
           ref={refForm}
           className={formClassName}
-          autocomplete="off"
+          autoComplete="off"
         >
           {hideTitle ? null : <FormTitle isDirty={isDirty} extraContentBar={extraContentBar} onClose={onClose} name={name} />}
 

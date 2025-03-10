@@ -1,15 +1,12 @@
 
 import {
-  CheckboxField,
   Input,
-  Select, Textarea,
-  UniqueField
+  Select, Textarea
 } from "Components/StructurePage/CustomFields";
 import { UNIQUE_REF_TABLES } from "Helpers/constants";
 import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { ContractStatus } from "./ContractStatus";
-import { ViewEntry } from "Components/Global/ViewEntry";
 import UniqueFieldNormal from './../../CustomFields/UniqueFieldNormal';
 
 const ContractFinancialForm = ({
@@ -134,6 +131,7 @@ const ContractFinancialForm = ({
           )}
 
           <UniqueFieldNormal
+            key={'lessor'}
             {...fieldsHash?.lessor_id}
             updatedName={`contract.lessor_id`}
             table={'lessor'}

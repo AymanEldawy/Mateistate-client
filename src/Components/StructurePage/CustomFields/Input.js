@@ -121,7 +121,7 @@ const Input = ({
                 <div className="relative w-full h-[30px]">
 
                   <input
-                    ref={ref}
+                    // ref={ref}
                     name={updatedName || field?.name}
                     className={`border h-[30px] text-xs font-medium read-only:bg-[#2289fb1c] w-full dark:read-only:bg-[#444] rounded p-1 focus-within:opacity-100 ${isNumber && 'absolute top-0 left-0 w-full h-full opacity-0 z-10'} ${inputClassName} ${error ? "border-red-200 text-red-500" : ""
                       } 
@@ -135,7 +135,7 @@ const Input = ({
                         watch(field?.disabledCondition))
                     }
                     placeholder={isNumber ? "0" : ""}
-                    autoComplete={updatedName || field?.name}
+                    // autoComplete={!isNumber && (updatedName || field?.name)}
                     value={value}
                     // value={watch(updatedName || field?.name)}
                     onChange={(e) => {

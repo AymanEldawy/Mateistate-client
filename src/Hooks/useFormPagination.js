@@ -7,7 +7,7 @@ const columns = ["id", "number"];
 const useFormPagination = ({ name, number, code, reset }) => {
   const { getOneBy, getNextOne, getPreviousOne, getFirstOne, getLastOne } =
     useCurd();
-  const [currentNumber, setCurrentNumber] = useState();
+  const [currentNumber, setCurrentNumber] = useState(0);
   const [lastNumber, setLastNumber] = useState(number);
   const [currentId, setCurrentId] = useState(null);
 
